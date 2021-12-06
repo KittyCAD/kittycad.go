@@ -11,9 +11,9 @@ generate: docker-image
 		--name go-generator \
 		-v $(CURDIR):/usr/src \
 		--workdir /usr/src \
-		$(DOCKER_IMAGE_NAME) openapi-go-client update \
-			--path ./spec.yml \
-			--config /usr/src/config.yml
+		$(DOCKER_IMAGE_NAME) oapi-codegen \
+	        -generate types,client \
+			./spec.yml > kittycad.go
 
 .PHONY: docker-image
 docker-image:

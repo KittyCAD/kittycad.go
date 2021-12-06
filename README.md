@@ -3,7 +3,7 @@
 The Golang API client for KittyCAD.
 
 This is generated from
-[openapi-generators/openapi-python-client](https://github.com/openapi-generators/openapi-python-client).
+[deepmap/oapi-codegen](https://github.com/deepmap/oapi-codegen).
 
 ## Generating
 

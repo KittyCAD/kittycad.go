@@ -1,7 +1,6 @@
 FROM golang:latest
 
-RUN pip install \
-	openapi-python-client
+RUN go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@master
 
 # Set the default command to bash.
 CMD ["bash"]
