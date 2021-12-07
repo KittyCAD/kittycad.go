@@ -13,7 +13,9 @@ generate: docker-image
 		--workdir /usr/src \
 		$(DOCKER_IMAGE_NAME) oapi-codegen \
 	        -generate types,client \
-			./spec.yml > kittycad.go
+			--config ./config.yml \
+			-o ./kittycad.go \
+			./spec.yml
 
 .PHONY: docker-image
 docker-image:
