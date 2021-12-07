@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -244,6 +245,9 @@ type ClientInterface interface {
 	// FileConversionByID request
 	FileConversionByID(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// FileConvert request with any body
+	FileConvertWithBody(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// Ping request
 	Ping(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
@@ -274,6 +278,18 @@ func (c *Client) MetaDebugSession(ctx context.Context, reqEditors ...RequestEdit
 
 func (c *Client) FileConversionByID(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewFileConversionByIDRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) FileConvertWithBody(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFileConvertRequestWithBody(c.Server, sourceFormat, outputFormat, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -384,6 +400,49 @@ func NewFileConversionByIDRequest(server string, id string) (*http.Request, erro
 	return req, nil
 }
 
+// NewFileConvertRequestWithBody generates requests for FileConvert with any type of body
+func NewFileConvertRequestWithBody(server string, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "sourceFormat", runtime.ParamLocationPath, sourceFormat)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "outputFormat", runtime.ParamLocationPath, outputFormat)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/file/conversion/%s/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewPingRequest generates requests for Ping
 func NewPingRequest(server string) (*http.Request, error) {
 	var err error
@@ -462,6 +521,9 @@ type ClientWithResponsesInterface interface {
 
 	// FileConversionByID request
 	FileConversionByIDWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FileConversionByIDResponse, error)
+
+	// FileConvert request with any body
+	FileConvertWithBodyWithResponse(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FileConvertResponse, error)
 
 	// Ping request
 	PingWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PingResponse, error)
@@ -544,6 +606,33 @@ func (r FileConversionByIDResponse) StatusCode() int {
 	return 0
 }
 
+type FileConvertResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *FileConversion
+	JSON202      *FileConversion
+	JSON400      *ErrorMessage
+	JSON401      *ErrorMessage
+	JSON403      *ErrorMessage
+	JSON406      *ErrorMessage
+}
+
+// Status returns HTTPResponse.Status
+func (r FileConvertResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FileConvertResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type PingResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -593,6 +682,15 @@ func (c *ClientWithResponses) FileConversionByIDWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseFileConversionByIDResponse(rsp)
+}
+
+// FileConvertWithBodyWithResponse request with arbitrary body returning *FileConvertResponse
+func (c *ClientWithResponses) FileConvertWithBodyWithResponse(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FileConvertResponse, error) {
+	rsp, err := c.FileConvertWithBody(ctx, sourceFormat, outputFormat, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFileConvertResponse(rsp)
 }
 
 // PingWithResponse request returning *PingResponse
@@ -746,6 +844,67 @@ func ParseFileConversionByIDResponse(rsp *http.Response) (*FileConversionByIDRes
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 406:
+		var dest ErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON406 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFileConvertResponse parses an HTTP response from a FileConvertWithResponse call
+func ParseFileConvertResponse(rsp *http.Response) (*FileConvertResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FileConvertResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FileConversion
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest FileConversion
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest ErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 406:
 		var dest ErrorMessage

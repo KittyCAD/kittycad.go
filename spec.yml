@@ -11,16 +11,88 @@ externalDocs:
     url: https://docs.kittycad.io
 servers:
     - url: https://api.kittycad.io
+
 tags:
     - name: file
       description: CAD file operations.
     - name: meta
       description: Meta information about servers and instances.
+    - name: beta
+      description: Beta API endpoints.
 paths:
+    /file/conversion/{sourceFormat}/{outputFormat}:
+        post:
+            tags:
+                - file
+                - beta
+            security:
+                - bearerAuth: []
+            summary: Convert CAD file
+            description: Convert a CAD file from one format to another. If the file being converted is larger than a certain size it will be performed asynchronously.
+            operationId: fileConvert
+            parameters:
+                - name: sourceFormat
+                  in: path
+                  description: The format of the file to convert.
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/ValidFileTypes'
+                - name: outputFormat
+                  in: path
+                  description: The format the file should be converted to.
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/ValidFileTypes'
+            requestBody:
+                description: The content of the file to convert, base64 encoded.
+                required: true
+                content:
+                    text/plain:
+                        schema:
+                            type: string
+                            format: base64
+            responses:
+                200:
+                    description: Returns the contents of the converted file, base64 encoded, if successful.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FileConversion'
+                            example:
+                                id: '6970d4f2-8979-4461-a9a1-ace62548fb5f'
+                                created_at: '2021-11-02T21:48:05+0000'
+                                completed_at: '2021-11-02T23:12:05+0000'
+                                user_id: 'ckv5prd3j000607mlnmwlpyz8'
+                                src_format: 'obj'
+                                output_format: 'step'
+                                output: 'BASE64_ENCODED_FILE_OUTPUT'
+                                status: 'Completed'
+                202:
+                    description: The file conversion is being performed asynchronously. You can use the `id` returned from the request to poll for status information about the conversion.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FileConversion'
+                            example:
+                                id: '6970d4f2-8979-4461-a9a1-ace62548fb5f'
+                                created_at: '2021-11-02T21:48:05+0000'
+                                user_id: 'ckv5prd3j000607mlnmwlpyz8'
+                                src_format: 'obj'
+                                output_format: 'step'
+                                status: 'Uploaded'
+                400:
+                    $ref: '#/components/responses/BadRequest'
+                401:
+                    $ref: '#/components/responses/Unauthorized'
+                403:
+                    $ref: '#/components/responses/Forbidden'
+                406:
+                    $ref: '#/components/responses/NotAcceptable'
     /file/conversion/{id}:
         get:
             tags:
                 - file
+                - beta
             security:
                 - bearerAuth: []
             summary: Get a file conversion
@@ -193,11 +265,11 @@ components:
                     type: string
                     description: The status of the file conversion.
                     enum:
-                      - 'Queued'
-                      - 'Uploaded'
-                      - 'In Progress'
-                      - 'Completed'
-                      - 'Failed'
+                        - 'Queued'
+                        - 'Uploaded'
+                        - 'In Progress'
+                        - 'Completed'
+                        - 'Failed'
                 src_format:
                     $ref: '#/components/schemas/ValidFileTypes'
                     description: The format of the original file uploaded to be converted.
@@ -221,9 +293,9 @@ components:
                     type: string
                     description: The type of environment.
                     enum:
-                      - 'DEVELOPMENT'
-                      - 'PREVIEW'
-                      - 'PRODUCTION'
+                        - 'DEVELOPMENT'
+                        - 'PREVIEW'
+                        - 'PRODUCTION'
                 name:
                     type: string
                     description: The name of the instance.
