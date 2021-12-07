@@ -945,4 +945,3 @@ func ParsePingResponse(rsp *http.Response) (*PingResponse, error) {
 
 	return response, nil
 }
-
