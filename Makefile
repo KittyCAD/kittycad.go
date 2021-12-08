@@ -15,7 +15,7 @@ generate: docker-image
 	        -generate types,client \
 			--config ./config.yml \
 			-o ./kittycad.go \
-			./spec.yml
+			https://api.kittycad.io
 
 .PHONY: docker-image
 docker-image:
