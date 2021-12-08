@@ -1,0 +1,24 @@
+name: build & test
+on:
+  push:
+    branches: main
+    paths:
+      - '**.go'
+      - .github/workflows/build-test.yml
+      - 'go.mod'
+      - 'go.sum'
+  pull_request:
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - .github/workflows/build-test.yml
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+steps:
+  - uses: actions/setup-go@v2
+    with:
+      stable: 'true'
+  - run: go build
+  - run: go test
