@@ -12,7 +12,7 @@ generate: docker-image
 		-v $(CURDIR):/usr/src \
 		--workdir /usr/src \
 		$(DOCKER_IMAGE_NAME) oapi-codegen \
-	        -generate types,client \
+			-generate types,client \
 			--config ./config.yml \
 			-o ./kittycad.go \
 			https://api.kittycad.io

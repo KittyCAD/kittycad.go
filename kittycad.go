@@ -637,7 +637,7 @@ type PingResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Message *N200Message `json:"message,omitempty"`
+		Message *ErrorMessage `json:"message,omitempty"`
 	}
 }
 
@@ -934,7 +934,7 @@ func ParsePingResponse(rsp *http.Response) (*PingResponse, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Message *N200Message `json:"message,omitempty"`
+			Message *ErrorMessage `json:"message,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
