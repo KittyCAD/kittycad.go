@@ -16,9 +16,9 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
-steps:
-  - uses: actions/setup-go@v2
-    with:
-      stable: 'true'
-  - run: go build
-  - run: go test
+    steps:
+      - uses: actions/setup-go@v2
+        with:
+          stable: 'true'
+      - run: go build
+      - run: go test
