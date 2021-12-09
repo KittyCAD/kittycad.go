@@ -1,1 +1,6 @@
 package: kittycad
+generate:
+  - types
+  - client
+  - skip-prune
+output: kittycad.go

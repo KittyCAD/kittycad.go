@@ -194,7 +194,7 @@ type Client struct {
 type ClientOption func(*Client) error
 
 // Creates a new Client, with reasonable defaults
-func NewClient(server string, opts ...ClientOption) (*Client, error) {
+func newClient(server string, opts ...ClientOption) (*Client, error) {
 	// create a client with sane default values
 	client := Client{
 		Server: server,
@@ -484,21 +484,6 @@ func (c *Client) applyEditors(ctx context.Context, req *http.Request, additional
 	return nil
 }
 
-// ClientWithResponses builds on ClientInterface to offer response payloads
-type ClientWithResponses struct {
-	ClientInterface
-}
-
-// NewClientWithResponses creates a new ClientWithResponses, which wraps
-// Client with return type handling
-func NewClientWithResponses(server string, opts ...ClientOption) (*ClientWithResponses, error) {
-	client, err := NewClient(server, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &ClientWithResponses{client}, nil
-}
-
 // WithBaseURL overrides the baseURL.
 func WithBaseURL(baseURL string) ClientOption {
 	return func(c *Client) error {
@@ -509,24 +494,6 @@ func WithBaseURL(baseURL string) ClientOption {
 		c.Server = newBaseURL.String()
 		return nil
 	}
-}
-
-// ClientWithResponsesInterface is the interface specification for the client with responses above.
-type ClientWithResponsesInterface interface {
-	// MetaDebugInstance request
-	MetaDebugInstanceWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MetaDebugInstanceResponse, error)
-
-	// MetaDebugSession request
-	MetaDebugSessionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MetaDebugSessionResponse, error)
-
-	// FileConversionByID request
-	FileConversionByIDWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FileConversionByIDResponse, error)
-
-	// FileConvert request with any body
-	FileConvertWithBodyWithResponse(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FileConvertResponse, error)
-
-	// Ping request
-	PingWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PingResponse, error)
 }
 
 type MetaDebugInstanceResponse struct {
@@ -658,7 +625,7 @@ func (r PingResponse) StatusCode() int {
 }
 
 // MetaDebugInstanceWithResponse request returning *MetaDebugInstanceResponse
-func (c *ClientWithResponses) MetaDebugInstanceWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MetaDebugInstanceResponse, error) {
+func (c *Client) MetaDebugInstanceWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MetaDebugInstanceResponse, error) {
 	rsp, err := c.MetaDebugInstance(ctx, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -667,7 +634,7 @@ func (c *ClientWithResponses) MetaDebugInstanceWithResponse(ctx context.Context,
 }
 
 // MetaDebugSessionWithResponse request returning *MetaDebugSessionResponse
-func (c *ClientWithResponses) MetaDebugSessionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MetaDebugSessionResponse, error) {
+func (c *Client) MetaDebugSessionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MetaDebugSessionResponse, error) {
 	rsp, err := c.MetaDebugSession(ctx, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -676,7 +643,7 @@ func (c *ClientWithResponses) MetaDebugSessionWithResponse(ctx context.Context, 
 }
 
 // FileConversionByIDWithResponse request returning *FileConversionByIDResponse
-func (c *ClientWithResponses) FileConversionByIDWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FileConversionByIDResponse, error) {
+func (c *Client) FileConversionByIDWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FileConversionByIDResponse, error) {
 	rsp, err := c.FileConversionByID(ctx, id, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -685,7 +652,7 @@ func (c *ClientWithResponses) FileConversionByIDWithResponse(ctx context.Context
 }
 
 // FileConvertWithBodyWithResponse request with arbitrary body returning *FileConvertResponse
-func (c *ClientWithResponses) FileConvertWithBodyWithResponse(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FileConvertResponse, error) {
+func (c *Client) FileConvertWithBodyWithResponse(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FileConvertResponse, error) {
 	rsp, err := c.FileConvertWithBody(ctx, sourceFormat, outputFormat, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -694,7 +661,7 @@ func (c *ClientWithResponses) FileConvertWithBodyWithResponse(ctx context.Contex
 }
 
 // PingWithResponse request returning *PingResponse
-func (c *ClientWithResponses) PingWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PingResponse, error) {
+func (c *Client) PingWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PingResponse, error) {
 	rsp, err := c.Ping(ctx, reqEditors...)
 	if err != nil {
 		return nil, err

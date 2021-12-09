@@ -21,5 +21,29 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '1.x'
-      - run: go build
-      - run: go test
+      - name: build
+        shell: bash
+        run: |
+          make build
+      - name: test
+        shell: bash
+        run: |
+          make test cover
+      - name: lint
+        shell: bash
+        run: |
+          go get golang.org/x/lint/golint
+          make lint
+      - name: staticcheck
+        shell: bash
+        run: |
+          go get honnef.co/go/tools/cmd/staticcheck@latest
+          make staticcheck
+      - name: vet
+        shell: bash
+        run: |
+          make vet
+      - name: fmt
+        shell: bash
+        run: |
+          make fmt
