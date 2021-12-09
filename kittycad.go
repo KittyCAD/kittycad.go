@@ -234,8 +234,8 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 	}
 }
 
-// NewMetaDebugInstanceRequest generates requests for MetaDebugInstance
-func NewMetaDebugInstanceRequest(server string) (*http.Request, error) {
+// newMetaDebugInstanceRequest generates requests for MetaDebugInstance
+func newMetaDebugInstanceRequest(server string) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -261,8 +261,8 @@ func NewMetaDebugInstanceRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
-// NewMetaDebugSessionRequest generates requests for MetaDebugSession
-func NewMetaDebugSessionRequest(server string) (*http.Request, error) {
+// newMetaDebugSessionRequest generates requests for MetaDebugSession
+func newMetaDebugSessionRequest(server string) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -288,8 +288,8 @@ func NewMetaDebugSessionRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
-// NewFileConversionByIDRequest generates requests for FileConversionByID
-func NewFileConversionByIDRequest(server string, id string) (*http.Request, error) {
+// newFileConversionByIDRequest generates requests for FileConversionByID
+func newFileConversionByIDRequest(server string, id string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -322,8 +322,8 @@ func NewFileConversionByIDRequest(server string, id string) (*http.Request, erro
 	return req, nil
 }
 
-// NewFileConvertRequestWithBody generates requests for FileConvert with any type of body
-func NewFileConvertRequestWithBody(server string, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader) (*http.Request, error) {
+// newFileConvertRequestWithBody generates requests for FileConvert with any type of body
+func newFileConvertRequestWithBody(server string, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -365,8 +365,8 @@ func NewFileConvertRequestWithBody(server string, sourceFormat ValidFileTypes, o
 	return req, nil
 }
 
-// NewPingRequest generates requests for Ping
-func NewPingRequest(server string) (*http.Request, error) {
+// newPingRequest generates requests for Ping
+func newPingRequest(server string) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -548,7 +548,7 @@ func (r PingResponse) StatusCode() int {
 
 // MetaDebugInstanceWithResponse request returning *MetaDebugInstanceResponse
 func (c *Client) MetaDebugInstanceWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MetaDebugInstanceResponse, error) {
-	req, err := NewMetaDebugInstanceRequest(c.Server)
+	req, err := newMetaDebugInstanceRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -560,12 +560,12 @@ func (c *Client) MetaDebugInstanceWithResponse(ctx context.Context, reqEditors .
 	if err != nil {
 		return nil, err
 	}
-	return ParseMetaDebugInstanceResponse(rsp)
+	return parseMetaDebugInstanceResponse(rsp)
 }
 
 // MetaDebugSessionWithResponse request returning *MetaDebugSessionResponse
 func (c *Client) MetaDebugSessionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MetaDebugSessionResponse, error) {
-	req, err := NewMetaDebugSessionRequest(c.Server)
+	req, err := newMetaDebugSessionRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -577,12 +577,12 @@ func (c *Client) MetaDebugSessionWithResponse(ctx context.Context, reqEditors ..
 	if err != nil {
 		return nil, err
 	}
-	return ParseMetaDebugSessionResponse(rsp)
+	return parseMetaDebugSessionResponse(rsp)
 }
 
 // FileConversionByIDWithResponse request returning *FileConversionByIDResponse
 func (c *Client) FileConversionByIDWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FileConversionByIDResponse, error) {
-	req, err := NewFileConversionByIDRequest(c.Server, id)
+	req, err := newFileConversionByIDRequest(c.Server, id)
 	if err != nil {
 		return nil, err
 	}
@@ -594,12 +594,12 @@ func (c *Client) FileConversionByIDWithResponse(ctx context.Context, id string, 
 	if err != nil {
 		return nil, err
 	}
-	return ParseFileConversionByIDResponse(rsp)
+	return parseFileConversionByIDResponse(rsp)
 }
 
 // FileConvertWithBodyWithResponse request with arbitrary body returning *FileConvertResponse
 func (c *Client) FileConvertWithBodyWithResponse(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FileConvertResponse, error) {
-	req, err := NewFileConvertRequestWithBody(c.Server, sourceFormat, outputFormat, contentType, body)
+	req, err := newFileConvertRequestWithBody(c.Server, sourceFormat, outputFormat, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -611,12 +611,12 @@ func (c *Client) FileConvertWithBodyWithResponse(ctx context.Context, sourceForm
 	if err != nil {
 		return nil, err
 	}
-	return ParseFileConvertResponse(rsp)
+	return parseFileConvertResponse(rsp)
 }
 
 // PingWithResponse request returning *PingResponse
 func (c *Client) PingWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PingResponse, error) {
-	req, err := NewPingRequest(c.Server)
+	req, err := newPingRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -628,11 +628,11 @@ func (c *Client) PingWithResponse(ctx context.Context, reqEditors ...RequestEdit
 	if err != nil {
 		return nil, err
 	}
-	return ParsePingResponse(rsp)
+	return parsePingResponse(rsp)
 }
 
-// ParseMetaDebugInstanceResponse parses an HTTP response from a MetaDebugInstanceWithResponse call
-func ParseMetaDebugInstanceResponse(rsp *http.Response) (*MetaDebugInstanceResponse, error) {
+// parseMetaDebugInstanceResponse parses an HTTP response from a MetaDebugInstanceWithResponse call
+func parseMetaDebugInstanceResponse(rsp *http.Response) (*MetaDebugInstanceResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
@@ -678,8 +678,8 @@ func ParseMetaDebugInstanceResponse(rsp *http.Response) (*MetaDebugInstanceRespo
 	return response, nil
 }
 
-// ParseMetaDebugSessionResponse parses an HTTP response from a MetaDebugSessionWithResponse call
-func ParseMetaDebugSessionResponse(rsp *http.Response) (*MetaDebugSessionResponse, error) {
+// parseMetaDebugSessionResponse parses an HTTP response from a MetaDebugSessionWithResponse call
+func parseMetaDebugSessionResponse(rsp *http.Response) (*MetaDebugSessionResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
@@ -725,8 +725,8 @@ func ParseMetaDebugSessionResponse(rsp *http.Response) (*MetaDebugSessionRespons
 	return response, nil
 }
 
-// ParseFileConversionByIDResponse parses an HTTP response from a FileConversionByIDWithResponse call
-func ParseFileConversionByIDResponse(rsp *http.Response) (*FileConversionByIDResponse, error) {
+// parseFileConversionByIDResponse parses an HTTP response from a FileConversionByIDWithResponse call
+func parseFileConversionByIDResponse(rsp *http.Response) (*FileConversionByIDResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
@@ -786,8 +786,8 @@ func ParseFileConversionByIDResponse(rsp *http.Response) (*FileConversionByIDRes
 	return response, nil
 }
 
-// ParseFileConvertResponse parses an HTTP response from a FileConvertWithResponse call
-func ParseFileConvertResponse(rsp *http.Response) (*FileConvertResponse, error) {
+// parseFileConvertResponse parses an HTTP response from a FileConvertWithResponse call
+func parseFileConvertResponse(rsp *http.Response) (*FileConvertResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
@@ -847,8 +847,8 @@ func ParseFileConvertResponse(rsp *http.Response) (*FileConvertResponse, error) 
 	return response, nil
 }
 
-// ParsePingResponse parses an HTTP response from a PingWithResponse call
-func ParsePingResponse(rsp *http.Response) (*PingResponse, error) {
+// parsePingResponse parses an HTTP response from a PingWithResponse call
+func parsePingResponse(rsp *http.Response) (*PingResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {

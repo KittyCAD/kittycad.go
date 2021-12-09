@@ -46,7 +46,7 @@ func (r {{$opid | ucFirst}}Response) StatusCode() int {
 
 // {{$opid}}{{if .HasBody}}WithBody{{end}}WithResponse request{{if .HasBody}} with arbitrary body{{end}} returning *{{$opid}}Response
 func (c *Client) {{$opid}}{{if .HasBody}}WithBody{{end}}WithResponse(ctx context.Context{{genParamArgs .PathParams}}{{if .RequiresParamObject}}, params *{{$opid}}Params{{end}}{{if .HasBody}}, contentType string, body io.Reader{{end}}, reqEditors... RequestEditorFn) (*{{genResponseTypeName $opid}}, error){
-    req, err := New{{$opid}}Request{{if .HasBody}}WithBody{{end}}(c.Server{{genParamNames .PathParams}}{{if $hasParams}}, params{{end}}{{if .HasBody}}, contentType, body{{end}})
+    req, err := new{{$opid}}Request{{if .HasBody}}WithBody{{end}}(c.Server{{genParamNames .PathParams}}{{if $hasParams}}, params{{end}}{{if .HasBody}}, contentType, body{{end}})
     if err != nil {
         return nil, err
     }
@@ -58,12 +58,12 @@ func (c *Client) {{$opid}}{{if .HasBody}}WithBody{{end}}WithResponse(ctx context
     if err != nil {
         return nil, err
     }
-    return Parse{{genResponseTypeName $opid | ucFirst}}(rsp)
+    return parse{{genResponseTypeName $opid | ucFirst}}(rsp)
 }
 
 {{range .Bodies}}
 func (c *Client) {{$opid}}{{.Suffix}}WithResponse(ctx context.Context{{genParamArgs $pathParams}}{{if $hasParams}}, params *{{$opid}}Params{{end}}, body {{$opid}}{{.NameTag}}RequestBody, reqEditors... RequestEditorFn) (*{{genResponseTypeName $opid}}, error) {
-    req, err := New{{$opid}}{{.Suffix}}Request(c.Server{{genParamNames $pathParams}}{{if $hasParams}}, params{{end}}, body)
+    req, err := new{{$opid}}{{.Suffix}}Request(c.Server{{genParamNames $pathParams}}{{if $hasParams}}, params{{end}}, body)
     if err != nil {
         return nil, err
     }
@@ -75,7 +75,7 @@ func (c *Client) {{$opid}}{{.Suffix}}WithResponse(ctx context.Context{{genParamA
     if err != nil {
         return nil, err
     }
-    return Parse{{genResponseTypeName $opid | ucFirst}}(rsp)
+    return parse{{genResponseTypeName $opid | ucFirst}}(rsp)
 }
 {{end}}
 
@@ -84,8 +84,8 @@ func (c *Client) {{$opid}}{{.Suffix}}WithResponse(ctx context.Context{{genParamA
 {{/* Generate parse functions for responses*/}}
 {{range .}}{{$opid := .OperationId}}
 
-// Parse{{genResponseTypeName $opid | ucFirst}} parses an HTTP response from a {{$opid}}WithResponse call
-func Parse{{genResponseTypeName $opid | ucFirst}}(rsp *http.Response) (*{{genResponseTypeName $opid}}, error) {
+// parse{{genResponseTypeName $opid | ucFirst}} parses an HTTP response from a {{$opid}}WithResponse call
+func parse{{genResponseTypeName $opid | ucFirst}}(rsp *http.Response) (*{{genResponseTypeName $opid}}, error) {
     bodyBytes, err := ioutil.ReadAll(rsp.Body)
     defer func() { _ = rsp.Body.Close() }()
     if err != nil {
