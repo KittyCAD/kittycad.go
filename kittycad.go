@@ -21,6 +21,15 @@ const (
 	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
+// Defines values for Environment.
+const (
+	EnvironmentDEVELOPMENT Environment = "DEVELOPMENT"
+
+	EnvironmentPREVIEW Environment = "PREVIEW"
+
+	EnvironmentPRODUCTION Environment = "PRODUCTION"
+)
+
 // Defines values for FileConversionStatus.
 const (
 	FileConversionStatusCompleted FileConversionStatus = "Completed"
@@ -32,15 +41,6 @@ const (
 	FileConversionStatusQueued FileConversionStatus = "Queued"
 
 	FileConversionStatusUploaded FileConversionStatus = "Uploaded"
-)
-
-// Defines values for InstanceMetadataEnvironment.
-const (
-	InstanceMetadataEnvironmentDEVELOPMENT InstanceMetadataEnvironment = "DEVELOPMENT"
-
-	InstanceMetadataEnvironmentPREVIEW InstanceMetadataEnvironment = "PREVIEW"
-
-	InstanceMetadataEnvironmentPRODUCTION InstanceMetadataEnvironment = "PRODUCTION"
 )
 
 // Defines values for ValidFileTypes.
@@ -76,6 +76,9 @@ type AuthSession struct {
 	// The user's id.
 	UserId *string `json:"user_id,omitempty"`
 }
+
+// The type of environment.
+type Environment string
 
 // ErrorMessage defines model for ErrorMessage.
 type ErrorMessage struct {
@@ -115,7 +118,7 @@ type InstanceMetadata struct {
 	Description *string `json:"description,omitempty"`
 
 	// The type of environment.
-	Environment *InstanceMetadataEnvironment `json:"environment,omitempty"`
+	Environment *Environment `json:"environment,omitempty"`
 
 	// The git hash of the code the server was built from.
 	GitHash *string `json:"git_hash,omitempty"`
@@ -142,8 +145,11 @@ type InstanceMetadata struct {
 	Zone *string `json:"zone,omitempty"`
 }
 
-// The type of environment.
-type InstanceMetadataEnvironment string
+// Message defines model for Message.
+type Message struct {
+	// The message.
+	Message *string `json:"message,omitempty"`
+}
 
 // ValidFileTypes defines model for ValidFileTypes.
 type ValidFileTypes string
@@ -525,9 +531,7 @@ func (r FileConvertResponse) StatusCode() int {
 type PingResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Message *N200Message `json:"message,omitempty"`
-	}
+	JSON200      *Message
 }
 
 // Status returns HTTPResponse.Status
@@ -862,9 +866,7 @@ func parsePingResponse(rsp *http.Response) (*PingResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Message *N200Message `json:"message,omitempty"`
-		}
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -873,4 +875,138 @@ func parsePingResponse(rsp *http.Response) (*PingResponse, error) {
 	}
 
 	return response, nil
+}
+
+// MetaDebugInstance request returning *MetaDebugInstanceResponse
+func (c *Client) MetaDebugInstance(ctx context.Context) (*InstanceMetadata, error) {
+	rsp, err := c.MetaDebugInstanceWithResponse(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// Check if the type we want to return is null.
+	if rsp.JSON200 == nil {
+
+		if rsp.JSON400 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON400)
+		}
+
+		if rsp.JSON401 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON401)
+		}
+
+		if rsp.JSON403 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON403)
+		}
+
+		return nil, fmt.Errorf("%#v", rsp)
+	}
+	return rsp.JSON200, nil
+}
+
+// MetaDebugSession request returning *MetaDebugSessionResponse
+func (c *Client) MetaDebugSession(ctx context.Context) (*AuthSession, error) {
+	rsp, err := c.MetaDebugSessionWithResponse(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// Check if the type we want to return is null.
+	if rsp.JSON200 == nil {
+
+		if rsp.JSON400 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON400)
+		}
+
+		if rsp.JSON401 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON401)
+		}
+
+		if rsp.JSON403 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON403)
+		}
+
+		return nil, fmt.Errorf("%#v", rsp)
+	}
+	return rsp.JSON200, nil
+}
+
+// FileConversionByID request returning *FileConversionByIDResponse
+func (c *Client) FileConversionByID(ctx context.Context, id string) (*FileConversion, error) {
+	rsp, err := c.FileConversionByIDWithResponse(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	// Check if the type we want to return is null.
+	if rsp.JSON200 == nil {
+
+		if rsp.JSON400 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON400)
+		}
+
+		if rsp.JSON401 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON401)
+		}
+
+		if rsp.JSON403 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON403)
+		}
+
+		if rsp.JSON404 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON404)
+		}
+
+		if rsp.JSON406 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON406)
+		}
+
+		return nil, fmt.Errorf("%#v", rsp)
+	}
+	return rsp.JSON200, nil
+}
+
+// FileConvertWithBody request with arbitrary body returning *FileConvertResponse
+func (c *Client) FileConvertWithBody(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader) (*FileConversion, error) {
+	rsp, err := c.FileConvertWithBodyWithResponse(ctx, sourceFormat, outputFormat, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	// Check if the type we want to return is null.
+	if rsp.JSON200 == nil {
+
+		if rsp.JSON202 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON202)
+		}
+
+		if rsp.JSON400 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON400)
+		}
+
+		if rsp.JSON401 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON401)
+		}
+
+		if rsp.JSON403 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON403)
+		}
+
+		if rsp.JSON406 != nil {
+			return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.JSON406)
+		}
+
+		return nil, fmt.Errorf("%#v", rsp)
+	}
+	return rsp.JSON200, nil
+}
+
+// Ping request returning *PingResponse
+func (c *Client) Ping(ctx context.Context) (*Message, error) {
+	rsp, err := c.PingWithResponse(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// Check if the type we want to return is null.
+	if rsp.JSON200 == nil {
+
+		return nil, fmt.Errorf("%#v", rsp)
+	}
+	return rsp.JSON200, nil
 }

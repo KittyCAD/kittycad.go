@@ -22,7 +22,7 @@ generate: image
 		$(DOCKER_IMAGE_NAME) oapi-codegen \
 			--config ./config.yml \
 			-templates ./templates/ \
-			https://api.kittycad.io
+			./spec.yml
 
 .PHONY: image
 image: ## Create the docker image from the Dockerfile.

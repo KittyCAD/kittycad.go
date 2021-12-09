@@ -43,9 +43,3 @@ func NewClientFromEnv() (*Client, error) {
 
 	return NewClient(token)
 }
-
-// N200Message defines model for N200Message.
-type N200Message struct {
-	// The message.
-	Message *string `json:"message,omitempty"`
-}

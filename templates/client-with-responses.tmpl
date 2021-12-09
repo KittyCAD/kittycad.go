@@ -100,3 +100,54 @@ func parse{{genResponseTypeName $opid | ucFirst}}(rsp *http.Response) (*{{genRes
 }
 {{end}}{{/* range . $opid := .OperationId */}}
 
+{{range .}}
+{{$hasParams := .RequiresParamObject -}}
+{{$pathParams := .PathParams -}}
+{{$bodyRequired := .BodyRequired -}}
+{{$opid := .OperationId -}}
+{{$rspDefs := getResponseTypeDefinitions . -}}
+{{$rspType := (index $rspDefs 0) -}}
+{{/* Generate client methods (with responses)*/}}
+
+// {{$opid}}{{if .HasBody}}WithBody{{end}} request{{if .HasBody}} with arbitrary body{{end}} returning *{{$opid}}Response
+func (c *Client) {{$opid}}{{if .HasBody}}WithBody{{end}}(ctx context.Context{{genParamArgs .PathParams}}{{if .RequiresParamObject}}, params *{{$opid}}Params{{end}}{{if .HasBody}}, contentType string, body io.Reader{{end}}) (*{{$rspType.Schema.TypeDecl}}, error){
+    rsp, err := c.{{$opid}}{{if .HasBody}}WithBody{{end}}WithResponse(ctx{{genParamNames .PathParams}}{{if .RequiresParamObject}}, params{{end}}{{if .HasBody}}, contentType, body{{end}})
+    if err != nil {
+        return nil, err
+    }
+    // Check if the type we want to return is null.
+    if rsp.{{$rspType.TypeName}} == nil {
+        {{- range $i, $r := getResponseTypeDefinitions .}}
+            {{if gt $i 0}}
+            if rsp.{{$r.TypeName}} != nil {
+                return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.{{$r.TypeName}})
+            }
+            {{end}}
+        {{end}}
+        return nil, fmt.Errorf("%#v", rsp)
+    }
+    return rsp.{{$rspType.TypeName}}, nil
+}
+
+{{range .Bodies}}
+func (c *Client) {{$opid}}{{.Suffix}}(ctx context.Context{{genParamArgs $pathParams}}{{if $hasParams}}, params *{{$opid}}Params{{end}}, body {{$opid}}{{.NameTag}}RequestBody) (*{{$rspType.Schema.TypeDecl}}, error) {
+    rsp, err := c.{{$opid}}{{.Suffix}}WithResponse(ctx{{genParamNames $pathParams}}{{if $hasParams}}, params{{end}}, body)
+    if err != nil {
+        return nil, err
+    }
+    // Check if the type we want to return is null.
+    if rsp.{{$rspType.TypeName}} == nil {
+        {{- range $i, $r := getResponseTypeDefinitions .}}
+            {{if gt $i 0}}
+            if rsp.{{$r.TypeName}} != nil {
+                return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.{{$r.TypeName}})
+            }
+            {{end}}
+        {{end}}
+        return nil, fmt.Errorf("%#v", rsp)
+    }
+    return rsp.{{$rspType.TypeName}}, nil
+}
+{{end}}
+
+{{end}}{{/* operations */}}
