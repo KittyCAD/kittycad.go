@@ -234,84 +234,6 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 	}
 }
 
-// The interface specification for the client above.
-type ClientInterface interface {
-	// MetaDebugInstance request
-	MetaDebugInstance(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// MetaDebugSession request
-	MetaDebugSession(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// FileConversionByID request
-	FileConversionByID(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// FileConvert request with any body
-	FileConvertWithBody(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// Ping request
-	Ping(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
-}
-
-func (c *Client) MetaDebugInstance(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewMetaDebugInstanceRequest(c.Server)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) MetaDebugSession(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewMetaDebugSessionRequest(c.Server)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) FileConversionByID(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewFileConversionByIDRequest(c.Server, id)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) FileConvertWithBody(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewFileConvertRequestWithBody(c.Server, sourceFormat, outputFormat, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) Ping(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPingRequest(c.Server)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 // NewMetaDebugInstanceRequest generates requests for MetaDebugInstance
 func NewMetaDebugInstanceRequest(server string) (*http.Request, error) {
 	var err error
@@ -604,7 +526,7 @@ type PingResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Message *ErrorMessage `json:"message,omitempty"`
+		Message *N200Message `json:"message,omitempty"`
 	}
 }
 
@@ -626,7 +548,15 @@ func (r PingResponse) StatusCode() int {
 
 // MetaDebugInstanceWithResponse request returning *MetaDebugInstanceResponse
 func (c *Client) MetaDebugInstanceWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MetaDebugInstanceResponse, error) {
-	rsp, err := c.MetaDebugInstance(ctx, reqEditors...)
+	req, err := NewMetaDebugInstanceRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	rsp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -635,7 +565,15 @@ func (c *Client) MetaDebugInstanceWithResponse(ctx context.Context, reqEditors .
 
 // MetaDebugSessionWithResponse request returning *MetaDebugSessionResponse
 func (c *Client) MetaDebugSessionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*MetaDebugSessionResponse, error) {
-	rsp, err := c.MetaDebugSession(ctx, reqEditors...)
+	req, err := NewMetaDebugSessionRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	rsp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -644,7 +582,15 @@ func (c *Client) MetaDebugSessionWithResponse(ctx context.Context, reqEditors ..
 
 // FileConversionByIDWithResponse request returning *FileConversionByIDResponse
 func (c *Client) FileConversionByIDWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FileConversionByIDResponse, error) {
-	rsp, err := c.FileConversionByID(ctx, id, reqEditors...)
+	req, err := NewFileConversionByIDRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	rsp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -653,7 +599,15 @@ func (c *Client) FileConversionByIDWithResponse(ctx context.Context, id string, 
 
 // FileConvertWithBodyWithResponse request with arbitrary body returning *FileConvertResponse
 func (c *Client) FileConvertWithBodyWithResponse(ctx context.Context, sourceFormat ValidFileTypes, outputFormat ValidFileTypes, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FileConvertResponse, error) {
-	rsp, err := c.FileConvertWithBody(ctx, sourceFormat, outputFormat, contentType, body, reqEditors...)
+	req, err := NewFileConvertRequestWithBody(c.Server, sourceFormat, outputFormat, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	rsp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -662,7 +616,15 @@ func (c *Client) FileConvertWithBodyWithResponse(ctx context.Context, sourceForm
 
 // PingWithResponse request returning *PingResponse
 func (c *Client) PingWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PingResponse, error) {
-	rsp, err := c.Ping(ctx, reqEditors...)
+	req, err := NewPingRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	rsp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -901,7 +863,7 @@ func ParsePingResponse(rsp *http.Response) (*PingResponse, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Message *ErrorMessage `json:"message,omitempty"`
+			Message *N200Message `json:"message,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
