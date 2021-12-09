@@ -111,7 +111,16 @@ func parse{{genResponseTypeName $opid | ucFirst}}(rsp *http.Response) (*{{genRes
 
 // {{$opid}}{{if .HasBody}}WithBody{{end}} request{{if .HasBody}} with arbitrary body{{end}} returning *{{$opid}}Response
 func (c *Client) {{$opid}}{{if .HasBody}}WithBody{{end}}(ctx context.Context{{genParamArgs .PathParams}}{{if .RequiresParamObject}}, params *{{$opid}}Params{{end}}{{if .HasBody}}, contentType string, body io.Reader{{end}}) (*{{$rspType.Schema.TypeDecl}}, error){
-    rsp, err := c.{{$opid}}{{if .HasBody}}WithBody{{end}}WithResponse(ctx{{genParamNames .PathParams}}{{if .RequiresParamObject}}, params{{end}}{{if .HasBody}}, contentType, body{{end}})
+    req, err := new{{$opid}}Request{{if .HasBody}}WithBody{{end}}(c.Server{{genParamNames .PathParams}}{{if $hasParams}}, params{{end}}{{if .HasBody}}, contentType, body{{end}})
+    if err != nil {
+        return nil, err
+    }
+    req = req.WithContext(ctx)
+    ogrsp, err := c.Client.Do(req)
+    if err != nil {
+        return nil, err
+    }
+    rsp, err := parse{{genResponseTypeName $opid | ucFirst}}(ogrsp)
     if err != nil {
         return nil, err
     }
@@ -119,19 +128,41 @@ func (c *Client) {{$opid}}{{if .HasBody}}WithBody{{end}}(ctx context.Context{{ge
     if rsp.{{$rspType.TypeName}} == nil {
         {{- range $i, $r := getResponseTypeDefinitions .}}
             {{if gt $i 0}}
+            {{if ne $r.TypeName "JSON202" }}
             if rsp.{{$r.TypeName}} != nil {
-                return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.{{$r.TypeName}})
+                return nil, HTTPError{
+                    StatusCode: ogrsp.StatusCode,
+                    RequestURL: ogrsp.Request.URL,
+                    Message: *rsp.{{$r.TypeName}}.Message,
+                }
             }
             {{end}}
+            {{end}}
         {{end}}
-        return nil, fmt.Errorf("%#v", rsp)
+        return nil, HTTPError{
+            StatusCode: ogrsp.StatusCode,
+            RequestURL: ogrsp.Request.URL,
+            Message: fmt.Sprintf("%#v", rsp),
+        }
     }
     return rsp.{{$rspType.TypeName}}, nil
 }
 
 {{range .Bodies}}
 func (c *Client) {{$opid}}{{.Suffix}}(ctx context.Context{{genParamArgs $pathParams}}{{if $hasParams}}, params *{{$opid}}Params{{end}}, body {{$opid}}{{.NameTag}}RequestBody) (*{{$rspType.Schema.TypeDecl}}, error) {
-    rsp, err := c.{{$opid}}{{.Suffix}}WithResponse(ctx{{genParamNames $pathParams}}{{if $hasParams}}, params{{end}}, body)
+    req, err := new{{$opid}}{{.Suffix}}Request(c.Server{{genParamNames $pathParams}}{{if $hasParams}}, params{{end}}, body)
+    if err != nil {
+        return nil, err
+    }
+    req = req.WithContext(ctx)
+    if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+        return nil, err
+    }
+    ogrsp, err := c.Client.Do(req)
+    if err != nil {
+        return nil, err
+    }
+    rsp, err := parse{{genResponseTypeName $opid | ucFirst}}(ogrsp)
     if err != nil {
         return nil, err
     }
@@ -139,12 +170,22 @@ func (c *Client) {{$opid}}{{.Suffix}}(ctx context.Context{{genParamArgs $pathPar
     if rsp.{{$rspType.TypeName}} == nil {
         {{- range $i, $r := getResponseTypeDefinitions .}}
             {{if gt $i 0}}
+            {{if ne $r.TypeName "JSON202" }}
             if rsp.{{$r.TypeName}} != nil {
-                return nil, fmt.Errorf("got status: %s, error: %#v", rsp.Status(), rsp.{{$r.TypeName}})
+                return nil, HTTPError{
+                    StatusCode: ogrsp.StatusCode,
+                    RequestURL: ogrsp.Request.URL,
+                    Message: *rsp.{{$r.TypeName}}.Message,
+                }
             }
             {{end}}
+            {{end}}
         {{end}}
-        return nil, fmt.Errorf("%#v", rsp)
+        return nil, HTTPError{
+            StatusCode: ogrsp.StatusCode,
+            RequestURL: ogrsp.Request.URL,
+            Message: fmt.Sprintf("%#v", rsp),
+        }
     }
     return rsp.{{$rspType.TypeName}}, nil
 }
