@@ -2,9 +2,6 @@
 
 package kittycad
 
-// NotAcceptableResponse is the response given when the request was unacceptable, often due to missing a required parameter.
-type NotAcceptableResponse ErrorMessage
-
 // NotFoundResponse is the response given when the requested resource doesn't exist.
 type NotFoundResponse ErrorMessage
 
@@ -19,3 +16,6 @@ type ForbiddenResponse ErrorMessage
 
 // InternalServerErrorResponse is the response given when the server encountered an unexpected condition that prevented it from fulfilling the request.
 type InternalServerErrorResponse ErrorMessage
+
+// NotAcceptableResponse is the response given when the request was unacceptable, often due to missing a required parameter.
+type NotAcceptableResponse ErrorMessage

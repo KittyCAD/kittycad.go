@@ -43,7 +43,7 @@ func (c *Client) FileConversion(srcFormat ValidFileType, outputFormat ValidFileT
 	// If you comment out the following line, the last partial block "r"
 	// won't be encoded.
 	encoder.Close()
-	resp, err := c.FileConvert(srcFormat, outputFormat)
+	resp, err := c.FileConvert(srcFormat, outputFormat, &b)
 	if err != nil {
 		return nil, nil, err
 	}

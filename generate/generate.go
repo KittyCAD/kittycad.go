@@ -204,6 +204,27 @@ func writeMethod(f *os.File, method string, path string, o *openapi3.Operation) 
 		paramsString += fmt.Sprintf("%s %s, ", strcase.ToLowerCamel(p.Value.Name), printType(p.Value.Schema))
 	}
 
+	reqBodyParam := "nil"
+	if o.RequestBody != nil {
+		rb := o.RequestBody
+		if rb.Ref != "" {
+			fmt.Printf("[WARN] TODO: skipping request body for %q, since it is a reference: %q\n", path, rb.Ref)
+		}
+
+		for mt, r := range rb.Value.Content {
+			if mt != "application/json" {
+				paramsString += "b io.Reader"
+				reqBodyParam = "b"
+				break
+			}
+
+			paramsString += "j *" + printType(r.Schema)
+			reqBodyParam = "j"
+			break
+		}
+
+	}
+
 	fmt.Printf("writing method %q for path %q\n", method, path)
 
 	// Write the description for the method.
@@ -232,9 +253,27 @@ func writeMethod(f *os.File, method string, path string, o *openapi3.Operation) 
 	fmt.Fprintf(f, "path := %q\n", cleanPath(path))
 	fmt.Fprintln(f, "uri := resolveRelative(c.server, path)")
 
+	if o.RequestBody != nil {
+		for mt := range o.RequestBody.Value.Content {
+			if mt != "application/json" {
+				break
+			}
+
+			// We need to encode the request body as json.
+			fmt.Fprintln(f, "// Encode the request body as json.")
+			fmt.Fprintln(f, "b := new(bytes.Buffer)")
+			fmt.Fprintln(f, "if err := json.NewEncoder(b).Encode(j); err != nil {")
+			fmt.Fprintln(f, `return nil, fmt.Errorf("encoding json body request failed: %v", err)`)
+			fmt.Fprintln(f, "}")
+			break
+		}
+
+	}
+
 	// Create the request.
 	fmt.Fprintln(f, "// Create the request.")
-	fmt.Fprintf(f, "req, err := http.NewRequest(%q, uri, nil)\n", method)
+
+	fmt.Fprintf(f, "req, err := http.NewRequest(%q, uri, %s)\n", method, reqBodyParam)
 	fmt.Fprintln(f, "if err != nil {")
 	fmt.Fprintln(f, `return nil, fmt.Errorf("error creating request: %v", err)`)
 	fmt.Fprintln(f, "}")
