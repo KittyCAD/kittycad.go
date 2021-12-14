@@ -34,9 +34,9 @@ func (err HTTPError) Error() string {
 	return fmt.Sprintf("HTTP %d (%s) BODY -> %v", err.StatusCode, err.URL, err.Body)
 }
 
-// CheckResponse returns an error (of type *HTTPError) if the response
+// checkResponse returns an error (of type *HTTPError) if the response
 // status code is not 2xx.
-func CheckResponse(res *http.Response) error {
+func checkResponse(res *http.Response) error {
 	if res.StatusCode >= 200 && res.StatusCode <= 299 {
 		return nil
 	}
