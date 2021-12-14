@@ -349,8 +349,8 @@ func writeSchemaType(f *os.File, name string, s *openapi3.Schema) {
 					continue
 				}
 				// Write the description of the constant.
-				fmt.Fprintf(f, "// %s represents the %s `%q`.\n", strcase.ToScreamingSnake(fmt.Sprintf("%s_%s", makeSingular(name), enum)), makeSingular(name), enum)
-				fmt.Fprintf(f, "\t%s %s = %q\n", strcase.ToScreamingSnake(fmt.Sprintf("%s_%s", makeSingular(name), enum)), makeSingular(name), enum)
+				fmt.Fprintf(f, "// %s represents the %s `%q`.\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enum)), makeSingular(name), enum)
+				fmt.Fprintf(f, "\t%s %s = %q\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enum)), makeSingular(name), enum)
 			}
 			// Close the enum values.
 			fmt.Fprintf(f, ")\n")
@@ -366,7 +366,7 @@ func writeSchemaType(f *os.File, name string, s *openapi3.Schema) {
 					fmt.Printf("[WARN] TODO: enum value is not a string for %q -> %#v\n", name, v)
 					continue
 				}
-				fmt.Fprintf(f, "\t%s,\n", strcase.ToScreamingSnake(fmt.Sprintf("%s_%s", makeSingular(name), enum)))
+				fmt.Fprintf(f, "\t%s,\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enum)))
 			}
 			// Close the enum values.
 			fmt.Fprintf(f, "}\n")
