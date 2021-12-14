@@ -28,7 +28,7 @@ jobs:
       - name: test
         shell: bash
         run: |
-          make test cover
+          make test
       - name: lint
         shell: bash
         run: |
@@ -47,3 +47,15 @@ jobs:
         shell: bash
         run: |
           make fmt
+      - name: make test coverage
+        shell: bash
+        run: |
+          make cover
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          flags: unittests
+          files: ${{ github.workspace }}/coverage.txt
+          verbose: true
