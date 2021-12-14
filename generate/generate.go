@@ -382,20 +382,45 @@ func writeSchemaType(f *os.File, name string, s *openapi3.Schema) {
 	} else if otype == "array" {
 		fmt.Fprintf(f, "type %s []%s\n", name, s.Items.Value.Type)
 	} else if otype == "object" {
+		recursive := false
 		fmt.Fprintf(f, "type %s struct {\n", name)
 		for k, v := range s.Properties {
+			// Check if we need to generate a type for this type.
+			typeName := printType(v)
+
+			if isLocalEnum(v) {
+				recursive = true
+				typeName = fmt.Sprintf("%s%s", name, printProperty(k))
+			}
+
 			if v.Value.Description != "" {
 				fmt.Fprintf(f, "\t// %s is %s\n", printProperty(k), toLowerFirstLetter(v.Value.Description))
 			}
-			fmt.Fprintf(f, "\t%s %s `json:\"%s,omitempty\" yaml:\"%s,omitempty\"`\n", printProperty(k), printType(v), k, k)
+			fmt.Fprintf(f, "\t%s %s `json:\"%s,omitempty\" yaml:\"%s,omitempty\"`\n", printProperty(k), typeName, k, k)
 		}
 		fmt.Fprintf(f, "}\n")
+
+		if recursive {
+			// Add a newline at the end of the type.
+			fmt.Fprintln(f, "")
+
+			// Iterate over the properties and write the types, if we need to.
+			for k, v := range s.Properties {
+				if isLocalEnum(v) {
+					writeSchemaType(f, fmt.Sprintf("%s%s", name, printProperty(k)), v.Value)
+				}
+			}
+		}
 	} else {
 		fmt.Printf("[WARN] TODO: skipping type for %q, since it is a %q\n", name, otype)
 	}
 
 	// Add a newline at the end of the type.
 	fmt.Fprintln(f, "")
+}
+
+func isLocalEnum(v *openapi3.SchemaRef) bool {
+	return v.Ref == "" && v.Value.Type == "string" && len(v.Value.Enum) > 0
 }
 
 // formatStringType converts a string schema to a valid Go type.
@@ -435,12 +460,20 @@ func toLowerFirstLetter(str string) string {
 
 // makeSingular returns the given string but singular.
 func makeSingular(s string) string {
+	if strings.HasSuffix(s, "Status") {
+		return s
+	}
 	return strings.TrimSuffix(s, "s")
 }
 
 // makePlural returns the given string but plural.
 func makePlural(s string) string {
-	return makeSingular(s) + "s"
+	singular := makeSingular(s)
+	if strings.HasSuffix(singular, "s") {
+		return singular + "es"
+	}
+
+	return singular + "s"
 }
 
 // writeSchemaTypeDescription writes the description of the given type.
