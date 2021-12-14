@@ -13,9 +13,12 @@ GO := go
 
 .PHONY: generate
 generate:
+	go get github.com/getkin/kin-openapi/openapi3
+	go get github.com/iancoleman/strcase
 	go generate
 	goimports -w *.go
 	gofmt -s -w *.go
+	go mod tidy
 
 .PHONY: build
 build: $(NAME) ## Builds a dynamic package.

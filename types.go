@@ -4,71 +4,8 @@ package kittycad
 
 import "time"
 
-// InstanceMetadata is the type definition for a InstanceMetadata.
-type InstanceMetadata struct {
-	// GitHash is the git hash of the code the server was built from.
-	GitHash string `json:"git_hash,omitempty" yaml:"git_hash,omitempty"`
-	// Hostname is the hostname of the instance.
-	Hostname string `json:"hostname,omitempty" yaml:"hostname,omitempty"`
-	// MachineType is the machine type of the instance.
-	MachineType string `json:"machine_type,omitempty" yaml:"machine_type,omitempty"`
-	// Name is the name of the instance.
-	Name string `json:"name,omitempty" yaml:"name,omitempty"`
-	// CPUPlatform is the CPU platform of the instance.
-	CPUPlatform string `json:"cpu_platform,omitempty" yaml:"cpu_platform,omitempty"`
-	// Environment is the type of environment.
-	Environment Environment `json:"environment,omitempty" yaml:"environment,omitempty"`
-	// Image is the image that was used as the base of the instance.
-	Image string `json:"image,omitempty" yaml:"image,omitempty"`
-	// IPAddress is the IP address of the instance.
-	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
-	// Zone is the zone of the instance.
-	Zone string `json:"zone,omitempty" yaml:"zone,omitempty"`
-	// Description is the description of the instance.
-	Description string `json:"description,omitempty" yaml:"description,omitempty"`
-	// ID is the id of the instance.
-	ID string `json:"id,omitempty" yaml:"id,omitempty"`
-}
-
-// Message is the type definition for a Message.
-type Message struct {
-	// Message is the message.
-	Message string `json:"message,omitempty" yaml:"message,omitempty"`
-}
-
-// ValidFileType is the type definition for a ValidFileType.
-type ValidFileType string
-
-const (
-	// VALID_FILE_TYPE_STEP represents the ValidFileType `"step"`.
-	VALID_FILE_TYPE_STEP ValidFileType = "step"
-	// VALID_FILE_TYPE_OBJ represents the ValidFileType `"obj"`.
-	VALID_FILE_TYPE_OBJ ValidFileType = "obj"
-	// VALID_FILE_TYPE_STL represents the ValidFileType `"stl"`.
-	VALID_FILE_TYPE_STL ValidFileType = "stl"
-	// VALID_FILE_TYPE_DXF represents the ValidFileType `"dxf"`.
-	VALID_FILE_TYPE_DXF ValidFileType = "dxf"
-	// VALID_FILE_TYPE_DWG represents the ValidFileType `"dwg"`.
-	VALID_FILE_TYPE_DWG ValidFileType = "dwg"
-)
-
-// ValidFileTypes is the collection of all ValidFileType values.
-var ValidFileTypes = []ValidFileType{
-	VALID_FILE_TYPE_STEP,
-	VALID_FILE_TYPE_OBJ,
-	VALID_FILE_TYPE_STL,
-	VALID_FILE_TYPE_DXF,
-	VALID_FILE_TYPE_DWG,
-}
-
 // AuthSession is the type definition for a AuthSession.
 type AuthSession struct {
-	// CreatedAt is the date and time the session/request was created.
-	CreatedAt time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
-	// Email is the user's email address.
-	Email string `json:"email,omitempty" yaml:"email,omitempty"`
-	// ID is the id of the session.
-	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 	// IPAddress is the IP address the request originated from.
 	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
 	// IsValid is if the token is valid.
@@ -77,6 +14,12 @@ type AuthSession struct {
 	Token string `json:"token,omitempty" yaml:"token,omitempty"`
 	// UserID is the user's id.
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+	// CreatedAt is the date and time the session/request was created.
+	CreatedAt time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Email is the user's email address.
+	Email string `json:"email,omitempty" yaml:"email,omitempty"`
+	// ID is the id of the session.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 }
 
 // Environment is the type of environment.
@@ -118,4 +61,61 @@ type FileConversion struct {
 	CreatedAt time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// ID is the id of the file conversion.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
+}
+
+// InstanceMetadata is the type definition for a InstanceMetadata.
+type InstanceMetadata struct {
+	// GitHash is the git hash of the code the server was built from.
+	GitHash string `json:"git_hash,omitempty" yaml:"git_hash,omitempty"`
+	// CPUPlatform is the CPU platform of the instance.
+	CPUPlatform string `json:"cpu_platform,omitempty" yaml:"cpu_platform,omitempty"`
+	// Description is the description of the instance.
+	Description string `json:"description,omitempty" yaml:"description,omitempty"`
+	// Environment is the type of environment.
+	Environment Environment `json:"environment,omitempty" yaml:"environment,omitempty"`
+	// IPAddress is the IP address of the instance.
+	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
+	// MachineType is the machine type of the instance.
+	MachineType string `json:"machine_type,omitempty" yaml:"machine_type,omitempty"`
+	// Name is the name of the instance.
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+	// Zone is the zone of the instance.
+	Zone string `json:"zone,omitempty" yaml:"zone,omitempty"`
+	// Hostname is the hostname of the instance.
+	Hostname string `json:"hostname,omitempty" yaml:"hostname,omitempty"`
+	// ID is the id of the instance.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
+	// Image is the image that was used as the base of the instance.
+	Image string `json:"image,omitempty" yaml:"image,omitempty"`
+}
+
+// Message is the type definition for a Message.
+type Message struct {
+	// Message is the message.
+	Message string `json:"message,omitempty" yaml:"message,omitempty"`
+}
+
+// ValidFileType is the type definition for a ValidFileType.
+type ValidFileType string
+
+const (
+	// VALID_FILE_TYPE_STEP represents the ValidFileType `"step"`.
+	VALID_FILE_TYPE_STEP ValidFileType = "step"
+	// VALID_FILE_TYPE_OBJ represents the ValidFileType `"obj"`.
+	VALID_FILE_TYPE_OBJ ValidFileType = "obj"
+	// VALID_FILE_TYPE_STL represents the ValidFileType `"stl"`.
+	VALID_FILE_TYPE_STL ValidFileType = "stl"
+	// VALID_FILE_TYPE_DXF represents the ValidFileType `"dxf"`.
+	VALID_FILE_TYPE_DXF ValidFileType = "dxf"
+	// VALID_FILE_TYPE_DWG represents the ValidFileType `"dwg"`.
+	VALID_FILE_TYPE_DWG ValidFileType = "dwg"
+)
+
+// ValidFileTypes is the collection of all ValidFileType values.
+var ValidFileTypes = []ValidFileType{
+	VALID_FILE_TYPE_STEP,
+	VALID_FILE_TYPE_OBJ,
+	VALID_FILE_TYPE_STL,
+	VALID_FILE_TYPE_DXF,
+	VALID_FILE_TYPE_DWG,
 }
