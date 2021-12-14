@@ -2,9 +2,6 @@
 
 package kittycad
 
-// NotFoundResponse is the response given when the requested resource doesn't exist.
-type NotFoundResponse ErrorMessage
-
 // UnauthorizedResponse is the response given when no valid API key provided.
 type UnauthorizedResponse ErrorMessage
 
@@ -19,3 +16,6 @@ type InternalServerErrorResponse ErrorMessage
 
 // NotAcceptableResponse is the response given when the request was unacceptable, often due to missing a required parameter.
 type NotAcceptableResponse ErrorMessage
+
+// NotFoundResponse is the response given when the requested resource doesn't exist.
+type NotFoundResponse ErrorMessage

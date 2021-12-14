@@ -6,11 +6,11 @@ import (
 	"fmt"
 )
 
-// FileConversionStatus returns the status of a file conversion.
+// FileConversionByIDWithBase64Helper returns the status of a file conversion.
 // This function will automatically base64 decode the contents of the result output.
 //
 // This function is a wrapper around the FileConversionByID function.
-func (c *Client) FileConversionStatus(id string) (*FileConversion, []byte, error) {
+func (c *Client) FileConversionByIDWithBase64Helper(id string) (*FileConversion, []byte, error) {
 	resp, err := c.FileConversionByID(id)
 	if err != nil {
 		return nil, nil, err
@@ -29,12 +29,12 @@ func (c *Client) FileConversionStatus(id string) (*FileConversion, []byte, error
 	return resp, output, nil
 }
 
-// FileConversion converts a file.
+// FileConvertWithBase64Helper converts a file.
 // This function will automatically base64 encode and decode the contents of the
 // src file and output file.
 //
 // This function is a wrapper around the FileConvert function.
-func (c *Client) FileConversion(srcFormat ValidFileType, outputFormat ValidFileType, body []byte) (*FileConversion, []byte, error) {
+func (c *Client) FileConvertWithBase64Helper(srcFormat ValidFileType, outputFormat ValidFileType, body []byte) (*FileConversion, []byte, error) {
 	var b bytes.Buffer
 	encoder := base64.NewEncoder(base64.StdEncoding, &b)
 	// Encode the body as base64.
