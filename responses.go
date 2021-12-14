@@ -2,6 +2,9 @@
 
 package kittycad
 
+// BadRequestResponse is the response given when the request failed could not authenticate, but the token existed.
+type BadRequestResponse ErrorMessage
+
 // ForbiddenResponse is the response given when the API key doesn't have permissions to perform the request.
 type ForbiddenResponse ErrorMessage
 
@@ -16,6 +19,3 @@ type NotFoundResponse ErrorMessage
 
 // UnauthorizedResponse is the response given when no valid API key provided.
 type UnauthorizedResponse ErrorMessage
-
-// BadRequestResponse is the response given when the request failed could not authenticate, but the token existed.
-type BadRequestResponse ErrorMessage

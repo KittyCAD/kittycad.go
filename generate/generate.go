@@ -1,10 +1,14 @@
+//go:build ignore
+
 package main
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -32,6 +36,9 @@ func main() {
 
 	// Generate the responses.go file.
 	generateResponses(doc)
+
+	// Generate the paths.go file.
+	generatePaths(doc)
 }
 
 // Generate the types.go file.
@@ -63,6 +70,22 @@ func generateResponses(doc *openapi3.T) {
 		}
 
 		writeResponseType(f, name, r.Value)
+	}
+}
+
+// Generate the paths.go file.
+func generatePaths(doc *openapi3.T) {
+	f := openGeneratedFile("paths.go")
+	defer f.Close()
+
+	// Iterate over all the paths in the spec and write the types.
+	for path, p := range doc.Paths {
+		if p.Ref != "" {
+			fmt.Printf("[WARN] TODO: skipping path for %q, since it is a reference\n", path)
+			continue
+		}
+
+		writePath(f, path, p)
 	}
 }
 
@@ -131,6 +154,171 @@ func printType(r *openapi3.SchemaRef) string {
 	}
 	// return a TODO;
 	return "TODO"
+}
+
+// writePath writes the given path as an http request to the given file.
+func writePath(f *os.File, path string, p *openapi3.PathItem) {
+	if p.Get != nil {
+		writeMethod(f, http.MethodGet, path, p.Get)
+	}
+
+	if p.Post != nil {
+		writeMethod(f, http.MethodPost, path, p.Post)
+	}
+
+	if p.Put != nil {
+		writeMethod(f, http.MethodPut, path, p.Put)
+	}
+
+	if p.Delete != nil {
+		writeMethod(f, http.MethodDelete, path, p.Delete)
+	}
+
+	if p.Patch != nil {
+		writeMethod(f, http.MethodPatch, path, p.Patch)
+	}
+
+	if p.Head != nil {
+		writeMethod(f, http.MethodHead, path, p.Head)
+	}
+
+	if p.Options != nil {
+		writeMethod(f, http.MethodOptions, path, p.Options)
+	}
+}
+
+func writeMethod(f *os.File, method string, path string, o *openapi3.Operation) {
+	respType := getSuccessResponseType(o)
+	fnName := strcase.ToCamel(o.OperationID)
+
+	// Parse the parameters.
+	params := map[string]*openapi3.Parameter{}
+	paramsString := ""
+	for _, p := range o.Parameters {
+		if p.Ref != "" {
+			fmt.Printf("[WARN] TODO: skipping parameter for %q, since it is a reference\n", p.Value.Name)
+			continue
+		}
+
+		params[p.Value.Name] = p.Value
+		paramsString += fmt.Sprintf("%s %s, ", strcase.ToLowerCamel(p.Value.Name), printType(p.Value.Schema))
+	}
+
+	fmt.Printf("writing method %q for path %q\n", method, path)
+
+	// Write the description for the method.
+	fmt.Fprintf(f, "// %s: %s\n", fnName, o.Summary)
+	if o.Description != "" {
+		fmt.Fprintln(f, "//")
+		fmt.Fprintf(f, "// %s\n", o.Description)
+	}
+	if len(params) > 0 {
+		fmt.Fprintf(f, "//\n// Parameters:\n")
+		for name, t := range params {
+			if t.Description != "" {
+				fmt.Fprintf(f, "//\t`%s`: %s\n", strcase.ToLowerCamel(name), t.Description)
+			}
+		}
+	}
+
+	// Write the method.
+	fmt.Fprintf(f, "func (c *Client) %s(%s) (*%s, error) {\n",
+		fnName,
+		paramsString,
+		respType)
+
+	// Create the url.
+	fmt.Fprintln(f, "// Create the url.")
+	fmt.Fprintf(f, "path := %q\n", cleanPath(path))
+	fmt.Fprintln(f, "uri := resolveRelative(c.server, path)")
+
+	// Create the request.
+	fmt.Fprintln(f, "// Create the request.")
+	fmt.Fprintf(f, "req, err := http.NewRequest(%q, uri, nil)\n", method)
+	fmt.Fprintln(f, "if err != nil {")
+	fmt.Fprintln(f, `return nil, fmt.Errorf("error creating request: %v", err)`)
+	fmt.Fprintln(f, "}")
+
+	// Add the parameters to the url.
+	if len(params) > 0 {
+		fmt.Fprintln(f, "// Add the parameters to the url.")
+		fmt.Fprintln(f, "if err := expandURL(req.URL, map[string]string{")
+		for name := range params {
+			fmt.Fprintf(f, "	%q: string(%s),\n", strcase.ToLowerCamel(name), strcase.ToLowerCamel(name))
+		}
+		fmt.Fprintln(f, "}); err != nil {")
+		fmt.Fprintln(f, `return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)`)
+		fmt.Fprintln(f, "}")
+	}
+
+	// Send the request.
+	fmt.Fprintln(f, "// Send the request.")
+	fmt.Fprintln(f, "resp, err := c.client.Do(req)")
+	fmt.Fprintln(f, "if err != nil {")
+	fmt.Fprintln(f, `return nil, fmt.Errorf("error sending request: %v", err)`)
+	fmt.Fprintln(f, "}")
+	fmt.Fprintln(f, "defer resp.Body.Close()")
+
+	// Check the response if there were any errors.
+	fmt.Fprintln(f, "// Check the response.")
+	fmt.Fprintln(f, "if err := checkResponse(resp); err != nil {")
+	fmt.Fprintln(f, "return nil, err")
+	fmt.Fprintln(f, "}")
+
+	// Decode the body from the response.
+	fmt.Fprintln(f, "// Decode the body from the response.")
+	fmt.Fprintln(f, "if resp.Body == nil {")
+	fmt.Fprintln(f, `return nil, errors.New("request returned an empty body in the response")`)
+	fmt.Fprintln(f, "}")
+
+	fmt.Fprintf(f, "var body %s\n", respType)
+	fmt.Fprintln(f, "if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {")
+	fmt.Fprintln(f, `return nil, fmt.Errorf("error decoding response body: %v", err)`)
+	fmt.Fprintln(f, "}")
+
+	// Return the response.
+	fmt.Fprintln(f, "// Return the response.")
+	fmt.Fprintln(f, "return &body, nil")
+
+	// Close the method.
+	fmt.Fprintln(f, "}")
+	fmt.Fprintln(f, "")
+}
+
+// cleanPath returns the path as a function we can use for a go template.
+func cleanPath(path string) string {
+	path = strings.Replace(path, "{", "{{.", -1)
+	return strings.Replace(path, "}", "}}", -1)
+}
+
+func getSuccessResponseType(o *openapi3.Operation) string {
+	for name, response := range o.Responses {
+		statusCode, err := strconv.Atoi(name)
+		if err != nil {
+			fmt.Printf("error converting %q to an integer: %v\n", name, err)
+			os.Exit(1)
+		}
+
+		if statusCode < 200 || statusCode >= 300 {
+			// Continue early, we just want the successful response.
+			continue
+		}
+
+		if response.Ref != "" {
+			fmt.Printf("[WARN] TODO: skipping response for %q, since it is a reference: %q\n", name, response.Ref)
+			continue
+		}
+
+		for _, content := range response.Value.Content {
+			if content.Schema.Ref != "" {
+				return getReferenceSchema(content.Schema)
+			}
+
+			return fmt.Sprintf("%sResponse", strcase.ToCamel(o.OperationID))
+		}
+	}
+
+	return ""
 }
 
 // writeSchemaType writes a type definition for the given schema.
