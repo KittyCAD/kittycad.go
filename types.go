@@ -4,6 +4,54 @@ package kittycad
 
 import "time"
 
+// ErrorMessage is the type definition for a ErrorMessage.
+type ErrorMessage struct {
+	// Message is the message.
+	Message string `json:"message,omitempty" yaml:"message,omitempty"`
+}
+
+// FileConversion is the type definition for a FileConversion.
+type FileConversion struct {
+	// ID is the id of the file conversion.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
+	// Output is the converted file, base64 encoded.
+	Output       string        `json:"output,omitempty" yaml:"output,omitempty"`
+	OutputFormat ValidFileType `json:"output_format,omitempty" yaml:"output_format,omitempty"`
+	SrcFormat    ValidFileType `json:"src_format,omitempty" yaml:"src_format,omitempty"`
+	// Status is the status of the file conversion.
+	Status string `json:"status,omitempty" yaml:"status,omitempty"`
+	// CompletedAt is the date and time the file conversion was completed.
+	CompletedAt time.Time `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	// CreatedAt is the date and time the file conversion was created.
+	CreatedAt time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+}
+
+// InstanceMetadata is the type definition for a InstanceMetadata.
+type InstanceMetadata struct {
+	// CPUPlatform is the CPU platform of the instance.
+	CPUPlatform string `json:"cpu_platform,omitempty" yaml:"cpu_platform,omitempty"`
+	// GitHash is the git hash of the code the server was built from.
+	GitHash string `json:"git_hash,omitempty" yaml:"git_hash,omitempty"`
+	// IPAddress is the IP address of the instance.
+	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
+	// MachineType is the machine type of the instance.
+	MachineType string `json:"machine_type,omitempty" yaml:"machine_type,omitempty"`
+	// Zone is the zone of the instance.
+	Zone string `json:"zone,omitempty" yaml:"zone,omitempty"`
+	// Description is the description of the instance.
+	Description string `json:"description,omitempty" yaml:"description,omitempty"`
+	// Environment is the type of environment.
+	Environment Environment `json:"environment,omitempty" yaml:"environment,omitempty"`
+	// Hostname is the hostname of the instance.
+	Hostname string `json:"hostname,omitempty" yaml:"hostname,omitempty"`
+	// ID is the id of the instance.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
+	// Image is the image that was used as the base of the instance.
+	Image string `json:"image,omitempty" yaml:"image,omitempty"`
+	// Name is the name of the instance.
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+}
+
 // Message is the type definition for a Message.
 type Message struct {
 	// Message is the message.
@@ -37,12 +85,6 @@ var ValidFileTypes = []ValidFileType{
 
 // AuthSession is the type definition for a AuthSession.
 type AuthSession struct {
-	// CreatedAt is the date and time the session/request was created.
-	CreatedAt time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
-	// Email is the user's email address.
-	Email string `json:"email,omitempty" yaml:"email,omitempty"`
-	// ID is the id of the session.
-	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 	// IPAddress is the IP address the request originated from.
 	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
 	// IsValid is if the token is valid.
@@ -51,6 +93,12 @@ type AuthSession struct {
 	Token string `json:"token,omitempty" yaml:"token,omitempty"`
 	// UserID is the user's id.
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+	// CreatedAt is the date and time the session/request was created.
+	CreatedAt time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Email is the user's email address.
+	Email string `json:"email,omitempty" yaml:"email,omitempty"`
+	// ID is the id of the session.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 }
 
 // Environment is the type of environment.
@@ -70,52 +118,4 @@ var Environments = []Environment{
 	ENVIRONMENT_DEVELOPMENT,
 	ENVIRONMENT_PREVIEW,
 	ENVIRONMENT_PRODUCTION,
-}
-
-// ErrorMessage is the type definition for a ErrorMessage.
-type ErrorMessage struct {
-	// Message is the message.
-	Message string `json:"message,omitempty" yaml:"message,omitempty"`
-}
-
-// FileConversion is the type definition for a FileConversion.
-type FileConversion struct {
-	// CompletedAt is the date and time the file conversion was completed.
-	CompletedAt time.Time `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
-	// CreatedAt is the date and time the file conversion was created.
-	CreatedAt time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
-	// ID is the id of the file conversion.
-	ID string `json:"id,omitempty" yaml:"id,omitempty"`
-	// Output is the converted file, base64 encoded.
-	Output       string        `json:"output,omitempty" yaml:"output,omitempty"`
-	OutputFormat ValidFileType `json:"output_format,omitempty" yaml:"output_format,omitempty"`
-	SrcFormat    ValidFileType `json:"src_format,omitempty" yaml:"src_format,omitempty"`
-	// Status is the status of the file conversion.
-	Status string `json:"status,omitempty" yaml:"status,omitempty"`
-}
-
-// InstanceMetadata is the type definition for a InstanceMetadata.
-type InstanceMetadata struct {
-	// Environment is the type of environment.
-	Environment Environment `json:"environment,omitempty" yaml:"environment,omitempty"`
-	// Hostname is the hostname of the instance.
-	Hostname string `json:"hostname,omitempty" yaml:"hostname,omitempty"`
-	// ID is the id of the instance.
-	ID string `json:"id,omitempty" yaml:"id,omitempty"`
-	// Image is the image that was used as the base of the instance.
-	Image string `json:"image,omitempty" yaml:"image,omitempty"`
-	// Zone is the zone of the instance.
-	Zone string `json:"zone,omitempty" yaml:"zone,omitempty"`
-	// CPUPlatform is the CPU platform of the instance.
-	CPUPlatform string `json:"cpu_platform,omitempty" yaml:"cpu_platform,omitempty"`
-	// Description is the description of the instance.
-	Description string `json:"description,omitempty" yaml:"description,omitempty"`
-	// GitHash is the git hash of the code the server was built from.
-	GitHash string `json:"git_hash,omitempty" yaml:"git_hash,omitempty"`
-	// IPAddress is the IP address of the instance.
-	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
-	// MachineType is the machine type of the instance.
-	MachineType string `json:"machine_type,omitempty" yaml:"machine_type,omitempty"`
-	// Name is the name of the instance.
-	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 }
