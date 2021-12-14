@@ -1,7 +1,5 @@
 NAME := kittycad
 
-DOCKER_IMAGE_NAME := kittycad/go-generator
-
 # If this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
 # so that the user can send e.g. ^C through.
@@ -14,19 +12,10 @@ endif
 GO := go
 
 .PHONY: generate
-generate: image
-	docker run --rm -i $(DOCKER_FLAGS) \
-		--name go-generator \
-		-v $(CURDIR):/usr/src \
-		--workdir /usr/src \
-		$(DOCKER_IMAGE_NAME) oapi-codegen \
-			--config ./config.yml \
-			-templates ./templates/ \
-			https://api.kittycad.io
-
-.PHONY: image
-image: ## Create the docker image from the Dockerfile.
-	@docker build --rm --force-rm -t $(DOCKER_IMAGE_NAME) .
+generate:
+	go generate
+	goimports -w *.go
+	gofmt -s -w *.go
 
 .PHONY: build
 build: $(NAME) ## Builds a dynamic package.
@@ -35,7 +24,7 @@ $(NAME): $(wildcard *.go) $(wildcard */*.go)
 	@echo "+ $@"
 	$(GO) build -tags "$(BUILDTAGS)" ${GO_LDFLAGS} -o $(NAME) .
 
-all: clean build fmt lint test staticcheck vet install ## Runs a clean, build, fmt, lint, test, staticcheck, vet and install.
+all: generate clean build fmt lint test staticcheck vet install ## Runs a clean, build, fmt, lint, test, staticcheck, vet and install.
 
 .PHONY: fmt
 fmt: ## Verifies all files have been `gofmt`ed.
