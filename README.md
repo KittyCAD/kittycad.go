@@ -2,8 +2,7 @@
 
 The Golang API client for KittyCAD.
 
-This is generated from
-[deepmap/oapi-codegen](https://github.com/deepmap/oapi-codegen).
+[Go docs](https://pkg.go.dev/github.com/kittycad/kittycad.go)
 
 ## Generating
 
