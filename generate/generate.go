@@ -204,9 +204,16 @@ func writeMethod(f *os.File, method string, path string, o *openapi3.Operation) 
 		paramsString += fmt.Sprintf("%s %s, ", strcase.ToLowerCamel(p.Value.Name), printType(p.Value.Schema))
 	}
 
+	// Parse the request body.
 	reqBodyParam := "nil"
+	reqBodyDescription := ""
 	if o.RequestBody != nil {
 		rb := o.RequestBody
+
+		if rb.Value.Description != "" {
+			reqBodyDescription = rb.Value.Description
+		}
+
 		if rb.Ref != "" {
 			fmt.Printf("[WARN] TODO: skipping request body for %q, since it is a reference: %q\n", path, rb.Ref)
 		}
@@ -240,6 +247,10 @@ func writeMethod(f *os.File, method string, path string, o *openapi3.Operation) 
 				fmt.Fprintf(f, "//\t`%s`: %s\n", strcase.ToLowerCamel(name), t.Description)
 			}
 		}
+	}
+
+	if reqBodyDescription != "" && reqBodyParam != "nil" {
+		fmt.Fprintf(f, "//\t`%s`: %s\n", reqBodyParam, reqBodyDescription)
 	}
 
 	// Write the method.
