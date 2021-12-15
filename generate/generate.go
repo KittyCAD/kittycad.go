@@ -456,7 +456,14 @@ func writeSchemaType(f *os.File, name string, s *openapi3.Schema) {
 	} else if otype == "object" {
 		recursive := false
 		fmt.Fprintf(f, "type %s struct {\n", name)
-		for k, v := range s.Properties {
+		// We want to ensure we keep the order so the diffs don't look like shit.
+		keys := make([]string, 0)
+		for k := range s.Properties {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		for _, k := range keys {
+			v := s.Properties[k]
 			// Check if we need to generate a type for this type.
 			typeName := printType(v)
 
