@@ -1,6 +1,9 @@
 package kittycad
 
 import (
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -43,5 +46,37 @@ func TestPing(t *testing.T) {
 
 	if message.Message != "pong" {
 		t.Fatalf("the message is not pong: %v", message.Message)
+	}
+}
+
+func TestFileConversion(t *testing.T) {
+	client := getClient(t)
+
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("getting the current working directory failed: %v", err)
+	}
+
+	file := filepath.Join(cwd, "assets", "testing.stl")
+	body, err := ioutil.ReadFile(file)
+	if err != nil {
+		t.Fatalf("reading the test file %q failed: %v", file, err)
+	}
+
+	fc, output, err := client.FileConvertWithBase64Helper(ValidFileTypeStl, ValidFileTypeObj, body)
+	if err != nil {
+		t.Fatalf("getting the file conversion failed: %v", err)
+	}
+
+	if fc.ID == "" {
+		t.Fatalf("the file conversion ID is empty")
+	}
+
+	if fc.Status != "Completed" {
+		t.Fatalf("the file conversion status is not `Completed`: %v", fc.Status)
+	}
+
+	if len(output) == 0 {
+		t.Fatalf("the file conversion output is empty")
 	}
 }
