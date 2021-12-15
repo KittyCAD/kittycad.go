@@ -10,6 +10,74 @@ import (
 	"net/http"
 )
 
+// MetaDebugInstance: Get instance metadata
+//
+// Get information about this specific API server instance. This is primarily used for debugging.
+func (c *Client) MetaDebugInstance() (*InstanceMetadata, error) {
+	// Create the url.
+	path := "/_meta/debug/instance"
+	uri := resolveRelative(c.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body InstanceMetadata
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// MetaDebugSession: Get auth session
+//
+// Get information about your API request session. This is primarily used for debugging.
+func (c *Client) MetaDebugSession() (*AuthSession, error) {
+	// Create the url.
+	path := "/_meta/debug/session"
+	uri := resolveRelative(c.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body AuthSession
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
 // FileConversionByID: Get a file conversion
 //
 // Get the status of a file conversion.
@@ -126,74 +194,6 @@ func (c *Client) Ping() (*Message, error) {
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var body Message
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
-}
-
-// MetaDebugInstance: Get instance metadata
-//
-// Get information about this specific API server instance. This is primarily used for debugging.
-func (c *Client) MetaDebugInstance() (*InstanceMetadata, error) {
-	// Create the url.
-	path := "/_meta/debug/instance"
-	uri := resolveRelative(c.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body InstanceMetadata
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
-}
-
-// MetaDebugSession: Get auth session
-//
-// Get information about your API request session. This is primarily used for debugging.
-func (c *Client) MetaDebugSession() (*AuthSession, error) {
-	// Create the url.
-	path := "/_meta/debug/session"
-	uri := resolveRelative(c.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body AuthSession
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

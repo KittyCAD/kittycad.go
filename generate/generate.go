@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"unicode"
@@ -47,7 +48,14 @@ func generateTypes(doc *openapi3.T) {
 	defer f.Close()
 
 	// Iterate over all the schema components in the spec and write the types.
-	for name, s := range doc.Components.Schemas {
+	// We want to ensure we keep the order so the diffs don't look like shit.
+	keys := make([]string, 0)
+	for k := range doc.Components.Schemas {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, name := range keys {
+		s := doc.Components.Schemas[name]
 		if s.Ref != "" {
 			fmt.Printf("[WARN] TODO: skipping type for %q, since it is a reference\n", name)
 			continue
@@ -63,7 +71,14 @@ func generateResponses(doc *openapi3.T) {
 	defer f.Close()
 
 	// Iterate over all the responses in the spec and write the types.
-	for name, r := range doc.Components.Responses {
+	// We want to ensure we keep the order so the diffs don't look like shit.
+	keys := make([]string, 0)
+	for k := range doc.Components.Responses {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, name := range keys {
+		r := doc.Components.Responses[name]
 		if r.Ref != "" {
 			fmt.Printf("[WARN] TODO: skipping response for %q, since it is a reference\n", name)
 			continue
@@ -79,7 +94,14 @@ func generatePaths(doc *openapi3.T) {
 	defer f.Close()
 
 	// Iterate over all the paths in the spec and write the types.
-	for path, p := range doc.Paths {
+	// We want to ensure we keep the order so the diffs don't look like shit.
+	keys := make([]string, 0)
+	for k := range doc.Paths {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, path := range keys {
+		p := doc.Paths[path]
 		if p.Ref != "" {
 			fmt.Printf("[WARN] TODO: skipping path for %q, since it is a reference\n", path)
 			continue
