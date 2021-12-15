@@ -11,6 +11,8 @@ endif
 # Set our default go compiler
 GO := go
 
+VERSION := $(shell cat $(CURDIR)/VERSION.txt)
+
 .PHONY: generate
 generate:
 	go get github.com/getkin/kin-openapi/openapi3
