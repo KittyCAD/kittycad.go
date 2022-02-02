@@ -10,20 +10,20 @@ import (
 	"net/http"
 )
 
-// MetaDebugInstance: Get instance metadata
+// DebugInstance: Get instance metadata
 //
 // Get information about this specific API server instance. This is primarily used for debugging.
-func (c *Client) MetaDebugInstance() (*InstanceMetadata, error) {
+func (s *MetaService) DebugInstance() (*InstanceMetadata, error) {
 	// Create the url.
 	path := "/_meta/debug/instance"
-	uri := resolveRelative(c.server, path)
+	uri := resolveRelative(s.client.server, path)
 	// Create the request.
 	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 	// Send the request.
-	resp, err := c.client.Do(req)
+	resp, err := s.client.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}
@@ -44,20 +44,20 @@ func (c *Client) MetaDebugInstance() (*InstanceMetadata, error) {
 	return &body, nil
 }
 
-// MetaDebugSession: Get auth session
+// DebugSession: Get auth session
 //
 // Get information about your API request session. This is primarily used for debugging.
-func (c *Client) MetaDebugSession() (*AuthSession, error) {
+func (s *MetaService) DebugSession() (*AuthSession, error) {
 	// Create the url.
 	path := "/_meta/debug/session"
-	uri := resolveRelative(c.server, path)
+	uri := resolveRelative(s.client.server, path)
 	// Create the request.
 	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 	// Send the request.
-	resp, err := c.client.Do(req)
+	resp, err := s.client.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}
@@ -78,16 +78,16 @@ func (c *Client) MetaDebugSession() (*AuthSession, error) {
 	return &body, nil
 }
 
-// FileConversionByID: Get a file conversion
+// ConversionByID: Get a file conversion
 //
-// Get the status of a file conversion.
+// Get the status and output of an async file conversion.
 //
 // Parameters:
-//	`id`: The id of the file conversion.
-func (c *Client) FileConversionByID(id string) (*FileConversion, error) {
+//	- `id`: The id of the file conversion.
+func (s *FileService) ConversionByID(id string) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{{.id}}"
-	uri := resolveRelative(c.server, path)
+	uri := resolveRelative(s.client.server, path)
 	// Create the request.
 	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
@@ -95,12 +95,12 @@ func (c *Client) FileConversionByID(id string) (*FileConversion, error) {
 	}
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": string(id),
+		"id": id,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 	// Send the request.
-	resp, err := c.client.Do(req)
+	resp, err := s.client.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}
@@ -121,18 +121,18 @@ func (c *Client) FileConversionByID(id string) (*FileConversion, error) {
 	return &body, nil
 }
 
-// FileConvert: Convert CAD file
+// Convert: Convert CAD file
 //
-// Convert a CAD file from one format to another. If the file being converted is larger than a certain size it will be performed asynchronously.
+// Convert a CAD file from one format to another. If the file being converted is larger than 30mb, it will be performed asynchronously.
 //
 // Parameters:
-//	`sourceFormat`: The format of the file to convert.
-//	`outputFormat`: The format the file should be converted to.
+//	- `outputFormat`: The format the file should be converted to.
+//	- `sourceFormat`: The format of the file to convert.
 //	`b`: The content of the file to convert, base64 encoded.
-func (c *Client) FileConvert(sourceFormat ValidFileType, outputFormat ValidFileType, b io.Reader) (*FileConversion, error) {
+func (s *FileService) Convert(sourceFormat ValidSourceFileType, outputFormat ValidOutputFileType, b io.Reader) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{{.sourceFormat}}/{{.outputFormat}}"
-	uri := resolveRelative(c.server, path)
+	uri := resolveRelative(s.client.server, path)
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
 	if err != nil {
@@ -140,13 +140,13 @@ func (c *Client) FileConvert(sourceFormat ValidFileType, outputFormat ValidFileT
 	}
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"sourceFormat": string(sourceFormat),
 		"outputFormat": string(outputFormat),
+		"sourceFormat": string(sourceFormat),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 	// Send the request.
-	resp, err := c.client.Do(req)
+	resp, err := s.client.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}
@@ -170,17 +170,17 @@ func (c *Client) FileConvert(sourceFormat ValidFileType, outputFormat ValidFileT
 // Ping: Ping
 //
 // Simple ping to the server.
-func (c *Client) Ping() (*Message, error) {
+func (s *MetaService) Ping() (*Message, error) {
 	// Create the url.
 	path := "/ping"
-	uri := resolveRelative(c.server, path)
+	uri := resolveRelative(s.client.server, path)
 	// Create the request.
 	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 	// Send the request.
-	resp, err := c.client.Do(req)
+	resp, err := s.client.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}

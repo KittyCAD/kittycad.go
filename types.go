@@ -34,13 +34,6 @@ const (
 	EnvironmentPRODUCTION Environment = "PRODUCTION"
 )
 
-// Environments is the collection of all Environment values.
-var Environments = []Environment{
-	EnvironmentDEVELOPMENT,
-	EnvironmentPREVIEW,
-	EnvironmentPRODUCTION,
-}
-
 // ErrorMessage is the type definition for a ErrorMessage.
 type ErrorMessage struct {
 	// Message is the message.
@@ -56,9 +49,9 @@ type FileConversion struct {
 	// ID is the id of the file conversion.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 	// Output is the converted file, base64 encoded.
-	Output       string        `json:"output,omitempty" yaml:"output,omitempty"`
-	OutputFormat ValidFileType `json:"output_format,omitempty" yaml:"output_format,omitempty"`
-	SrcFormat    ValidFileType `json:"src_format,omitempty" yaml:"src_format,omitempty"`
+	Output       string              `json:"output,omitempty" yaml:"output,omitempty"`
+	OutputFormat ValidOutputFileType `json:"output_format,omitempty" yaml:"output_format,omitempty"`
+	SrcFormat    ValidSourceFileType `json:"src_format,omitempty" yaml:"src_format,omitempty"`
 	// Status is the status of the file conversion.
 	Status FileConversionStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
@@ -78,15 +71,6 @@ const (
 	// FileConversionStatusFailed represents the FileConversionStatus `"Failed"`.
 	FileConversionStatusFailed FileConversionStatus = "Failed"
 )
-
-// FileConversionStatuses is the collection of all FileConversionStatus values.
-var FileConversionStatuses = []FileConversionStatus{
-	FileConversionStatusQueued,
-	FileConversionStatusUploaded,
-	FileConversionStatusInProgress,
-	FileConversionStatusCompleted,
-	FileConversionStatusFailed,
-}
 
 // InstanceMetadata is the type definition for a InstanceMetadata.
 type InstanceMetadata struct {
@@ -120,27 +104,53 @@ type Message struct {
 	Message string `json:"message,omitempty" yaml:"message,omitempty"`
 }
 
-// ValidFileType is the type definition for a ValidFileType.
-type ValidFileType string
+// ValidOutputFileType is the type definition for a ValidOutputFileType.
+type ValidOutputFileType string
 
 const (
-	// ValidFileTypeStep represents the ValidFileType `"step"`.
-	ValidFileTypeStep ValidFileType = "step"
-	// ValidFileTypeObj represents the ValidFileType `"obj"`.
-	ValidFileTypeObj ValidFileType = "obj"
-	// ValidFileTypeStl represents the ValidFileType `"stl"`.
-	ValidFileTypeStl ValidFileType = "stl"
-	// ValidFileTypeDxf represents the ValidFileType `"dxf"`.
-	ValidFileTypeDxf ValidFileType = "dxf"
-	// ValidFileTypeDwg represents the ValidFileType `"dwg"`.
-	ValidFileTypeDwg ValidFileType = "dwg"
+	// ValidOutputFileTypeObj represents the ValidOutputFileType `"obj"`.
+	ValidOutputFileTypeObj ValidOutputFileType = "obj"
+	// ValidOutputFileTypeStl represents the ValidOutputFileType `"stl"`.
+	ValidOutputFileTypeStl ValidOutputFileType = "stl"
 )
 
-// ValidFileTypes is the collection of all ValidFileType values.
-var ValidFileTypes = []ValidFileType{
-	ValidFileTypeStep,
-	ValidFileTypeObj,
-	ValidFileTypeStl,
-	ValidFileTypeDxf,
-	ValidFileTypeDwg,
+// ValidSourceFileType is the type definition for a ValidSourceFileType.
+type ValidSourceFileType string
+
+const (
+	// ValidSourceFileTypeObj represents the ValidSourceFileType `"obj"`.
+	ValidSourceFileTypeObj ValidSourceFileType = "obj"
+	// ValidSourceFileTypeStl represents the ValidSourceFileType `"stl"`.
+	ValidSourceFileTypeStl ValidSourceFileType = "stl"
+	// ValidSourceFileTypeDae represents the ValidSourceFileType `"dae"`.
+	ValidSourceFileTypeDae ValidSourceFileType = "dae"
+)
+
+// Environments is the collection of all Environment values.
+var Environments = []Environment{
+	EnvironmentDEVELOPMENT,
+	EnvironmentPREVIEW,
+	EnvironmentPRODUCTION,
+}
+
+// FileConversionStatuses is the collection of all FileConversionStatus values.
+var FileConversionStatuses = []FileConversionStatus{
+	FileConversionStatusCompleted,
+	FileConversionStatusFailed,
+	FileConversionStatusInProgress,
+	FileConversionStatusQueued,
+	FileConversionStatusUploaded,
+}
+
+// ValidOutputFileTypes is the collection of all ValidOutputFileType values.
+var ValidOutputFileTypes = []ValidOutputFileType{
+	ValidOutputFileTypeObj,
+	ValidOutputFileTypeStl,
+}
+
+// ValidSourceFileTypes is the collection of all ValidSourceFileType values.
+var ValidSourceFileTypes = []ValidSourceFileType{
+	ValidSourceFileTypeDae,
+	ValidSourceFileTypeObj,
+	ValidSourceFileTypeStl,
 }

@@ -6,12 +6,12 @@ import (
 	"fmt"
 )
 
-// FileConversionByIDWithBase64Helper returns the status of a file conversion.
+// ConversionByIDWithBase64Helper returns the status of a file conversion.
 // This function will automatically base64 decode the contents of the result output.
 //
 // This function is a wrapper around the FileConversionByID function.
-func (c *Client) FileConversionByIDWithBase64Helper(id string) (*FileConversion, []byte, error) {
-	resp, err := c.FileConversionByID(id)
+func (c *FileService) ConversionByIDWithBase64Helper(id string) (*FileConversion, []byte, error) {
+	resp, err := c.ConversionByID(id)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -29,12 +29,12 @@ func (c *Client) FileConversionByIDWithBase64Helper(id string) (*FileConversion,
 	return resp, output, nil
 }
 
-// FileConvertWithBase64Helper converts a file.
+// ConvertWithBase64Helper converts a file.
 // This function will automatically base64 encode and decode the contents of the
 // src file and output file.
 //
 // This function is a wrapper around the FileConvert function.
-func (c *Client) FileConvertWithBase64Helper(srcFormat ValidFileType, outputFormat ValidFileType, body []byte) (*FileConversion, []byte, error) {
+func (c *FileService) ConvertWithBase64Helper(srcFormat ValidSourceFileType, outputFormat ValidOutputFileType, body []byte) (*FileConversion, []byte, error) {
 	var b bytes.Buffer
 	encoder := base64.NewEncoder(base64.StdEncoding, &b)
 	// Encode the body as base64.
@@ -43,7 +43,7 @@ func (c *Client) FileConvertWithBase64Helper(srcFormat ValidFileType, outputForm
 	// If you comment out the following line, the last partial block "r"
 	// won't be encoded.
 	encoder.Close()
-	resp, err := c.FileConvert(srcFormat, outputFormat, &b)
+	resp, err := c.Convert(srcFormat, outputFormat, &b)
 	if err != nil {
 		return nil, nil, err
 	}
