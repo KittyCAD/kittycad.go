@@ -43,7 +43,7 @@ jobs:
       - name: move spec to docs
         shell: bash
         run: |
-          rm docs/spec.json
+          rm docs/spec.json || true
           cp spec.json docs/spec.json
       - name: commit the changes in the docs repo
         shell: bash
