@@ -312,7 +312,7 @@
           "meta"
         ],
         "x-go": {
-          "example": "// DebugInstance: Get instance metadata\n//\n// Get information about this specific API server instance. This is primarily used for debugging.\n\ninstanceMetadata, err := client.Meta.DebugInstance()",
+          "example": "// DebugInstance: Get instance metadata\n//\n// Get information about this specific API server instance. This is primarily used for debugging.\ninstanceMetadata, err := client.Meta.DebugInstance()",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.DebugInstance"
         },
         "x-python": {
@@ -363,7 +363,7 @@
           "meta"
         ],
         "x-go": {
-          "example": "// DebugSession: Get auth session\n//\n// Get information about your API request session. This is primarily used for debugging.\n\nauthSession, err := client.Meta.DebugSession()",
+          "example": "// DebugSession: Get auth session\n//\n// Get information about your API request session. This is primarily used for debugging.\nauthSession, err := client.Meta.DebugSession()",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.DebugSession"
         },
         "x-python": {
@@ -435,7 +435,7 @@
           "beta"
         ],
         "x-go": {
-          "example": "// ConversionByID: Get a file conversion\n//\n// Get the status and output of an async file conversion.\n//\n// Parameters:\n//\t- `id`: The id of the file conversion.\n\nfileConversion, err := client.File.ConversionByID(id)",
+          "example": "// ConversionByID: Get a file conversion\n//\n// Get the status and output of an async file conversion.\n//\n// Parameters:\n//\t- `id`: The id of the file conversion.\nfileConversion, err := client.File.ConversionByID(id)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.ConversionByID"
         },
         "x-python": {
@@ -545,7 +545,7 @@
           "beta"
         ],
         "x-go": {
-          "example": "// Convert: Convert CAD file\n//\n// Convert a CAD file from one format to another. If the file being converted is larger than 30mb, it will be performed asynchronously.\n//\n// Parameters:\n//\t- `outputFormat`: The format the file should be converted to.\n//\t- `sourceFormat`: The format of the file to convert.\n//\t`b`: The content of the file to convert, base64 encoded.\n\nfileConversion, err := client.File.Convert(sourceFormat, outputFormat)",
+          "example": "// Convert: Convert CAD file\n//\n// Convert a CAD file from one format to another. If the file being converted is larger than 30mb, it will be performed asynchronously.\n//\n// Parameters:\n//\t- `outputFormat`: The format the file should be converted to.\n//\t- `sourceFormat`: The format of the file to convert.\n//\t`b`: The content of the file to convert, base64 encoded.\nfileConversion, err := client.File.Convert(sourceFormat, outputFormat)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.Convert"
         },
         "x-python": {
@@ -577,7 +577,7 @@
           "meta"
         ],
         "x-go": {
-          "example": "// Ping: Ping\n//\n// Simple ping to the server.\n\nmessage, err := client.Meta.Ping()",
+          "example": "// Ping: Ping\n//\n// Simple ping to the server.\nmessage, err := client.Meta.Ping()",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.Ping"
         },
         "x-python": {
