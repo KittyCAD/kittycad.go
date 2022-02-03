@@ -110,6 +110,8 @@ const (
 	ValidOutputFileTypeObj ValidOutputFileType = "obj"
 	// ValidOutputFileTypeStl represents the ValidOutputFileType `"stl"`.
 	ValidOutputFileTypeStl ValidOutputFileType = "stl"
+	// ValidOutputFileTypeDae represents the ValidOutputFileType `"dae"`.
+	ValidOutputFileTypeDae ValidOutputFileType = "dae"
 )
 
 // ValidSourceFileType is the type definition for a ValidSourceFileType.
@@ -142,6 +144,7 @@ var FileConversionStatuses = []FileConversionStatus{
 
 // ValidOutputFileTypes is the collection of all ValidOutputFileType values.
 var ValidOutputFileTypes = []ValidOutputFileType{
+	ValidOutputFileTypeDae,
 	ValidOutputFileTypeObj,
 	ValidOutputFileTypeStl,
 }

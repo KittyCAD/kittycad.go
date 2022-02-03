@@ -221,7 +221,8 @@
       "ValidOutputFileType": {
         "enum": [
           "obj",
-          "stl"
+          "stl",
+          "dae"
         ],
         "type": "string"
       },
