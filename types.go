@@ -2,12 +2,10 @@
 
 package kittycad
 
-import "time"
-
 // AuthSession is the type definition for a AuthSession.
 type AuthSession struct {
 	// CreatedAt is the date and time the session/request was created.
-	CreatedAt *time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// Email is the user's email address.
 	Email string `json:"email,omitempty" yaml:"email,omitempty"`
 	// ID is the id of the session.
@@ -43,9 +41,9 @@ type ErrorMessage struct {
 // FileConversion is the type definition for a FileConversion.
 type FileConversion struct {
 	// CompletedAt is the date and time the file conversion was completed.
-	CompletedAt *time.Time `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
 	// CreatedAt is the date and time the file conversion was created.
-	CreatedAt *time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// ID is the id of the file conversion.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 	// Output is the converted file, base64 encoded.
