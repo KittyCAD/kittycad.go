@@ -47,9 +47,11 @@ type FileConversion struct {
 	// ID is the id of the file conversion.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 	// Output is the converted file, base64 encoded.
-	Output       string              `json:"output,omitempty" yaml:"output,omitempty"`
+	Output string `json:"output,omitempty" yaml:"output,omitempty"`
+	// OutputFormat is the valid file types. note: obj will ignore any associated materials.
 	OutputFormat ValidOutputFileType `json:"output_format,omitempty" yaml:"output_format,omitempty"`
-	SrcFormat    ValidSourceFileType `json:"src_format,omitempty" yaml:"src_format,omitempty"`
+	// SrcFormat is the valid file types. note: obj will ignore any associated materials.
+	SrcFormat ValidSourceFileType `json:"src_format,omitempty" yaml:"src_format,omitempty"`
 	// Status is the status of the file conversion.
 	Status FileConversionStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
@@ -102,7 +104,7 @@ type Message struct {
 	Message string `json:"message,omitempty" yaml:"message,omitempty"`
 }
 
-// ValidOutputFileType is the type definition for a ValidOutputFileType.
+// ValidOutputFileType is the valid file types. note: obj will ignore any associated materials.
 type ValidOutputFileType string
 
 const (
@@ -114,7 +116,7 @@ const (
 	ValidOutputFileTypeDae ValidOutputFileType = "dae"
 )
 
-// ValidSourceFileType is the type definition for a ValidSourceFileType.
+// ValidSourceFileType is the valid file types. note: obj will ignore any associated materials.
 type ValidSourceFileType string
 
 const (

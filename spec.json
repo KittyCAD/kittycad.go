@@ -77,6 +77,7 @@
           },
           "id": {
             "description": "The id of the session.",
+            "format": "uuid",
             "type": "string"
           },
           "ip_address": {
@@ -95,6 +96,7 @@
           },
           "user_id": {
             "description": "The user's id.",
+            "format": "uuid",
             "type": "string"
           }
         },
@@ -132,11 +134,12 @@
           },
           "id": {
             "description": "The id of the file conversion.",
+            "format": "uuid",
             "type": "string"
           },
           "output": {
             "description": "The converted file, base64 encoded.",
-            "format": "base64",
+            "format": "byte",
             "type": "string"
           },
           "output_format": {
@@ -219,6 +222,7 @@
         "type": "object"
       },
       "ValidOutputFileType": {
+        "description": "The valid file types. note: obj will ignore any associated materials.",
         "enum": [
           "obj",
           "stl",
@@ -227,6 +231,7 @@
         "type": "string"
       },
       "ValidSourceFileType": {
+        "description": "The valid file types. note: obj will ignore any associated materials.",
         "enum": [
           "obj",
           "stl",
@@ -273,19 +278,6 @@
           "200": {
             "content": {
               "application/json": {
-                "example": {
-                  "cpu_platform": "Intel Haswell",
-                  "description": "An API server instance.",
-                  "environment": "PRODUCTION",
-                  "git_hash": "d454900",
-                  "hostname": "api-us-central1-0kph.us-central1-f.c.kittycadapi.internal",
-                  "id": "3247495290486004999",
-                  "image": "projects/kittycadapi/global/images/packer-1635462081",
-                  "ip_address": "10.127.15.206",
-                  "machine_type": "projects/199385932268/machineTypes/n1-standard-16",
-                  "name": "api-us-central1-0kph",
-                  "zone": "projects/199385932268/zones/us-central1-f"
-                },
                 "schema": {
                   "$ref": "#/components/schemas/InstanceMetadata"
                 }
@@ -329,14 +321,6 @@
           "200": {
             "content": {
               "application/json": {
-                "example": {
-                  "created_at": "2021-11-02T21:48:05+0000",
-                  "id": "6970d4f2-8979-4461-a9a1-ace62548fb5f",
-                  "ip_address": "203.0.113.0",
-                  "is_valid": true,
-                  "token": "435f9688-365f-4a2d-860b-554798160cfe",
-                  "user_id": "ckv5prd3j000607mlnmwlpyz8"
-                },
                 "schema": {
                   "$ref": "#/components/schemas/AuthSession"
                 }
@@ -391,14 +375,6 @@
           "200": {
             "content": {
               "application/json": {
-                "example": {
-                  "created_at": "2021-11-02T21:48:05+0000",
-                  "id": "6970d4f2-8979-4461-a9a1-ace62548fb5f",
-                  "output_format": "stl",
-                  "src_format": "obj",
-                  "status": "In Progress",
-                  "user_id": "ckv5prd3j000607mlnmwlpyz8"
-                },
                 "schema": {
                   "$ref": "#/components/schemas/FileConversion"
                 }
@@ -472,7 +448,7 @@
           "content": {
             "text/plain": {
               "schema": {
-                "format": "base64",
+                "format": "byte",
                 "type": "string"
               }
             }
@@ -484,16 +460,6 @@
           "200": {
             "content": {
               "application/json": {
-                "example": {
-                  "completed_at": "2021-11-02T23:12:05+0000",
-                  "created_at": "2021-11-02T21:48:05+0000",
-                  "id": "6970d4f2-8979-4461-a9a1-ace62548fb5f",
-                  "output": "BASE64_ENCODED_FILE_OUTPUT",
-                  "output_format": "stl",
-                  "src_format": "obj",
-                  "status": "Completed",
-                  "user_id": "ckv5prd3j000607mlnmwlpyz8"
-                },
                 "schema": {
                   "$ref": "#/components/schemas/FileConversion"
                 }
@@ -504,14 +470,6 @@
           "202": {
             "content": {
               "application/json": {
-                "example": {
-                  "created_at": "2021-11-02T21:48:05+0000",
-                  "id": "6970d4f2-8979-4461-a9a1-ace62548fb5f",
-                  "output_format": "stl",
-                  "src_format": "obj",
-                  "status": "Uploaded",
-                  "user_id": "ckv5prd3j000607mlnmwlpyz8"
-                },
                 "schema": {
                   "$ref": "#/components/schemas/FileConversion"
                 }
@@ -550,7 +508,7 @@
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.Convert"
         },
         "x-python": {
-          "example": "from kittycad.models import FileConversion, ValidFileType\nfrom kittycad.api.file import file_convert_with_base64_helper\nfrom kittycad.types import Response\n\n# Convert a file from STL to OBJ.\n# Read in the contents of the file.\nfile = open(\"example.stl\", \"rb\")\ncontent = file.read()\nfile.close()\n\nfc: FileConversion = file_convert_with_base64_helper.sync(client=client, content=content, source_format=ValidFileType.STL, output_format=ValidFileType.OBJ)\n\n# OR if you need more info (e.g. status_code)\nresponse: Response[FileConversion] = file_convert_with_base64_helper.sync_detailed(client=client, content=content, source_format=ValidFileType.STL, output_format=ValidFileType.OBJ)\n\n# OR run async\nfc: FileConversion = await file_convert_with_base64_helper.asyncio(client=client, content=content, source_format=ValidFileType.STL, output_format=ValidFileType.OBJ)\n\n# OR run async with more info\nresponse: Response[FileConversion] = await file_convert_with_base64_helper.asyncio_detailed(client=client, content=content, source_format=ValidFileType.STL, output_format=ValidFileType.OBJ)\n"
+          "example": "from kittycad.models import FileConversion, ValidFileType\nfrom kittycad.api.file import file_convert_with_base64_helper\nfrom kittycad.types import Response\n\n# Convert a file from STEP to OBJ.\n# Read in the contents of the file.\nfile = open(\"example.step\", \"rb\")\ncontent = file.read()\nfile.close()\n\nfc: FileConversion = file_convert_with_base64_helper.sync(client=client, content=content, source_format=ValidFileType.STEP, output_format=ValidFileType.OBJ)\n\n# OR if you need more info (e.g. status_code)\nresponse: Response[FileConversion] = file_convert_with_base64_helper.sync_detailed(client=client, content=content, source_format=ValidFileType.STEP, output_format=ValidFileType.OBJ)\n\n# OR run async\nfc: FileConversion = await file_convert_with_base64_helper.asyncio(client=client, content=content, source_format=ValidFileType.STEP, output_format=ValidFileType.OBJ)\n\n# OR run async with more info\nresponse: Response[FileConversion] = await file_convert_with_base64_helper.asyncio_detailed(client=client, content=content, source_format=ValidFileType.STEP, output_format=ValidFileType.OBJ)\n"
         }
       }
     },
@@ -562,9 +520,6 @@
           "200": {
             "content": {
               "application/json": {
-                "example": {
-                  "message": "pong"
-                },
                 "schema": {
                   "$ref": "#/components/schemas/Message"
                 }
