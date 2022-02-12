@@ -258,17 +258,28 @@ func openGeneratedFile(filename string) *os.File {
 func cleanFnName(name string, tag string, path string) string {
 	name = printProperty(name)
 
-	name = strings.ReplaceAll(name, strcase.ToCamel(tag), "")
-
 	if strings.HasSuffix(tag, "s") {
 		tag = strings.TrimSuffix(tag, "s")
-		name = strings.ReplaceAll(name, strcase.ToCamel(tag), "")
 	}
+
+	if strings.HasSuffix(name, strcase.ToCamel(tag)) {
+		name = strings.TrimSuffix(name, strcase.ToCamel(tag))
+	}
+
+	if strings.HasPrefix(name, strcase.ToCamel(tag)) {
+		name = strings.TrimPrefix(name, strcase.ToCamel(tag))
+	}
+
+	snake := strcase.ToSnake(name)
+	snake = strings.ReplaceAll(snake, "_"+strings.ToLower(tag)+"_", "_")
+
+	name = strcase.ToCamel(snake)
 
 	name = strings.TrimPrefix(name, "Organization")
 	name = strings.TrimPrefix(name, "Project")
 
 	name = strings.ReplaceAll(name, "Vpc", "VPC")
+	name = strings.ReplaceAll(name, "Gpu", "GPU")
 
 	if strings.HasSuffix(name, "Get") && !strings.HasSuffix(path, "}") {
 		name = fmt.Sprintf("%sList", strings.TrimSuffix(name, "Get"))
@@ -312,6 +323,8 @@ func printProperty(p string) string {
 		strings.ReplaceAll(c, "IdSortMode", "IDSortMode")
 	} else if strings.HasPrefix(c, "Cpu") {
 		c = strings.Replace(c, "Cpu", "CPU", 1)
+	} else if strings.HasPrefix(c, "Gpu") {
+		c = strings.Replace(c, "Gpu", "GPU", 1)
 	} else if strings.HasPrefix(c, "Vpc") {
 		c = strings.Replace(c, "Vpc", "VPC", 1)
 	} else if strings.HasPrefix(c, "Vpn") {
@@ -804,7 +817,11 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool) (string, 
 				return getReferenceSchema(content.Schema), getAllPagesType
 			}
 
-			return fmt.Sprintf("%sResponse", strcase.ToCamel(o.OperationID)), getAllPagesType
+			if content.Schema.Value.Type == "array" {
+				return printType("", content.Schema), getAllPagesType
+			}
+
+			return fmt.Sprintf("Response%s", strcase.ToCamel(o.OperationID)), getAllPagesType
 		}
 	}
 
@@ -1088,7 +1105,7 @@ func writeResponseType(f *os.File, name string, r *openapi3.Response) {
 	for k, v := range r.Content {
 		fmt.Printf("writing type for response %q -> `%s`\n", name, k)
 
-		name := fmt.Sprintf("%sResponse", name)
+		name := fmt.Sprintf("Response%s", name)
 
 		// Write the type description.
 		writeResponseTypeDescription(name, r, f)

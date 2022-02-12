@@ -19,6 +19,8 @@ type Client struct {
 	File *FileService
 	// Meta: Meta information about servers, instances, and sessions.
 	Meta *MetaService
+	// Internal: Internal API endpoints.
+	Internal *InternalService
 }
 
 // FileService: CAD file operations.
@@ -26,3 +28,6 @@ type FileService service
 
 // MetaService: Meta information about servers, instances, and sessions.
 type MetaService service
+
+// InternalService: Internal API endpoints.
+type InternalService service

@@ -17,8 +17,7 @@ VERSION := $(shell cat $(CURDIR)/VERSION.txt)
 generate:
 	go get github.com/getkin/kin-openapi/openapi3
 	go get github.com/iancoleman/strcase
-	go get golang.org/x/tools/cmd/goimports
-	go install golang.org/x/tools/cmd/goimports
+	go install golang.org/x/tools/cmd/goimports || go get golang.org/x/tools/cmd/goimports
 	go generate
 	goimports -w *.go
 	gofmt -s -w *.go

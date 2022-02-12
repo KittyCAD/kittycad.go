@@ -2,20 +2,20 @@
 
 package kittycad
 
-// BadRequestResponse is the response given when the request failed could not authenticate, but the token existed.
-type BadRequestResponse ErrorMessage
+// Response400 is the response given when bad Request
+type Response400 ErrorMessage
 
-// ForbiddenResponse is the response given when the API key doesn't have permissions to perform the request.
-type ForbiddenResponse ErrorMessage
+// Response401 is the response given when unauthorized
+type Response401 ErrorMessage
 
-// InternalServerErrorResponse is the response given when the server encountered an unexpected condition that prevented it from fulfilling the request.
-type InternalServerErrorResponse ErrorMessage
+// Response403 is the response given when forbidden
+type Response403 ErrorMessage
 
-// NotAcceptableResponse is the response given when the request was unacceptable, often due to missing a required parameter.
-type NotAcceptableResponse ErrorMessage
+// Response404 is the response given when not Found
+type Response404 ErrorMessage
 
-// NotFoundResponse is the response given when the requested resource doesn't exist.
-type NotFoundResponse ErrorMessage
+// Response406 is the response given when not Acceptable
+type Response406 ErrorMessage
 
-// UnauthorizedResponse is the response given when no valid API key provided.
-type UnauthorizedResponse ErrorMessage
+// Response500 is the response given when internal Server Error
+type Response500 ErrorMessage

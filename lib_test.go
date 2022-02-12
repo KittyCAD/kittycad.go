@@ -17,7 +17,7 @@ func getClient(t *testing.T) *Client {
 
 func TestGetSession(t *testing.T) {
 	client := getClient(t)
-	session, err := client.Meta.DebugSession()
+	session, err := client.Meta.AuthSession()
 	if err != nil {
 		t.Fatalf("getting the session failed: %v", err)
 	}
@@ -28,7 +28,7 @@ func TestGetSession(t *testing.T) {
 
 func TestGetInstance(t *testing.T) {
 	client := getClient(t)
-	instance, err := client.Meta.DebugInstance()
+	instance, err := client.Meta.InstanceMetadata()
 	if err != nil {
 		t.Fatalf("getting the instance failed: %v", err)
 	}
@@ -63,7 +63,7 @@ func TestFileConversion(t *testing.T) {
 		t.Fatalf("reading the test file %q failed: %v", file, err)
 	}
 
-	fc, output, err := client.File.ConvertWithBase64Helper(ValidSourceFileTypeStl, ValidOutputFileTypeObj, body)
+	fc, output, err := client.File.ConvertWithBase64Helper(ValidSourceFileFormatStl, ValidOutputFileFormatObj, body)
 	if err != nil {
 		t.Fatalf("getting the file conversion failed: %v", err)
 	}

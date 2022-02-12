@@ -8,34 +8,28 @@ type AuthSession struct {
 	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// Email is the user's email address.
 	Email string `json:"email,omitempty" yaml:"email,omitempty"`
-	// ID is the id of the session.
+	// ID is the unique identifier of the session.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
+	// Image is the virtual machine image the instance used as a base.
+	Image string `json:"image,omitempty" yaml:"image,omitempty"`
 	// IPAddress is the IP address the request originated from.
 	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
 	// IsValid is if the token is valid.
 	IsValid bool `json:"is_valid,omitempty" yaml:"is_valid,omitempty"`
-	// Token is the user's token.
+	// Token is the token the user provided for the request.
 	Token string `json:"token,omitempty" yaml:"token,omitempty"`
-	// UserID is the user's id.
+	// UserID is the unique identifier of the user.
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
 
-// Environment is the type of environment.
-type Environment string
-
-const (
-	// EnvironmentDEVELOPMENT represents the Environment `"DEVELOPMENT"`.
-	EnvironmentDEVELOPMENT Environment = "DEVELOPMENT"
-	// EnvironmentPREVIEW represents the Environment `"PREVIEW"`.
-	EnvironmentPREVIEW Environment = "PREVIEW"
-	// EnvironmentPRODUCTION represents the Environment `"PRODUCTION"`.
-	EnvironmentPRODUCTION Environment = "PRODUCTION"
-)
-
 // ErrorMessage is the type definition for a ErrorMessage.
 type ErrorMessage struct {
-	// Message is the message.
+	// Code is status code
+	Code int `json:"code,omitempty" yaml:"code,omitempty"`
+	// Message is verbose message
 	Message string `json:"message,omitempty" yaml:"message,omitempty"`
+	// Status is short status text
+	Status string `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 // FileConversion is the type definition for a FileConversion.
@@ -44,19 +38,18 @@ type FileConversion struct {
 	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
 	// CreatedAt is the date and time the file conversion was created.
 	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
-	// ID is the id of the file conversion.
+	// ID is the unique identifier of the file conversion.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
-	// Output is the converted file, base64 encoded.
-	Output string `json:"output,omitempty" yaml:"output,omitempty"`
-	// OutputFormat is the valid file types. note: obj will ignore any associated materials.
-	OutputFormat ValidOutputFileType `json:"output_format,omitempty" yaml:"output_format,omitempty"`
-	// SrcFormat is the valid file types. note: obj will ignore any associated materials.
-	SrcFormat ValidSourceFileType `json:"src_format,omitempty" yaml:"src_format,omitempty"`
-	// Status is the status of the file conversion.
-	Status FileConversionStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	// Output is the converted file, base64 encoded. If the conversion failed, this field will show any errors.
+	Output       string                `json:"output,omitempty" yaml:"output,omitempty"`
+	OutputFormat ValidOutputFileFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
+	SrcFormat    ValidSourceFileFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
+	// StartedAt is the date and time the file conversion was completed.
+	StartedAt *JSONTime            `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	Status    FileConversionStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
-// FileConversionStatus is the status of the file conversion.
+// FileConversionStatus is the type definition for a FileConversionStatus.
 type FileConversionStatus string
 
 const (
@@ -72,68 +65,97 @@ const (
 	FileConversionStatusFailed FileConversionStatus = "Failed"
 )
 
-// InstanceMetadata is the type definition for a InstanceMetadata.
-type InstanceMetadata struct {
-	// CPUPlatform is the CPU platform of the instance.
-	CPUPlatform string `json:"cpu_platform,omitempty" yaml:"cpu_platform,omitempty"`
-	// Description is the description of the instance.
-	Description string `json:"description,omitempty" yaml:"description,omitempty"`
-	// Environment is the type of environment.
-	Environment Environment `json:"environment,omitempty" yaml:"environment,omitempty"`
-	// GitHash is the git hash of the code the server was built from.
-	GitHash string `json:"git_hash,omitempty" yaml:"git_hash,omitempty"`
-	// Hostname is the hostname of the instance.
-	Hostname string `json:"hostname,omitempty" yaml:"hostname,omitempty"`
-	// ID is the id of the instance.
-	ID string `json:"id,omitempty" yaml:"id,omitempty"`
-	// Image is the image that was used as the base of the instance.
-	Image string `json:"image,omitempty" yaml:"image,omitempty"`
-	// IPAddress is the IP address of the instance.
-	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
-	// MachineType is the machine type of the instance.
-	MachineType string `json:"machine_type,omitempty" yaml:"machine_type,omitempty"`
-	// Name is the name of the instance.
+// GPUDevice is the type definition for a GPUDevice.
+type GPUDevice struct {
+	// ID is the unique identifier of the device.
+	ID int `json:"id,omitempty" yaml:"id,omitempty"`
+	// MemoryBusWidth is the memory bus width of the device.
+	MemoryBusWidth int `json:"memory_bus_width,omitempty" yaml:"memory_bus_width,omitempty"`
+	// MemoryClockRate is the memory clock rate of the device.
+	MemoryClockRate int `json:"memory_clock_rate,omitempty" yaml:"memory_clock_rate,omitempty"`
+	// Name is the name of the device.
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
-	// Zone is the zone of the instance.
+	// PeakMemoryBandwidth is the peak memory bandwidth of the device.
+	PeakMemoryBandwidth int `json:"peak_memory_bandwidth,omitempty" yaml:"peak_memory_bandwidth,omitempty"`
+}
+
+// Instance is the type definition for a Instance.
+type Instance struct {
+	// CPUPlatform is the CPU platform of the server instance.
+	CPUPlatform string `json:"cpu_platform,omitempty" yaml:"cpu_platform,omitempty"`
+	// Description is the description of the server instance.
+	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
+	Environment ServerEnv `json:"environment,omitempty" yaml:"environment,omitempty"`
+	// GitHash is the git commit hash that the server binary was built from.
+	GitHash string `json:"git_hash,omitempty" yaml:"git_hash,omitempty"`
+	// Hostname is the hostname of the server instance.
+	Hostname string `json:"hostname,omitempty" yaml:"hostname,omitempty"`
+	// ID is the unique identifier of the server instance.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
+	// Image is the virtual machine image the instance used as a base.
+	Image string `json:"image,omitempty" yaml:"image,omitempty"`
+	// IPAddress is the IP address of the server instance.
+	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
+	// MachineType is the machine type of the server instance.
+	MachineType string `json:"machine_type,omitempty" yaml:"machine_type,omitempty"`
+	// Name is the name of the server instance.
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+	// Zone is the zone the server instance is deployed in.
 	Zone string `json:"zone,omitempty" yaml:"zone,omitempty"`
 }
 
-// Message is the type definition for a Message.
-type Message struct {
-	// Message is the message.
-	Message string `json:"message,omitempty" yaml:"message,omitempty"`
-}
-
-// ValidOutputFileType is the valid file types. note: obj will ignore any associated materials.
-type ValidOutputFileType string
+// PongEnum is the type definition for a PongEnum.
+type PongEnum string
 
 const (
-	// ValidOutputFileTypeObj represents the ValidOutputFileType `"obj"`.
-	ValidOutputFileTypeObj ValidOutputFileType = "obj"
-	// ValidOutputFileTypeStl represents the ValidOutputFileType `"stl"`.
-	ValidOutputFileTypeStl ValidOutputFileType = "stl"
-	// ValidOutputFileTypeDae represents the ValidOutputFileType `"dae"`.
-	ValidOutputFileTypeDae ValidOutputFileType = "dae"
+	// PongEnumPong represents the PongEnum `"pong"`.
+	PongEnumPong PongEnum = "pong"
 )
 
-// ValidSourceFileType is the valid file types. note: obj will ignore any associated materials.
-type ValidSourceFileType string
+// PongMessage is the type definition for a PongMessage.
+type PongMessage struct {
+	Message PongEnum `json:"message,omitempty" yaml:"message,omitempty"`
+}
+
+// ServerEnv is the type definition for a ServerEnv.
+type ServerEnv string
 
 const (
-	// ValidSourceFileTypeObj represents the ValidSourceFileType `"obj"`.
-	ValidSourceFileTypeObj ValidSourceFileType = "obj"
-	// ValidSourceFileTypeStl represents the ValidSourceFileType `"stl"`.
-	ValidSourceFileTypeStl ValidSourceFileType = "stl"
-	// ValidSourceFileTypeDae represents the ValidSourceFileType `"dae"`.
-	ValidSourceFileTypeDae ValidSourceFileType = "dae"
+	// ServerEnvProduction represents the ServerEnv `"production"`.
+	ServerEnvProduction ServerEnv = "production"
+	// ServerEnvDevelopment represents the ServerEnv `"development"`.
+	ServerEnvDevelopment ServerEnv = "development"
+	// ServerEnvPreview represents the ServerEnv `"preview"`.
+	ServerEnvPreview ServerEnv = "preview"
 )
 
-// Environments is the collection of all Environment values.
-var Environments = []Environment{
-	EnvironmentDEVELOPMENT,
-	EnvironmentPREVIEW,
-	EnvironmentPRODUCTION,
-}
+// ValidOutputFileFormat is the type definition for a ValidOutputFileFormat.
+type ValidOutputFileFormat string
+
+const (
+	// ValidOutputFileFormatStl represents the ValidOutputFileFormat `"stl"`.
+	ValidOutputFileFormatStl ValidOutputFileFormat = "stl"
+	// ValidOutputFileFormatObj represents the ValidOutputFileFormat `"obj"`.
+	ValidOutputFileFormatObj ValidOutputFileFormat = "obj"
+	// ValidOutputFileFormatDae represents the ValidOutputFileFormat `"dae"`.
+	ValidOutputFileFormatDae ValidOutputFileFormat = "dae"
+	// ValidOutputFileFormatStep represents the ValidOutputFileFormat `"step"`.
+	ValidOutputFileFormatStep ValidOutputFileFormat = "step"
+)
+
+// ValidSourceFileFormat is the type definition for a ValidSourceFileFormat.
+type ValidSourceFileFormat string
+
+const (
+	// ValidSourceFileFormatStl represents the ValidSourceFileFormat `"stl"`.
+	ValidSourceFileFormatStl ValidSourceFileFormat = "stl"
+	// ValidSourceFileFormatObj represents the ValidSourceFileFormat `"obj"`.
+	ValidSourceFileFormatObj ValidSourceFileFormat = "obj"
+	// ValidSourceFileFormatDae represents the ValidSourceFileFormat `"dae"`.
+	ValidSourceFileFormatDae ValidSourceFileFormat = "dae"
+	// ValidSourceFileFormatStep represents the ValidSourceFileFormat `"step"`.
+	ValidSourceFileFormatStep ValidSourceFileFormat = "step"
+)
 
 // FileConversionStatuses is the collection of all FileConversionStatus values.
 var FileConversionStatuses = []FileConversionStatus{
@@ -144,16 +166,30 @@ var FileConversionStatuses = []FileConversionStatus{
 	FileConversionStatusUploaded,
 }
 
-// ValidOutputFileTypes is the collection of all ValidOutputFileType values.
-var ValidOutputFileTypes = []ValidOutputFileType{
-	ValidOutputFileTypeDae,
-	ValidOutputFileTypeObj,
-	ValidOutputFileTypeStl,
+// PongEnums is the collection of all PongEnum values.
+var PongEnums = []PongEnum{
+	PongEnumPong,
 }
 
-// ValidSourceFileTypes is the collection of all ValidSourceFileType values.
-var ValidSourceFileTypes = []ValidSourceFileType{
-	ValidSourceFileTypeDae,
-	ValidSourceFileTypeObj,
-	ValidSourceFileTypeStl,
+// ServerEnvs is the collection of all ServerEnv values.
+var ServerEnvs = []ServerEnv{
+	ServerEnvDevelopment,
+	ServerEnvPreview,
+	ServerEnvProduction,
+}
+
+// ValidOutputFileFormats is the collection of all ValidOutputFileFormat values.
+var ValidOutputFileFormats = []ValidOutputFileFormat{
+	ValidOutputFileFormatDae,
+	ValidOutputFileFormatObj,
+	ValidOutputFileFormatStep,
+	ValidOutputFileFormatStl,
+}
+
+// ValidSourceFileFormats is the collection of all ValidSourceFileFormat values.
+var ValidSourceFileFormats = []ValidSourceFileFormat{
+	ValidSourceFileFormatDae,
+	ValidSourceFileFormatObj,
+	ValidSourceFileFormatStep,
+	ValidSourceFileFormatStl,
 }

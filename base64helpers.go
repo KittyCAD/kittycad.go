@@ -11,7 +11,7 @@ import (
 //
 // This function is a wrapper around the FileConversionByID function.
 func (c *FileService) ConversionByIDWithBase64Helper(id string) (*FileConversion, []byte, error) {
-	resp, err := c.ConversionByID(id)
+	resp, err := c.ConversionStatus(id)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -34,7 +34,7 @@ func (c *FileService) ConversionByIDWithBase64Helper(id string) (*FileConversion
 // src file and output file.
 //
 // This function is a wrapper around the FileConvert function.
-func (c *FileService) ConvertWithBase64Helper(srcFormat ValidSourceFileType, outputFormat ValidOutputFileType, body []byte) (*FileConversion, []byte, error) {
+func (c *FileService) ConvertWithBase64Helper(srcFormat ValidSourceFileFormat, outputFormat ValidOutputFileFormat, body []byte) (*FileConversion, []byte, error) {
 	var b bytes.Buffer
 	encoder := base64.NewEncoder(base64.StdEncoding, &b)
 	// Encode the body as base64.
@@ -43,7 +43,7 @@ func (c *FileService) ConvertWithBase64Helper(srcFormat ValidSourceFileType, out
 	// If you comment out the following line, the last partial block "r"
 	// won't be encoded.
 	encoder.Close()
-	resp, err := c.Convert(srcFormat, outputFormat, &b)
+	resp, err := c.PostConversion(srcFormat, outputFormat, &b)
 	if err != nil {
 		return nil, nil, err
 	}

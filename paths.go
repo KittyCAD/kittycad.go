@@ -10,10 +10,78 @@ import (
 	"net/http"
 )
 
-// DebugInstance: Get instance metadata
+// StopAsyncConversions: Stop all async conversions
+//
+// Stop all async conversions that are currently running. This endpoint can only be used by specific KittyCAD employees.
+func (s *InternalService) StopAsyncConversions() (*FileConversion, error) {
+	// Create the url.
+	path := "/_internal/async/conversions/stop"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body FileConversion
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// GPUDevices: Get GPU devices
+//
+// Get information about GPU devices on this server. This is primarily used for debugging. This endpoint can only be used by specific KittyCAD employees.
+func (s *InternalService) GPUDevices() (*[]GPUDevice, error) {
+	// Create the url.
+	path := "/_internal/gpu/devices"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body []GPUDevice
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// InstanceMetadata: Get instance metadata
 //
 // Get information about this specific API server instance. This is primarily used for debugging.
-func (s *MetaService) DebugInstance() (*InstanceMetadata, error) {
+func (s *MetaService) InstanceMetadata() (*Instance, error) {
 	// Create the url.
 	path := "/_meta/debug/instance"
 	uri := resolveRelative(s.client.server, path)
@@ -36,7 +104,7 @@ func (s *MetaService) DebugInstance() (*InstanceMetadata, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body InstanceMetadata
+	var body Instance
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -44,10 +112,10 @@ func (s *MetaService) DebugInstance() (*InstanceMetadata, error) {
 	return &body, nil
 }
 
-// DebugSession: Get auth session
+// AuthSession: Get auth session
 //
 // Get information about your API request session. This is primarily used for debugging.
-func (s *MetaService) DebugSession() (*AuthSession, error) {
+func (s *MetaService) AuthSession() (*AuthSession, error) {
 	// Create the url.
 	path := "/_meta/debug/session"
 	uri := resolveRelative(s.client.server, path)
@@ -78,13 +146,13 @@ func (s *MetaService) DebugSession() (*AuthSession, error) {
 	return &body, nil
 }
 
-// ConversionByID: Get a file conversion
+// ConversionStatus: Get a file conversion
 //
 // Get the status and output of an async file conversion.
 //
 // Parameters:
 //	- `id`: The id of the file conversion.
-func (s *FileService) ConversionByID(id string) (*FileConversion, error) {
+func (s *FileService) ConversionStatus(id string) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -121,15 +189,14 @@ func (s *FileService) ConversionByID(id string) (*FileConversion, error) {
 	return &body, nil
 }
 
-// Convert: Convert CAD file
+// PostConversion: Convert CAD file
 //
-// Convert a CAD file from one format to another. If the file being converted is larger than 30mb, it will be performed asynchronously.
+// Convert a CAD file from one format to another. If the file being converted is larger than 30MB, it will be performed asynchronously.
 //
 // Parameters:
 //	- `outputFormat`: The format the file should be converted to.
 //	- `sourceFormat`: The format of the file to convert.
-//	`b`: The content of the file to convert, base64 encoded.
-func (s *FileService) Convert(sourceFormat ValidSourceFileType, outputFormat ValidOutputFileType, b io.Reader) (*FileConversion, error) {
+func (s *FileService) PostConversion(sourceFormat ValidSourceFileFormat, outputFormat ValidOutputFileFormat, b io.Reader) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{{.sourceFormat}}/{{.outputFormat}}"
 	uri := resolveRelative(s.client.server, path)
@@ -170,7 +237,7 @@ func (s *FileService) Convert(sourceFormat ValidSourceFileType, outputFormat Val
 // Ping: Ping
 //
 // Simple ping to the server.
-func (s *MetaService) Ping() (*Message, error) {
+func (s *MetaService) Ping() (*PongMessage, error) {
 	// Create the url.
 	path := "/ping"
 	uri := resolveRelative(s.client.server, path)
@@ -193,7 +260,7 @@ func (s *MetaService) Ping() (*Message, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body Message
+	var body PongMessage
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
