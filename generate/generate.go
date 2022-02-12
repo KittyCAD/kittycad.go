@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"sort"
@@ -23,7 +22,15 @@ import (
 var EnumStringTypes map[string][]string = map[string][]string{}
 
 func main() {
-	uri := "https://api.kittycad.io"
+	// Load the open API spec from the file.
+	wd, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("error getting current working directory: %v\n", err)
+		os.Exit(1)
+	}
+	p := filepath.Join(wd, "spec.json")
+
+	/*uri := "https://api.kittycad.io"
 	u, err := url.Parse(uri)
 	if err != nil {
 		fmt.Printf("error parsing url %q: %v\n", uri, err)
@@ -31,9 +38,10 @@ func main() {
 	}
 
 	// Load the open API spec from the URI.
-	doc, err := openapi3.NewLoader().LoadFromURI(u)
+	doc, err := openapi3.NewLoader().LoadFromURI(u)*/
+	doc, err := openapi3.NewLoader().LoadFromFile(p)
 	if err != nil {
-		fmt.Printf("error loading openAPI spec from %q: %v\n", uri, err)
+		fmt.Printf("error loading openAPI spec: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -75,14 +83,6 @@ if err != nil {
 		fmt.Printf("error marshalling openAPI spec: %v\n", err)
 		os.Exit(1)
 	}
-
-	// Load the open API spec from the file.
-	wd, err := os.Getwd()
-	if err != nil {
-		fmt.Printf("error getting current working directory: %v\n", err)
-		os.Exit(1)
-	}
-	p := filepath.Join(wd, "spec.json")
 
 	if err := ioutil.WriteFile(p, out, 0644); err != nil {
 		fmt.Printf("error writing openAPI spec to %s: %v\n", p, err)
