@@ -1,598 +1,146 @@
 {
-  "components": {
-    "responses": {
-      "400": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
-            }
-          }
-        },
-        "description": "Bad Request"
-      },
-      "401": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
-            }
-          }
-        },
-        "description": "Unauthorized"
-      },
-      "403": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
-            }
-          }
-        },
-        "description": "Forbidden"
-      },
-      "404": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
-            }
-          }
-        },
-        "description": "Not Found"
-      },
-      "406": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
-            }
-          }
-        },
-        "description": "Not Acceptable"
-      },
-      "500": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
-            }
-          }
-        },
-        "description": "Internal Server Error"
-      }
-    },
-    "schemas": {
-      "AuthSession": {
-        "properties": {
-          "created_at": {
-            "description": "The date and time the session/request was created.",
-            "format": "date-time",
-            "type": "string"
-          },
-          "email": {
-            "description": "The user's email address.",
-            "format": "email",
-            "type": "string"
-          },
-          "id": {
-            "description": "The unique identifier of the session.",
-            "type": "string"
-          },
-          "image": {
-            "description": "The virtual machine image the instance used as a base.",
-            "type": "string"
-          },
-          "ip_address": {
-            "description": "The IP address the request originated from.",
-            "format": "ip",
-            "type": "string"
-          },
-          "is_valid": {
-            "description": "If the token is valid.",
-            "type": "boolean"
-          },
-          "token": {
-            "description": "The token the user provided for the request.",
-            "type": "string"
-          },
-          "user_id": {
-            "description": "The unique identifier of the user.",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "ErrorMessage": {
-        "properties": {
-          "code": {
-            "description": "Status code",
-            "maximum": 2147483647,
-            "minimum": -2147483648,
-            "type": "integer"
-          },
-          "message": {
-            "description": "Verbose message",
-            "type": "string"
-          },
-          "status": {
-            "description": "Short status text",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "FileConversion": {
-        "properties": {
-          "completed_at": {
-            "description": "The date and time the file conversion was completed.",
-            "format": "date-time",
-            "type": "string"
-          },
-          "created_at": {
-            "description": "The date and time the file conversion was created.",
-            "format": "date-time",
-            "type": "string"
-          },
-          "id": {
-            "description": "The unique identifier of the file conversion.",
-            "type": "string"
-          },
-          "output": {
-            "description": "The converted file, base64 encoded. If the conversion failed, this field will show any errors.",
-            "type": "string"
-          },
-          "output_format": {
-            "$ref": "#/components/schemas/ValidOutputFileFormat"
-          },
-          "src_format": {
-            "$ref": "#/components/schemas/ValidSourceFileFormat"
-          },
-          "started_at": {
-            "description": "The date and time the file conversion was completed.",
-            "format": "date-time",
-            "type": "string"
-          },
-          "status": {
-            "$ref": "#/components/schemas/FileConversionStatus"
-          }
-        },
-        "type": "object"
-      },
-      "FileConversionStatus": {
-        "enum": [
-          "Queued",
-          "Uploaded",
-          "In Progress",
-          "Completed",
-          "Failed"
-        ],
-        "type": "string"
-      },
-      "GPUDevice": {
-        "properties": {
-          "id": {
-            "description": "The unique identifier of the device.",
-            "format": "int64",
-            "type": "integer"
-          },
-          "memory_bus_width": {
-            "description": "The memory bus width of the device.",
-            "format": "int64",
-            "type": "integer"
-          },
-          "memory_clock_rate": {
-            "description": "The memory clock rate of the device.",
-            "format": "int64",
-            "type": "integer"
-          },
-          "name": {
-            "description": "The name of the device.",
-            "type": "string"
-          },
-          "peak_memory_bandwidth": {
-            "description": "The peak memory bandwidth of the device.",
-            "format": "int64",
-            "type": "integer"
-          }
-        },
-        "type": "object"
-      },
-      "Instance": {
-        "properties": {
-          "cpu_platform": {
-            "description": "The CPU platform of the server instance.",
-            "type": "string"
-          },
-          "description": {
-            "description": "The description of the server instance.",
-            "type": "string"
-          },
-          "environment": {
-            "$ref": "#/components/schemas/ServerEnv"
-          },
-          "git_hash": {
-            "description": "The git commit hash that the server binary was built from.",
-            "type": "string"
-          },
-          "hostname": {
-            "description": "The hostname of the server instance.",
-            "type": "string"
-          },
-          "id": {
-            "description": "The unique identifier of the server instance.",
-            "type": "string"
-          },
-          "image": {
-            "description": "The virtual machine image the instance used as a base.",
-            "type": "string"
-          },
-          "ip_address": {
-            "description": "The IP address of the server instance.",
-            "format": "ip",
-            "type": "string"
-          },
-          "machine_type": {
-            "description": "The machine type of the server instance.",
-            "type": "string"
-          },
-          "name": {
-            "description": "The name of the server instance.",
-            "type": "string"
-          },
-          "zone": {
-            "description": "The zone the server instance is deployed in.",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "PongEnum": {
-        "enum": [
-          "pong"
-        ],
-        "type": "string"
-      },
-      "PongMessage": {
-        "properties": {
-          "message": {
-            "$ref": "#/components/schemas/PongEnum"
-          }
-        },
-        "type": "object"
-      },
-      "ServerEnv": {
-        "enum": [
-          "production",
-          "development",
-          "preview"
-        ],
-        "type": "string"
-      },
-      "ValidOutputFileFormat": {
-        "enum": [
-          "stl",
-          "obj",
-          "dae",
-          "step"
-        ],
-        "type": "string"
-      },
-      "ValidSourceFileFormat": {
-        "enum": [
-          "stl",
-          "obj",
-          "dae",
-          "step"
-        ],
-        "type": "string"
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "description": "Default HTTP Basic Authorization",
-        "scheme": "bearer",
-        "type": "http"
-      }
-    }
-  },
-  "externalDocs": {
-    "description": "KittyCAD API Documentation",
-    "url": "https://docs.kittycad.io"
-  },
+  "openapi": "3.0.0",
   "info": {
-    "contact": {
-      "email": "support@kittycad.io",
-      "name": "KittyCAD Support",
-      "url": "https://kittycad.io"
-    },
+    "title": "KittyCAD API",
     "description": "The KittyCAD API",
+    "termsOfService": "https://kittycad.io/terms-and-conditions",
+    "contact": {
+      "name": "KittyCAD Support",
+      "url": "https://kittycad.io",
+      "email": "support@kittycad.io"
+    },
     "license": {
       "name": "Apache License, Version 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0"
     },
-    "termsOfService": "https://kittycad.io/terms-and-conditions",
-    "title": "KittyCAD API",
-    "version": "0.0.2-e853e97",
-    "x-go": {
-      "client": "// Create a client with your token and host.\nclient, err := kittycad.NewClient(\"$TOKEN\", \"your apps user agent\")\nif err != nil {\n  panic(err)\n}\n\n// - OR -\n\n// Create a new client with your token and host parsed from the environment\n// variables: KITTYCAD_API_TOKEN.\nclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\nif err != nil {\n  panic(err)\n}",
-      "install": "go get github.com/kittycad/kittycad.go"
-    }
+    "version": "0.0.2-e853e97"
   },
-  "openapi": "3.0.0",
+  "externalDocs": {
+    "url": "https://docs.kittycad.io",
+    "description": "KittyCAD API Documentation"
+  },
+  "servers": [
+    {
+      "url": "https://api.kittycad.io",
+      "description": "Production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "file",
+      "description": "CAD file operations."
+    },
+    {
+      "name": "meta",
+      "description": "Meta information about servers, instances, and sessions."
+    },
+    {
+      "name": "beta",
+      "description": "Beta API endpoints."
+    },
+    {
+      "name": "internal",
+      "description": "Internal API endpoints."
+    }
+  ],
   "paths": {
-    "/_internal/async/conversions/stop": {
-      "post": {
-        "description": "Stop all async conversions that are currently running. This endpoint can only be used by specific KittyCAD employees.",
-        "operationId": "stopAsyncConversions",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileConversion"
-                }
-              }
-            },
-            "description": "OK"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Stop all async conversions",
-        "tags": [
-          "internal"
-        ],
-        "x-go": {
-          "example": "// StopAsyncConversions: Stop all async conversions\n//\n// Stop all async conversions that are currently running. This endpoint can only be used by specific KittyCAD employees.\nfileConversion, err := client.Internal.StopAsyncConversions()",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#InternalService.StopAsyncConversions"
-        }
-      }
-    },
-    "/_internal/gpu/devices": {
-      "get": {
-        "description": "Get information about GPU devices on this server. This is primarily used for debugging. This endpoint can only be used by specific KittyCAD employees.",
-        "operationId": "gpuDevices",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/GPUDevice"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Returns the GPU devices if successful."
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Get GPU devices",
-        "tags": [
-          "internal"
-        ],
-        "x-go": {
-          "example": "// GPUDevices: Get GPU devices\n//\n// Get information about GPU devices on this server. This is primarily used for debugging. This endpoint can only be used by specific KittyCAD employees.\nGPUDevice, err := client.Internal.GPUDevices()",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#InternalService.GPUDevices"
-        }
-      }
-    },
-    "/_meta/debug/instance": {
-      "get": {
-        "description": "Get information about this specific API server instance. This is primarily used for debugging.",
-        "operationId": "instanceMetadata",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Instance"
-                }
-              }
-            },
-            "description": "Returns the instance metadata if successful."
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Get instance metadata",
-        "tags": [
-          "meta"
-        ],
-        "x-go": {
-          "example": "// InstanceMetadata: Get instance metadata\n//\n// Get information about this specific API server instance. This is primarily used for debugging.\ninstance, err := client.Meta.InstanceMetadata()",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.InstanceMetadata"
-        }
-      }
-    },
-    "/_meta/debug/session": {
-      "get": {
-        "description": "Get information about your API request session. This is primarily used for debugging.",
-        "operationId": "authSession",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthSession"
-                }
-              }
-            },
-            "description": "Returns the authorized user's authentication session if successful."
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Get auth session",
-        "tags": [
-          "meta"
-        ],
-        "x-go": {
-          "example": "// AuthSession: Get auth session\n//\n// Get information about your API request session. This is primarily used for debugging.\nauthSession, err := client.Meta.AuthSession()",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.AuthSession"
-        }
-      }
-    },
-    "/file/conversion/{id}": {
-      "get": {
-        "description": "Get the status and output of an async file conversion.",
-        "operationId": "fileConversionStatus",
-        "parameters": [
-          {
-            "description": "The id of the file conversion.",
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileConversion"
-                }
-              }
-            },
-            "description": "Returns the status of the file conversion. If completed, the contents of the converted file will be returned as a base64 encoded string."
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          },
-          "406": {
-            "$ref": "#/components/responses/406"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Get a file conversion",
-        "tags": [
-          "file",
-          "beta"
-        ],
-        "x-go": {
-          "example": "// ConversionStatus: Get a file conversion\n//\n// Get the status and output of an async file conversion.\n//\n// Parameters:\n//\t- `id`: The id of the file conversion.\nfileConversion, err := client.File.ConversionStatus(id)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.ConversionStatus"
-        }
-      }
-    },
     "/file/conversion/{sourceFormat}/{outputFormat}": {
       "post": {
         "description": "Convert a CAD file from one format to another. If the file being converted is larger than 30MB, it will be performed asynchronously.",
+        "summary": "Convert CAD file",
         "operationId": "postFileConversion",
-        "parameters": [
-          {
-            "description": "The format of the file to convert.",
-            "in": "path",
-            "name": "sourceFormat",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/ValidSourceFileFormat"
-            }
-          },
-          {
-            "description": "The format the file should be converted to.",
-            "in": "path",
-            "name": "outputFormat",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/ValidOutputFileFormat"
-            }
-          }
-        ],
         "requestBody": {
+          "required": true,
           "content": {
             "text/plain": {
               "schema": {
                 "type": "string"
               }
             }
-          },
-          "required": true
+          }
         },
+        "tags": [
+          "file",
+          "beta"
+        ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileConversion"
-                }
-              }
-            },
-            "description": "Returns the contents of the converted file, base64 encoded, if successful. The contents will be base64 encoded."
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
           },
           "202": {
+            "description": "The file conversion is being performed asynchronously. You can use the `id` returned from the request to get status information about the async conversion.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FileConversion"
                 }
               }
-            },
-            "description": "The file conversion is being performed asynchronously. You can use the `id` returned from the request to get status information about the async conversion."
+            }
           },
           "400": {
             "$ref": "#/components/responses/400"
           },
-          "401": {
-            "$ref": "#/components/responses/401"
+          "200": {
+            "description": "Returns the contents of the converted file, base64 encoded, if successful. The contents will be base64 encoded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileConversion"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "sourceFormat",
+            "description": "The format of the file to convert.",
+            "in": "path",
+            "required": true,
+            "deprecated": false,
+            "schema": {
+              "$ref": "#/components/schemas/ValidSourceFileFormat"
+            }
+          },
+          {
+            "name": "outputFormat",
+            "description": "The format the file should be converted to.",
+            "in": "path",
+            "required": true,
+            "deprecated": false,
+            "schema": {
+              "$ref": "#/components/schemas/ValidOutputFileFormat"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/file/conversion/{id}": {
+      "get": {
+        "description": "Get the status and output of an async file conversion.",
+        "summary": "Get a file conversion",
+        "operationId": "fileConversionStatus",
+        "tags": [
+          "file",
+          "beta"
+        ],
+        "responses": {
+          "404": {
+            "$ref": "#/components/responses/404"
           },
           "403": {
             "$ref": "#/components/responses/403"
@@ -602,73 +150,512 @@
           },
           "500": {
             "$ref": "#/components/responses/500"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "200": {
+            "description": "Returns the status of the file conversion. If completed, the contents of the converted file will be returned as a base64 encoded string.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileConversion"
+                }
+              }
+            }
           }
         },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The id of the file conversion.",
+            "in": "path",
+            "required": true,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "security": [
           {
             "bearerAuth": []
           }
-        ],
-        "summary": "Convert CAD file",
+        ]
+      }
+    },
+    "/_meta/debug/session": {
+      "get": {
+        "description": "Get information about your API request session. This is primarily used for debugging.",
+        "summary": "Get auth session",
+        "operationId": "authSession",
         "tags": [
-          "file",
-          "beta"
+          "meta"
         ],
-        "x-go": {
-          "example": "// PostConversion: Convert CAD file\n//\n// Convert a CAD file from one format to another. If the file being converted is larger than 30MB, it will be performed asynchronously.\n//\n// Parameters:\n//\t- `outputFormat`: The format the file should be converted to.\n//\t- `sourceFormat`: The format of the file to convert.\nfileConversion, err := client.File.PostConversion(sourceFormat, outputFormat)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.PostConversion"
-        }
+        "responses": {
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "200": {
+            "description": "Returns the authorized user's authentication session if successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSession"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/_meta/debug/instance": {
+      "get": {
+        "description": "Get information about this specific API server instance. This is primarily used for debugging.",
+        "summary": "Get instance metadata",
+        "operationId": "instanceMetadata",
+        "tags": [
+          "meta"
+        ],
+        "responses": {
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "200": {
+            "description": "Returns the instance metadata if successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instance"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/_internal/gpu/devices": {
+      "get": {
+        "description": "Get information about GPU devices on this server. This is primarily used for debugging. This endpoint can only be used by specific KittyCAD employees.",
+        "summary": "Get GPU devices",
+        "operationId": "gpuDevices",
+        "tags": [
+          "internal"
+        ],
+        "responses": {
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "200": {
+            "description": "Returns the GPU devices if successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GPUDevice"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/_internal/async/conversions/stop": {
+      "post": {
+        "description": "Stop all async conversions that are currently running. This endpoint can only be used by specific KittyCAD employees.",
+        "summary": "Stop all async conversions",
+        "operationId": "stopAsyncConversions",
+        "tags": [
+          "internal"
+        ],
+        "responses": {
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileConversion"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/ping": {
       "get": {
         "description": "Simple ping to the server.",
+        "summary": "Ping",
         "operationId": "ping",
+        "tags": [
+          "meta"
+        ],
         "responses": {
           "200": {
+            "description": "Returns the message \"pong\" if successful.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PongMessage"
                 }
               }
-            },
-            "description": "Returns the message \"pong\" if successful."
+            }
           }
         },
-        "summary": "Ping",
-        "tags": [
-          "meta"
-        ],
-        "x-go": {
-          "example": "// Ping: Ping\n//\n// Simple ping to the server.\npongMessage, err := client.Meta.Ping()",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.Ping"
-        }
+        "parameters": []
       }
     }
   },
-  "servers": [
-    {
-      "description": "Production",
-      "url": "https://api.kittycad.io"
+  "components": {
+    "schemas": {
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Short status text"
+          },
+          "code": {
+            "type": "integer",
+            "description": "Status code",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "message": {
+            "type": "string",
+            "description": "Verbose message"
+          }
+        },
+        "required": []
+      },
+      "Instance": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the server instance."
+          },
+          "git_hash": {
+            "type": "string",
+            "description": "The git commit hash that the server binary was built from."
+          },
+          "environment": {
+            "description": "The environment of the server instance.",
+            "$ref": "#/components/schemas/ServerEnv"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the server instance."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the server instance."
+          },
+          "ip_address": {
+            "type": "string",
+            "format": "ip",
+            "description": "The IP address of the server instance."
+          },
+          "zone": {
+            "type": "string",
+            "description": "The zone the server instance is deployed in."
+          },
+          "image": {
+            "type": "string",
+            "description": "The virtual machine image the instance used as a base."
+          },
+          "hostname": {
+            "type": "string",
+            "description": "The hostname of the server instance."
+          },
+          "cpu_platform": {
+            "type": "string",
+            "description": "The CPU platform of the server instance."
+          },
+          "machine_type": {
+            "type": "string",
+            "description": "The machine type of the server instance."
+          }
+        },
+        "required": []
+      },
+      "AuthSession": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the session."
+          },
+          "token": {
+            "type": "string",
+            "description": "The token the user provided for the request."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "The unique identifier of the user."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "The user's email address."
+          },
+          "ip_address": {
+            "type": "string",
+            "format": "ip",
+            "description": "The IP address the request originated from."
+          },
+          "is_valid": {
+            "type": "boolean",
+            "description": "If the token is valid."
+          },
+          "image": {
+            "type": "string",
+            "description": "The virtual machine image the instance used as a base."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time the session/request was created."
+          }
+        },
+        "required": []
+      },
+      "FileConversionStatus": {
+        "type": "string",
+        "enum": [
+          "Queued",
+          "Uploaded",
+          "In Progress",
+          "Completed",
+          "Failed"
+        ]
+      },
+      "PongMessage": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "description": "Pong response",
+            "$ref": "#/components/schemas/PongEnum"
+          }
+        },
+        "required": []
+      },
+      "GPUDevice": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The unique identifier of the device."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the device."
+          },
+          "memory_clock_rate": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The memory clock rate of the device."
+          },
+          "memory_bus_width": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The memory bus width of the device."
+          },
+          "peak_memory_bandwidth": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The peak memory bandwidth of the device."
+          }
+        },
+        "required": []
+      },
+      "FileConversion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the file conversion."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time the file conversion was created."
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time the file conversion was completed."
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time the file conversion was completed."
+          },
+          "status": {
+            "description": "The status of the file conversion.",
+            "$ref": "#/components/schemas/FileConversionStatus"
+          },
+          "src_format": {
+            "description": "The format of the original file uploaded to be converted.",
+            "$ref": "#/components/schemas/ValidSourceFileFormat"
+          },
+          "output_format": {
+            "description": "The output format requested for the file.",
+            "$ref": "#/components/schemas/ValidOutputFileFormat"
+          },
+          "output": {
+            "type": "string",
+            "description": "The converted file, base64 encoded. If the conversion failed, this field will show any errors."
+          }
+        },
+        "required": []
+      },
+      "ServerEnv": {
+        "type": "string",
+        "enum": [
+          "production",
+          "development",
+          "preview"
+        ]
+      },
+      "ValidSourceFileFormat": {
+        "type": "string",
+        "enum": [
+          "stl",
+          "obj",
+          "dae",
+          "step"
+        ]
+      },
+      "ValidOutputFileFormat": {
+        "type": "string",
+        "enum": [
+          "stl",
+          "obj",
+          "dae",
+          "step"
+        ]
+      },
+      "PongEnum": {
+        "type": "string",
+        "enum": [
+          "pong"
+        ]
+      }
+    },
+    "responses": {
+      "406": {
+        "description": "Not Acceptable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "description": "Default HTTP Basic Authorization",
+        "scheme": "bearer"
+      }
     }
-  ],
-  "tags": [
-    {
-      "description": "CAD file operations.",
-      "name": "file"
-    },
-    {
-      "description": "Meta information about servers, instances, and sessions.",
-      "name": "meta"
-    },
-    {
-      "description": "Beta API endpoints.",
-      "name": "beta"
-    },
-    {
-      "description": "Internal API endpoints.",
-      "name": "internal"
-    }
-  ]
+  }
 }
