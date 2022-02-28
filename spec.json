@@ -274,7 +274,9 @@
           "stl",
           "obj",
           "dae",
-          "step"
+          "step",
+          "fbx",
+          "fbxb"
         ],
         "type": "string"
       },
@@ -283,7 +285,8 @@
           "stl",
           "obj",
           "dae",
-          "step"
+          "step",
+          "fbx"
         ],
         "type": "string"
       }
@@ -313,7 +316,7 @@
     },
     "termsOfService": "https://kittycad.io/terms-and-conditions",
     "title": "KittyCAD API",
-    "version": "0.0.2-e853e97",
+    "version": "0.0.2-6f1ca7e",
     "x-go": {
       "client": "// Create a client with your token and host.\nclient, err := kittycad.NewClient(\"$TOKEN\", \"your apps user agent\")\nif err != nil {\n  panic(err)\n}\n\n// - OR -\n\n// Create a new client with your token and host parsed from the environment\n// variables: KITTYCAD_API_TOKEN.\nclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\nif err != nil {\n  panic(err)\n}",
       "install": "go get github.com/kittycad/kittycad.go"
