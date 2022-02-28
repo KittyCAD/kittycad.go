@@ -141,6 +141,10 @@ const (
 	ValidOutputFileFormatDae ValidOutputFileFormat = "dae"
 	// ValidOutputFileFormatStep represents the ValidOutputFileFormat `"step"`.
 	ValidOutputFileFormatStep ValidOutputFileFormat = "step"
+	// ValidOutputFileFormatFbx represents the ValidOutputFileFormat `"fbx"`.
+	ValidOutputFileFormatFbx ValidOutputFileFormat = "fbx"
+	// ValidOutputFileFormatFbxb represents the ValidOutputFileFormat `"fbxb"`.
+	ValidOutputFileFormatFbxb ValidOutputFileFormat = "fbxb"
 )
 
 // ValidSourceFileFormat is the type definition for a ValidSourceFileFormat.
@@ -155,6 +159,8 @@ const (
 	ValidSourceFileFormatDae ValidSourceFileFormat = "dae"
 	// ValidSourceFileFormatStep represents the ValidSourceFileFormat `"step"`.
 	ValidSourceFileFormatStep ValidSourceFileFormat = "step"
+	// ValidSourceFileFormatFbx represents the ValidSourceFileFormat `"fbx"`.
+	ValidSourceFileFormatFbx ValidSourceFileFormat = "fbx"
 )
 
 // FileConversionStatuses is the collection of all FileConversionStatus values.
@@ -181,6 +187,8 @@ var ServerEnvs = []ServerEnv{
 // ValidOutputFileFormats is the collection of all ValidOutputFileFormat values.
 var ValidOutputFileFormats = []ValidOutputFileFormat{
 	ValidOutputFileFormatDae,
+	ValidOutputFileFormatFbx,
+	ValidOutputFileFormatFbxb,
 	ValidOutputFileFormatObj,
 	ValidOutputFileFormatStep,
 	ValidOutputFileFormatStl,
@@ -189,6 +197,7 @@ var ValidOutputFileFormats = []ValidOutputFileFormat{
 // ValidSourceFileFormats is the collection of all ValidSourceFileFormat values.
 var ValidSourceFileFormats = []ValidSourceFileFormat{
 	ValidSourceFileFormatDae,
+	ValidSourceFileFormatFbx,
 	ValidSourceFileFormatObj,
 	ValidSourceFileFormatStep,
 	ValidSourceFileFormatStl,
