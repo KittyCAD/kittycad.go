@@ -57,7 +57,7 @@ func main() {
 	// Generate the paths.go file.
 	generatePaths(doc)
 
-	clientInfo := `// Create a client with your token and host.
+	clientInfo := `// Create a client with your token.
 client, err := kittycad.NewClient("$TOKEN", "your apps user agent")
 if err != nil {
   panic(err)
@@ -65,8 +65,8 @@ if err != nil {
 
 // - OR -
 
-// Create a new client with your token and host parsed from the environment
-// variables: KITTYCAD_API_TOKEN.
+// Create a new client with your token parsed from the environment
+// variable: KITTYCAD_API_TOKEN.
 client, err := kittycad.NewClientFromEnv("your apps user agent")
 if err != nil {
   panic(err)
