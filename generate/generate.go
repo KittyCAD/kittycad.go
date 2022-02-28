@@ -515,6 +515,11 @@ func writeMethod(doc *openapi3.T, f *os.File, method string, path string, o *ope
 			if mt != "application/json" {
 				paramsString += "b io.Reader"
 				reqBodyParam = "b"
+
+				if len(docParamsString) > 0 {
+					docParamsString += ", "
+				}
+				docParamsString += "body"
 				break
 			}
 
@@ -581,7 +586,7 @@ func writeMethod(doc *openapi3.T, f *os.File, method string, path string, o *ope
 	}
 
 	if reqBodyDescription != "" && reqBodyParam != "nil" {
-		fmt.Fprintf(&description, "//\t`%s`: %s\n", reqBodyParam, strings.ReplaceAll(reqBodyDescription, "\n", "\n// "))
+		fmt.Fprintf(&description, "//\t- `%s`: %s\n", reqBodyParam, strings.ReplaceAll(reqBodyDescription, "\n", "\n// "))
 	}
 
 	// Write the description to the file.
