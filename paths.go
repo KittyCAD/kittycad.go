@@ -96,7 +96,7 @@ func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQuer
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
+func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -127,7 +127,7 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []APICallWithPrice
+	var body APICallWithPriceResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -238,7 +238,7 @@ func (s *FileService) CreateConversion(outputFormat FileConversionOutputFormat, 
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *FileService) ListConversions(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]FileConversion, error) {
+func (s *FileService) ListConversions(limit int, pageToken string, sortBy CreatedAtSortMode) (*FileConversionResultsPage, error) {
 	// Create the url.
 	path := "/file/conversions"
 	uri := resolveRelative(s.client.server, path)
@@ -269,7 +269,7 @@ func (s *FileService) ListConversions(limit int, pageToken string, sortBy Create
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []FileConversion
+	var body FileConversionResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -401,7 +401,7 @@ func (s *UserService) GetSelf() (*User, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
+func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/user/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -432,7 +432,7 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []APICallWithPrice
+	var body APICallWithPriceResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -494,7 +494,7 @@ func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]APIToken, error) {
+func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*APITokenResultsPage, error) {
 	// Create the url.
 	path := "/user/api-tokens"
 	uri := resolveRelative(s.client.server, path)
@@ -525,7 +525,7 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []APIToken
+	var body APITokenResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -693,7 +693,7 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *FileService) ListConversionsForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]FileConversion, error) {
+func (s *FileService) ListConversionsForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*FileConversionResultsPage, error) {
 	// Create the url.
 	path := "/user/file/conversions"
 	uri := resolveRelative(s.client.server, path)
@@ -724,7 +724,7 @@ func (s *FileService) ListConversionsForUser(limit int, pageToken string, sortBy
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []FileConversion
+	var body FileConversionResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -786,7 +786,7 @@ func (s *FileService) GetConversionForUser(id string) (*FileConversionWithOutput
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]User, error) {
+func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*UserResultsPage, error) {
 	// Create the url.
 	path := "/users"
 	uri := resolveRelative(s.client.server, path)
@@ -817,7 +817,7 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []User
+	var body UserResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -835,7 +835,7 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]ExtendedUser, error) {
+func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAtSortMode) (*ExtendedUserResultsPage, error) {
 	// Create the url.
 	path := "/users-extended"
 	uri := resolveRelative(s.client.server, path)
@@ -866,7 +866,7 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []ExtendedUser
+	var body ExtendedUserResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -978,7 +978,7 @@ func (s *UserService) Get(id string) (*User, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
+func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/users/{{.id}}/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -1010,7 +1010,7 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []APICallWithPrice
+	var body APICallWithPriceResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

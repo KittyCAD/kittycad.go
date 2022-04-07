@@ -170,6 +170,27 @@
         ],
         "type": "object"
       },
+      "ApiCallWithPriceResultsPage": {
+        "description": "A single page of results",
+        "properties": {
+          "items": {
+            "description": "list of items on this page of results",
+            "items": {
+              "$ref": "#/components/schemas/ApiCallWithPrice"
+            },
+            "type": "array"
+          },
+          "next_page": {
+            "description": "token used to fetch the next page of results (if any)",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
       "ApiToken": {
         "description": "An API token.\n\nThese are used to authenticate users with Bearer authentication.",
         "properties": {
@@ -209,6 +230,27 @@
           "is_valid",
           "token",
           "updated_at"
+        ],
+        "type": "object"
+      },
+      "ApiTokenResultsPage": {
+        "description": "A single page of results",
+        "properties": {
+          "items": {
+            "description": "list of items on this page of results",
+            "items": {
+              "$ref": "#/components/schemas/ApiToken"
+            },
+            "type": "array"
+          },
+          "next_page": {
+            "description": "token used to fetch the next page of results (if any)",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
         ],
         "type": "object"
       },
@@ -320,6 +362,27 @@
         ],
         "type": "object"
       },
+      "ExtendedUserResultsPage": {
+        "description": "A single page of results",
+        "properties": {
+          "items": {
+            "description": "list of items on this page of results",
+            "items": {
+              "$ref": "#/components/schemas/ExtendedUser"
+            },
+            "type": "array"
+          },
+          "next_page": {
+            "description": "token used to fetch the next page of results (if any)",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
       "FileConversion": {
         "description": "A file conversion.\n\nFor now, in the database, we only store the file conversions if we performed it asynchronously.",
         "properties": {
@@ -415,6 +478,27 @@
           "fbxb"
         ],
         "type": "string"
+      },
+      "FileConversionResultsPage": {
+        "description": "A single page of results",
+        "properties": {
+          "items": {
+            "description": "list of items on this page of results",
+            "items": {
+              "$ref": "#/components/schemas/FileConversion"
+            },
+            "type": "array"
+          },
+          "next_page": {
+            "description": "token used to fetch the next page of results (if any)",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
       },
       "FileConversionSourceFormat": {
         "description": "The valid types of source file formats.",
@@ -604,6 +688,27 @@
         "required": [
           "created_at",
           "updated_at"
+        ],
+        "type": "object"
+      },
+      "UserResultsPage": {
+        "description": "A single page of results",
+        "properties": {
+          "items": {
+            "description": "list of items on this page of results",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "type": "array"
+          },
+          "next_page": {
+            "description": "token used to fetch the next page of results (if any)",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
         ],
         "type": "object"
       },
@@ -814,11 +919,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/ApiCallWithPrice"
-                  },
-                  "title": "Array_of_ApiCallWithPrice",
-                  "type": "array"
+                  "$ref": "#/components/schemas/ApiCallWithPriceResultsPage"
                 }
               }
             },
@@ -871,7 +972,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// List: List API calls.\n//\n// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `ListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nAPICallWithPrice, err := client.APICall.List(limit, pageToken, sortBy)",
+          "example": "// List: List API calls.\n//\n// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `ListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\naPICallWithPriceResultsPage, err := client.APICall.List(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.List"
         }
       }
@@ -1094,11 +1195,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/FileConversion"
-                  },
-                  "title": "Array_of_FileConversion",
-                  "type": "array"
+                  "$ref": "#/components/schemas/FileConversionResultsPage"
                 }
               }
             },
@@ -1151,7 +1248,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// ListConversions: List file conversions.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by a KittyCAD employee.\n//\n// To iterate over all pages, use the `ListConversionsAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nFileConversion, err := client.File.ListConversions(limit, pageToken, sortBy)",
+          "example": "// ListConversions: List file conversions.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by a KittyCAD employee.\n//\n// To iterate over all pages, use the `ListConversionsAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nfileConversionResultsPage, err := client.File.ListConversions(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.ListConversions"
         }
       }
@@ -1406,11 +1503,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/ApiCallWithPrice"
-                  },
-                  "title": "Array_of_ApiCallWithPrice",
-                  "type": "array"
+                  "$ref": "#/components/schemas/ApiCallWithPriceResultsPage"
                 }
               }
             },
@@ -1463,7 +1556,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// UserList: List API calls for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `UserListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nAPICallWithPrice, err := client.APICall.UserList(limit, pageToken, sortBy)",
+          "example": "// UserList: List API calls for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `UserListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\naPICallWithPriceResultsPage, err := client.APICall.UserList(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.UserList"
         }
       }
@@ -1587,11 +1680,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/ApiToken"
-                  },
-                  "title": "Array_of_ApiToken",
-                  "type": "array"
+                  "$ref": "#/components/schemas/ApiTokenResultsPage"
                 }
               }
             },
@@ -1644,7 +1733,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// ListForUser: List API tokens for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The API tokens are returned in order of creation, with the most recently created API tokens first.\n//\n// To iterate over all pages, use the `ListForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nAPIToken, err := client.APIToken.ListForUser(limit, pageToken, sortBy)",
+          "example": "// ListForUser: List API tokens for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The API tokens are returned in order of creation, with the most recently created API tokens first.\n//\n// To iterate over all pages, use the `ListForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\naPITokenResultsPage, err := client.APIToken.ListForUser(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.ListForUser"
         }
       },
@@ -1969,11 +2058,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/FileConversion"
-                  },
-                  "title": "Array_of_FileConversion",
-                  "type": "array"
+                  "$ref": "#/components/schemas/FileConversionResultsPage"
                 }
               }
             },
@@ -2026,7 +2111,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// ListConversionsForUser: List file conversions for your user.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The file conversions are returned in order of creation, with the most recently created file conversions first.\n//\n// To iterate over all pages, use the `ListConversionsForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nFileConversion, err := client.File.ListConversionsForUser(limit, pageToken, sortBy)",
+          "example": "// ListConversionsForUser: List file conversions for your user.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The file conversions are returned in order of creation, with the most recently created file conversions first.\n//\n// To iterate over all pages, use the `ListConversionsForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nfileConversionResultsPage, err := client.File.ListConversionsForUser(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.ListConversionsForUser"
         }
       }
@@ -2150,11 +2235,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/User"
-                  },
-                  "title": "Array_of_User",
-                  "type": "array"
+                  "$ref": "#/components/schemas/UserResultsPage"
                 }
               }
             },
@@ -2207,7 +2288,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// List: List users.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// To iterate over all pages, use the `ListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nUser, err := client.User.List(limit, pageToken, sortBy)",
+          "example": "// List: List users.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// To iterate over all pages, use the `ListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nuserResultsPage, err := client.User.List(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.List"
         }
       }
@@ -2253,11 +2334,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/ExtendedUser"
-                  },
-                  "title": "Array_of_ExtendedUser",
-                  "type": "array"
+                  "$ref": "#/components/schemas/ExtendedUserResultsPage"
                 }
               }
             },
@@ -2310,7 +2387,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// ListExtended: List users with extended information.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// To iterate over all pages, use the `ListExtendedAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nExtendedUser, err := client.User.ListExtended(limit, pageToken, sortBy)",
+          "example": "// ListExtended: List users with extended information.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// To iterate over all pages, use the `ListExtendedAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nextendedUserResultsPage, err := client.User.ListExtended(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.ListExtended"
         }
       }
@@ -2522,11 +2599,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/ApiCallWithPrice"
-                  },
-                  "title": "Array_of_ApiCallWithPrice",
-                  "type": "array"
+                  "$ref": "#/components/schemas/ApiCallWithPriceResultsPage"
                 }
               }
             },
@@ -2579,7 +2652,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// ListForUser: List API calls for a user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if \"me\" is passed as the user id.\n// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.\n// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `ListForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `id`: The user ID.\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nAPICallWithPrice, err := client.APICall.ListForUser(id, limit, pageToken, sortBy)",
+          "example": "// ListForUser: List API calls for a user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if \"me\" is passed as the user id.\n// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.\n// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `ListForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `id`: The user ID.\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\naPICallWithPriceResultsPage, err := client.APICall.ListForUser(id, limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.ListForUser"
         }
       }
