@@ -15,19 +15,29 @@ type Client struct {
 
 	// token is the API token used for authentication.
 	token string
-	// File: CAD file operations.
+	// ApiCalls: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
+	ApiCalls *ApiCallsService
+	// ApiTokens: API tokens allow users to call the API outside of their session token that is used as a cookie in the user interface. Users can create, delete, and list their API tokens. But, of course, you need an API token to do this, so first be sure to generate one in the account UI.
+	ApiTokens *ApiTokensService
+	// File: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 	File *FileService
-	// Meta: Meta information about servers, instances, and sessions.
+	// Meta: Meta information about the API.
 	Meta *MetaService
-	// Internal: Internal API endpoints.
-	Internal *InternalService
+	// Users: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
+	Users *UsersService
 }
 
-// FileService: CAD file operations.
+// ApiCallsService: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
+type ApiCallsService service
+
+// ApiTokensService: API tokens allow users to call the API outside of their session token that is used as a cookie in the user interface. Users can create, delete, and list their API tokens. But, of course, you need an API token to do this, so first be sure to generate one in the account UI.
+type ApiTokensService service
+
+// FileService: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 type FileService service
 
-// MetaService: Meta information about servers, instances, and sessions.
+// MetaService: Meta information about the API.
 type MetaService service
 
-// InternalService: Internal API endpoints.
-type InternalService service
+// UsersService: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
+type UsersService service

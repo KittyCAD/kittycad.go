@@ -2,54 +2,220 @@
 
 package kittycad
 
-// AuthSession is the type definition for a AuthSession.
-type AuthSession struct {
-	// CreatedAt is the date and time the session/request was created.
-	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+// ApiCallQueryGroup is a response for a query on the API call table that is grouped by something.
+type ApiCallQueryGroup struct {
+	Count int    `json:"count,omitempty" yaml:"count,omitempty"`
+	Query string `json:"query,omitempty" yaml:"query,omitempty"`
+}
+
+// ApiCallQueryGroupBy is the field of an API call to group by.
+type ApiCallQueryGroupBy string
+
+const (
+	// ApiCallQueryGroupByEmail represents the ApiCallQueryGroupBy `"email"`.
+	ApiCallQueryGroupByEmail ApiCallQueryGroupBy = "email"
+	// ApiCallQueryGroupByMethod represents the ApiCallQueryGroupBy `"method"`.
+	ApiCallQueryGroupByMethod ApiCallQueryGroupBy = "method"
+	// ApiCallQueryGroupByEndpoint represents the ApiCallQueryGroupBy `"endpoint"`.
+	ApiCallQueryGroupByEndpoint ApiCallQueryGroupBy = "endpoint"
+	// ApiCallQueryGroupByUserId represents the ApiCallQueryGroupBy `"user_id"`.
+	ApiCallQueryGroupByUserId ApiCallQueryGroupBy = "user_id"
+	// ApiCallQueryGroupByOrigin represents the ApiCallQueryGroupBy `"origin"`.
+	ApiCallQueryGroupByOrigin ApiCallQueryGroupBy = "origin"
+	// ApiCallQueryGroupByIpAddress represents the ApiCallQueryGroupBy `"ip_address"`.
+	ApiCallQueryGroupByIpAddress ApiCallQueryGroupBy = "ip_address"
+)
+
+// ApiCallWithPrice is an API call with the price.
+//
+// This is a join of the `APICall` and `APICallPrice` tables.
+type ApiCallWithPrice struct {
+	// CompletedAt is the date and time the API call completed billing.
+	CompletedAt string `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	// CreatedAt is the date and time the API call was created.
+	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Duration is the duration of the API call.
+	Duration int `json:"duration,omitempty" yaml:"duration,omitempty"`
 	// Email is the user's email address.
 	Email string `json:"email,omitempty" yaml:"email,omitempty"`
-	// ID is the unique identifier of the session.
-	ID string `json:"id,omitempty" yaml:"id,omitempty"`
-	// Image is the virtual machine image the instance used as a base.
-	Image string `json:"image,omitempty" yaml:"image,omitempty"`
-	// IPAddress is the IP address the request originated from.
+	// Endpoint is the endpoint requested by the API call.
+	Endpoint string `json:"endpoint,omitempty" yaml:"endpoint,omitempty"`
+	// ID is the unique identifier for the API call.
+	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
+	// IPAddress is the ip address of the origin.
 	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
-	// IsValid is if the token is valid.
-	IsValid bool `json:"is_valid,omitempty" yaml:"is_valid,omitempty"`
-	// Token is the token the user provided for the request.
-	Token string `json:"token,omitempty" yaml:"token,omitempty"`
-	// UserID is the unique identifier of the user.
+	// Method is the HTTP method requsted by the API call.
+	Method Method `json:"method,omitempty" yaml:"method,omitempty"`
+	// Minutes is the number of minutes the API call was billed for.
+	Minutes int `json:"minutes,omitempty" yaml:"minutes,omitempty"`
+	// Origin is the origin of the API call.
+	Origin string `json:"origin,omitempty" yaml:"origin,omitempty"`
+	// Price is the price of the API call.
+	Price float64 `json:"price,omitempty" yaml:"price,omitempty"`
+	// RequestBody is the request body sent by the API call.
+	RequestBody string `json:"request_body,omitempty" yaml:"request_body,omitempty"`
+	// RequestQueryParams is the request query params sent by the API call.
+	RequestQueryParams string `json:"request_query_params,omitempty" yaml:"request_query_params,omitempty"`
+	// ResponseBody is the response body returned by the API call. We do not store this information if it is above a certain size.
+	ResponseBody string `json:"response_body,omitempty" yaml:"response_body,omitempty"`
+	// StartedAt is the date and time the API call started billing.
+	StartedAt string `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	// StatusCode is the status code returned by the API call.
+	StatusCode StatusCode `json:"status_code,omitempty" yaml:"status_code,omitempty"`
+	// StripeInvoiceItemID is the Stripe invoice item ID of the API call if it is billable.
+	StripeInvoiceItemID string `json:"stripe_invoice_item_id,omitempty" yaml:"stripe_invoice_item_id,omitempty"`
+	// Token is the API token that made the API call.
+	Token Uuid `json:"token,omitempty" yaml:"token,omitempty"`
+	// UpdatedAt is the date and time the API call was last updated.
+	UpdatedAt string `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	// UserAgent is the user agent of the request.
+	UserAgent string `json:"user_agent,omitempty" yaml:"user_agent,omitempty"`
+	// UserID is the ID of the user that made the API call.
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
 
-// ErrorMessage is the type definition for a ErrorMessage.
-type ErrorMessage struct {
-	// Code is status code
-	Code int `json:"code,omitempty" yaml:"code,omitempty"`
-	// Message is verbose message
-	Message string `json:"message,omitempty" yaml:"message,omitempty"`
-	// Status is short status text
-	Status string `json:"status,omitempty" yaml:"status,omitempty"`
-}
-
-// FileConversion is the type definition for a FileConversion.
-type FileConversion struct {
-	// CompletedAt is the date and time the file conversion was completed.
-	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
-	// CreatedAt is the date and time the file conversion was created.
-	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
-	// ID is the unique identifier of the file conversion.
+// ApiToken is an API token.
+//
+// These are used to authenticate users with Bearer authentication.
+type ApiToken struct {
+	// CreatedAt is the date and time the API token was created.
+	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// ID is the unique identifier for the API token.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
-	// Output is the converted file, base64 encoded. If the conversion failed, this field will show any errors.
-	Output       string                `json:"output,omitempty" yaml:"output,omitempty"`
-	OutputFormat ValidOutputFileFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
-	SrcFormat    ValidSourceFileFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
-	// StartedAt is the date and time the file conversion was completed.
-	StartedAt *JSONTime            `json:"started_at,omitempty" yaml:"started_at,omitempty"`
-	Status    FileConversionStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	// IsValid is if the token is valid. We never delete API tokens, but we can mark them as invalid. We save them for ever to preserve the history of the API token.
+	IsValid bool `json:"is_valid,omitempty" yaml:"is_valid,omitempty"`
+	// Token is the API token itself.
+	Token Uuid `json:"token,omitempty" yaml:"token,omitempty"`
+	// UpdatedAt is the date and time the API token was last updated.
+	UpdatedAt string `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	// UserID is the ID of the user that owns the API token.
+	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
 
-// FileConversionStatus is the type definition for a FileConversionStatus.
+// CreatedAtSortMode is supported set of sort modes for scanning by created_at only.
+//
+// Currently, we only support scanning in ascending order.
+type CreatedAtSortMode string
+
+const (
+	// CreatedAtSortModeCreatedAtAscending represents the CreatedAtSortMode `"created-at-ascending"`.
+	CreatedAtSortModeCreatedAtAscending CreatedAtSortMode = "created-at-ascending"
+	// CreatedAtSortModeCreatedAtDescending represents the CreatedAtSortMode `"created-at-descending"`.
+	CreatedAtSortModeCreatedAtDescending CreatedAtSortMode = "created-at-descending"
+)
+
+// Error is error information from a response.
+type Error struct {
+	ErrorCode string `json:"error_code,omitempty" yaml:"error_code,omitempty"`
+	Message   string `json:"message,omitempty" yaml:"message,omitempty"`
+	RequestID string `json:"request_id,omitempty" yaml:"request_id,omitempty"`
+}
+
+// ExtendedUser is extended user information.
+//
+// This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Zendesk.
+type ExtendedUser struct {
+	// Company is the user's company.
+	Company string `json:"company,omitempty" yaml:"company,omitempty"`
+	// CreatedAt is the date and time the user was created.
+	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Discord is the user's Discord handle.
+	Discord string `json:"discord,omitempty" yaml:"discord,omitempty"`
+	// Email is the email address of the user.
+	Email string `json:"email,omitempty" yaml:"email,omitempty"`
+	// EmailVerified is the date and time the email address was verified.
+	EmailVerified string `json:"email_verified,omitempty" yaml:"email_verified,omitempty"`
+	// FirstName is the user's first name.
+	FirstName string `json:"first_name,omitempty" yaml:"first_name,omitempty"`
+	// Github is the user's GitHub handle.
+	Github string `json:"github,omitempty" yaml:"github,omitempty"`
+	// ID is the unique identifier for the user.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
+	// Image is the image avatar for the user. This is a URL.
+	Image string `json:"image,omitempty" yaml:"image,omitempty"`
+	// LastName is the user's last name.
+	LastName string `json:"last_name,omitempty" yaml:"last_name,omitempty"`
+	// MailchimpID is the user's MailChimp ID. This is mostly used for internal mapping.
+	MailchimpID string `json:"mailchimp_id,omitempty" yaml:"mailchimp_id,omitempty"`
+	// Name is the name of the user. This is auto populated at first from the authentication provider (if there was a name). It can be updated by the user by updating their `first_name` and `last_name` fields.
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+	// Phone is the user's phone number.
+	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
+	// StripeID is the user's Stripe ID. This is mostly used for internal mapping.
+	StripeID string `json:"stripe_id,omitempty" yaml:"stripe_id,omitempty"`
+	// UpdatedAt is the date and time the user was last updated.
+	UpdatedAt string `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	// ZendeskID is the user's Zendesk ID. This is mostly used for internal mapping.
+	ZendeskID string `json:"zendesk_id,omitempty" yaml:"zendesk_id,omitempty"`
+}
+
+// FileConversion is a file conversion.
+//
+// For now, in the database, we only store the file conversions if we performed it asynchronously.
+type FileConversion struct {
+	// CompletedAt is the time and date the file conversion was completed.
+	CompletedAt string `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	// CreatedAt is the time and date the file conversion was created.
+	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// ID is the unique identifier of the file conversion.
+	//
+	// This is the same as the API call ID.
+	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
+	// OutputFileLink is the link to the file conversion output in our blob storage.
+	OutputFileLink string `json:"output_file_link,omitempty" yaml:"output_file_link,omitempty"`
+	// OutputFormat is the output format of the file conversion.
+	OutputFormat FileConversionOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
+	// SrcFileLink is the link to the file conversion source in our blob storage.
+	SrcFileLink string `json:"src_file_link,omitempty" yaml:"src_file_link,omitempty"`
+	// SrcFormat is the source format of the file conversion.
+	SrcFormat FileConversionSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
+	// StartedAt is the time and date the file conversion was started.
+	StartedAt string `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	// Status is the status of the file conversion.
+	Status FileConversionStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	// UpdatedAt is the time and date the file conversion was last updated.
+	UpdatedAt string `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	// UserID is the user ID of the user who created the file conversion.
+	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+	// Worker is the worker node that is performing or performed the file conversion.
+	Worker string `json:"worker,omitempty" yaml:"worker,omitempty"`
+}
+
+// FileConversionOutputFormat is the valid types of output file formats.
+type FileConversionOutputFormat string
+
+const (
+	// FileConversionOutputFormatStl represents the FileConversionOutputFormat `"stl"`.
+	FileConversionOutputFormatStl FileConversionOutputFormat = "stl"
+	// FileConversionOutputFormatObj represents the FileConversionOutputFormat `"obj"`.
+	FileConversionOutputFormatObj FileConversionOutputFormat = "obj"
+	// FileConversionOutputFormatDae represents the FileConversionOutputFormat `"dae"`.
+	FileConversionOutputFormatDae FileConversionOutputFormat = "dae"
+	// FileConversionOutputFormatStep represents the FileConversionOutputFormat `"step"`.
+	FileConversionOutputFormatStep FileConversionOutputFormat = "step"
+	// FileConversionOutputFormatFbx represents the FileConversionOutputFormat `"fbx"`.
+	FileConversionOutputFormatFbx FileConversionOutputFormat = "fbx"
+	// FileConversionOutputFormatFbxb represents the FileConversionOutputFormat `"fbxb"`.
+	FileConversionOutputFormatFbxb FileConversionOutputFormat = "fbxb"
+)
+
+// FileConversionSourceFormat is the valid types of source file formats.
+type FileConversionSourceFormat string
+
+const (
+	// FileConversionSourceFormatStl represents the FileConversionSourceFormat `"stl"`.
+	FileConversionSourceFormatStl FileConversionSourceFormat = "stl"
+	// FileConversionSourceFormatObj represents the FileConversionSourceFormat `"obj"`.
+	FileConversionSourceFormatObj FileConversionSourceFormat = "obj"
+	// FileConversionSourceFormatDae represents the FileConversionSourceFormat `"dae"`.
+	FileConversionSourceFormatDae FileConversionSourceFormat = "dae"
+	// FileConversionSourceFormatStep represents the FileConversionSourceFormat `"step"`.
+	FileConversionSourceFormatStep FileConversionSourceFormat = "step"
+	// FileConversionSourceFormatFbx represents the FileConversionSourceFormat `"fbx"`.
+	FileConversionSourceFormatFbx FileConversionSourceFormat = "fbx"
+)
+
+// FileConversionStatus is the status of a file conversion.
 type FileConversionStatus string
 
 const (
@@ -65,103 +231,132 @@ const (
 	FileConversionStatusFailed FileConversionStatus = "Failed"
 )
 
-// GPUDevice is the type definition for a GPUDevice.
-type GPUDevice struct {
-	// ID is the unique identifier of the device.
-	ID int `json:"id,omitempty" yaml:"id,omitempty"`
-	// MemoryBusWidth is the memory bus width of the device.
-	MemoryBusWidth int `json:"memory_bus_width,omitempty" yaml:"memory_bus_width,omitempty"`
-	// MemoryClockRate is the memory clock rate of the device.
-	MemoryClockRate int `json:"memory_clock_rate,omitempty" yaml:"memory_clock_rate,omitempty"`
-	// Name is the name of the device.
-	Name string `json:"name,omitempty" yaml:"name,omitempty"`
-	// PeakMemoryBandwidth is the peak memory bandwidth of the device.
-	PeakMemoryBandwidth int `json:"peak_memory_bandwidth,omitempty" yaml:"peak_memory_bandwidth,omitempty"`
+// FileConversionWithOutput is a file conversion as we ouput it to the user.
+type FileConversionWithOutput struct {
+	// CompletedAt is the time and date the file conversion was completed.
+	CompletedAt string `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	// CreatedAt is the time and date the file conversion was created.
+	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// ID is the unique identifier of the file conversion.
+	//
+	// This is the same as the API call ID.
+	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
+	// Output is the converted file, if completed, base64 encoded. If the conversion failed, this field will show any errors.
+	Output string `json:"output,omitempty" yaml:"output,omitempty"`
+	// OutputFormat is the output format of the file conversion.
+	OutputFormat FileConversionOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
+	// SrcFormat is the source format of the file conversion.
+	SrcFormat FileConversionSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
+	// StartedAt is the time and date the file conversion was started.
+	StartedAt string `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	// Status is the status of the file conversion.
+	Status FileConversionStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	// UserID is the user ID of the user who created the file conversion.
+	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
 
-// Instance is the type definition for a Instance.
-type Instance struct {
-	// CPUPlatform is the CPU platform of the server instance.
-	CPUPlatform string `json:"cpu_platform,omitempty" yaml:"cpu_platform,omitempty"`
-	// Description is the description of the server instance.
-	Description string    `json:"description,omitempty" yaml:"description,omitempty"`
-	Environment ServerEnv `json:"environment,omitempty" yaml:"environment,omitempty"`
-	// GitHash is the git commit hash that the server binary was built from.
-	GitHash string `json:"git_hash,omitempty" yaml:"git_hash,omitempty"`
-	// Hostname is the hostname of the server instance.
-	Hostname string `json:"hostname,omitempty" yaml:"hostname,omitempty"`
-	// ID is the unique identifier of the server instance.
+// Method is the Request Method (VERB)
+//
+// This type also contains constants for a number of common HTTP methods such as GET, POST, etc.
+//
+// Currently includes 8 variants representing the 8 methods defined in [RFC 7230](https://tools.ietf.org/html/rfc7231#section-4.1), plus PATCH, and an Extension variant for all extensions.
+type Method string
+
+const (
+	// MethodOPTIONS represents the Method `"OPTIONS"`.
+	MethodOPTIONS Method = "OPTIONS"
+	// MethodGET represents the Method `"GET"`.
+	MethodGET Method = "GET"
+	// MethodPOST represents the Method `"POST"`.
+	MethodPOST Method = "POST"
+	// MethodPUT represents the Method `"PUT"`.
+	MethodPUT Method = "PUT"
+	// MethodDELETE represents the Method `"DELETE"`.
+	MethodDELETE Method = "DELETE"
+	// MethodHEAD represents the Method `"HEAD"`.
+	MethodHEAD Method = "HEAD"
+	// MethodTRACE represents the Method `"TRACE"`.
+	MethodTRACE Method = "TRACE"
+	// MethodCONNECT represents the Method `"CONNECT"`.
+	MethodCONNECT Method = "CONNECT"
+	// MethodPATCH represents the Method `"PATCH"`.
+	MethodPATCH Method = "PATCH"
+	// MethodEXTENSION represents the Method `"EXTENSION"`.
+	MethodEXTENSION Method = "EXTENSION"
+)
+
+// StatusCode is the type definition for a StatusCode.
+type StatusCode int
+
+// User is a user.
+type User struct {
+	// Company is the user's company.
+	Company string `json:"company,omitempty" yaml:"company,omitempty"`
+	// CreatedAt is the date and time the user was created.
+	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Discord is the user's Discord handle.
+	Discord string `json:"discord,omitempty" yaml:"discord,omitempty"`
+	// Email is the email address of the user.
+	Email string `json:"email,omitempty" yaml:"email,omitempty"`
+	// EmailVerified is the date and time the email address was verified.
+	EmailVerified string `json:"email_verified,omitempty" yaml:"email_verified,omitempty"`
+	// FirstName is the user's first name.
+	FirstName string `json:"first_name,omitempty" yaml:"first_name,omitempty"`
+	// Github is the user's GitHub handle.
+	Github string `json:"github,omitempty" yaml:"github,omitempty"`
+	// ID is the unique identifier for the user.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
-	// Image is the virtual machine image the instance used as a base.
+	// Image is the image avatar for the user. This is a URL.
 	Image string `json:"image,omitempty" yaml:"image,omitempty"`
-	// IPAddress is the IP address of the server instance.
-	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
-	// MachineType is the machine type of the server instance.
-	MachineType string `json:"machine_type,omitempty" yaml:"machine_type,omitempty"`
-	// Name is the name of the server instance.
+	// LastName is the user's last name.
+	LastName string `json:"last_name,omitempty" yaml:"last_name,omitempty"`
+	// Name is the name of the user. This is auto populated at first from the authentication provider (if there was a name). It can be updated by the user by updating their `first_name` and `last_name` fields.
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
-	// Zone is the zone the server instance is deployed in.
-	Zone string `json:"zone,omitempty" yaml:"zone,omitempty"`
+	// Phone is the user's phone number.
+	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
+	// UpdatedAt is the date and time the user was last updated.
+	UpdatedAt string `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 }
 
-// PongEnum is the type definition for a PongEnum.
-type PongEnum string
+// Uuid is a uuid.
+//
+// A Version 4 UUID is a universally unique identifier that is generated using random numbers.
+type Uuid string
 
-const (
-	// PongEnumPong represents the PongEnum `"pong"`.
-	PongEnumPong PongEnum = "pong"
-)
-
-// PongMessage is the type definition for a PongMessage.
-type PongMessage struct {
-	Message PongEnum `json:"message,omitempty" yaml:"message,omitempty"`
+// ApiCallQueryGroupBys is the collection of all ApiCallQueryGroupBy values.
+var ApiCallQueryGroupBys = []ApiCallQueryGroupBy{
+	ApiCallQueryGroupByEmail,
+	ApiCallQueryGroupByEndpoint,
+	ApiCallQueryGroupByIpAddress,
+	ApiCallQueryGroupByMethod,
+	ApiCallQueryGroupByOrigin,
+	ApiCallQueryGroupByUserId,
 }
 
-// ServerEnv is the type definition for a ServerEnv.
-type ServerEnv string
+// CreatedAtSortModes is the collection of all CreatedAtSortMode values.
+var CreatedAtSortModes = []CreatedAtSortMode{
+	CreatedAtSortModeCreatedAtAscending,
+	CreatedAtSortModeCreatedAtDescending,
+}
 
-const (
-	// ServerEnvProduction represents the ServerEnv `"production"`.
-	ServerEnvProduction ServerEnv = "production"
-	// ServerEnvDevelopment represents the ServerEnv `"development"`.
-	ServerEnvDevelopment ServerEnv = "development"
-	// ServerEnvPreview represents the ServerEnv `"preview"`.
-	ServerEnvPreview ServerEnv = "preview"
-)
+// FileConversionOutputFormats is the collection of all FileConversionOutputFormat values.
+var FileConversionOutputFormats = []FileConversionOutputFormat{
+	FileConversionOutputFormatDae,
+	FileConversionOutputFormatFbx,
+	FileConversionOutputFormatFbxb,
+	FileConversionOutputFormatObj,
+	FileConversionOutputFormatStep,
+	FileConversionOutputFormatStl,
+}
 
-// ValidOutputFileFormat is the type definition for a ValidOutputFileFormat.
-type ValidOutputFileFormat string
-
-const (
-	// ValidOutputFileFormatStl represents the ValidOutputFileFormat `"stl"`.
-	ValidOutputFileFormatStl ValidOutputFileFormat = "stl"
-	// ValidOutputFileFormatObj represents the ValidOutputFileFormat `"obj"`.
-	ValidOutputFileFormatObj ValidOutputFileFormat = "obj"
-	// ValidOutputFileFormatDae represents the ValidOutputFileFormat `"dae"`.
-	ValidOutputFileFormatDae ValidOutputFileFormat = "dae"
-	// ValidOutputFileFormatStep represents the ValidOutputFileFormat `"step"`.
-	ValidOutputFileFormatStep ValidOutputFileFormat = "step"
-	// ValidOutputFileFormatFbx represents the ValidOutputFileFormat `"fbx"`.
-	ValidOutputFileFormatFbx ValidOutputFileFormat = "fbx"
-	// ValidOutputFileFormatFbxb represents the ValidOutputFileFormat `"fbxb"`.
-	ValidOutputFileFormatFbxb ValidOutputFileFormat = "fbxb"
-)
-
-// ValidSourceFileFormat is the type definition for a ValidSourceFileFormat.
-type ValidSourceFileFormat string
-
-const (
-	// ValidSourceFileFormatStl represents the ValidSourceFileFormat `"stl"`.
-	ValidSourceFileFormatStl ValidSourceFileFormat = "stl"
-	// ValidSourceFileFormatObj represents the ValidSourceFileFormat `"obj"`.
-	ValidSourceFileFormatObj ValidSourceFileFormat = "obj"
-	// ValidSourceFileFormatDae represents the ValidSourceFileFormat `"dae"`.
-	ValidSourceFileFormatDae ValidSourceFileFormat = "dae"
-	// ValidSourceFileFormatStep represents the ValidSourceFileFormat `"step"`.
-	ValidSourceFileFormatStep ValidSourceFileFormat = "step"
-	// ValidSourceFileFormatFbx represents the ValidSourceFileFormat `"fbx"`.
-	ValidSourceFileFormatFbx ValidSourceFileFormat = "fbx"
-)
+// FileConversionSourceFormats is the collection of all FileConversionSourceFormat values.
+var FileConversionSourceFormats = []FileConversionSourceFormat{
+	FileConversionSourceFormatDae,
+	FileConversionSourceFormatFbx,
+	FileConversionSourceFormatObj,
+	FileConversionSourceFormatStep,
+	FileConversionSourceFormatStl,
+}
 
 // FileConversionStatuses is the collection of all FileConversionStatus values.
 var FileConversionStatuses = []FileConversionStatus{
@@ -172,33 +367,16 @@ var FileConversionStatuses = []FileConversionStatus{
 	FileConversionStatusUploaded,
 }
 
-// PongEnums is the collection of all PongEnum values.
-var PongEnums = []PongEnum{
-	PongEnumPong,
-}
-
-// ServerEnvs is the collection of all ServerEnv values.
-var ServerEnvs = []ServerEnv{
-	ServerEnvDevelopment,
-	ServerEnvPreview,
-	ServerEnvProduction,
-}
-
-// ValidOutputFileFormats is the collection of all ValidOutputFileFormat values.
-var ValidOutputFileFormats = []ValidOutputFileFormat{
-	ValidOutputFileFormatDae,
-	ValidOutputFileFormatFbx,
-	ValidOutputFileFormatFbxb,
-	ValidOutputFileFormatObj,
-	ValidOutputFileFormatStep,
-	ValidOutputFileFormatStl,
-}
-
-// ValidSourceFileFormats is the collection of all ValidSourceFileFormat values.
-var ValidSourceFileFormats = []ValidSourceFileFormat{
-	ValidSourceFileFormatDae,
-	ValidSourceFileFormatFbx,
-	ValidSourceFileFormatObj,
-	ValidSourceFileFormatStep,
-	ValidSourceFileFormatStl,
+// Methods is the collection of all Method values.
+var Methods = []Method{
+	MethodCONNECT,
+	MethodDELETE,
+	MethodEXTENSION,
+	MethodGET,
+	MethodHEAD,
+	MethodOPTIONS,
+	MethodPATCH,
+	MethodPOST,
+	MethodPUT,
+	MethodTRACE,
 }
