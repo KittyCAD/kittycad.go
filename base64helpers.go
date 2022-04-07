@@ -34,7 +34,7 @@ func (c *FileService) ConversionByIDWithBase64Helper(id string) (*FileConversion
 // src file and output file.
 //
 // This function is a wrapper around the FileConvert function.
-func (c *FileService) ConvertWithBase64Helper(srcFormat ValidSourceFileFormat, outputFormat ValidOutputFileFormat, body []byte) (*FileConversion, []byte, error) {
+func (c *FileService) ConvertWithBase64Helper(srcFormat FileConversionSourceFormat, outputFormat FileConversionOutputFormat, body []byte) (*FileConversion, []byte, error) {
 	var b bytes.Buffer
 	encoder := base64.NewEncoder(base64.StdEncoding, &b)
 	// Encode the body as base64.

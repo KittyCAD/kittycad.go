@@ -2,20 +2,5 @@
 
 package kittycad
 
-// Response400 is the response given when bad Request
-type Response400 ErrorMessage
-
-// Response401 is the response given when unauthorized
-type Response401 ErrorMessage
-
-// Response403 is the response given when forbidden
-type Response403 ErrorMessage
-
-// Response404 is the response given when not Found
-type Response404 ErrorMessage
-
-// Response406 is the response given when not Acceptable
-type Response406 ErrorMessage
-
-// Response500 is the response given when internal Server Error
-type Response500 ErrorMessage
+// ResponseError is the response given when error
+type ResponseError Error

@@ -792,7 +792,7 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool) (string, 
 			name = "200"
 		}
 
-		statusCode, err := strconv.Atoi(name)
+		statusCode, err := strconv.Atoi(strings.ReplaceAll(name, "XX", "00"))
 		if err != nil {
 			fmt.Printf("error converting %q to an integer: %v\n", name, err)
 			os.Exit(1)
