@@ -43,7 +43,7 @@ func checkResponse(res *http.Response) error {
 
 	slurp, err := ioutil.ReadAll(res.Body)
 	if err == nil {
-		var jerr ErrorMessage
+		var jerr Error
 
 		// Try to decode the body as an ErrorMessage.
 		if err := json.Unmarshal(slurp, &jerr); err == nil {

@@ -186,9 +186,9 @@ type Client struct {
 		}
 
 		if tag.Description != "" {
-			fmt.Fprintf(f, "// %s: %s\n", strcase.ToCamel(tag.Name), tag.Description)
+			fmt.Fprintf(f, "// %s: %s\n", printTagName(tag.Name), tag.Description)
 		}
-		fmt.Fprintf(f, "%s\t*%sService\n", strcase.ToCamel(tag.Name), strcase.ToCamel(tag.Name))
+		fmt.Fprintf(f, "%s\t*%sService\n", printTagName(tag.Name), printTagName(tag.Name))
 	}
 
 	// Close the struct.
@@ -200,10 +200,14 @@ type Client struct {
 		}
 
 		if tag.Description != "" {
-			fmt.Fprintf(f, "// %sService: %s\n", strcase.ToCamel(tag.Name), tag.Description)
+			fmt.Fprintf(f, "// %sService: %s\n", printTagName(tag.Name), tag.Description)
 		}
-		fmt.Fprintf(f, "type %sService service\n\n", strcase.ToCamel(tag.Name))
+		fmt.Fprintf(f, "type %sService service\n\n", printTagName(tag.Name))
 	}
+}
+
+func printTagName(tag string) string {
+	return strings.ReplaceAll(strcase.ToCamel(makeSingular(tag)), "Api", "API")
 }
 
 // Generate the paths.go file.
@@ -262,23 +266,12 @@ func cleanFnName(name string, tag string, path string) string {
 		tag = strings.TrimSuffix(tag, "s")
 	}
 
-	if strings.HasSuffix(name, strcase.ToCamel(tag)) {
-		name = strings.TrimSuffix(name, strcase.ToCamel(tag))
-	}
-
-	if strings.HasPrefix(name, strcase.ToCamel(tag)) {
-		name = strings.TrimPrefix(name, strcase.ToCamel(tag))
-	}
-
 	snake := strcase.ToSnake(name)
 	snake = strings.ReplaceAll(snake, "_"+strings.ToLower(tag)+"_", "_")
 
 	name = strcase.ToCamel(snake)
 
-	name = strings.TrimPrefix(name, "Organization")
-	name = strings.TrimPrefix(name, "Project")
-
-	name = strings.ReplaceAll(name, "Vpc", "VPC")
+	name = strings.ReplaceAll(name, "Api", "API")
 	name = strings.ReplaceAll(name, "Gpu", "GPU")
 
 	if strings.HasSuffix(name, "Get") && !strings.HasSuffix(path, "}") {
@@ -293,16 +286,9 @@ func cleanFnName(name string, tag string, path string) string {
 		name = strings.TrimPrefix(name, "s")
 	}
 
-	if name == "RacksGetRack" {
-		name = "GetRack"
-	}
-
-	if name == "SledsGetSled" {
-		name = "GetSled"
-	}
-
-	if strings.HasPrefix(name, "Hardware") {
-		name = strings.TrimPrefix(name, "Hardware")
+	if strings.Contains(name, printTagName(tag)) {
+		name = strings.ReplaceAll(name, printTagName(tag)+"s", "")
+		name = strings.ReplaceAll(name, printTagName(tag), "")
 	}
 
 	return name
@@ -321,46 +307,19 @@ func printProperty(p string) string {
 		c = "UserID"
 	} else if strings.Contains(c, "IdSortMode") {
 		strings.ReplaceAll(c, "IdSortMode", "IDSortMode")
-	} else if strings.HasPrefix(c, "Cpu") {
-		c = strings.Replace(c, "Cpu", "CPU", 1)
 	} else if strings.HasPrefix(c, "Gpu") {
 		c = strings.Replace(c, "Gpu", "GPU", 1)
-	} else if strings.HasPrefix(c, "Vpc") {
-		c = strings.Replace(c, "Vpc", "VPC", 1)
-	} else if strings.HasPrefix(c, "Vpn") {
-		c = strings.Replace(c, "Vpn", "VPN", 1)
-	} else if strings.HasPrefix(c, "Ipv4") {
-		c = strings.Replace(c, "Ipv4", "IPv4", 1)
-	} else if strings.HasPrefix(c, "Ipv6") {
-		c = strings.Replace(c, "Ipv6", "IPv6", 1)
 	} else if strings.HasSuffix(c, "Id") {
 		c = strings.TrimSuffix(c, "Id") + "ID"
-	} else if strings.Contains(c, "Cpu") {
-		c = strings.ReplaceAll(c, "Cpu", "CPU")
-	} else if strings.HasPrefix(c, "SubnetsIps") {
-		c = strings.ReplaceAll(c, "SubnetsIps", "SubnetsIPs")
 	}
 
-	// Before we remove the tag from the name, we want to remove any lingering "Vpc" strings.
-	c = strings.Replace(c, "VPCFirewallRule", "FirewallRule", -1)
-	c = strings.Replace(c, "VPCRouter", "Router", -1)
-	c = strings.Replace(c, "VPCSubnet", "Subnet", -1)
+	c = strings.ReplaceAll(c, "Api", "API")
 
 	return c
 }
 
 func printPropertyLower(p string) string {
 	s := strcase.ToLowerCamel(printProperty(p))
-
-	if strings.HasPrefix(s, "vPC") {
-		s = "vpc" + strings.TrimPrefix(s, "vPC")
-	} else if strings.HasPrefix(s, "cPU") {
-		s = "cpu" + strings.TrimPrefix(s, "cPU")
-	} else if strings.HasPrefix(s, "iPv4") {
-		s = "ipv4" + strings.TrimPrefix(s, "iPv4")
-	} else if strings.HasPrefix(s, "iPv6") {
-		s = "ipv6" + strings.TrimPrefix(s, "iPv6")
-	}
 
 	if s == "iD" {
 		s = "id"
@@ -461,7 +420,7 @@ func writeMethod(doc *openapi3.T, f *os.File, method string, path string, o *ope
 		fmt.Printf("[WARN] TODO: skipping operation %q, since it has no tag\n", o.OperationID)
 		return
 	}
-	tag := strcase.ToCamel(o.Tags[0])
+	tag := printTagName(o.Tags[0])
 
 	fnName := cleanFnName(o.OperationID, tag, path)
 
@@ -776,7 +735,9 @@ func writeMethod(doc *openapi3.T, f *os.File, method string, path string, o *ope
 
 	if pageResult && !isGetAllPages {
 		// Run the method again with get all pages.
-		writeMethod(doc, f, method, path, o, true)
+		// Skip doing all pages for now.
+		// TODO: make all pages work.
+		//	writeMethod(doc, f, method, path, o, true)
 	}
 }
 
@@ -812,8 +773,9 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool) (string, 
 			getAllPagesType := ""
 			if isGetAllPages {
 
-				if items, ok := content.Schema.Value.Properties["items"]; ok {
-					getAllPagesType = printType("", items)
+				items := content.Schema.Value.Items
+				if items != nil {
+					getAllPagesType = fmt.Sprintf("[]%s", printType("", items))
 				} else {
 					fmt.Printf("[WARN] TODO: skipping response for %q, since it is a get all pages response and has no `items` property:\n%#v\n", o.OperationID, content.Schema.Value.Properties)
 				}
@@ -841,7 +803,7 @@ func writeSchemaType(f *os.File, name string, s *openapi3.Schema, additionalName
 	fmt.Printf("writing type for schema %q -> %s\n", name, otype)
 
 	name = printProperty(name)
-	typeName := strings.TrimSpace(fmt.Sprintf("%s%s", name, printProperty(additionalName)))
+	typeName := strings.ReplaceAll(strings.TrimSpace(fmt.Sprintf("%s%s", name, printProperty(additionalName))), "Api", "API")
 
 	if len(s.Enum) == 0 && s.OneOf == nil {
 		// Write the type description.
@@ -1098,7 +1060,7 @@ func getReferenceSchema(v *openapi3.SchemaRef) string {
 			return printProperty(makeSingular(ref))
 		}
 
-		return printProperty(ref)
+		return strings.ReplaceAll(printProperty(ref), "Api", "API")
 	}
 
 	return ""

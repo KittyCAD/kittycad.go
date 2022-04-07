@@ -56,6 +56,9 @@ func NewClient(token, userAgent string) (*Client, error) {
 	// TODO: this should be part of the generated code.
 	client.File = &FileService{client: client}
 	client.Meta = &MetaService{client: client}
+	client.User = &UserService{client: client}
+	client.APICall = &APICallService{client: client}
+	client.APIToken = &APITokenService{client: client}
 
 	return client, nil
 }
@@ -154,3 +157,6 @@ func (t *JSONTime) UnmarshalJSON(data []byte) (err error) {
 	*t = JSONTime{&tt}
 	return
 }
+
+// ResponseGetSchema is the response from the GetSchema method.
+type ResponseGetSchema interface{}
