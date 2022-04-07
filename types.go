@@ -74,6 +74,14 @@ type APICallWithPrice struct {
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
 
+// APICallWithPriceResultsPage is a single page of results
+type APICallWithPriceResultsPage struct {
+	// Items is list of items on this page of results
+	Items []APICallWithPrice `json:"items,omitempty" yaml:"items,omitempty"`
+	// NextPage is token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
+}
+
 // APIToken is an API token.
 //
 // These are used to authenticate users with Bearer authentication.
@@ -90,6 +98,14 @@ type APIToken struct {
 	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// UserID is the ID of the user that owns the API token.
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+}
+
+// APITokenResultsPage is a single page of results
+type APITokenResultsPage struct {
+	// Items is list of items on this page of results
+	Items []APIToken `json:"items,omitempty" yaml:"items,omitempty"`
+	// NextPage is token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
 }
 
 // CreatedAtSortMode is supported set of sort modes for scanning by created_at only.
@@ -149,6 +165,14 @@ type ExtendedUser struct {
 	ZendeskID string `json:"zendesk_id,omitempty" yaml:"zendesk_id,omitempty"`
 }
 
+// ExtendedUserResultsPage is a single page of results
+type ExtendedUserResultsPage struct {
+	// Items is list of items on this page of results
+	Items []ExtendedUser `json:"items,omitempty" yaml:"items,omitempty"`
+	// NextPage is token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
+}
+
 // FileConversion is a file conversion.
 //
 // For now, in the database, we only store the file conversions if we performed it asynchronously.
@@ -198,6 +222,14 @@ const (
 	// FileConversionOutputFormatFbxb represents the FileConversionOutputFormat `"fbxb"`.
 	FileConversionOutputFormatFbxb FileConversionOutputFormat = "fbxb"
 )
+
+// FileConversionResultsPage is a single page of results
+type FileConversionResultsPage struct {
+	// Items is list of items on this page of results
+	Items []FileConversion `json:"items,omitempty" yaml:"items,omitempty"`
+	// NextPage is token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
+}
 
 // FileConversionSourceFormat is the valid types of source file formats.
 type FileConversionSourceFormat string
@@ -322,6 +354,14 @@ type User struct {
 	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
 	// UpdatedAt is the date and time the user was last updated.
 	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+}
+
+// UserResultsPage is a single page of results
+type UserResultsPage struct {
+	// Items is list of items on this page of results
+	Items []User `json:"items,omitempty" yaml:"items,omitempty"`
+	// NextPage is token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
 }
 
 // Uuid is a uuid.
