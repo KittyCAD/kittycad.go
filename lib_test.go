@@ -65,6 +65,15 @@ func TestFileConversion(t *testing.T) {
 		t.Fatalf("the file conversion status is not `Completed`: %v", fc.Status)
 	}
 
+	// Make sure we have a started at time.
+	if fc.StartedAt.IsZero() {
+		t.Fatalf("the file conversion started at time is zero")
+	}
+
+	if fc.CompletedAt.IsZero() {
+		t.Fatalf("the file conversion completed at time is zero")
+	}
+
 	if len(output) == 0 {
 		t.Fatalf("the file conversion output is empty")
 	}
