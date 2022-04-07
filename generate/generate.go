@@ -985,6 +985,8 @@ func isLocalObject(v *openapi3.SchemaRef) bool {
 func formatStringType(t *openapi3.Schema) string {
 	if t.Format == "date-time" {
 		return "*JSONTime"
+	} else if t.Format == "partial-date-time" {
+		return "*JSONTime"
 	} else if t.Format == "date" {
 		return "*JSONTime"
 	} else if t.Format == "time" {

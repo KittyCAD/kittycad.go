@@ -31,9 +31,9 @@ const (
 // This is a join of the `APICall` and `APICallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt is the date and time the API call completed billing.
-	CompletedAt string `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
 	// CreatedAt is the date and time the API call was created.
-	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// Duration is the duration of the API call.
 	Duration int `json:"duration,omitempty" yaml:"duration,omitempty"`
 	// Email is the user's email address.
@@ -59,7 +59,7 @@ type APICallWithPrice struct {
 	// ResponseBody is the response body returned by the API call. We do not store this information if it is above a certain size.
 	ResponseBody string `json:"response_body,omitempty" yaml:"response_body,omitempty"`
 	// StartedAt is the date and time the API call started billing.
-	StartedAt string `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
 	// StatusCode is the status code returned by the API call.
 	StatusCode StatusCode `json:"status_code,omitempty" yaml:"status_code,omitempty"`
 	// StripeInvoiceItemID is the Stripe invoice item ID of the API call if it is billable.
@@ -67,7 +67,7 @@ type APICallWithPrice struct {
 	// Token is the API token that made the API call.
 	Token Uuid `json:"token,omitempty" yaml:"token,omitempty"`
 	// UpdatedAt is the date and time the API call was last updated.
-	UpdatedAt string `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// UserAgent is the user agent of the request.
 	UserAgent string `json:"user_agent,omitempty" yaml:"user_agent,omitempty"`
 	// UserID is the ID of the user that made the API call.
@@ -79,7 +79,7 @@ type APICallWithPrice struct {
 // These are used to authenticate users with Bearer authentication.
 type APIToken struct {
 	// CreatedAt is the date and time the API token was created.
-	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// ID is the unique identifier for the API token.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 	// IsValid is if the token is valid. We never delete API tokens, but we can mark them as invalid. We save them for ever to preserve the history of the API token.
@@ -87,7 +87,7 @@ type APIToken struct {
 	// Token is the API token itself.
 	Token Uuid `json:"token,omitempty" yaml:"token,omitempty"`
 	// UpdatedAt is the date and time the API token was last updated.
-	UpdatedAt string `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// UserID is the ID of the user that owns the API token.
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
@@ -118,13 +118,13 @@ type ExtendedUser struct {
 	// Company is the user's company.
 	Company string `json:"company,omitempty" yaml:"company,omitempty"`
 	// CreatedAt is the date and time the user was created.
-	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// Discord is the user's Discord handle.
 	Discord string `json:"discord,omitempty" yaml:"discord,omitempty"`
 	// Email is the email address of the user.
 	Email string `json:"email,omitempty" yaml:"email,omitempty"`
 	// EmailVerified is the date and time the email address was verified.
-	EmailVerified string `json:"email_verified,omitempty" yaml:"email_verified,omitempty"`
+	EmailVerified *JSONTime `json:"email_verified,omitempty" yaml:"email_verified,omitempty"`
 	// FirstName is the user's first name.
 	FirstName string `json:"first_name,omitempty" yaml:"first_name,omitempty"`
 	// Github is the user's GitHub handle.
@@ -144,7 +144,7 @@ type ExtendedUser struct {
 	// StripeID is the user's Stripe ID. This is mostly used for internal mapping.
 	StripeID string `json:"stripe_id,omitempty" yaml:"stripe_id,omitempty"`
 	// UpdatedAt is the date and time the user was last updated.
-	UpdatedAt string `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// ZendeskID is the user's Zendesk ID. This is mostly used for internal mapping.
 	ZendeskID string `json:"zendesk_id,omitempty" yaml:"zendesk_id,omitempty"`
 }
@@ -154,9 +154,9 @@ type ExtendedUser struct {
 // For now, in the database, we only store the file conversions if we performed it asynchronously.
 type FileConversion struct {
 	// CompletedAt is the time and date the file conversion was completed.
-	CompletedAt string `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
 	// CreatedAt is the time and date the file conversion was created.
-	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// ID is the unique identifier of the file conversion.
 	//
 	// This is the same as the API call ID.
@@ -170,11 +170,11 @@ type FileConversion struct {
 	// SrcFormat is the source format of the file conversion.
 	SrcFormat FileConversionSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
 	// StartedAt is the time and date the file conversion was started.
-	StartedAt string `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
 	// Status is the status of the file conversion.
 	Status FileConversionStatus `json:"status,omitempty" yaml:"status,omitempty"`
 	// UpdatedAt is the time and date the file conversion was last updated.
-	UpdatedAt string `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// UserID is the user ID of the user who created the file conversion.
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 	// Worker is the worker node that is performing or performed the file conversion.
@@ -234,9 +234,9 @@ const (
 // FileConversionWithOutput is a file conversion as we ouput it to the user.
 type FileConversionWithOutput struct {
 	// CompletedAt is the time and date the file conversion was completed.
-	CompletedAt string `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
 	// CreatedAt is the time and date the file conversion was created.
-	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// ID is the unique identifier of the file conversion.
 	//
 	// This is the same as the API call ID.
@@ -248,7 +248,7 @@ type FileConversionWithOutput struct {
 	// SrcFormat is the source format of the file conversion.
 	SrcFormat FileConversionSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
 	// StartedAt is the time and date the file conversion was started.
-	StartedAt string `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
 	// Status is the status of the file conversion.
 	Status FileConversionStatus `json:"status,omitempty" yaml:"status,omitempty"`
 	// UserID is the user ID of the user who created the file conversion.
@@ -299,13 +299,13 @@ type User struct {
 	// Company is the user's company.
 	Company string `json:"company,omitempty" yaml:"company,omitempty"`
 	// CreatedAt is the date and time the user was created.
-	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// Discord is the user's Discord handle.
 	Discord string `json:"discord,omitempty" yaml:"discord,omitempty"`
 	// Email is the email address of the user.
 	Email string `json:"email,omitempty" yaml:"email,omitempty"`
 	// EmailVerified is the date and time the email address was verified.
-	EmailVerified string `json:"email_verified,omitempty" yaml:"email_verified,omitempty"`
+	EmailVerified *JSONTime `json:"email_verified,omitempty" yaml:"email_verified,omitempty"`
 	// FirstName is the user's first name.
 	FirstName string `json:"first_name,omitempty" yaml:"first_name,omitempty"`
 	// Github is the user's GitHub handle.
@@ -321,7 +321,7 @@ type User struct {
 	// Phone is the user's phone number.
 	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
 	// UpdatedAt is the date and time the user was last updated.
-	UpdatedAt string `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 }
 
 // Uuid is a uuid.
