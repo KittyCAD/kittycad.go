@@ -756,7 +756,7 @@
           "api-calls"
         ],
         "x-go": {
-          "example": "// GetMetrics: Get API call metrics.\n//\n// This endpoint requires authentication by a KittyCAD employee. The API calls are grouped by the parameter passed.\n//\n// Parameters:\n//\t- `groupBy`\nApiCallQueryGroup, err := client.APICall.GetMetrics(groupBy)",
+          "example": "// GetMetrics: Get API call metrics.\n//\n// This endpoint requires authentication by a KittyCAD employee. The API calls are grouped by the parameter passed.\n//\n// Parameters:\n//\t- `groupBy`\nAPICallQueryGroup, err := client.APICall.GetMetrics(groupBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.GetMetrics"
         }
       }
@@ -859,7 +859,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// List: List API calls.\n//\n// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `ListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nApiCallWithPrice, err := client.APICall.List(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListAllPages: List API calls.\n//\n// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// This method is a wrapper around the `List` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\napiCallWithPrice, err := client.APICall.ListAllPages(sortBy)",
+          "example": "// List: List API calls.\n//\n// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `ListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nAPICallWithPrice, err := client.APICall.List(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.List"
         }
       }
@@ -937,7 +937,7 @@
           "api-calls"
         ],
         "x-go": {
-          "example": "// Get: Get details of an API call.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.\n// If the user is not authenticated to view the specified API call, then it is not returned.\n// Only KittyCAD employees can view API calls for other users.\n//\n// Parameters:\n//\t- `id`: The ID of the API call.\napiCallWithPrice, err := client.APICall.Get(id)",
+          "example": "// Get: Get details of an API call.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.\n// If the user is not authenticated to view the specified API call, then it is not returned.\n// Only KittyCAD employees can view API calls for other users.\n//\n// Parameters:\n//\t- `id`: The ID of the API call.\naPICallWithPrice, err := client.APICall.Get(id)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.Get"
         }
       }
@@ -1139,7 +1139,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// ListConversions: List file conversions.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by a KittyCAD employee.\n//\n// To iterate over all pages, use the `ListConversionsAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nFileConversion, err := client.File.ListConversions(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListConversionsAllPages: List file conversions.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by a KittyCAD employee.\n//\n// This method is a wrapper around the `ListConversions` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nfileConversion, err := client.File.ListConversionsAllPages(sortBy)",
+          "example": "// ListConversions: List file conversions.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by a KittyCAD employee.\n//\n// To iterate over all pages, use the `ListConversionsAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nFileConversion, err := client.File.ListConversions(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.ListConversions"
         }
       }
@@ -1452,7 +1452,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// UserList: List API calls for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `UserListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nApiCallWithPrice, err := client.APICall.UserList(limit, pageToken, sortBy)\n\n// - OR -\n\n// UserListAllPages: List API calls for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// This method is a wrapper around the `UserList` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\napiCallWithPrice, err := client.APICall.UserListAllPages(sortBy)",
+          "example": "// UserList: List API calls for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `UserListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nAPICallWithPrice, err := client.APICall.UserList(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.UserList"
         }
       }
@@ -1530,7 +1530,7 @@
           "api-calls"
         ],
         "x-go": {
-          "example": "// GetForUser: Get an API call for a user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.\n//\n// Parameters:\n//\t- `id`: The ID of the API call.\napiCallWithPrice, err := client.APICall.GetForUser(id)",
+          "example": "// GetForUser: Get an API call for a user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.\n//\n// Parameters:\n//\t- `id`: The ID of the API call.\naPICallWithPrice, err := client.APICall.GetForUser(id)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.GetForUser"
         }
       }
@@ -1633,7 +1633,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// ListForUser: List API tokens for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The API tokens are returned in order of creation, with the most recently created API tokens first.\n//\n// To iterate over all pages, use the `ListForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nApiToken, err := client.APIToken.ListForUser(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListForUserAllPages: List API tokens for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The API tokens are returned in order of creation, with the most recently created API tokens first.\n//\n// This method is a wrapper around the `ListForUser` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\napiToken, err := client.APIToken.ListForUserAllPages(sortBy)",
+          "example": "// ListForUser: List API tokens for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The API tokens are returned in order of creation, with the most recently created API tokens first.\n//\n// To iterate over all pages, use the `ListForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nAPIToken, err := client.APIToken.ListForUser(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.ListForUser"
         }
       },
@@ -1697,7 +1697,7 @@
           "api-tokens"
         ],
         "x-go": {
-          "example": "// CreateForUser: Create a new API token for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.\napiToken, err := client.APIToken.CreateForUser()",
+          "example": "// CreateForUser: Create a new API token for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.\naPIToken, err := client.APIToken.CreateForUser()",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.CreateForUser"
         }
       }
@@ -1846,7 +1846,7 @@
           "api-tokens"
         ],
         "x-go": {
-          "example": "// GetForUser: Get an API token for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.\n//\n// Parameters:\n//\t- `token`: The API token.\napiToken, err := client.APIToken.GetForUser(token)",
+          "example": "// GetForUser: Get an API token for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.\n//\n// Parameters:\n//\t- `token`: The API token.\naPIToken, err := client.APIToken.GetForUser(token)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.GetForUser"
         }
       }
@@ -2015,7 +2015,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// ListConversionsForUser: List file conversions for your user.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The file conversions are returned in order of creation, with the most recently created file conversions first.\n//\n// To iterate over all pages, use the `ListConversionsForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nFileConversion, err := client.File.ListConversionsForUser(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListConversionsForUserAllPages: List file conversions for your user.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The file conversions are returned in order of creation, with the most recently created file conversions first.\n//\n// This method is a wrapper around the `ListConversionsForUser` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nfileConversion, err := client.File.ListConversionsForUserAllPages(sortBy)",
+          "example": "// ListConversionsForUser: List file conversions for your user.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The file conversions are returned in order of creation, with the most recently created file conversions first.\n//\n// To iterate over all pages, use the `ListConversionsForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nFileConversion, err := client.File.ListConversionsForUser(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.ListConversionsForUser"
         }
       }
@@ -2196,7 +2196,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// List: List users.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// To iterate over all pages, use the `ListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nUser, err := client.User.List(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListAllPages: List users.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// This method is a wrapper around the `List` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nuser, err := client.User.ListAllPages(sortBy)",
+          "example": "// List: List users.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// To iterate over all pages, use the `ListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nUser, err := client.User.List(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.List"
         }
       }
@@ -2299,7 +2299,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// ListExtended: List users with extended information.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// To iterate over all pages, use the `ListExtendedAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nExtendedUser, err := client.User.ListExtended(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListExtendedAllPages: List users with extended information.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// This method is a wrapper around the `ListExtended` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nextendedUser, err := client.User.ListExtendedAllPages(sortBy)",
+          "example": "// ListExtended: List users with extended information.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// To iterate over all pages, use the `ListExtendedAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nExtendedUser, err := client.User.ListExtended(limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.ListExtended"
         }
       }
@@ -2568,7 +2568,7 @@
         ],
         "x-dropshot-pagination": true,
         "x-go": {
-          "example": "// ListForUser: List API calls for a user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if \"me\" is passed as the user id.\n// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.\n// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `ListForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `id`: The user ID.\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nApiCallWithPrice, err := client.APICall.ListForUser(id, limit, pageToken, sortBy)\n\n// - OR -\n\n// ListForUserAllPages: List API calls for a user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if \"me\" is passed as the user id.\n// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.\n// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// This method is a wrapper around the `ListForUser` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `id`: The user ID.\n//\t- `sortBy`\napiCallWithPrice, err := client.APICall.ListForUserAllPages(id , sortBy)",
+          "example": "// ListForUser: List API calls for a user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if \"me\" is passed as the user id.\n// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.\n// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `ListForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `id`: The user ID.\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nAPICallWithPrice, err := client.APICall.ListForUser(id, limit, pageToken, sortBy)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.ListForUser"
         }
       }

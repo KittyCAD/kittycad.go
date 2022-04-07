@@ -17,23 +17,12 @@ func getClient(t *testing.T) *Client {
 
 func TestGetSession(t *testing.T) {
 	client := getClient(t)
-	session, err := client.Meta.AuthSession()
+	session, err := client.User.GetSelf()
 	if err != nil {
 		t.Fatalf("getting the session failed: %v", err)
 	}
 	if session.ID == "" {
 		t.Fatalf("the session ID is empty")
-	}
-}
-
-func TestGetInstance(t *testing.T) {
-	client := getClient(t)
-	instance, err := client.Meta.InstanceMetadata()
-	if err != nil {
-		t.Fatalf("getting the instance failed: %v", err)
-	}
-	if instance.ID == "" {
-		t.Fatalf("the instance ID is empty")
 	}
 }
 
@@ -63,7 +52,7 @@ func TestFileConversion(t *testing.T) {
 		t.Fatalf("reading the test file %q failed: %v", file, err)
 	}
 
-	fc, output, err := client.File.ConvertWithBase64Helper(ValidSourceFileFormatStl, ValidOutputFileFormatObj, body)
+	fc, output, err := client.File.ConvertWithBase64Helper(FileConversionSourceFormatStl, FileConversionOutputFormatObj, body)
 	if err != nil {
 		t.Fatalf("getting the file conversion failed: %v", err)
 	}

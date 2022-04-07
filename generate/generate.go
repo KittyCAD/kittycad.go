@@ -313,6 +313,8 @@ func printProperty(p string) string {
 		c = strings.TrimSuffix(c, "Id") + "ID"
 	}
 
+	c = strings.ReplaceAll(c, "Api", "API")
+
 	return c
 }
 
@@ -733,7 +735,9 @@ func writeMethod(doc *openapi3.T, f *os.File, method string, path string, o *ope
 
 	if pageResult && !isGetAllPages {
 		// Run the method again with get all pages.
-		writeMethod(doc, f, method, path, o, true)
+		// Skip doing all pages for now.
+		// TODO: make all pages work.
+		//	writeMethod(doc, f, method, path, o, true)
 	}
 }
 
@@ -771,7 +775,7 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool) (string, 
 
 				items := content.Schema.Value.Items
 				if items != nil {
-					getAllPagesType = printType("", items)
+					getAllPagesType = fmt.Sprintf("[]%s", printType("", items))
 				} else {
 					fmt.Printf("[WARN] TODO: skipping response for %q, since it is a get all pages response and has no `items` property:\n%#v\n", o.OperationID, content.Schema.Value.Properties)
 				}
@@ -799,7 +803,7 @@ func writeSchemaType(f *os.File, name string, s *openapi3.Schema, additionalName
 	fmt.Printf("writing type for schema %q -> %s\n", name, otype)
 
 	name = printProperty(name)
-	typeName := strings.TrimSpace(fmt.Sprintf("%s%s", name, printProperty(additionalName)))
+	typeName := strings.ReplaceAll(strings.TrimSpace(fmt.Sprintf("%s%s", name, printProperty(additionalName))), "Api", "API")
 
 	if len(s.Enum) == 0 && s.OneOf == nil {
 		// Write the type description.
@@ -1056,7 +1060,7 @@ func getReferenceSchema(v *openapi3.SchemaRef) string {
 			return printProperty(makeSingular(ref))
 		}
 
-		return printProperty(ref)
+		return strings.ReplaceAll(printProperty(ref), "Api", "API")
 	}
 
 	return ""

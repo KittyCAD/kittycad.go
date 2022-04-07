@@ -10,8 +10,8 @@ import (
 // This function will automatically base64 decode the contents of the result output.
 //
 // This function is a wrapper around the FileConversionByID function.
-func (c *FileService) ConversionByIDWithBase64Helper(id string) (*FileConversion, []byte, error) {
-	resp, err := c.ConversionStatus(id)
+func (c *FileService) ConversionByIDWithBase64Helper(id string) (*FileConversionWithOutput, []byte, error) {
+	resp, err := c.GetConversion(id)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -34,7 +34,7 @@ func (c *FileService) ConversionByIDWithBase64Helper(id string) (*FileConversion
 // src file and output file.
 //
 // This function is a wrapper around the FileConvert function.
-func (c *FileService) ConvertWithBase64Helper(srcFormat FileConversionSourceFormat, outputFormat FileConversionOutputFormat, body []byte) (*FileConversion, []byte, error) {
+func (c *FileService) ConvertWithBase64Helper(srcFormat FileConversionSourceFormat, outputFormat FileConversionOutputFormat, body []byte) (*FileConversionWithOutput, []byte, error) {
 	var b bytes.Buffer
 	encoder := base64.NewEncoder(base64.StdEncoding, &b)
 	// Encode the body as base64.
@@ -43,7 +43,7 @@ func (c *FileService) ConvertWithBase64Helper(srcFormat FileConversionSourceForm
 	// If you comment out the following line, the last partial block "r"
 	// won't be encoded.
 	encoder.Close()
-	resp, err := c.PostConversion(srcFormat, outputFormat, &b)
+	resp, err := c.CreateConversion(outputFormat, srcFormat, &b)
 	if err != nil {
 		return nil, nil, err
 	}

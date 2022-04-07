@@ -49,7 +49,7 @@ func (s *MetaService) GetSchema() (*ResponseGetSchema, error) {
 //
 // Parameters:
 //	- `groupBy`
-func (s *APICallService) GetMetrics(groupBy ApiCallQueryGroupBy) (*[]ApiCallQueryGroup, error) {
+func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQueryGroup, error) {
 	// Create the url.
 	path := "/api-call-metrics"
 	uri := resolveRelative(s.client.server, path)
@@ -78,7 +78,7 @@ func (s *APICallService) GetMetrics(groupBy ApiCallQueryGroupBy) (*[]ApiCallQuer
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []ApiCallQueryGroup
+	var body []APICallQueryGroup
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -96,7 +96,7 @@ func (s *APICallService) GetMetrics(groupBy ApiCallQueryGroupBy) (*[]ApiCallQuer
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]ApiCallWithPrice, error) {
+func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
 	// Create the url.
 	path := "/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -127,7 +127,7 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []ApiCallWithPrice
+	var body []APICallWithPrice
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -135,34 +135,7 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 	return &body, nil
 }
 
-// ListAllPages: List API calls.
-//
-// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.
-//
-// This method is a wrapper around the `List` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *APICallService) ListAllPages(sortBy CreatedAtSortMode) (*ApiCallWithPrice, error) {
-
-	var allPages ApiCallWithPrice
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.List(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // Get: Get details of an API call.
+// Get: Get details of an API call.
 //
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
 // If the user is not authenticated to view the specified API call, then it is not returned.
@@ -170,7 +143,7 @@ func (s *APICallService) ListAllPages(sortBy CreatedAtSortMode) (*ApiCallWithPri
 //
 // Parameters:
 //	- `id`: The ID of the API call.
-func (s *APICallService) Get(id string) (*ApiCallWithPrice, error) {
+func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 	// Create the url.
 	path := "/api-calls/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -199,7 +172,7 @@ func (s *APICallService) Get(id string) (*ApiCallWithPrice, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ApiCallWithPrice
+	var body APICallWithPrice
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -304,35 +277,7 @@ func (s *FileService) ListConversions(limit int, pageToken string, sortBy Create
 	return &body, nil
 }
 
-// ListConversionsAllPages: List file conversions.
-//
-// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.
-// This endpoint requires authentication by a KittyCAD employee.
-//
-// This method is a wrapper around the `ListConversions` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *FileService) ListConversionsAllPages(sortBy CreatedAtSortMode) (*FileConversion, error) {
-
-	var allPages FileConversion
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListConversions(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // GetConversion: Get a file conversion.
+// GetConversion: Get a file conversion.
 //
 // Get the status and output of an async file conversion.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.
@@ -456,7 +401,7 @@ func (s *UserService) GetSelf() (*User, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]ApiCallWithPrice, error) {
+func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
 	// Create the url.
 	path := "/user/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -487,7 +432,7 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []ApiCallWithPrice
+	var body []APICallWithPrice
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -495,41 +440,13 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 	return &body, nil
 }
 
-// UserListAllPages: List API calls for your user.
-//
-// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.
-// The API calls are returned in order of creation, with the most recently created API calls first.
-//
-// This method is a wrapper around the `UserList` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *APICallService) UserListAllPages(sortBy CreatedAtSortMode) (*ApiCallWithPrice, error) {
-
-	var allPages ApiCallWithPrice
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.UserList(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // GetForUser: Get an API call for a user.
+// GetForUser: Get an API call for a user.
 //
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
 //
 // Parameters:
 //	- `id`: The ID of the API call.
-func (s *APICallService) GetForUser(id string) (*ApiCallWithPrice, error) {
+func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 	// Create the url.
 	path := "/user/api-calls/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -558,7 +475,7 @@ func (s *APICallService) GetForUser(id string) (*ApiCallWithPrice, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ApiCallWithPrice
+	var body APICallWithPrice
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -577,7 +494,7 @@ func (s *APICallService) GetForUser(id string) (*ApiCallWithPrice, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]ApiToken, error) {
+func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*[]APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens"
 	uri := resolveRelative(s.client.server, path)
@@ -608,7 +525,7 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []ApiToken
+	var body []APIToken
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -616,38 +533,10 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 	return &body, nil
 }
 
-// ListForUserAllPages: List API tokens for your user.
-//
-// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
-// The API tokens are returned in order of creation, with the most recently created API tokens first.
-//
-// This method is a wrapper around the `ListForUser` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *APITokenService) ListForUserAllPages(sortBy CreatedAtSortMode) (*ApiToken, error) {
-
-	var allPages ApiToken
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListForUser(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // CreateForUser: Create a new API token for your user.
+// CreateForUser: Create a new API token for your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.
-func (s *APITokenService) CreateForUser() (*ApiToken, error) {
+func (s *APITokenService) CreateForUser() (*APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens"
 	uri := resolveRelative(s.client.server, path)
@@ -670,7 +559,7 @@ func (s *APITokenService) CreateForUser() (*ApiToken, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ApiToken
+	var body APIToken
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -684,7 +573,7 @@ func (s *APITokenService) CreateForUser() (*ApiToken, error) {
 //
 // Parameters:
 //	- `token`: The API token.
-func (s *APITokenService) GetForUser(token string) (*ApiToken, error) {
+func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -713,7 +602,7 @@ func (s *APITokenService) GetForUser(token string) (*ApiToken, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ApiToken
+	var body APIToken
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -843,36 +732,7 @@ func (s *FileService) ListConversionsForUser(limit int, pageToken string, sortBy
 	return &body, nil
 }
 
-// ListConversionsForUserAllPages: List file conversions for your user.
-//
-// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.
-// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
-// The file conversions are returned in order of creation, with the most recently created file conversions first.
-//
-// This method is a wrapper around the `ListConversionsForUser` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *FileService) ListConversionsForUserAllPages(sortBy CreatedAtSortMode) (*FileConversion, error) {
-
-	var allPages FileConversion
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListConversionsForUser(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // GetConversionForUser: Get a file conversion for your user.
+// GetConversionForUser: Get a file conversion for your user.
 //
 // Get the status and output of an async file conversion. If completed, the contents of the converted file (`output`) will be returned as a base64 encoded string.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.
@@ -965,34 +825,7 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 	return &body, nil
 }
 
-// ListAllPages: List users.
-//
-// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
-//
-// This method is a wrapper around the `List` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *UserService) ListAllPages(sortBy CreatedAtSortMode) (*User, error) {
-
-	var allPages User
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.List(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // ListExtended: List users with extended information.
+// ListExtended: List users with extended information.
 //
 // This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
 //
@@ -1041,34 +874,7 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 	return &body, nil
 }
 
-// ListExtendedAllPages: List users with extended information.
-//
-// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
-//
-// This method is a wrapper around the `ListExtended` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *UserService) ListExtendedAllPages(sortBy CreatedAtSortMode) (*ExtendedUser, error) {
-
-	var allPages ExtendedUser
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListExtended(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // GetExtended: Get extended information about a user.
+// GetExtended: Get extended information about a user.
 //
 // To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
@@ -1172,7 +978,7 @@ func (s *UserService) Get(id string) (*User, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*[]ApiCallWithPrice, error) {
+func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
 	// Create the url.
 	path := "/users/{{.id}}/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -1204,43 +1010,10 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []ApiCallWithPrice
+	var body []APICallWithPrice
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 	// Return the response.
 	return &body, nil
-}
-
-// ListForUserAllPages: List API calls for a user.
-//
-// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if "me" is passed as the user id.
-// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.
-// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.
-// The API calls are returned in order of creation, with the most recently created API calls first.
-//
-// This method is a wrapper around the `ListForUser` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `id`: The user ID.
-//	- `sortBy`
-func (s *APICallService) ListForUserAllPages(id string, sortBy CreatedAtSortMode) (*ApiCallWithPrice, error) {
-
-	var allPages ApiCallWithPrice
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListForUser(id, limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
 }

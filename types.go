@@ -2,34 +2,34 @@
 
 package kittycad
 
-// ApiCallQueryGroup is a response for a query on the API call table that is grouped by something.
-type ApiCallQueryGroup struct {
+// APICallQueryGroup is a response for a query on the API call table that is grouped by something.
+type APICallQueryGroup struct {
 	Count int    `json:"count,omitempty" yaml:"count,omitempty"`
 	Query string `json:"query,omitempty" yaml:"query,omitempty"`
 }
 
-// ApiCallQueryGroupBy is the field of an API call to group by.
-type ApiCallQueryGroupBy string
+// APICallQueryGroupBy is the field of an API call to group by.
+type APICallQueryGroupBy string
 
 const (
-	// ApiCallQueryGroupByEmail represents the ApiCallQueryGroupBy `"email"`.
-	ApiCallQueryGroupByEmail ApiCallQueryGroupBy = "email"
-	// ApiCallQueryGroupByMethod represents the ApiCallQueryGroupBy `"method"`.
-	ApiCallQueryGroupByMethod ApiCallQueryGroupBy = "method"
-	// ApiCallQueryGroupByEndpoint represents the ApiCallQueryGroupBy `"endpoint"`.
-	ApiCallQueryGroupByEndpoint ApiCallQueryGroupBy = "endpoint"
-	// ApiCallQueryGroupByUserId represents the ApiCallQueryGroupBy `"user_id"`.
-	ApiCallQueryGroupByUserId ApiCallQueryGroupBy = "user_id"
-	// ApiCallQueryGroupByOrigin represents the ApiCallQueryGroupBy `"origin"`.
-	ApiCallQueryGroupByOrigin ApiCallQueryGroupBy = "origin"
-	// ApiCallQueryGroupByIpAddress represents the ApiCallQueryGroupBy `"ip_address"`.
-	ApiCallQueryGroupByIpAddress ApiCallQueryGroupBy = "ip_address"
+	// APICallQueryGroupByEmail represents the APICallQueryGroupBy `"email"`.
+	APICallQueryGroupByEmail APICallQueryGroupBy = "email"
+	// APICallQueryGroupByMethod represents the APICallQueryGroupBy `"method"`.
+	APICallQueryGroupByMethod APICallQueryGroupBy = "method"
+	// APICallQueryGroupByEndpoint represents the APICallQueryGroupBy `"endpoint"`.
+	APICallQueryGroupByEndpoint APICallQueryGroupBy = "endpoint"
+	// APICallQueryGroupByUserId represents the APICallQueryGroupBy `"user_id"`.
+	APICallQueryGroupByUserId APICallQueryGroupBy = "user_id"
+	// APICallQueryGroupByOrigin represents the APICallQueryGroupBy `"origin"`.
+	APICallQueryGroupByOrigin APICallQueryGroupBy = "origin"
+	// APICallQueryGroupByIpAddress represents the APICallQueryGroupBy `"ip_address"`.
+	APICallQueryGroupByIpAddress APICallQueryGroupBy = "ip_address"
 )
 
-// ApiCallWithPrice is an API call with the price.
+// APICallWithPrice is an API call with the price.
 //
 // This is a join of the `APICall` and `APICallPrice` tables.
-type ApiCallWithPrice struct {
+type APICallWithPrice struct {
 	// CompletedAt is the date and time the API call completed billing.
 	CompletedAt string `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
 	// CreatedAt is the date and time the API call was created.
@@ -74,10 +74,10 @@ type ApiCallWithPrice struct {
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
 
-// ApiToken is an API token.
+// APIToken is an API token.
 //
 // These are used to authenticate users with Bearer authentication.
-type ApiToken struct {
+type APIToken struct {
 	// CreatedAt is the date and time the API token was created.
 	CreatedAt string `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// ID is the unique identifier for the API token.
@@ -323,14 +323,14 @@ type User struct {
 // A Version 4 UUID is a universally unique identifier that is generated using random numbers.
 type Uuid string
 
-// ApiCallQueryGroupBys is the collection of all ApiCallQueryGroupBy values.
-var ApiCallQueryGroupBys = []ApiCallQueryGroupBy{
-	ApiCallQueryGroupByEmail,
-	ApiCallQueryGroupByEndpoint,
-	ApiCallQueryGroupByIpAddress,
-	ApiCallQueryGroupByMethod,
-	ApiCallQueryGroupByOrigin,
-	ApiCallQueryGroupByUserId,
+// APICallQueryGroupBys is the collection of all APICallQueryGroupBy values.
+var APICallQueryGroupBys = []APICallQueryGroupBy{
+	APICallQueryGroupByEmail,
+	APICallQueryGroupByEndpoint,
+	APICallQueryGroupByIpAddress,
+	APICallQueryGroupByMethod,
+	APICallQueryGroupByOrigin,
+	APICallQueryGroupByUserId,
 }
 
 // CreatedAtSortModes is the collection of all CreatedAtSortMode values.
