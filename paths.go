@@ -135,7 +135,34 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 	return &body, nil
 }
 
-// Get: Get details of an API call.
+// ListAllPages: List API calls.
+//
+// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.
+//
+// This method is a wrapper around the `List` method.
+// This method returns all the pages at once.
+//
+// Parameters:
+//	- `sortBy`
+func (s *APICallService) ListAllPages(sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
+
+	var allPages []APICallWithPrice
+	pageToken := ""
+	limit := 100
+	for {
+		page, err := s.List(limit, pageToken, sortBy)
+		if err != nil {
+			return nil, err
+		}
+		allPages = append(allPages, page.Items...)
+		if page.NextPage == "" {
+			break
+		}
+		pageToken = page.NextPage
+	}
+
+	return &allPages, nil
+} // Get: Get details of an API call.
 //
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
 // If the user is not authenticated to view the specified API call, then it is not returned.
@@ -277,7 +304,35 @@ func (s *FileService) ListConversions(limit int, pageToken string, sortBy Create
 	return &body, nil
 }
 
-// GetConversion: Get a file conversion.
+// ListConversionsAllPages: List file conversions.
+//
+// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.
+// This endpoint requires authentication by a KittyCAD employee.
+//
+// This method is a wrapper around the `ListConversions` method.
+// This method returns all the pages at once.
+//
+// Parameters:
+//	- `sortBy`
+func (s *FileService) ListConversionsAllPages(sortBy CreatedAtSortMode) (*[]FileConversion, error) {
+
+	var allPages []FileConversion
+	pageToken := ""
+	limit := 100
+	for {
+		page, err := s.ListConversions(limit, pageToken, sortBy)
+		if err != nil {
+			return nil, err
+		}
+		allPages = append(allPages, page.Items...)
+		if page.NextPage == "" {
+			break
+		}
+		pageToken = page.NextPage
+	}
+
+	return &allPages, nil
+} // GetConversion: Get a file conversion.
 //
 // Get the status and output of an async file conversion.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.
@@ -440,7 +495,35 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 	return &body, nil
 }
 
-// GetForUser: Get an API call for a user.
+// UserListAllPages: List API calls for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.
+// The API calls are returned in order of creation, with the most recently created API calls first.
+//
+// This method is a wrapper around the `UserList` method.
+// This method returns all the pages at once.
+//
+// Parameters:
+//	- `sortBy`
+func (s *APICallService) UserListAllPages(sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
+
+	var allPages []APICallWithPrice
+	pageToken := ""
+	limit := 100
+	for {
+		page, err := s.UserList(limit, pageToken, sortBy)
+		if err != nil {
+			return nil, err
+		}
+		allPages = append(allPages, page.Items...)
+		if page.NextPage == "" {
+			break
+		}
+		pageToken = page.NextPage
+	}
+
+	return &allPages, nil
+} // GetForUser: Get an API call for a user.
 //
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
 //
@@ -533,7 +616,35 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 	return &body, nil
 }
 
-// CreateForUser: Create a new API token for your user.
+// ListForUserAllPages: List API tokens for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
+// The API tokens are returned in order of creation, with the most recently created API tokens first.
+//
+// This method is a wrapper around the `ListForUser` method.
+// This method returns all the pages at once.
+//
+// Parameters:
+//	- `sortBy`
+func (s *APITokenService) ListForUserAllPages(sortBy CreatedAtSortMode) (*[]APIToken, error) {
+
+	var allPages []APIToken
+	pageToken := ""
+	limit := 100
+	for {
+		page, err := s.ListForUser(limit, pageToken, sortBy)
+		if err != nil {
+			return nil, err
+		}
+		allPages = append(allPages, page.Items...)
+		if page.NextPage == "" {
+			break
+		}
+		pageToken = page.NextPage
+	}
+
+	return &allPages, nil
+} // CreateForUser: Create a new API token for your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.
 func (s *APITokenService) CreateForUser() (*APIToken, error) {
@@ -732,7 +843,36 @@ func (s *FileService) ListConversionsForUser(limit int, pageToken string, sortBy
 	return &body, nil
 }
 
-// GetConversionForUser: Get a file conversion for your user.
+// ListConversionsForUserAllPages: List file conversions for your user.
+//
+// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.
+// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
+// The file conversions are returned in order of creation, with the most recently created file conversions first.
+//
+// This method is a wrapper around the `ListConversionsForUser` method.
+// This method returns all the pages at once.
+//
+// Parameters:
+//	- `sortBy`
+func (s *FileService) ListConversionsForUserAllPages(sortBy CreatedAtSortMode) (*[]FileConversion, error) {
+
+	var allPages []FileConversion
+	pageToken := ""
+	limit := 100
+	for {
+		page, err := s.ListConversionsForUser(limit, pageToken, sortBy)
+		if err != nil {
+			return nil, err
+		}
+		allPages = append(allPages, page.Items...)
+		if page.NextPage == "" {
+			break
+		}
+		pageToken = page.NextPage
+	}
+
+	return &allPages, nil
+} // GetConversionForUser: Get a file conversion for your user.
 //
 // Get the status and output of an async file conversion. If completed, the contents of the converted file (`output`) will be returned as a base64 encoded string.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.
@@ -825,7 +965,34 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 	return &body, nil
 }
 
-// ListExtended: List users with extended information.
+// ListAllPages: List users.
+//
+// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
+//
+// This method is a wrapper around the `List` method.
+// This method returns all the pages at once.
+//
+// Parameters:
+//	- `sortBy`
+func (s *UserService) ListAllPages(sortBy CreatedAtSortMode) (*[]User, error) {
+
+	var allPages []User
+	pageToken := ""
+	limit := 100
+	for {
+		page, err := s.List(limit, pageToken, sortBy)
+		if err != nil {
+			return nil, err
+		}
+		allPages = append(allPages, page.Items...)
+		if page.NextPage == "" {
+			break
+		}
+		pageToken = page.NextPage
+	}
+
+	return &allPages, nil
+} // ListExtended: List users with extended information.
 //
 // This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
 //
@@ -874,7 +1041,34 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 	return &body, nil
 }
 
-// GetExtended: Get extended information about a user.
+// ListExtendedAllPages: List users with extended information.
+//
+// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
+//
+// This method is a wrapper around the `ListExtended` method.
+// This method returns all the pages at once.
+//
+// Parameters:
+//	- `sortBy`
+func (s *UserService) ListExtendedAllPages(sortBy CreatedAtSortMode) (*[]ExtendedUser, error) {
+
+	var allPages []ExtendedUser
+	pageToken := ""
+	limit := 100
+	for {
+		page, err := s.ListExtended(limit, pageToken, sortBy)
+		if err != nil {
+			return nil, err
+		}
+		allPages = append(allPages, page.Items...)
+		if page.NextPage == "" {
+			break
+		}
+		pageToken = page.NextPage
+	}
+
+	return &allPages, nil
+} // GetExtended: Get extended information about a user.
 //
 // To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
@@ -1016,4 +1210,37 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 	}
 	// Return the response.
 	return &body, nil
+}
+
+// ListForUserAllPages: List API calls for a user.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if "me" is passed as the user id.
+// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.
+// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.
+// The API calls are returned in order of creation, with the most recently created API calls first.
+//
+// This method is a wrapper around the `ListForUser` method.
+// This method returns all the pages at once.
+//
+// Parameters:
+//	- `id`: The user ID.
+//	- `sortBy`
+func (s *APICallService) ListForUserAllPages(id string, sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
+
+	var allPages []APICallWithPrice
+	pageToken := ""
+	limit := 100
+	for {
+		page, err := s.ListForUser(id, limit, pageToken, sortBy)
+		if err != nil {
+			return nil, err
+		}
+		allPages = append(allPages, page.Items...)
+		if page.NextPage == "" {
+			break
+		}
+		pageToken = page.NextPage
+	}
+
+	return &allPages, nil
 }

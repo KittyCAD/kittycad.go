@@ -736,8 +736,7 @@ func writeMethod(doc *openapi3.T, f *os.File, method string, path string, o *ope
 	if pageResult && !isGetAllPages {
 		// Run the method again with get all pages.
 		// Skip doing all pages for now.
-		// TODO: make all pages work.
-		//	writeMethod(doc, f, method, path, o, true)
+		writeMethod(doc, f, method, path, o, true)
 	}
 }
 
@@ -773,9 +772,8 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool) (string, 
 			getAllPagesType := ""
 			if isGetAllPages {
 
-				items := content.Schema.Value.Items
-				if items != nil {
-					getAllPagesType = fmt.Sprintf("[]%s", printType("", items))
+				if items, ok := content.Schema.Value.Properties["items"]; ok {
+					getAllPagesType = printType("", items)
 				} else {
 					fmt.Printf("[WARN] TODO: skipping response for %q, since it is a get all pages response and has no `items` property:\n%#v\n", o.OperationID, content.Schema.Value.Properties)
 				}
