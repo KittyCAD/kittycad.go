@@ -324,7 +324,7 @@ func (s *FileService) GetConversion(id string) (*FileConversionWithOutput, error
 }
 
 // Ping: Return pong.
-func (s *MetaService) Ping() (*ResponsePing, error) {
+func (s *MetaService) Ping() (*Pong, error) {
 	// Create the url.
 	path := "/ping"
 	uri := resolveRelative(s.client.server, path)
@@ -347,7 +347,7 @@ func (s *MetaService) Ping() (*ResponsePing, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ResponsePing
+	var body Pong
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

@@ -285,6 +285,12 @@ const (
 	MethodEXTENSION Method = "EXTENSION"
 )
 
+// Pong is the type definition for a Pong.
+type Pong struct {
+	// Message is the pong response.
+	Message string `json:"message,omitempty" yaml:"message,omitempty"`
+}
+
 // StatusCode is the type definition for a StatusCode.
 type StatusCode int
 
