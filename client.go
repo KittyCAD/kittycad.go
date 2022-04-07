@@ -15,23 +15,23 @@ type Client struct {
 
 	// token is the API token used for authentication.
 	token string
-	// ApiCalls: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
-	ApiCalls *ApiCallsService
-	// ApiTokens: API tokens allow users to call the API outside of their session token that is used as a cookie in the user interface. Users can create, delete, and list their API tokens. But, of course, you need an API token to do this, so first be sure to generate one in the account UI.
-	ApiTokens *ApiTokensService
+	// APICall: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
+	APICall *APICallService
+	// APIToken: API tokens allow users to call the API outside of their session token that is used as a cookie in the user interface. Users can create, delete, and list their API tokens. But, of course, you need an API token to do this, so first be sure to generate one in the account UI.
+	APIToken *APITokenService
 	// File: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 	File *FileService
 	// Meta: Meta information about the API.
 	Meta *MetaService
-	// Users: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
-	Users *UsersService
+	// User: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
+	User *UserService
 }
 
-// ApiCallsService: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
-type ApiCallsService service
+// APICallService: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
+type APICallService service
 
-// ApiTokensService: API tokens allow users to call the API outside of their session token that is used as a cookie in the user interface. Users can create, delete, and list their API tokens. But, of course, you need an API token to do this, so first be sure to generate one in the account UI.
-type ApiTokensService service
+// APITokenService: API tokens allow users to call the API outside of their session token that is used as a cookie in the user interface. Users can create, delete, and list their API tokens. But, of course, you need an API token to do this, so first be sure to generate one in the account UI.
+type APITokenService service
 
 // FileService: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 type FileService service
@@ -39,5 +39,5 @@ type FileService service
 // MetaService: Meta information about the API.
 type MetaService service
 
-// UsersService: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
-type UsersService service
+// UserService: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
+type UserService service
