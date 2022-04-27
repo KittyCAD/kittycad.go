@@ -372,8 +372,11 @@ func printType(property string, r *openapi3.SchemaRef) string {
 		}
 
 		// TODO: handle if it is not a reference.
-		return "[]TODO"
+		return "[]string"
 	} else if t == "object" {
+		if s.AdditionalProperties != nil {
+			return printType(property, s.AdditionalProperties)
+		}
 		// Most likely this is a local object, we will handle it.
 		return strcase.ToCamel(property)
 	}

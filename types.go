@@ -108,6 +108,22 @@ type APITokenResultsPage struct {
 	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
 }
 
+// Cluster is cluster information.
+type Cluster struct {
+	// Addr is the IP address of the cluster.
+	Addr string `json:"addr,omitempty" yaml:"addr,omitempty"`
+	// AuthTimeout is the auth timeout of the cluster.
+	AuthTimeout int `json:"auth_timeout,omitempty" yaml:"auth_timeout,omitempty"`
+	// ClusterPort is the port of the cluster.
+	ClusterPort int `json:"cluster_port,omitempty" yaml:"cluster_port,omitempty"`
+	// Name is the name of the cluster.
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+	// TlsTimeout is the TLS timeout for the cluster.
+	TlsTimeout int `json:"tls_timeout,omitempty" yaml:"tls_timeout,omitempty"`
+	// Urls is the urls of the cluster.
+	Urls []string `json:"urls,omitempty" yaml:"urls,omitempty"`
+}
+
 // CreatedAtSortMode is supported set of sort modes for scanning by created_at only.
 //
 // Currently, we only support scanning in ascending order.
@@ -119,6 +135,23 @@ const (
 	// CreatedAtSortModeCreatedAtDescending represents the CreatedAtSortMode `"created-at-descending"`.
 	CreatedAtSortModeCreatedAtDescending CreatedAtSortMode = "created-at-descending"
 )
+
+// Duration is the type definition for a Duration.
+type Duration int
+
+// EngineMetadata is metadata about an engine API instance.
+//
+// This is mostly used for internal purposes and debugging.
+type EngineMetadata struct {
+	// AsyncJobsRunning is if any async job is currently running.
+	AsyncJobsRunning bool `json:"async_jobs_running,omitempty" yaml:"async_jobs_running,omitempty"`
+	// Fs is metadata about our file system.
+	Fs FileSystemMetadata `json:"fs,omitempty" yaml:"fs,omitempty"`
+	// GitHash is the git hash of the server.
+	GitHash string `json:"git_hash,omitempty" yaml:"git_hash,omitempty"`
+	// Nats is metadata about our nats.io connection.
+	Nats NatsConnection `json:"nats,omitempty" yaml:"nats,omitempty"`
+}
 
 // Error is error information from a response.
 type Error struct {
@@ -283,8 +316,118 @@ type FileConversionWithOutput struct {
 	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
 	// Status is the status of the file conversion.
 	Status FileConversionStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	// UpdatedAt is the time and date the file conversion was last updated.
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// UserID is the user ID of the user who created the file conversion.
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+}
+
+// FileSystemMetadata is metadata about our file system.
+//
+// This is mostly used for internal purposes and debugging.
+type FileSystemMetadata struct {
+	// Ok is if the file system passed a sanity check.
+	Ok bool `json:"ok,omitempty" yaml:"ok,omitempty"`
+}
+
+// Gateway is gateway information.
+type Gateway struct {
+	// AuthTimeout is the auth timeout of the gateway.
+	AuthTimeout int `json:"auth_timeout,omitempty" yaml:"auth_timeout,omitempty"`
+	// Host is the host of the gateway.
+	Host string `json:"host,omitempty" yaml:"host,omitempty"`
+	// Name is the name of the gateway.
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+	// Port is the port of the gateway.
+	Port int `json:"port,omitempty" yaml:"port,omitempty"`
+	// TlsTimeout is the TLS timeout for the gateway.
+	TlsTimeout int `json:"tls_timeout,omitempty" yaml:"tls_timeout,omitempty"`
+}
+
+// Jetstream is jetstream information.
+type Jetstream struct {
+	// Config is the Jetstream config.
+	Config JetstreamConfig `json:"config,omitempty" yaml:"config,omitempty"`
+	// Meta is meta information about the cluster.
+	Meta MetaClusterInfo `json:"meta,omitempty" yaml:"meta,omitempty"`
+	// Stats is jetstream statistics.
+	Stats JetstreamStats `json:"stats,omitempty" yaml:"stats,omitempty"`
+}
+
+// JetstreamAPIStats is jetstream API statistics.
+type JetstreamAPIStats struct {
+	// Errors is the number of errors.
+	Errors int `json:"errors,omitempty" yaml:"errors,omitempty"`
+	// Inflight is the number of inflight requests.
+	Inflight int `json:"inflight,omitempty" yaml:"inflight,omitempty"`
+	// Total is the number of requests.
+	Total int `json:"total,omitempty" yaml:"total,omitempty"`
+}
+
+// JetstreamConfig is jetstream configuration.
+type JetstreamConfig struct {
+	// Domain is the domain.
+	Domain string `json:"domain,omitempty" yaml:"domain,omitempty"`
+	// MaxMemory is the max memory.
+	MaxMemory int `json:"max_memory,omitempty" yaml:"max_memory,omitempty"`
+	// MaxStorage is the max storage.
+	MaxStorage int `json:"max_storage,omitempty" yaml:"max_storage,omitempty"`
+	// StoreDir is the store directory.
+	StoreDir string `json:"store_dir,omitempty" yaml:"store_dir,omitempty"`
+}
+
+// JetstreamStats is jetstream statistics.
+type JetstreamStats struct {
+	// Accounts is the number of accounts.
+	Accounts int `json:"accounts,omitempty" yaml:"accounts,omitempty"`
+	// API is aPI stats.
+	API JetstreamAPIStats `json:"api,omitempty" yaml:"api,omitempty"`
+	// HaAssets is the number of HA assets.
+	HaAssets int `json:"ha_assets,omitempty" yaml:"ha_assets,omitempty"`
+	// Memory is the memory used by the Jetstream server.
+	Memory int `json:"memory,omitempty" yaml:"memory,omitempty"`
+	// ReservedMemory is the reserved memory for the Jetstream server.
+	ReservedMemory int `json:"reserved_memory,omitempty" yaml:"reserved_memory,omitempty"`
+	// ReservedStore is the reserved storage for the Jetstream server.
+	ReservedStore int `json:"reserved_store,omitempty" yaml:"reserved_store,omitempty"`
+	// Store is the storage used by the Jetstream server.
+	Store int `json:"store,omitempty" yaml:"store,omitempty"`
+}
+
+// LeafNode is leaf node information.
+type LeafNode struct {
+	// AuthTimeout is the auth timeout of the leaf node.
+	AuthTimeout int `json:"auth_timeout,omitempty" yaml:"auth_timeout,omitempty"`
+	// Host is the host of the leaf node.
+	Host string `json:"host,omitempty" yaml:"host,omitempty"`
+	// Port is the port of the leaf node.
+	Port int `json:"port,omitempty" yaml:"port,omitempty"`
+	// TlsTimeout is the TLS timeout for the leaf node.
+	TlsTimeout int `json:"tls_timeout,omitempty" yaml:"tls_timeout,omitempty"`
+}
+
+// MetaClusterInfo is jetstream statistics.
+type MetaClusterInfo struct {
+	// ClusterSize is the size of the cluster.
+	ClusterSize int `json:"cluster_size,omitempty" yaml:"cluster_size,omitempty"`
+	// Leader is the leader of the cluster.
+	Leader string `json:"leader,omitempty" yaml:"leader,omitempty"`
+	// Name is the name of the cluster.
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+}
+
+// Metadata is metadata about our currently running server.
+//
+// This is mostly used for internal purposes and debugging.
+type Metadata struct {
+	// Engine is metadata about our engine API connection.
+	Engine EngineMetadata `json:"engine,omitempty" yaml:"engine,omitempty"`
+	// Fs is metadata about our file system.
+	Fs FileSystemMetadata `json:"fs,omitempty" yaml:"fs,omitempty"`
+	// GitHash is the git hash of the server.
+	GitHash string `json:"git_hash,omitempty" yaml:"git_hash,omitempty"`
+	// Nats is metadata about our nats.io connection.
+	Nats NatsConnection `json:"nats,omitempty" yaml:"nats,omitempty"`
 }
 
 // Method is the Request Method (VERB)
@@ -317,10 +460,132 @@ const (
 	MethodEXTENSION Method = "EXTENSION"
 )
 
-// Pong is the type definition for a Pong.
+// NatsConnection is metadata about a nats.io connection.
+//
+// This is mostly used for internal purposes and debugging.
+type NatsConnection struct {
+	// AuthTimeout is the auth timeout of the server.
+	AuthTimeout int `json:"auth_timeout,omitempty" yaml:"auth_timeout,omitempty"`
+	// Cluster is information about the cluster.
+	Cluster Cluster `json:"cluster,omitempty" yaml:"cluster,omitempty"`
+	// ConfigLoadTime is the time the configuration was loaded.
+	ConfigLoadTime *JSONTime `json:"config_load_time,omitempty" yaml:"config_load_time,omitempty"`
+	// Connections is the number of connections to the server.
+	Connections int `json:"connections,omitempty" yaml:"connections,omitempty"`
+	// Cores is the CPU core usage of the server.
+	Cores int `json:"cores,omitempty" yaml:"cores,omitempty"`
+	// Cpu is the CPU usage of the server.
+	Cpu int `json:"cpu,omitempty" yaml:"cpu,omitempty"`
+	// Gateway is information about the gateway.
+	Gateway Gateway `json:"gateway,omitempty" yaml:"gateway,omitempty"`
+	// GitCommit is the git commit.
+	GitCommit string `json:"git_commit,omitempty" yaml:"git_commit,omitempty"`
+	// Go is the go version.
+	Go string `json:"go,omitempty" yaml:"go,omitempty"`
+	// Gomaxprocs is `GOMAXPROCS` of the server.
+	Gomaxprocs int `json:"gomaxprocs,omitempty" yaml:"gomaxprocs,omitempty"`
+	// Host is the host of the server.
+	Host string `json:"host,omitempty" yaml:"host,omitempty"`
+	// HttpBasePath is the http base path of the server.
+	HttpBasePath string `json:"http_base_path,omitempty" yaml:"http_base_path,omitempty"`
+	// HttpHost is the http host of the server.
+	HttpHost string `json:"http_host,omitempty" yaml:"http_host,omitempty"`
+	// HttpPort is the http port of the server.
+	HttpPort int `json:"http_port,omitempty" yaml:"http_port,omitempty"`
+	// HttpReqStats is hTTP request statistics.
+	HttpReqStats int `json:"http_req_stats,omitempty" yaml:"http_req_stats,omitempty"`
+	// HttpsPort is the https port of the server.
+	HttpsPort int `json:"https_port,omitempty" yaml:"https_port,omitempty"`
+	// ID is the ID as known by the most recently connected server.
+	ID int `json:"id,omitempty" yaml:"id,omitempty"`
+	// InBytes is the count of inbound bytes for the server.
+	InBytes int `json:"in_bytes,omitempty" yaml:"in_bytes,omitempty"`
+	// InMsgs is the number of inbound messages for the server.
+	InMsgs int `json:"in_msgs,omitempty" yaml:"in_msgs,omitempty"`
+	// Ip is the client IP as known by the most recently connected server.
+	Ip string `json:"ip,omitempty" yaml:"ip,omitempty"`
+	// Jetstream is jetstream information.
+	Jetstream Jetstream `json:"jetstream,omitempty" yaml:"jetstream,omitempty"`
+	// Leaf is information about leaf nodes.
+	Leaf LeafNode `json:"leaf,omitempty" yaml:"leaf,omitempty"`
+	// Leafnodes is the number of leaf nodes for the server.
+	Leafnodes int `json:"leafnodes,omitempty" yaml:"leafnodes,omitempty"`
+	// MaxConnections is the max connections of the server.
+	MaxConnections int `json:"max_connections,omitempty" yaml:"max_connections,omitempty"`
+	// MaxControlLine is the max control line of the server.
+	MaxControlLine int `json:"max_control_line,omitempty" yaml:"max_control_line,omitempty"`
+	// MaxPayload is the max payload of the server.
+	MaxPayload int `json:"max_payload,omitempty" yaml:"max_payload,omitempty"`
+	// MaxPending is the max pending of the server.
+	MaxPending int `json:"max_pending,omitempty" yaml:"max_pending,omitempty"`
+	// Mem is the memory usage of the server.
+	Mem int `json:"mem,omitempty" yaml:"mem,omitempty"`
+	// Now is the time now.
+	Now *JSONTime `json:"now,omitempty" yaml:"now,omitempty"`
+	// OutBytes is the count of outbound bytes for the server.
+	OutBytes int `json:"out_bytes,omitempty" yaml:"out_bytes,omitempty"`
+	// OutMsgs is the number of outbound messages for the server.
+	OutMsgs int `json:"out_msgs,omitempty" yaml:"out_msgs,omitempty"`
+	// PingInterval is the ping interval of the server.
+	PingInterval int `json:"ping_interval,omitempty" yaml:"ping_interval,omitempty"`
+	// PingMax is the ping max of the server.
+	PingMax int `json:"ping_max,omitempty" yaml:"ping_max,omitempty"`
+	// Port is the port of the server.
+	Port int `json:"port,omitempty" yaml:"port,omitempty"`
+	// Proto is the protocol version.
+	Proto int `json:"proto,omitempty" yaml:"proto,omitempty"`
+	// Remotes is the number of remotes for the server.
+	Remotes int `json:"remotes,omitempty" yaml:"remotes,omitempty"`
+	// Routes is the number of routes for the server.
+	Routes int `json:"routes,omitempty" yaml:"routes,omitempty"`
+	// Rtt is the round trip time between this client and the server.
+	Rtt Duration `json:"rtt,omitempty" yaml:"rtt,omitempty"`
+	// ServerID is the server ID.
+	ServerID string `json:"server_id,omitempty" yaml:"server_id,omitempty"`
+	// ServerName is the server name.
+	ServerName string `json:"server_name,omitempty" yaml:"server_name,omitempty"`
+	// SlowConsumers is the number of slow consumers for the server.
+	SlowConsumers int `json:"slow_consumers,omitempty" yaml:"slow_consumers,omitempty"`
+	// Start is when the server was started.
+	Start *JSONTime `json:"start,omitempty" yaml:"start,omitempty"`
+	// Subscriptions is the number of subscriptions for the server.
+	Subscriptions int `json:"subscriptions,omitempty" yaml:"subscriptions,omitempty"`
+	// SystemAccount is the system account.
+	SystemAccount string `json:"system_account,omitempty" yaml:"system_account,omitempty"`
+	// TlsTimeout is the TLS timeout of the server.
+	TlsTimeout int `json:"tls_timeout,omitempty" yaml:"tls_timeout,omitempty"`
+	// TotalConnections is the total number of connections to the server.
+	TotalConnections int `json:"total_connections,omitempty" yaml:"total_connections,omitempty"`
+	// Uptime is the uptime of the server.
+	Uptime string `json:"uptime,omitempty" yaml:"uptime,omitempty"`
+	// Version is the version of the service.
+	Version string `json:"version,omitempty" yaml:"version,omitempty"`
+	// WriteDeadline is the write deadline of the server.
+	WriteDeadline int `json:"write_deadline,omitempty" yaml:"write_deadline,omitempty"`
+}
+
+// Pong is the response from the `/ping` endpoint.
 type Pong struct {
 	// Message is the pong response.
 	Message string `json:"message,omitempty" yaml:"message,omitempty"`
+}
+
+// Session is an authentication session.
+//
+// For our UIs, these are automatically created by Next.js.
+type Session struct {
+	// CreatedAt is the date and time the session was created.
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Expires is the date and time the session expires.
+	Expires *JSONTime `json:"expires,omitempty" yaml:"expires,omitempty"`
+	// ID is the unique identifier for the session.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
+	// SessionToken is the session token.
+	SessionToken Uuid `json:"session_token,omitempty" yaml:"session_token,omitempty"`
+	// UpdatedAt is the date and time the session was last updated.
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	// UserID is the user ID of the user that the session belongs to.
+	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
 
 // StatusCode is the type definition for a StatusCode.

@@ -43,12 +43,47 @@ func (s *MetaService) GetSchema() (*ResponseGetSchema, error) {
 	return &body, nil
 }
 
+// Getdata: Get the metadata about our currently running server.
+//
+// This includes information on any of our other distributed systems it is connected to.
+// You must be a KittyCAD employee to perform this request.
+func (s *MetaService) Getdata() (*Metadata, error) {
+	// Create the url.
+	path := "/_meta/info"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body Metadata
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
 // GetMetrics: Get API call metrics.
 //
 // This endpoint requires authentication by a KittyCAD employee. The API calls are grouped by the parameter passed.
 //
 // Parameters:
-//	- `groupBy`
+//	- `groupBy`: What field to group the metrics by.
 func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQueryGroup, error) {
 	// Create the url.
 	path := "/api-call-metrics"
@@ -265,7 +300,8 @@ func (s *FileService) CreateConversion(outputFormat FileConversionOutputFormat, 
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retreive the subsequent page
 //	- `sortBy`
-func (s *FileService) ListConversions(limit int, pageToken string, sortBy CreatedAtSortMode) (*FileConversionResultsPage, error) {
+//	- `status`: The status to filter by.
+func (s *FileService) ListConversions(limit int, pageToken string, sortBy CreatedAtSortMode, status FileConversionStatus) (*FileConversionResultsPage, error) {
 	// Create the url.
 	path := "/file/conversions"
 	uri := resolveRelative(s.client.server, path)
@@ -279,6 +315,7 @@ func (s *FileService) ListConversions(limit int, pageToken string, sortBy Create
 		"limit":      strconv.Itoa(limit),
 		"page_token": pageToken,
 		"sort_by":    string(sortBy),
+		"status":     string(status),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -314,13 +351,14 @@ func (s *FileService) ListConversions(limit int, pageToken string, sortBy Create
 //
 // Parameters:
 //	- `sortBy`
-func (s *FileService) ListConversionsAllPages(sortBy CreatedAtSortMode) (*[]FileConversion, error) {
+//	- `status`: The status to filter by.
+func (s *FileService) ListConversionsAllPages(sortBy CreatedAtSortMode, status FileConversionStatus) (*[]FileConversion, error) {
 
 	var allPages []FileConversion
 	pageToken := ""
 	limit := 100
 	for {
-		page, err := s.ListConversions(limit, pageToken, sortBy)
+		page, err := s.ListConversions(limit, pageToken, sortBy, status)
 		if err != nil {
 			return nil, err
 		}
@@ -909,6 +947,49 @@ func (s *FileService) GetConversionForUser(id string) (*FileConversionWithOutput
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var body FileConversionWithOutput
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// GetForUser: Get a session for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
+//
+// Parameters:
+//	- `token`: The API token.
+func (s *SessionService) GetForUser(token string) (*Session, error) {
+	// Create the url.
+	path := "/user/session/{{.token}}"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"token": token,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body Session
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

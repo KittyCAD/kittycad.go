@@ -23,6 +23,8 @@ type Client struct {
 	File *FileService
 	// Meta: Meta information about the API.
 	Meta *MetaService
+	// Session: Sessions allow users to call the API from their session cookie in the browser.
+	Session *SessionService
 	// User: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
 	User *UserService
 }
@@ -38,6 +40,9 @@ type FileService service
 
 // MetaService: Meta information about the API.
 type MetaService service
+
+// SessionService: Sessions allow users to call the API from their session cookie in the browser.
+type SessionService service
 
 // UserService: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
 type UserService service
