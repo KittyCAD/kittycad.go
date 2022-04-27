@@ -52,7 +52,7 @@ func TestFileConversion(t *testing.T) {
 		t.Fatalf("reading the test file %q failed: %v", file, err)
 	}
 
-	fc, output, err := client.File.ConvertWithBase64Helper(FileConversionSourceFormatStl, FileConversionOutputFormatObj, body)
+	fc, output, err := client.File.CreateConversionWithBase64Helper(FileConversionSourceFormatStl, FileConversionOutputFormatObj, body)
 	if err != nil {
 		t.Fatalf("getting the file conversion failed: %v", err)
 	}

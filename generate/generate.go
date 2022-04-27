@@ -582,6 +582,19 @@ func writeMethod(doc *openapi3.T, f *os.File, method string, path string, o *ope
 }`, tag, fnName, docParamsString)
 	}
 
+	// Special case for functions with Base64 helpers.
+	if fnName == "CreateConversion" || fnName == "GetConversion" {
+		docInfo["example"] = fmt.Sprintf(`%s
+
+// - OR -
+
+// %sWithBase64Helper will automatically base64 encode and decode the contents
+// of the file body.
+//
+// This function is a wrapper around the %s function.
+%s, err := client.%s.%sWithBase64Helper(%s)`, docInfo["example"], fnName, fnName, strcase.ToLowerCamel(respType), tag, fnName, docParamsString)
+	}
+
 	if method == http.MethodGet {
 		doc.Paths[path].Get.Extensions["x-go"] = docInfo
 	} else if method == http.MethodPost {
