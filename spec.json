@@ -254,6 +254,46 @@
         ],
         "type": "object"
       },
+      "Cluster": {
+        "description": "Cluster information.",
+        "properties": {
+          "addr": {
+            "description": "The IP address of the cluster.",
+            "format": "ip",
+            "type": "string"
+          },
+          "auth_timeout": {
+            "description": "The auth timeout of the cluster.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "cluster_port": {
+            "description": "The port of the cluster.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "name": {
+            "description": "The name of the cluster.",
+            "type": "string"
+          },
+          "tls_timeout": {
+            "description": "The TLS timeout for the cluster.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "urls": {
+            "description": "The urls of the cluster.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "addr"
+        ],
+        "type": "object"
+      },
       "CreatedAtSortMode": {
         "description": "Supported set of sort modes for scanning by created_at only.\n\nCurrently, we only support scanning in ascending order.",
         "enum": [
@@ -261,6 +301,47 @@
           "created-at-descending"
         ],
         "type": "string"
+      },
+      "Duration": {
+        "format": "int64",
+        "title": "int64",
+        "type": "integer"
+      },
+      "EngineMetadata": {
+        "description": "Metadata about an engine API instance.\n\nThis is mostly used for internal purposes and debugging.",
+        "properties": {
+          "async_jobs_running": {
+            "description": "If any async job is currently running.",
+            "type": "boolean"
+          },
+          "fs": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FileSystemMetadata"
+              }
+            ],
+            "description": "Metadata about our file system."
+          },
+          "git_hash": {
+            "description": "The git hash of the server.",
+            "type": "string"
+          },
+          "nats": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NatsConnection"
+              }
+            ],
+            "description": "Metadata about our nats.io connection."
+          }
+        },
+        "required": [
+          "async_jobs_running",
+          "fs",
+          "git_hash",
+          "nats"
+        ],
+        "type": "object"
       },
       "Error": {
         "description": "Error information from a response.",
@@ -578,6 +659,11 @@
             ],
             "description": "The status of the file conversion."
           },
+          "updated_at": {
+            "description": "The time and date the file conversion was last updated.",
+            "format": "partial-date-time",
+            "type": "string"
+          },
           "user_id": {
             "description": "The user ID of the user who created the file conversion.",
             "type": "string"
@@ -588,7 +674,253 @@
           "id",
           "output_format",
           "src_format",
-          "status"
+          "status",
+          "updated_at"
+        ],
+        "type": "object"
+      },
+      "FileSystemMetadata": {
+        "description": "Metadata about our file system.\n\nThis is mostly used for internal purposes and debugging.",
+        "properties": {
+          "ok": {
+            "description": "If the file system passed a sanity check.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "type": "object"
+      },
+      "Gateway": {
+        "description": "Gateway information.",
+        "properties": {
+          "auth_timeout": {
+            "description": "The auth timeout of the gateway.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "host": {
+            "description": "The host of the gateway.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the gateway.",
+            "type": "string"
+          },
+          "port": {
+            "description": "The port of the gateway.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "tls_timeout": {
+            "description": "The TLS timeout for the gateway.",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Jetstream": {
+        "description": "Jetstream information.",
+        "properties": {
+          "config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JetstreamConfig"
+              }
+            ],
+            "description": "The Jetstream config."
+          },
+          "meta": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MetaClusterInfo"
+              }
+            ],
+            "description": "Meta information about the cluster."
+          },
+          "stats": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JetstreamStats"
+              }
+            ],
+            "description": "Jetstream statistics."
+          }
+        },
+        "type": "object"
+      },
+      "JetstreamApiStats": {
+        "description": "Jetstream API statistics.",
+        "properties": {
+          "errors": {
+            "description": "The number of errors.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "inflight": {
+            "description": "The number of inflight requests.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "total": {
+            "description": "The number of requests.",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "JetstreamConfig": {
+        "description": "Jetstream configuration.",
+        "properties": {
+          "domain": {
+            "description": "The domain.",
+            "type": "string"
+          },
+          "max_memory": {
+            "description": "The max memory.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "max_storage": {
+            "description": "The max storage.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "store_dir": {
+            "description": "The store directory.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "JetstreamStats": {
+        "description": "Jetstream statistics.",
+        "properties": {
+          "accounts": {
+            "description": "The number of accounts.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "api": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JetstreamApiStats"
+              }
+            ],
+            "description": "API stats."
+          },
+          "ha_assets": {
+            "description": "The number of HA assets.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "memory": {
+            "description": "The memory used by the Jetstream server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "reserved_memory": {
+            "description": "The reserved memory for the Jetstream server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "reserved_store": {
+            "description": "The reserved storage for the Jetstream server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "store": {
+            "description": "The storage used by the Jetstream server.",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "LeafNode": {
+        "description": "Leaf node information.",
+        "properties": {
+          "auth_timeout": {
+            "description": "The auth timeout of the leaf node.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "host": {
+            "description": "The host of the leaf node.",
+            "type": "string"
+          },
+          "port": {
+            "description": "The port of the leaf node.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "tls_timeout": {
+            "description": "The TLS timeout for the leaf node.",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "MetaClusterInfo": {
+        "description": "Jetstream statistics.",
+        "properties": {
+          "cluster_size": {
+            "description": "The size of the cluster.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "leader": {
+            "description": "The leader of the cluster.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the cluster.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Metadata": {
+        "description": "Metadata about our currently running server.\n\nThis is mostly used for internal purposes and debugging.",
+        "properties": {
+          "engine": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EngineMetadata"
+              }
+            ],
+            "description": "Metadata about our engine API connection."
+          },
+          "fs": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FileSystemMetadata"
+              }
+            ],
+            "description": "Metadata about our file system."
+          },
+          "git_hash": {
+            "description": "The git hash of the server.",
+            "type": "string"
+          },
+          "nats": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NatsConnection"
+              }
+            ],
+            "description": "Metadata about our nats.io connection."
+          }
+        },
+        "required": [
+          "engine",
+          "fs",
+          "git_hash",
+          "nats"
         ],
         "type": "object"
       },
@@ -608,7 +940,280 @@
         ],
         "type": "string"
       },
+      "NatsConnection": {
+        "description": "Metadata about a nats.io connection.\n\nThis is mostly used for internal purposes and debugging.",
+        "properties": {
+          "auth_timeout": {
+            "description": "The auth timeout of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "cluster": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Cluster"
+              }
+            ],
+            "description": "Information about the cluster."
+          },
+          "config_load_time": {
+            "description": "The time the configuration was loaded.",
+            "format": "date-time",
+            "type": "string"
+          },
+          "connections": {
+            "description": "The number of connections to the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "cores": {
+            "description": "The CPU core usage of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "cpu": {
+            "description": "The CPU usage of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "gateway": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Gateway"
+              }
+            ],
+            "description": "Information about the gateway."
+          },
+          "git_commit": {
+            "description": "The git commit.",
+            "type": "string"
+          },
+          "go": {
+            "description": "The go version.",
+            "type": "string"
+          },
+          "gomaxprocs": {
+            "description": "`GOMAXPROCS` of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "host": {
+            "description": "The host of the server.",
+            "format": "ip",
+            "type": "string"
+          },
+          "http_base_path": {
+            "description": "The http base path of the server.",
+            "type": "string"
+          },
+          "http_host": {
+            "description": "The http host of the server.",
+            "type": "string"
+          },
+          "http_port": {
+            "description": "The http port of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "http_req_stats": {
+            "additionalProperties": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "description": "HTTP request statistics.",
+            "type": "object"
+          },
+          "https_port": {
+            "description": "The https port of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "description": "The ID as known by the most recently connected server.",
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "in_bytes": {
+            "description": "The count of inbound bytes for the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "in_msgs": {
+            "description": "The number of inbound messages for the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "ip": {
+            "description": "The client IP as known by the most recently connected server.",
+            "format": "ip",
+            "type": "string"
+          },
+          "jetstream": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Jetstream"
+              }
+            ],
+            "description": "Jetstream information."
+          },
+          "leaf": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LeafNode"
+              }
+            ],
+            "description": "Information about leaf nodes."
+          },
+          "leafnodes": {
+            "description": "The number of leaf nodes for the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "max_connections": {
+            "description": "The max connections of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "max_control_line": {
+            "description": "The max control line of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "max_payload": {
+            "description": "The max payload of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "max_pending": {
+            "description": "The max pending of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "mem": {
+            "description": "The memory usage of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "now": {
+            "description": "The time now.",
+            "format": "date-time",
+            "type": "string"
+          },
+          "out_bytes": {
+            "description": "The count of outbound bytes for the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "out_msgs": {
+            "description": "The number of outbound messages for the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "ping_interval": {
+            "description": "The ping interval of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "ping_max": {
+            "description": "The ping max of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "port": {
+            "description": "The port of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "proto": {
+            "description": "The protocol version.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "remotes": {
+            "description": "The number of remotes for the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "routes": {
+            "description": "The number of routes for the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "rtt": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Duration"
+              }
+            ],
+            "description": "The round trip time between this client and the server."
+          },
+          "server_id": {
+            "description": "The server ID.",
+            "type": "string"
+          },
+          "server_name": {
+            "description": "The server name.",
+            "type": "string"
+          },
+          "slow_consumers": {
+            "description": "The number of slow consumers for the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "start": {
+            "description": "When the server was started.",
+            "format": "date-time",
+            "type": "string"
+          },
+          "subscriptions": {
+            "description": "The number of subscriptions for the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "system_account": {
+            "description": "The system account.",
+            "type": "string"
+          },
+          "tls_timeout": {
+            "description": "The TLS timeout of the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "total_connections": {
+            "description": "The total number of connections to the server.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "uptime": {
+            "description": "The uptime of the server.",
+            "type": "string"
+          },
+          "version": {
+            "description": "The version of the service.",
+            "type": "string"
+          },
+          "write_deadline": {
+            "description": "The write deadline of the server.",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "cluster",
+          "config_load_time",
+          "host",
+          "http_req_stats",
+          "id",
+          "ip",
+          "now",
+          "rtt",
+          "start"
+        ],
+        "type": "object"
+      },
       "Pong": {
+        "description": "The response from the `/ping` endpoint.",
         "properties": {
           "message": {
             "description": "The pong response.",
@@ -617,6 +1222,49 @@
         },
         "required": [
           "message"
+        ],
+        "type": "object"
+      },
+      "Session": {
+        "description": "An authentication session.\n\nFor our UIs, these are automatically created by Next.js.",
+        "properties": {
+          "created_at": {
+            "description": "The date and time the session was created.",
+            "format": "partial-date-time",
+            "type": "string"
+          },
+          "expires": {
+            "description": "The date and time the session expires.",
+            "format": "partial-date-time",
+            "type": "string"
+          },
+          "id": {
+            "description": "The unique identifier for the session.",
+            "type": "string"
+          },
+          "session_token": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            ],
+            "description": "The session token."
+          },
+          "updated_at": {
+            "description": "The date and time the session was last updated.",
+            "format": "partial-date-time",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "The user ID of the user that the session belongs to.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "expires",
+          "session_token",
+          "updated_at"
         ],
         "type": "object"
       },
@@ -726,11 +1374,7 @@
     },
     "description": "API server for KittyCAD",
     "title": "KittyCAD API",
-    "version": "0.1.0",
-    "x-go": {
-      "client": "// Create a client with your token.\nclient, err := kittycad.NewClient(\"$TOKEN\", \"your apps user agent\")\nif err != nil {\n  panic(err)\n}\n\n// - OR -\n\n// Create a new client with your token parsed from the environment\n// variable: KITTYCAD_API_TOKEN.\nclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\nif err != nil {\n  panic(err)\n}",
-      "install": "go get github.com/kittycad/kittycad.go"
-    }
+    "version": "0.1.0"
   },
   "openapi": "3.0.3",
   "paths": {
@@ -790,11 +1434,69 @@
         "summary": "Get OpenAPI schema.",
         "tags": [
           "meta"
-        ],
-        "x-go": {
-          "example": "// GetSchema: Get OpenAPI schema.\nresponseGetSchema, err := client.Meta.GetSchema()",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.GetSchema"
-        }
+        ]
+      }
+    },
+    "/_meta/info": {
+      "get": {
+        "description": "This includes information on any of our other distributed systems it is connected to.\nYou must be a KittyCAD employee to perform this request.",
+        "operationId": "get_metadata",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Metadata"
+                }
+              }
+            },
+            "description": "successful operation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Get the metadata about our currently running server.",
+        "tags": [
+          "meta"
+        ]
       }
     },
     "/api-call-metrics": {
@@ -803,6 +1505,7 @@
         "operationId": "get_api_call_metrics",
         "parameters": [
           {
+            "description": "What field to group the metrics by.",
             "in": "query",
             "name": "group_by",
             "required": true,
@@ -871,11 +1574,7 @@
         "summary": "Get API call metrics.",
         "tags": [
           "api-calls"
-        ],
-        "x-go": {
-          "example": "// GetMetrics: Get API call metrics.\n//\n// This endpoint requires authentication by a KittyCAD employee. The API calls are grouped by the parameter passed.\n//\n// Parameters:\n//\t- `groupBy`\nAPICallQueryGroup, err := client.APICall.GetMetrics(groupBy)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.GetMetrics"
-        }
+        ]
       }
     },
     "/api-calls": {
@@ -970,11 +1669,7 @@
         "tags": [
           "api-calls"
         ],
-        "x-dropshot-pagination": true,
-        "x-go": {
-          "example": "// List: List API calls.\n//\n// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `ListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\naPICallWithPriceResultsPage, err := client.APICall.List(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListAllPages: List API calls.\n//\n// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// This method is a wrapper around the `List` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nAPICallWithPrice, err := client.APICall.ListAllPages(sortBy)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.List"
-        }
+        "x-dropshot-pagination": true
       }
     },
     "/api-calls/{id}": {
@@ -1048,11 +1743,7 @@
         "summary": "Get details of an API call.",
         "tags": [
           "api-calls"
-        ],
-        "x-go": {
-          "example": "// Get: Get details of an API call.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.\n// If the user is not authenticated to view the specified API call, then it is not returned.\n// Only KittyCAD employees can view API calls for other users.\n//\n// Parameters:\n//\t- `id`: The ID of the API call.\naPICallWithPrice, err := client.APICall.Get(id)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.Get"
-        }
+        ]
       }
     },
     "/file/conversion/{src_format}/{output_format}": {
@@ -1147,11 +1838,7 @@
         "summary": "Convert CAD file.",
         "tags": [
           "file"
-        ],
-        "x-go": {
-          "example": "// CreateConversion: Convert CAD file.\n//\n// Convert a CAD file from one format to another. If the file being converted is larger than 30MB, it will be performed asynchronously.\n// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// If the conversion is performed asynchronously, the `id` of the conversion will be returned. You can use the `id` returned from the request to get status information about the async conversion from the `/file/conversions/{id}` endpoint.\n//\n// Parameters:\n//\t- `outputFormat`: The format the file should be converted to.\n//\t- `srcFormat`: The format of the file to convert.\nfileConversionWithOutput, err := client.File.CreateConversion(outputFormat, srcFormat, body)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateConversion"
-        }
+        ]
       }
     },
     "/file/conversions": {
@@ -1186,6 +1873,15 @@
             "name": "sort_by",
             "schema": {
               "$ref": "#/components/schemas/CreatedAtSortMode"
+            },
+            "style": "form"
+          },
+          {
+            "description": "The status to filter by.",
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "$ref": "#/components/schemas/FileConversionStatus"
             },
             "style": "form"
           }
@@ -1246,11 +1942,7 @@
         "tags": [
           "file"
         ],
-        "x-dropshot-pagination": true,
-        "x-go": {
-          "example": "// ListConversions: List file conversions.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by a KittyCAD employee.\n//\n// To iterate over all pages, use the `ListConversionsAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nfileConversionResultsPage, err := client.File.ListConversions(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListConversionsAllPages: List file conversions.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by a KittyCAD employee.\n//\n// This method is a wrapper around the `ListConversions` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nFileConversion, err := client.File.ListConversionsAllPages(sortBy)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.ListConversions"
-        }
+        "x-dropshot-pagination": true
       }
     },
     "/file/conversions/{id}": {
@@ -1324,11 +2016,7 @@
         "summary": "Get a file conversion.",
         "tags": [
           "file"
-        ],
-        "x-go": {
-          "example": "// GetConversion: Get a file conversion.\n//\n// Get the status and output of an async file conversion.\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.\n// If the user is not authenticated to view the specified file conversion, then it is not returned.\n// Only KittyCAD employees with the proper access can view file conversions for other users.\n//\n// Parameters:\n//\t- `id`: The ID of the file conversion.\nfileConversionWithOutput, err := client.File.GetConversion(id)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.GetConversion"
-        }
+        ]
       }
     },
     "/ping": {
@@ -1389,11 +2077,7 @@
         "summary": "Return pong.",
         "tags": [
           "meta"
-        ],
-        "x-go": {
-          "example": "// Ping: Return pong.\npong, err := client.Meta.Ping()",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.Ping"
-        }
+        ]
       }
     },
     "/user": {
@@ -1455,11 +2139,7 @@
         "summary": "Get your user.",
         "tags": [
           "users"
-        ],
-        "x-go": {
-          "example": "// GetSelf: Get your user.\n//\n// Get the user information for the authenticated user.\n// Alternatively, you can also use the `/users/me` endpoint.\nuser, err := client.User.GetSelf()",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetSelf"
-        }
+        ]
       }
     },
     "/user/api-calls": {
@@ -1554,11 +2234,7 @@
         "tags": [
           "api-calls"
         ],
-        "x-dropshot-pagination": true,
-        "x-go": {
-          "example": "// UserList: List API calls for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `UserListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\naPICallWithPriceResultsPage, err := client.APICall.UserList(limit, pageToken, sortBy)\n\n// - OR -\n\n// UserListAllPages: List API calls for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// This method is a wrapper around the `UserList` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nAPICallWithPrice, err := client.APICall.UserListAllPages(sortBy)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.UserList"
-        }
+        "x-dropshot-pagination": true
       }
     },
     "/user/api-calls/{id}": {
@@ -1632,11 +2308,7 @@
         "summary": "Get an API call for a user.",
         "tags": [
           "api-calls"
-        ],
-        "x-go": {
-          "example": "// GetForUser: Get an API call for a user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.\n//\n// Parameters:\n//\t- `id`: The ID of the API call.\naPICallWithPrice, err := client.APICall.GetForUser(id)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.GetForUser"
-        }
+        ]
       }
     },
     "/user/api-tokens": {
@@ -1731,11 +2403,7 @@
         "tags": [
           "api-tokens"
         ],
-        "x-dropshot-pagination": true,
-        "x-go": {
-          "example": "// ListForUser: List API tokens for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The API tokens are returned in order of creation, with the most recently created API tokens first.\n//\n// To iterate over all pages, use the `ListForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\naPITokenResultsPage, err := client.APIToken.ListForUser(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListForUserAllPages: List API tokens for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The API tokens are returned in order of creation, with the most recently created API tokens first.\n//\n// This method is a wrapper around the `ListForUser` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nAPIToken, err := client.APIToken.ListForUserAllPages(sortBy)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.ListForUser"
-        }
+        "x-dropshot-pagination": true
       },
       "post": {
         "description": "This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.",
@@ -1795,11 +2463,7 @@
         "summary": "Create a new API token for your user.",
         "tags": [
           "api-tokens"
-        ],
-        "x-go": {
-          "example": "// CreateForUser: Create a new API token for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.\naPIToken, err := client.APIToken.CreateForUser()",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.CreateForUser"
-        }
+        ]
       }
     },
     "/user/api-tokens/{token}": {
@@ -1867,11 +2531,7 @@
         "summary": "Delete an API token for your user.",
         "tags": [
           "api-tokens"
-        ],
-        "x-go": {
-          "example": "// DeleteForUser: Delete an API token for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It deletes the requested API token for the user.\n// This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.\n//\n// Parameters:\n//\t- `token`: The API token.\nif err := client.APIToken.DeleteForUser(token); err != nil {\n\tpanic(err)\n}",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.DeleteForUser"
-        }
+        ]
       },
       "get": {
         "description": "This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.",
@@ -1944,11 +2604,7 @@
         "summary": "Get an API token for your user.",
         "tags": [
           "api-tokens"
-        ],
-        "x-go": {
-          "example": "// GetForUser: Get an API token for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.\n//\n// Parameters:\n//\t- `token`: The API token.\naPIToken, err := client.APIToken.GetForUser(token)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.GetForUser"
-        }
+        ]
       }
     },
     "/user/extended": {
@@ -2010,11 +2666,7 @@
         "summary": "Get extended information about your user.",
         "tags": [
           "users"
-        ],
-        "x-go": {
-          "example": "// GetSelfExtended: Get extended information about your user.\n//\n// Get the user information for the authenticated user.\n// Alternatively, you can also use the `/users/me` endpoint.\nextendedUser, err := client.User.GetSelfExtended()",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetSelfExtended"
-        }
+        ]
       }
     },
     "/user/file/conversions": {
@@ -2109,11 +2761,7 @@
         "tags": [
           "file"
         ],
-        "x-dropshot-pagination": true,
-        "x-go": {
-          "example": "// ListConversionsForUser: List file conversions for your user.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The file conversions are returned in order of creation, with the most recently created file conversions first.\n//\n// To iterate over all pages, use the `ListConversionsForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nfileConversionResultsPage, err := client.File.ListConversionsForUser(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListConversionsForUserAllPages: List file conversions for your user.\n//\n// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.\n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The file conversions are returned in order of creation, with the most recently created file conversions first.\n//\n// This method is a wrapper around the `ListConversionsForUser` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nFileConversion, err := client.File.ListConversionsForUserAllPages(sortBy)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.ListConversionsForUser"
-        }
+        "x-dropshot-pagination": true
       }
     },
     "/user/file/conversions/{id}": {
@@ -2187,11 +2835,82 @@
         "summary": "Get a file conversion for your user.",
         "tags": [
           "file"
+        ]
+      }
+    },
+    "/user/session/{token}": {
+      "get": {
+        "description": "This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.",
+        "operationId": "get_session_for_user",
+        "parameters": [
+          {
+            "description": "The API token.",
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
         ],
-        "x-go": {
-          "example": "// GetConversionForUser: Get a file conversion for your user.\n//\n// Get the status and output of an async file conversion. If completed, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.\n//\n// Parameters:\n//\t- `id`: The ID of the file conversion.\nfileConversionWithOutput, err := client.File.GetConversionForUser(id)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.GetConversionForUser"
-        }
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            },
+            "description": "successful operation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Get a session for your user.",
+        "tags": [
+          "sessions"
+        ]
       }
     },
     "/users": {
@@ -2286,11 +3005,7 @@
         "tags": [
           "users"
         ],
-        "x-dropshot-pagination": true,
-        "x-go": {
-          "example": "// List: List users.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// To iterate over all pages, use the `ListAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nuserResultsPage, err := client.User.List(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListAllPages: List users.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// This method is a wrapper around the `List` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nUser, err := client.User.ListAllPages(sortBy)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.List"
-        }
+        "x-dropshot-pagination": true
       }
     },
     "/users-extended": {
@@ -2385,11 +3100,7 @@
         "tags": [
           "users"
         ],
-        "x-dropshot-pagination": true,
-        "x-go": {
-          "example": "// ListExtended: List users with extended information.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// To iterate over all pages, use the `ListExtendedAllPages` method, instead.\n//\n// Parameters:\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\nextendedUserResultsPage, err := client.User.ListExtended(limit, pageToken, sortBy)\n\n// - OR -\n\n// ListExtendedAllPages: List users with extended information.\n//\n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n//\n// This method is a wrapper around the `ListExtended` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `sortBy`\nExtendedUser, err := client.User.ListExtendedAllPages(sortBy)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.ListExtended"
-        }
+        "x-dropshot-pagination": true
       }
     },
     "/users-extended/{id}": {
@@ -2463,11 +3174,7 @@
         "summary": "Get extended information about a user.",
         "tags": [
           "users"
-        ],
-        "x-go": {
-          "example": "// GetExtended: Get extended information about a user.\n//\n// To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.\n// Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.\n// To get information about any KittyCAD user, you must be a KittyCAD employee.\n//\n// Parameters:\n//\t- `id`: The user ID.\nextendedUser, err := client.User.GetExtended(id)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetExtended"
-        }
+        ]
       }
     },
     "/users/{id}": {
@@ -2541,11 +3248,7 @@
         "summary": "Get a user.",
         "tags": [
           "users"
-        ],
-        "x-go": {
-          "example": "// Get: Get a user.\n//\n// To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.\n// Alternatively, to get information about the authenticated user, use `/user` endpoint.\n// To get information about any KittyCAD user, you must be a KittyCAD employee.\n//\n// Parameters:\n//\t- `id`: The user ID.\nuser, err := client.User.Get(id)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.Get"
-        }
+        ]
       }
     },
     "/users/{id}/api-calls": {
@@ -2650,11 +3353,7 @@
         "tags": [
           "api-calls"
         ],
-        "x-dropshot-pagination": true,
-        "x-go": {
-          "example": "// ListForUser: List API calls for a user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if \"me\" is passed as the user id.\n// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.\n// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// To iterate over all pages, use the `ListForUserAllPages` method, instead.\n//\n// Parameters:\n//\t- `id`: The user ID.\n//\t- `limit`: Maximum number of items returned by a single call\n//\t- `pageToken`: Token returned by previous call to retreive the subsequent page\n//\t- `sortBy`\naPICallWithPriceResultsPage, err := client.APICall.ListForUser(id, limit, pageToken, sortBy)\n\n// - OR -\n\n// ListForUserAllPages: List API calls for a user.\n//\n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if \"me\" is passed as the user id.\n// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.\n// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// This method is a wrapper around the `ListForUser` method.\n// This method returns all the pages at once.\n//\n// Parameters:\n//\t- `id`: The user ID.\n//\t- `sortBy`\nAPICallWithPrice, err := client.APICall.ListForUserAllPages(id , sortBy)",
-          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.ListForUser"
-        }
+        "x-dropshot-pagination": true
       }
     }
   },
@@ -2686,6 +3385,13 @@
         "url": "https://docs.kittycad.io/api/meta"
       },
       "name": "meta"
+    },
+    {
+      "description": "Sessions allow users to call the API from their session cookie in the browser.",
+      "externalDocs": {
+        "url": "https://docs.kittycad.io/api/sessions"
+      },
+      "name": "sessions"
     },
     {
       "description": "A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.",
