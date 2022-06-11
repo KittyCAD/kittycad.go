@@ -3,6 +3,7 @@
 package kittycad
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -129,7 +130,7 @@ func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQuer
 //
 // Parameters:
 //	- `limit`: Maximum number of items returned by a single call
-//	- `pageToken`: Token returned by previous call to retreive the subsequent page
+//	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
 func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
@@ -242,16 +243,62 @@ func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 	return &body, nil
 }
 
+// GetAsyncOperation: Get an async operation.
+//
+// Get the status and output of an async operation.
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested async operation for the user.
+// If the user is not authenticated to view the specified async operation, then it is not returned.
+// Only KittyCAD employees with the proper access can view async operations for other users.
+//
+// Parameters:
+//	- `id`: The ID of the async operation.
+func (s *APICallService) GetAsyncOperation(id string) (*AsyncAPICallOutput, error) {
+	// Create the url.
+	path := "/async/operations/{{.id}}"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body AsyncAPICallOutput
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
 // CreateConversion: Convert CAD file.
 //
 // Convert a CAD file from one format to another. If the file being converted is larger than 30MB, it will be performed asynchronously.
 // If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
-// If the conversion is performed asynchronously, the `id` of the conversion will be returned. You can use the `id` returned from the request to get status information about the async conversion from the `/file/conversions/{id}` endpoint.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters:
 //	- `outputFormat`: The format the file should be converted to.
 //	- `srcFormat`: The format of the file to convert.
-func (s *FileService) CreateConversion(outputFormat FileConversionOutputFormat, srcFormat FileConversionSourceFormat, b io.Reader) (*FileConversionWithOutput, error) {
+func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat FileSourceFormat, b io.Reader) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -281,7 +328,7 @@ func (s *FileService) CreateConversion(outputFormat FileConversionOutputFormat, 
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body FileConversionWithOutput
+	var body FileConversion
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -289,88 +336,7 @@ func (s *FileService) CreateConversion(outputFormat FileConversionOutputFormat, 
 	return &body, nil
 }
 
-// ListConversions: List file conversions.
-//
-// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.
-// This endpoint requires authentication by a KittyCAD employee.
-//
-// To iterate over all pages, use the `ListConversionsAllPages` method, instead.
-//
-// Parameters:
-//	- `limit`: Maximum number of items returned by a single call
-//	- `pageToken`: Token returned by previous call to retreive the subsequent page
-//	- `sortBy`
-//	- `status`: The status to filter by.
-func (s *FileService) ListConversions(limit int, pageToken string, sortBy CreatedAtSortMode, status FileConversionStatus) (*FileConversionResultsPage, error) {
-	// Create the url.
-	path := "/file/conversions"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-		"status":     string(status),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body FileConversionResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
-}
-
-// ListConversionsAllPages: List file conversions.
-//
-// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.
-// This endpoint requires authentication by a KittyCAD employee.
-//
-// This method is a wrapper around the `ListConversions` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-//	- `status`: The status to filter by.
-func (s *FileService) ListConversionsAllPages(sortBy CreatedAtSortMode, status FileConversionStatus) (*[]FileConversion, error) {
-
-	var allPages []FileConversion
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListConversions(limit, pageToken, sortBy, status)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // GetConversion: Get a file conversion.
+// GetConversion: Get a file conversion.
 //
 // Get the status and output of an async file conversion.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.
@@ -378,8 +344,8 @@ func (s *FileService) ListConversionsAllPages(sortBy CreatedAtSortMode, status F
 // Only KittyCAD employees with the proper access can view file conversions for other users.
 //
 // Parameters:
-//	- `id`: The ID of the file conversion.
-func (s *FileService) GetConversion(id string) (*FileConversionWithOutput, error) {
+//	- `id`: The ID of the async operation.
+func (s *FileService) GetConversion(id string) (*AsyncAPICallOutput, error) {
 	// Create the url.
 	path := "/file/conversions/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -408,12 +374,174 @@ func (s *FileService) GetConversion(id string) (*FileConversionWithOutput, error
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body FileConversionWithOutput
+	var body AsyncAPICallOutput
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 	// Return the response.
 	return &body, nil
+}
+
+// CreateExecution: Execute a KittyCAD program in a specific language.
+//
+// Parameters:
+//	- `lang`: The language of the code.
+//	- `output`: The output file we want to get the contents for (this is relative to where in litterbox it is being run).
+func (s *FileService) CreateExecution(lang CodeLanguage, output string, b io.Reader) (*CodeOutput, error) {
+	// Create the url.
+	path := "/file/execute/{{.lang}}"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"lang":   string(lang),
+		"output": output,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body CodeOutput
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// CreateMass: Get CAD file mass.
+//
+// Get the mass of an object in a CAD file. If the file is larger than 30MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters:
+//	- `materialDensity`: The material density.
+//	- `srcFormat`: The format of the file.
+func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFormat, b io.Reader) (*FileMass, error) {
+	// Create the url.
+	path := "/file/mass"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"material_density": fmt.Sprintf("%f", materialDensity),
+		"src_format":       string(srcFormat),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body FileMass
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// CreateVolume: Get CAD file volume.
+//
+// Get the volume of an object in a CAD file. If the file is larger than 30MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters:
+//	- `srcFormat`: The format of the file.
+func (s *FileService) CreateVolume(srcFormat FileSourceFormat, b io.Reader) (*FileVolume, error) {
+	// Create the url.
+	path := "/file/volume"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"src_format": string(srcFormat),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body FileVolume
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// Login: This endpoint sets a session cookie for a user.
+func (s *HiddenService) Login(j *LoginParams) error {
+	// Create the url.
+	path := "/login"
+	uri := resolveRelative(s.client.server, path)
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(j); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+	// Return.
+	return nil
 }
 
 // Ping: Return pong.
@@ -483,6 +611,45 @@ func (s *UserService) GetSelf() (*User, error) {
 	return &body, nil
 }
 
+// UpdateSelf: Update your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It updates information about the authenticated user.
+func (s *UserService) UpdateSelf(j *UpdateUser) (*User, error) {
+	// Create the url.
+	path := "/user"
+	uri := resolveRelative(s.client.server, path)
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(j); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body User
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
 // UserList: List API calls for your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.
@@ -492,7 +659,7 @@ func (s *UserService) GetSelf() (*User, error) {
 //
 // Parameters:
 //	- `limit`: Maximum number of items returned by a single call
-//	- `pageToken`: Token returned by previous call to retreive the subsequent page
+//	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
 func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
@@ -613,7 +780,7 @@ func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 //
 // Parameters:
 //	- `limit`: Maximum number of items returned by a single call
-//	- `pageToken`: Token returned by previous call to retreive the subsequent page
+//	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
 func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*APITokenResultsPage, error) {
 	// Create the url.
@@ -830,94 +997,14 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 	return &body, nil
 }
 
-// ListConversionsForUser: List file conversions for your user.
-//
-// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.
-// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
-// The file conversions are returned in order of creation, with the most recently created file conversions first.
-//
-// To iterate over all pages, use the `ListConversionsForUserAllPages` method, instead.
-//
-// Parameters:
-//	- `limit`: Maximum number of items returned by a single call
-//	- `pageToken`: Token returned by previous call to retreive the subsequent page
-//	- `sortBy`
-func (s *FileService) ListConversionsForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*FileConversionResultsPage, error) {
-	// Create the url.
-	path := "/user/file/conversions"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body FileConversionResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
-}
-
-// ListConversionsForUserAllPages: List file conversions for your user.
-//
-// This endpoint does not return the contents of the converted file (`output`). To get the contents use the `/file/conversions/{id}` endpoint.
-// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
-// The file conversions are returned in order of creation, with the most recently created file conversions first.
-//
-// This method is a wrapper around the `ListConversionsForUser` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *FileService) ListConversionsForUserAllPages(sortBy CreatedAtSortMode) (*[]FileConversion, error) {
-
-	var allPages []FileConversion
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListConversionsForUser(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // GetConversionForUser: Get a file conversion for your user.
+// GetConversionForUser: Get a file conversion for your user.
 //
 // Get the status and output of an async file conversion. If completed, the contents of the converted file (`output`) will be returned as a base64 encoded string.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.
 //
 // Parameters:
-//	- `id`: The ID of the file conversion.
-func (s *FileService) GetConversionForUser(id string) (*FileConversionWithOutput, error) {
+//	- `id`: The ID of the async operation.
+func (s *FileService) GetConversionForUser(id string) (*AsyncAPICallOutput, error) {
 	// Create the url.
 	path := "/user/file/conversions/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -946,12 +1033,291 @@ func (s *FileService) GetConversionForUser(id string) (*FileConversionWithOutput
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body FileConversionWithOutput
+	var body AsyncAPICallOutput
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 	// Return the response.
 	return &body, nil
+}
+
+// GetInformationForUser: Get payment info about your user.
+//
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by any KittyCAD user. It gets the payment information for the authenticated user.
+func (s *PaymentService) GetInformationForUser() (*Customer, error) {
+	// Create the url.
+	path := "/user/payment"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body Customer
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// CreateInformationForUser: Create payment info for your user.
+//
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by any KittyCAD user. It creates the payment information for the authenticated user.
+func (s *PaymentService) CreateInformationForUser(j *BillingInfo) (*Customer, error) {
+	// Create the url.
+	path := "/user/payment"
+	uri := resolveRelative(s.client.server, path)
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(j); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body Customer
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// UpdateInformationForUser: Update payment info for your user.
+//
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by any KittyCAD user. It updates the payment information for the authenticated user.
+func (s *PaymentService) UpdateInformationForUser(j *BillingInfo) (*Customer, error) {
+	// Create the url.
+	path := "/user/payment"
+	uri := resolveRelative(s.client.server, path)
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(j); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body Customer
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// DeleteInformationForUser: Delete payment info for your user.
+//
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by any KittyCAD user. It deletes the payment information for the authenticated user.
+func (s *PaymentService) DeleteInformationForUser() error {
+	// Create the url.
+	path := "/user/payment"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+	// Return.
+	return nil
+}
+
+// CreateIntentForUser: Create a payment intent for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It creates a new payment intent for the authenticated user.
+func (s *PaymentService) CreateIntentForUser() (*PaymentIntent, error) {
+	// Create the url.
+	path := "/user/payment/intent"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body PaymentIntent
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// ListInvoicesForUser: List invoices for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It lists invoices for the authenticated user.
+func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
+	// Create the url.
+	path := "/user/payment/invoices"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body []Invoice
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// ListMethodsForUser: List payment methods for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It lists payment methods for the authenticated user.
+func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
+	// Create the url.
+	path := "/user/payment/methods"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body []PaymentMethod
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// DeleteMethodForUser: Delete a payment method for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It deletes the specified payment method for the authenticated user.
+//
+// Parameters:
+//	- `id`: The ID of the payment method.
+func (s *PaymentService) DeleteMethodForUser(id string) error {
+	// Create the url.
+	path := "/user/payment/methods/{{.id}}"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+	// Return.
+	return nil
 }
 
 // GetForUser: Get a session for your user.
@@ -1005,7 +1371,7 @@ func (s *SessionService) GetForUser(token string) (*Session, error) {
 //
 // Parameters:
 //	- `limit`: Maximum number of items returned by a single call
-//	- `pageToken`: Token returned by previous call to retreive the subsequent page
+//	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
 func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*UserResultsPage, error) {
 	// Create the url.
@@ -1081,7 +1447,7 @@ func (s *UserService) ListAllPages(sortBy CreatedAtSortMode) (*[]User, error) {
 //
 // Parameters:
 //	- `limit`: Maximum number of items returned by a single call
-//	- `pageToken`: Token returned by previous call to retreive the subsequent page
+//	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
 func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAtSortMode) (*ExtendedUserResultsPage, error) {
 	// Create the url.
@@ -1251,7 +1617,7 @@ func (s *UserService) Get(id string) (*User, error) {
 // Parameters:
 //	- `id`: The user ID.
 //	- `limit`: Maximum number of items returned by a single call
-//	- `pageToken`: Token returned by previous call to retreive the subsequent page
+//	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
 func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
