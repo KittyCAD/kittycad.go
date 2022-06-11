@@ -3470,19 +3470,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "enum": [
-                    null
-                  ],
-                  "title": "Null",
-                  "type": "string"
-                }
-              }
-            },
-            "description": "successful operation",
+          "204": {
+            "description": "resource updated",
             "headers": {
               "Access-Control-Allow-Credentials": {
                 "description": "Access-Control-Allow-Credentials header.",
