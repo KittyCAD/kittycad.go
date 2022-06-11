@@ -410,10 +410,6 @@ func writePath(doc *openapi3.T, f *os.File, path string, p *openapi3.PathItem) {
 	if p.Head != nil {
 		writeMethod(doc, f, http.MethodHead, path, p.Head, false)
 	}
-
-	if p.Options != nil {
-		writeMethod(doc, f, http.MethodOptions, path, p.Options, false)
-	}
 }
 
 func writeMethod(doc *openapi3.T, f *os.File, method string, path string, o *openapi3.Operation, isGetAllPages bool) {
@@ -690,6 +686,8 @@ func writeMethod(doc *openapi3.T, f *os.File, method string, path string, o *ope
 				fmt.Fprintf(f, "	%q: %s,\n", name, n)
 			} else if t == "int" {
 				fmt.Fprintf(f, "	%q: strconv.Itoa(%s),\n", name, n)
+			} else if t == "float64" {
+				fmt.Fprintf(f, "	%q: fmt.Sprintf(\"%%f\", %s),\n", name, n)
 			} else {
 				fmt.Fprintf(f, "	%q: string(%s),\n", name, n)
 			}
@@ -796,6 +794,10 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool) (string, 
 			}
 			if content.Schema.Ref != "" {
 				return getReferenceSchema(content.Schema), getAllPagesType
+			}
+
+			if content.Schema.Value.Title == "Null" {
+				return "", ""
 			}
 
 			if content.Schema.Value.Type == "array" {

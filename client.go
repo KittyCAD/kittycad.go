@@ -21,8 +21,12 @@ type Client struct {
 	APIToken *APITokenService
 	// File: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 	File *FileService
+	// Hidden: Hidden API endpoints that should not show up in the docs.
+	Hidden *HiddenService
 	// Meta: Meta information about the API.
 	Meta *MetaService
+	// Payment: Operations around payments and billing.
+	Payment *PaymentService
 	// Session: Sessions allow users to call the API from their session cookie in the browser.
 	Session *SessionService
 	// User: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
@@ -38,8 +42,14 @@ type APITokenService service
 // FileService: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 type FileService service
 
+// HiddenService: Hidden API endpoints that should not show up in the docs.
+type HiddenService service
+
 // MetaService: Meta information about the API.
 type MetaService service
+
+// PaymentService: Operations around payments and billing.
+type PaymentService service
 
 // SessionService: Sessions allow users to call the API from their session cookie in the browser.
 type SessionService service
