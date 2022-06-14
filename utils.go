@@ -22,6 +22,7 @@ func resolveRelative(basestr, relstr string) string {
 // expandURL subsitutes any {encoded} strings in the URL passed in using
 // the map supplied.
 func expandURL(u *url.URL, expansions map[string]string) error {
+	origPath := u.Path
 	t, err := template.New("url").Parse(u.Path)
 	if err != nil {
 		return fmt.Errorf("parsing template for url path %q failed: %v", u.Path, err)
@@ -46,6 +47,18 @@ func expandURL(u *url.URL, expansions map[string]string) error {
 
 	// set the parameters
 	u.RawPath = bt.String()
+
+	// For any extra arguments that were not in the template, parse the args
+	// as path paramters.
+	values := u.Query()
+	for k, v := range expansions {
+		if !strings.Contains(origPath, fmt.Sprintf("{{.%s}}", k)) {
+			values.Set(k, v)
+		}
+	}
+
+	// Set the path parameters
+	u.RawQuery = values.Encode()
 
 	return nil
 }

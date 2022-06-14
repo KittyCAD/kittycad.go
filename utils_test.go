@@ -27,6 +27,15 @@ var expandTests = []expandTest{
 		},
 		DefaultServerURL + "/file/convert/step/obj",
 	},
+	// Path params added as extras.
+	{
+		"file/convert",
+		map[string]string{
+			"srcFormat":    "step",
+			"outputFormat": "obj",
+		},
+		DefaultServerURL + "/file/convert?outputFormat=obj&srcFormat=step",
+	},
 }
 
 func TestExpandURL(t *testing.T) {
