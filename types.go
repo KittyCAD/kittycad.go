@@ -275,7 +275,7 @@ type BillingInfo struct {
 	// Name is the name of the customer.
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	// Phone is the phone for the customer.
-	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
+	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
 }
 
 // CacheMetadata is metadata about our cache.
@@ -777,7 +777,7 @@ type Customer struct {
 	// Name is the customer's full name or business name.
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	// Phone is the customer's phone number.
-	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
+	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
 }
 
 // Duration is the type definition for a Duration.
@@ -845,7 +845,7 @@ type ExtendedUser struct {
 	// Name is the name of the user. This is auto populated at first from the authentication provider (if there was a name). It can be updated by the user by updating their `first_name` and `last_name` fields.
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	// Phone is the user's phone number.
-	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
+	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
 	// StripeID is the user's Stripe ID. This is mostly used for internal mapping.
 	StripeID string `json:"stripe_id,omitempty" yaml:"stripe_id,omitempty"`
 	// UpdatedAt is the date and time the user was last updated.
@@ -1262,6 +1262,9 @@ const (
 	PaymentMethodTypeCard PaymentMethodType = "card"
 )
 
+// PhoneNumber is the type definition for a PhoneNumber.
+type PhoneNumber string
+
 // Pong is the response from the `/ping` endpoint.
 type Pong struct {
 	// Message is the pong response.
@@ -1302,7 +1305,7 @@ type UpdateUser struct {
 	// LastName is the user's last name.
 	LastName string `json:"last_name,omitempty" yaml:"last_name,omitempty"`
 	// Phone is the user's phone number.
-	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
+	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
 }
 
 // User is a user.
@@ -1330,7 +1333,7 @@ type User struct {
 	// Name is the name of the user. This is auto populated at first from the authentication provider (if there was a name). It can be updated by the user by updating their `first_name` and `last_name` fields.
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	// Phone is the user's phone number.
-	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
+	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
 	// UpdatedAt is the date and time the user was last updated.
 	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 }
