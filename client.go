@@ -29,6 +29,8 @@ type Client struct {
 	Payment *PaymentService
 	// Session: Sessions allow users to call the API from their session cookie in the browser.
 	Session *SessionService
+	// Unit: Unit conversion operations.
+	Unit *UnitService
 	// User: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
 	User *UserService
 }
@@ -53,6 +55,9 @@ type PaymentService service
 
 // SessionService: Sessions allow users to call the API from their session cookie in the browser.
 type SessionService service
+
+// UnitService: Unit conversion operations.
+type UnitService service
 
 // UserService: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
 type UserService service

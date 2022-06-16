@@ -432,8 +432,6 @@ const (
 
 // CodeOutput is output of the code being executed.
 type CodeOutput struct {
-	// Output is the first files content. Remove after backwards compat (TODO).
-	Output string `json:"output,omitempty" yaml:"output,omitempty"`
 	// OutputFiles is the contents of the files requested if they were passed.
 	OutputFiles []OutputFile `json:"output_files,omitempty" yaml:"output_files,omitempty"`
 	// Stderr is the stderr of the code.
@@ -1424,6 +1422,76 @@ type Session struct {
 // StatusCode is the type definition for a StatusCode.
 type StatusCode int
 
+// UnitConversion is a unit conversion.
+type UnitConversion struct {
+	// CompletedAt is the time and date the unit conversion was completed.
+	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	// CreatedAt is the time and date the unit conversion was created.
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Error is the error the function returned, if any.
+	Error string `json:"error,omitempty" yaml:"error,omitempty"`
+	// ID is the unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
+	// Input is the input value.
+	Input float64 `json:"input,omitempty" yaml:"input,omitempty"`
+	// Output is the resulting value.
+	Output float64 `json:"output,omitempty" yaml:"output,omitempty"`
+	// OutputFormat is the output format of the unit conversion.
+	OutputFormat UnitMetricFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
+	// SrcFormat is the source format of the unit conversion.
+	SrcFormat UnitMetricFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
+	// StartedAt is the time and date the unit conversion was started.
+	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	// Status is the status of the unit conversion.
+	Status APICallStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	// UpdatedAt is the time and date the unit conversion was last updated.
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	// UserID is the user ID of the user who created the unit conversion.
+	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+}
+
+// UnitMetricFormat is the valid types of metric unit formats.
+type UnitMetricFormat string
+
+const (
+	// UnitMetricFormatAtto represents the UnitMetricFormat `"atto"`.
+	UnitMetricFormatAtto UnitMetricFormat = "atto"
+	// UnitMetricFormatFemto represents the UnitMetricFormat `"femto"`.
+	UnitMetricFormatFemto UnitMetricFormat = "femto"
+	// UnitMetricFormatPico represents the UnitMetricFormat `"pico"`.
+	UnitMetricFormatPico UnitMetricFormat = "pico"
+	// UnitMetricFormatNano represents the UnitMetricFormat `"nano"`.
+	UnitMetricFormatNano UnitMetricFormat = "nano"
+	// UnitMetricFormatMicro represents the UnitMetricFormat `"micro"`.
+	UnitMetricFormatMicro UnitMetricFormat = "micro"
+	// UnitMetricFormatMilli represents the UnitMetricFormat `"milli"`.
+	UnitMetricFormatMilli UnitMetricFormat = "milli"
+	// UnitMetricFormatCenti represents the UnitMetricFormat `"centi"`.
+	UnitMetricFormatCenti UnitMetricFormat = "centi"
+	// UnitMetricFormatDeci represents the UnitMetricFormat `"deci"`.
+	UnitMetricFormatDeci UnitMetricFormat = "deci"
+	// UnitMetricFormatMetricUnit represents the UnitMetricFormat `"metric_unit"`.
+	UnitMetricFormatMetricUnit UnitMetricFormat = "metric_unit"
+	// UnitMetricFormatDeca represents the UnitMetricFormat `"deca"`.
+	UnitMetricFormatDeca UnitMetricFormat = "deca"
+	// UnitMetricFormatHecto represents the UnitMetricFormat `"hecto"`.
+	UnitMetricFormatHecto UnitMetricFormat = "hecto"
+	// UnitMetricFormatKilo represents the UnitMetricFormat `"kilo"`.
+	UnitMetricFormatKilo UnitMetricFormat = "kilo"
+	// UnitMetricFormatMega represents the UnitMetricFormat `"mega"`.
+	UnitMetricFormatMega UnitMetricFormat = "mega"
+	// UnitMetricFormatGiga represents the UnitMetricFormat `"giga"`.
+	UnitMetricFormatGiga UnitMetricFormat = "giga"
+	// UnitMetricFormatTera represents the UnitMetricFormat `"tera"`.
+	UnitMetricFormatTera UnitMetricFormat = "tera"
+	// UnitMetricFormatPeta represents the UnitMetricFormat `"peta"`.
+	UnitMetricFormatPeta UnitMetricFormat = "peta"
+	// UnitMetricFormatExa represents the UnitMetricFormat `"exa"`.
+	UnitMetricFormatExa UnitMetricFormat = "exa"
+)
+
 // UpdateUser is the user-modifiable parts of a User.
 type UpdateUser struct {
 	// Company is the user's company.
@@ -1728,4 +1796,25 @@ var Methods = []Method{
 // PaymentMethodTypes is the collection of all PaymentMethodType values.
 var PaymentMethodTypes = []PaymentMethodType{
 	PaymentMethodTypeCard,
+}
+
+// UnitMetricFormats is the collection of all UnitMetricFormat values.
+var UnitMetricFormats = []UnitMetricFormat{
+	UnitMetricFormatAtto,
+	UnitMetricFormatCenti,
+	UnitMetricFormatDeca,
+	UnitMetricFormatDeci,
+	UnitMetricFormatExa,
+	UnitMetricFormatFemto,
+	UnitMetricFormatGiga,
+	UnitMetricFormatHecto,
+	UnitMetricFormatKilo,
+	UnitMetricFormatMega,
+	UnitMetricFormatMetricUnit,
+	UnitMetricFormatMicro,
+	UnitMetricFormatMilli,
+	UnitMetricFormatNano,
+	UnitMetricFormatPeta,
+	UnitMetricFormatPico,
+	UnitMetricFormatTera,
 }
