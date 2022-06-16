@@ -243,7 +243,88 @@ func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 	return &body, nil
 }
 
-// GetAsyncOperation: Get an async operation.
+// ListAsyncOperations: List async operations.
+//
+// For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
+// This endpoint requires authentication by a KittyCAD employee.
+//
+// To iterate over all pages, use the `ListAsyncOperationsAllPages` method, instead.
+//
+// Parameters:
+//	- `limit`: Maximum number of items returned by a single call
+//	- `pageToken`: Token returned by previous call to retrieve the subsequent page
+//	- `sortBy`
+//	- `status`: The status to filter by.
+func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy CreatedAtSortMode, status APICallStatus) (*AsyncAPICallResultsPage, error) {
+	// Create the url.
+	path := "/async/operations"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+		"status":     string(status),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body AsyncAPICallResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// ListAsyncOperationsAllPages: List async operations.
+//
+// For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
+// This endpoint requires authentication by a KittyCAD employee.
+//
+// This method is a wrapper around the `ListAsyncOperations` method.
+// This method returns all the pages at once.
+//
+// Parameters:
+//	- `sortBy`
+//	- `status`: The status to filter by.
+func (s *APICallService) ListAsyncOperationsAllPages(sortBy CreatedAtSortMode, status APICallStatus) (*[]AsyncAPICall, error) {
+
+	var allPages []AsyncAPICall
+	pageToken := ""
+	limit := 100
+	for {
+		page, err := s.ListAsyncOperations(limit, pageToken, sortBy, status)
+		if err != nil {
+			return nil, err
+		}
+		allPages = append(allPages, page.Items...)
+		if page.NextPage == "" {
+			break
+		}
+		pageToken = page.NextPage
+	}
+
+	return &allPages, nil
+} // GetAsyncOperation: Get an async operation.
 //
 // Get the status and output of an async operation.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested async operation for the user.
@@ -291,7 +372,7 @@ func (s *APICallService) GetAsyncOperation(id string) (*AsyncAPICallOutput, erro
 
 // CreateConversion: Convert CAD file.
 //
-// Convert a CAD file from one format to another. If the file being converted is larger than 30MB, it will be performed asynchronously.
+// Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
 // If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
@@ -382,11 +463,57 @@ func (s *FileService) GetConversion(id string) (*AsyncAPICallOutput, error) {
 	return &body, nil
 }
 
+// CreateDensity: Get CAD file density.
+//
+// Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters:
+//	- `materialMass`: The material mass.
+//	- `srcFormat`: The format of the file.
+func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFormat, b io.Reader) (*FileDensity, error) {
+	// Create the url.
+	path := "/file/density"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"material_mass": fmt.Sprintf("%f", materialMass),
+		"src_format":    string(srcFormat),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body FileDensity
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
 // CreateExecution: Execute a KittyCAD program in a specific language.
 //
 // Parameters:
 //	- `lang`: The language of the code.
-//	- `output`: The output file we want to get the contents for (this is relative to where in litterbox it is being run).
+//	- `output`: The output file we want to get the contents for (the paths are relative to where in litterbox it is being run). You can denote more than one file with a comma separated list of string paths.
 func (s *FileService) CreateExecution(lang CodeLanguage, output string, b io.Reader) (*CodeOutput, error) {
 	// Create the url.
 	path := "/file/execute/{{.lang}}"
@@ -427,7 +554,7 @@ func (s *FileService) CreateExecution(lang CodeLanguage, output string, b io.Rea
 
 // CreateMass: Get CAD file mass.
 //
-// Get the mass of an object in a CAD file. If the file is larger than 30MB, it will be performed asynchronously.
+// Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters:
@@ -473,7 +600,7 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFo
 
 // CreateVolume: Get CAD file volume.
 //
-// Get the volume of an object in a CAD file. If the file is larger than 30MB, it will be performed asynchronously.
+// Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters:

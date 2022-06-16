@@ -148,17 +148,63 @@ type APITokenResultsPage struct {
 	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
 }
 
+// AsyncAPICallType is the type of async API call.
+type AsyncAPICallType string
+
+const (
+	// AsyncAPICallTypeFileConversion represents the AsyncAPICallType `"FileConversion"`.
+	AsyncAPICallTypeFileConversion AsyncAPICallType = "FileConversion"
+	// AsyncAPICallTypeFileVolume represents the AsyncAPICallType `"FileVolume"`.
+	AsyncAPICallTypeFileVolume AsyncAPICallType = "FileVolume"
+	// AsyncAPICallTypeFileMass represents the AsyncAPICallType `"FileMass"`.
+	AsyncAPICallTypeFileMass AsyncAPICallType = "FileMass"
+	// AsyncAPICallTypeFileDensity represents the AsyncAPICallType `"FileDensity"`.
+	AsyncAPICallTypeFileDensity AsyncAPICallType = "FileDensity"
+)
+
+// AsyncAPICall is an async API call.
+type AsyncAPICall struct {
+	// CompletedAt is the time and date the async API call was completed.
+	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	// CreatedAt is the time and date the async API call was created.
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Error is the error the function returned, if any.
+	Error string `json:"error,omitempty" yaml:"error,omitempty"`
+	// ID is the unique identifier of the async API call.
+	//
+	// This is the same as the API call ID.
+	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
+	// Input is the JSON input for the API call. These are determined by the endpoint that is run.
+	Input interface{} `json:"input,omitempty" yaml:"input,omitempty"`
+	// Output is the JSON output for the API call. These are determined by the endpoint that is run.
+	Output interface{} `json:"output,omitempty" yaml:"output,omitempty"`
+	// StartedAt is the time and date the async API call was started.
+	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	// Status is the status of the async API call.
+	Status APICallStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	// Type is the type of async API call.
+	Type AsyncAPICallType `json:"type,omitempty" yaml:"type,omitempty"`
+	// UpdatedAt is the time and date the async API call was last updated.
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	// UserID is the user ID of the user who created the async API call.
+	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+	// Worker is the worker node that is performing or performed the async API call.
+	Worker string `json:"worker,omitempty" yaml:"worker,omitempty"`
+}
+
 // AsyncAPICallOutputFileConversion is a file conversion.
 type AsyncAPICallOutputFileConversion struct {
 	// CompletedAt is the time and date the file conversion was completed.
 	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
 	// CreatedAt is the time and date the file conversion was created.
 	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Error is the error the function returned, if any.
+	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the file conversion.
 	//
 	// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
-	// Output is the converted file, if completed, base64 encoded. If the conversion failed, this field will show any errors.
+	// Output is the converted file, if completed, base64 encoded.
 	Output string `json:"output,omitempty" yaml:"output,omitempty"`
 	// OutputFormat is the output format of the file conversion.
 	OutputFormat FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
@@ -249,10 +295,45 @@ const (
 	AsyncAPICallOutputTypeFileVolume AsyncAPICallOutputType = "FileVolume"
 )
 
+// AsyncAPICallOutputFileDensity is a file density.
+type AsyncAPICallOutputFileDensity struct {
+	// CompletedAt is the time and date the density was completed.
+	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	// CreatedAt is the time and date the density was created.
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Density is the resulting density.
+	Density float64 `json:"density,omitempty" yaml:"density,omitempty"`
+	// Error is the error the function returned, if any.
+	Error string `json:"error,omitempty" yaml:"error,omitempty"`
+	// ID is the unique identifier of the density request.
+	//
+	// This is the same as the API call ID.
+	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
+	// MaterialMass is the material mass as denoted by the user.
+	MaterialMass float64 `json:"material_mass,omitempty" yaml:"material_mass,omitempty"`
+	// SrcFormat is the source format of the file.
+	SrcFormat FileSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
+	// StartedAt is the time and date the density was started.
+	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	// Status is the status of the density.
+	Status APICallStatus          `json:"status,omitempty" yaml:"status,omitempty"`
+	Type   AsyncAPICallOutputType `json:"type,omitempty" yaml:"type,omitempty"`
+	// UpdatedAt is the time and date the density was last updated.
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	// UserID is the user ID of the user who created the density.
+	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+}
+
+const (
+	// AsyncAPICallOutputTypeFileDensity represents the AsyncAPICallOutputType `"FileDensity"`.
+	AsyncAPICallOutputTypeFileDensity AsyncAPICallOutputType = "FileDensity"
+)
+
 // AsyncAPICallOutput is the output from the async API call.
 type AsyncAPICallOutput struct {
 	CompletedAt     *JSONTime        `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
 	CreatedAt       *JSONTime        `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	Error           string           `json:"error,omitempty" yaml:"error,omitempty"`
 	ID              Uuid             `json:"id,omitempty" yaml:"id,omitempty"`
 	Output          string           `json:"output,omitempty" yaml:"output,omitempty"`
 	OutputFormat    FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
@@ -262,10 +343,19 @@ type AsyncAPICallOutput struct {
 	Type            string           `json:"type,omitempty" yaml:"type,omitempty"`
 	UpdatedAt       *JSONTime        `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	UserID          string           `json:"user_id,omitempty" yaml:"user_id,omitempty"`
-	Error           string           `json:"error,omitempty" yaml:"error,omitempty"`
 	Mass            float64          `json:"mass,omitempty" yaml:"mass,omitempty"`
 	MaterialDensity float64          `json:"material_density,omitempty" yaml:"material_density,omitempty"`
 	Volume          float64          `json:"volume,omitempty" yaml:"volume,omitempty"`
+	Density         float64          `json:"density,omitempty" yaml:"density,omitempty"`
+	MaterialMass    float64          `json:"material_mass,omitempty" yaml:"material_mass,omitempty"`
+}
+
+// AsyncAPICallResultsPage is a single page of results
+type AsyncAPICallResultsPage struct {
+	// Items is list of items on this page of results
+	Items []AsyncAPICall `json:"items,omitempty" yaml:"items,omitempty"`
+	// NextPage is token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
 }
 
 // BillingInfo is the billing information for payments.
@@ -342,8 +432,10 @@ const (
 
 // CodeOutput is output of the code being executed.
 type CodeOutput struct {
-	// Output is the contents of the output file if it was passed. This is base64 encoded so we can ensure it is UTF-8 for JSON.
+	// Output is the first files content. Remove after backwards compat (TODO).
 	Output string `json:"output,omitempty" yaml:"output,omitempty"`
+	// OutputFiles is the contents of the files requested if they were passed.
+	OutputFiles []OutputFile `json:"output_files,omitempty" yaml:"output_files,omitempty"`
 	// Stderr is the stderr of the code.
 	Stderr string `json:"stderr,omitempty" yaml:"stderr,omitempty"`
 	// Stdout is the stdout of the code.
@@ -363,9 +455,8 @@ type Connection struct {
 	// Connections is the number of connections to the server.
 	Connections int `json:"connections,omitempty" yaml:"connections,omitempty"`
 	// Cores is the CPU core usage of the server.
-	Cores int `json:"cores,omitempty" yaml:"cores,omitempty"`
-	// Cpu is the CPU usage of the server.
-	Cpu float64 `json:"cpu,omitempty" yaml:"cpu,omitempty"`
+	Cores int     `json:"cores,omitempty" yaml:"cores,omitempty"`
+	Cpu   float64 `json:"cpu,omitempty" yaml:"cpu,omitempty"`
 	// Gateway is information about the gateway.
 	Gateway Gateway `json:"gateway,omitempty" yaml:"gateway,omitempty"`
 	// GitCommit is the git commit.
@@ -381,8 +472,7 @@ type Connection struct {
 	// HttpHost is the http host of the server.
 	HttpHost string `json:"http_host,omitempty" yaml:"http_host,omitempty"`
 	// HttpPort is the http port of the server.
-	HttpPort int `json:"http_port,omitempty" yaml:"http_port,omitempty"`
-	// HttpReqStats is hTTP request statistics.
+	HttpPort     int `json:"http_port,omitempty" yaml:"http_port,omitempty"`
 	HttpReqStats int `json:"http_req_stats,omitempty" yaml:"http_req_stats,omitempty"`
 	// HttpsPort is the https port of the server.
 	HttpsPort int `json:"https_port,omitempty" yaml:"https_port,omitempty"`
@@ -783,12 +873,16 @@ type Customer struct {
 // Duration is the type definition for a Duration.
 type Duration int
 
-// EngineMetadata is metadata about an engine API instance.
+// EngineMetadata is metadata about our currently running server.
 //
 // This is mostly used for internal purposes and debugging.
 type EngineMetadata struct {
 	// AsyncJobsRunning is if any async job is currently running.
 	AsyncJobsRunning bool `json:"async_jobs_running,omitempty" yaml:"async_jobs_running,omitempty"`
+	// Cache is metadata about our cache.
+	Cache CacheMetadata `json:"cache,omitempty" yaml:"cache,omitempty"`
+	// Environment is the environment we are running in.
+	Environment Environment `json:"environment,omitempty" yaml:"environment,omitempty"`
 	// Fs is metadata about our file system.
 	Fs FileSystemMetadata `json:"fs,omitempty" yaml:"fs,omitempty"`
 	// GitHash is the git hash of the server.
@@ -868,11 +962,13 @@ type FileConversion struct {
 	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
 	// CreatedAt is the time and date the file conversion was created.
 	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Error is the error the function returned, if any.
+	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the file conversion.
 	//
 	// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
-	// Output is the converted file, if completed, base64 encoded. If the conversion failed, this field will show any errors.
+	// Output is the converted file, if completed, base64 encoded.
 	Output string `json:"output,omitempty" yaml:"output,omitempty"`
 	// OutputFormat is the output format of the file conversion.
 	OutputFormat FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
@@ -885,6 +981,34 @@ type FileConversion struct {
 	// UpdatedAt is the time and date the file conversion was last updated.
 	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// UserID is the user ID of the user who created the file conversion.
+	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+}
+
+// FileDensity is a file density result.
+type FileDensity struct {
+	// CompletedAt is the time and date the density was completed.
+	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	// CreatedAt is the time and date the density was created.
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Density is the resulting density.
+	Density float64 `json:"density,omitempty" yaml:"density,omitempty"`
+	// Error is the error the function returned, if any.
+	Error string `json:"error,omitempty" yaml:"error,omitempty"`
+	// ID is the unique identifier of the density request.
+	//
+	// This is the same as the API call ID.
+	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
+	// MaterialMass is the material mass as denoted by the user.
+	MaterialMass float64 `json:"material_mass,omitempty" yaml:"material_mass,omitempty"`
+	// SrcFormat is the source format of the file.
+	SrcFormat FileSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
+	// StartedAt is the time and date the density was started.
+	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	// Status is the status of the density.
+	Status APICallStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	// UpdatedAt is the time and date the density was last updated.
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	// UserID is the user ID of the user who created the density.
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
 
@@ -1222,6 +1346,14 @@ const (
 	MethodEXTENSION Method = "EXTENSION"
 )
 
+// OutputFile is output file contents.
+type OutputFile struct {
+	// Contents is the contents of the file. This is base64 encoded so we can ensure it is UTF-8 for JSON.
+	Contents string `json:"contents,omitempty" yaml:"contents,omitempty"`
+	// Name is the name of the file.
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+}
+
 // PaymentIntent is a payment intent response.
 type PaymentIntent struct {
 	// ClientSecret is the client secret is used for client-side retrieval using a publishable key. The client secret can be used to complete payment setup from your frontend. It should not be stored, logged, or exposed to anyone other than the customer. Make sure that you have TLS enabled on any page that includes the client secret.
@@ -1373,8 +1505,17 @@ var APICallStatuses = []APICallStatus{
 // AsyncAPICallOutputTypes is the collection of all AsyncAPICallOutputType values.
 var AsyncAPICallOutputTypes = []AsyncAPICallOutputType{
 	AsyncAPICallOutputTypeFileConversion,
+	AsyncAPICallOutputTypeFileDensity,
 	AsyncAPICallOutputTypeFileMass,
 	AsyncAPICallOutputTypeFileVolume,
+}
+
+// AsyncAPICallTypes is the collection of all AsyncAPICallType values.
+var AsyncAPICallTypes = []AsyncAPICallType{
+	AsyncAPICallTypeFileConversion,
+	AsyncAPICallTypeFileDensity,
+	AsyncAPICallTypeFileMass,
+	AsyncAPICallTypeFileVolume,
 }
 
 // CodeLanguages is the collection of all CodeLanguage values.
