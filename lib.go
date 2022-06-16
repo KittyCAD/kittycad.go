@@ -61,6 +61,7 @@ func NewClient(token, userAgent string) (*Client, error) {
 	client.Payment = &PaymentService{client: client}
 	client.APIToken = &APITokenService{client: client}
 	client.Session = &SessionService{client: client}
+	client.Unit = &UnitService{client: client}
 
 	return client, nil
 }
