@@ -703,6 +703,53 @@ func (s *MetaService) Ping() (*Pong, error) {
 	return &body, nil
 }
 
+// CreateConversion: Convert units.
+//
+// Convert a metric unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters:
+//	- `outputFormat`: The output format of the unit.
+//	- `srcFormat`: The source format of the unit.
+//	- `value`: The initial value.
+func (s *UnitService) CreateConversion(outputFormat UnitMetricFormat, srcFormat UnitMetricFormat, value float64) (*UnitConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body UnitConversion
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
 // GetSelf: Get your user.
 //
 // Get the user information for the authenticated user.

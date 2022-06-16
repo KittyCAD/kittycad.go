@@ -924,11 +924,6 @@
       "CodeOutput": {
         "description": "Output of the code being executed.",
         "properties": {
-          "output": {
-            "default": "",
-            "description": "The first files content. Remove after backwards compat (TODO).",
-            "type": "string"
-          },
           "output_files": {
             "description": "The contents of the files requested if they were passed.",
             "items": {
@@ -2757,6 +2752,118 @@
         "title": "int32",
         "type": "integer"
       },
+      "UnitConversion": {
+        "description": "A unit conversion.",
+        "properties": {
+          "completed_at": {
+            "description": "The time and date the unit conversion was completed.",
+            "format": "partial-date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "created_at": {
+            "description": "The time and date the unit conversion was created.",
+            "format": "partial-date-time",
+            "type": "string"
+          },
+          "error": {
+            "description": "The error the function returned, if any.",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            ],
+            "description": "The unique identifier of the unit conversion.\n\nThis is the same as the API call ID."
+          },
+          "input": {
+            "default": 0,
+            "description": "The input value.",
+            "format": "float",
+            "type": "number"
+          },
+          "output": {
+            "description": "The resulting value.",
+            "format": "double",
+            "nullable": true,
+            "type": "number"
+          },
+          "output_format": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UnitMetricFormat"
+              }
+            ],
+            "description": "The output format of the unit conversion."
+          },
+          "src_format": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UnitMetricFormat"
+              }
+            ],
+            "description": "The source format of the unit conversion."
+          },
+          "started_at": {
+            "description": "The time and date the unit conversion was started.",
+            "format": "partial-date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/APICallStatus"
+              }
+            ],
+            "description": "The status of the unit conversion."
+          },
+          "updated_at": {
+            "description": "The time and date the unit conversion was last updated.",
+            "format": "partial-date-time",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "The user ID of the user who created the unit conversion.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "output_format",
+          "src_format",
+          "status",
+          "updated_at"
+        ],
+        "type": "object"
+      },
+      "UnitMetricFormat": {
+        "description": "The valid types of metric unit formats.",
+        "enum": [
+          "atto",
+          "femto",
+          "pico",
+          "nano",
+          "micro",
+          "milli",
+          "centi",
+          "deci",
+          "metric_unit",
+          "deca",
+          "hecto",
+          "kilo",
+          "mega",
+          "giga",
+          "tera",
+          "peta",
+          "exa"
+        ],
+        "type": "string"
+      },
       "UpdateUser": {
         "description": "The user-modifiable parts of a User.",
         "properties": {
@@ -4192,6 +4299,105 @@
         "x-go": {
           "example": "// Ping: Return pong.\npong, err := client.Meta.Ping()",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.Ping"
+        }
+      }
+    },
+    "/unit/conversion/{src_format}/{output_format}": {
+      "post": {
+        "description": "Convert a metric unit value to another metric unit value. This is a nice endpoint to use for helper functions.",
+        "operationId": "create_unit_conversion",
+        "parameters": [
+          {
+            "description": "The output format of the unit.",
+            "in": "path",
+            "name": "output_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UnitMetricFormat"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The source format of the unit.",
+            "in": "path",
+            "name": "src_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UnitMetricFormat"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The initial value.",
+            "in": "query",
+            "name": "value",
+            "required": true,
+            "schema": {
+              "format": "float",
+              "type": "number"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitConversion"
+                }
+              }
+            },
+            "description": "successful creation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Convert units.",
+        "tags": [
+          "unit"
+        ],
+        "x-go": {
+          "example": "// CreateConversion: Convert units.\n//\n// Convert a metric unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n//\n// Parameters:\n//\t- `outputFormat`: The output format of the unit.\n//\t- `srcFormat`: The source format of the unit.\n//\t- `value`: The initial value.\nunitConversion, err := client.Unit.CreateConversion(outputFormat, srcFormat, value)\n\n// - OR -\n\n// CreateConversionWithBase64Helper will automatically base64 encode and decode the contents\n// of the file body.\n//\n// This function is a wrapper around the CreateConversion function.\nunitConversion, err := client.Unit.CreateConversionWithBase64Helper(outputFormat, srcFormat, value)",
+          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.CreateConversion"
         }
       }
     },
@@ -6403,6 +6609,13 @@
         "url": "https://docs.kittycad.io/api/sessions"
       },
       "name": "sessions"
+    },
+    {
+      "description": "Unit conversion operations.",
+      "externalDocs": {
+        "url": "https://docs.kittycad.io/api/file"
+      },
+      "name": "unit"
     },
     {
       "description": "A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.",
