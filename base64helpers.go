@@ -21,7 +21,7 @@ func (c *FileService) GetConversionWithBase64Helper(id string) (*AsyncAPICallOut
 	}
 
 	// Decode the base64 encoded body.
-	output, err := base64.StdEncoding.DecodeString(resp.Output)
+	output, err := base64.StdEncoding.DecodeString(string(resp.Output))
 	if err != nil {
 		return nil, nil, fmt.Errorf("base64 decoding output from API failed: %v", err)
 	}
@@ -53,7 +53,7 @@ func (c *FileService) CreateConversionWithBase64Helper(srcFormat FileSourceForma
 	}
 
 	// Decode the base64 encoded body.
-	output, err := base64.StdEncoding.DecodeString(resp.Output)
+	output, err := base64.StdEncoding.DecodeString(string(resp.Output))
 	if err != nil {
 		return nil, nil, fmt.Errorf("base64 decoding output from API failed: %v", err)
 	}

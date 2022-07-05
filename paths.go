@@ -370,6 +370,72 @@ func (s *APICallService) GetAsyncOperation(id string) (*AsyncAPICallOutput, erro
 	return &body, nil
 }
 
+// ListenAuthEmail: Create an email verification request for a user.
+func (s *HiddenService) ListenAuthEmail(j *EmailAuthenticationForm) error {
+	// Create the url.
+	path := "/auth/email"
+	uri := resolveRelative(s.client.server, path)
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(j); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+	// Return.
+	return nil
+}
+
+// ListenAuthEmailCallback: Listen for callbacks for email verification for users.
+//
+// Parameters:
+//	- `callbackUrl`: The URL to redirect back to after we have authenticated.
+//	- `email`: The user's email.
+//	- `token`: The verification token.
+func (s *HiddenService) ListenAuthEmailCallback(callbackUrl string, email string, token string) error {
+	// Create the url.
+	path := "/auth/email/callback"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"callback_url": callbackUrl,
+		"email":        email,
+		"token":        token,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+	// Return.
+	return nil
+}
+
 // CreateConversion: Convert CAD file.
 //
 // Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
@@ -642,18 +708,15 @@ func (s *FileService) CreateVolume(srcFormat FileSourceFormat, b io.Reader) (*Fi
 	return &body, nil
 }
 
-// Login: This endpoint sets a session cookie for a user.
-func (s *HiddenService) Login(j *LoginParams) error {
+// Logout: This endpoint removes the session cookie for a user.
+//
+// This is used in logout scenarios.
+func (s *HiddenService) Logout() error {
 	// Create the url.
-	path := "/login"
+	path := "/logout"
 	uri := resolveRelative(s.client.server, path)
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(j); err != nil {
-		return fmt.Errorf("encoding json body request failed: %v", err)
-	}
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", uri, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -1139,7 +1202,7 @@ func (s *APITokenService) DeleteForUser(token string) error {
 // GetSelfExtended: Get extended information about your user.
 //
 // Get the user information for the authenticated user.
-// Alternatively, you can also use the `/users/me` endpoint.
+// Alternatively, you can also use the `/users-extended/me` endpoint.
 func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 	// Create the url.
 	path := "/user/extended"
