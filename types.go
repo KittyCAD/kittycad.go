@@ -2,20 +2,14 @@
 
 package kittycad
 
-// APICallStatus is the status of an async API call.
-type APICallStatus string
+// AccountProvider is an account provider.
+type AccountProvider string
 
 const (
-	// APICallStatusQueued represents the APICallStatus `"Queued"`.
-	APICallStatusQueued APICallStatus = "Queued"
-	// APICallStatusUploaded represents the APICallStatus `"Uploaded"`.
-	APICallStatusUploaded APICallStatus = "Uploaded"
-	// APICallStatusInProgress represents the APICallStatus `"In Progress"`.
-	APICallStatusInProgress APICallStatus = "In Progress"
-	// APICallStatusCompleted represents the APICallStatus `"Completed"`.
-	APICallStatusCompleted APICallStatus = "Completed"
-	// APICallStatusFailed represents the APICallStatus `"Failed"`.
-	APICallStatusFailed APICallStatus = "Failed"
+	// AccountProviderGoogle represents the AccountProvider `"google"`.
+	AccountProviderGoogle AccountProvider = "google"
+	// AccountProviderGithub represents the AccountProvider `"github"`.
+	AccountProviderGithub AccountProvider = "github"
 )
 
 // Address is an address.
@@ -66,16 +60,32 @@ const (
 	APICallQueryGroupByIpAddress APICallQueryGroupBy = "ip_address"
 )
 
+// APICallStatus is the status of an async API call.
+type APICallStatus string
+
+const (
+	// APICallStatusQueued represents the APICallStatus `"Queued"`.
+	APICallStatusQueued APICallStatus = "Queued"
+	// APICallStatusUploaded represents the APICallStatus `"Uploaded"`.
+	APICallStatusUploaded APICallStatus = "Uploaded"
+	// APICallStatusInProgress represents the APICallStatus `"In Progress"`.
+	APICallStatusInProgress APICallStatus = "In Progress"
+	// APICallStatusCompleted represents the APICallStatus `"Completed"`.
+	APICallStatusCompleted APICallStatus = "Completed"
+	// APICallStatusFailed represents the APICallStatus `"Failed"`.
+	APICallStatusFailed APICallStatus = "Failed"
+)
+
 // APICallWithPrice is an API call with the price.
 //
-// This is a join of the `APICall` and `APICallPrice` tables.
+// This is a join of the `ApiCall` and `ApiCallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt is the date and time the API call completed billing.
 	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
 	// CreatedAt is the date and time the API call was created.
 	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// Duration is the duration of the API call.
-	Duration int `json:"duration,omitempty" yaml:"duration,omitempty"`
+	Duration Duration `json:"duration,omitempty" yaml:"duration,omitempty"`
 	// Email is the user's email address.
 	Email string `json:"email,omitempty" yaml:"email,omitempty"`
 	// Endpoint is the endpoint requested by the API call.
@@ -83,7 +93,7 @@ type APICallWithPrice struct {
 	// ID is the unique identifier for the API call.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// IPAddress is the ip address of the origin.
-	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
+	IPAddress IpAddr `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
 	// Method is the HTTP method requsted by the API call.
 	Method Method `json:"method,omitempty" yaml:"method,omitempty"`
 	// Minutes is the number of minutes the API call was billed for.
@@ -148,20 +158,6 @@ type APITokenResultsPage struct {
 	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
 }
 
-// AsyncAPICallType is the type of async API call.
-type AsyncAPICallType string
-
-const (
-	// AsyncAPICallTypeFileConversion represents the AsyncAPICallType `"FileConversion"`.
-	AsyncAPICallTypeFileConversion AsyncAPICallType = "FileConversion"
-	// AsyncAPICallTypeFileVolume represents the AsyncAPICallType `"FileVolume"`.
-	AsyncAPICallTypeFileVolume AsyncAPICallType = "FileVolume"
-	// AsyncAPICallTypeFileMass represents the AsyncAPICallType `"FileMass"`.
-	AsyncAPICallTypeFileMass AsyncAPICallType = "FileMass"
-	// AsyncAPICallTypeFileDensity represents the AsyncAPICallType `"FileDensity"`.
-	AsyncAPICallTypeFileDensity AsyncAPICallType = "FileDensity"
-)
-
 // AsyncAPICall is an async API call.
 type AsyncAPICall struct {
 	// CompletedAt is the time and date the async API call was completed.
@@ -205,7 +201,7 @@ type AsyncAPICallOutputFileConversion struct {
 	// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// Output is the converted file, if completed, base64 encoded.
-	Output string `json:"output,omitempty" yaml:"output,omitempty"`
+	Output Base64Data `json:"output,omitempty" yaml:"output,omitempty"`
 	// OutputFormat is the output format of the file conversion.
 	OutputFormat FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
 	// SrcFormat is the source format of the file conversion.
@@ -335,7 +331,7 @@ type AsyncAPICallOutput struct {
 	CreatedAt       *JSONTime        `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	Error           string           `json:"error,omitempty" yaml:"error,omitempty"`
 	ID              Uuid             `json:"id,omitempty" yaml:"id,omitempty"`
-	Output          string           `json:"output,omitempty" yaml:"output,omitempty"`
+	Output          Base64Data       `json:"output,omitempty" yaml:"output,omitempty"`
 	OutputFormat    FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
 	SrcFormat       FileSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
 	StartedAt       *JSONTime        `json:"started_at,omitempty" yaml:"started_at,omitempty"`
@@ -357,6 +353,23 @@ type AsyncAPICallResultsPage struct {
 	// NextPage is token used to fetch the next page of results (if any)
 	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
 }
+
+// AsyncAPICallType is the type of async API call.
+type AsyncAPICallType string
+
+const (
+	// AsyncAPICallTypeFileConversion represents the AsyncAPICallType `"FileConversion"`.
+	AsyncAPICallTypeFileConversion AsyncAPICallType = "FileConversion"
+	// AsyncAPICallTypeFileVolume represents the AsyncAPICallType `"FileVolume"`.
+	AsyncAPICallTypeFileVolume AsyncAPICallType = "FileVolume"
+	// AsyncAPICallTypeFileMass represents the AsyncAPICallType `"FileMass"`.
+	AsyncAPICallTypeFileMass AsyncAPICallType = "FileMass"
+	// AsyncAPICallTypeFileDensity represents the AsyncAPICallType `"FileDensity"`.
+	AsyncAPICallTypeFileDensity AsyncAPICallType = "FileDensity"
+)
+
+// Base64Data is the type definition for a Base64Data.
+type Base64Data string
 
 // BillingInfo is the billing information for payments.
 type BillingInfo struct {
@@ -422,8 +435,6 @@ type CodeLanguage string
 const (
 	// CodeLanguageGo represents the CodeLanguage `"go"`.
 	CodeLanguageGo CodeLanguage = "go"
-	// CodeLanguageRust represents the CodeLanguage `"rust"`.
-	CodeLanguageRust CodeLanguage = "rust"
 	// CodeLanguagePython represents the CodeLanguage `"python"`.
 	CodeLanguagePython CodeLanguage = "python"
 	// CodeLanguageNode represents the CodeLanguage `"node"`.
@@ -438,6 +449,14 @@ type CodeOutput struct {
 	Stderr string `json:"stderr,omitempty" yaml:"stderr,omitempty"`
 	// Stdout is the stdout of the code.
 	Stdout string `json:"stdout,omitempty" yaml:"stdout,omitempty"`
+}
+
+// Commit is commit holds the Git-commit (SHA1) that a binary was built from, as reported in the version-string of external tools, such as `containerd`, or `runC`.
+type Commit struct {
+	// Expected is commit ID of external tool expected by dockerd as set at build time.
+	Expected string `json:"expected,omitempty" yaml:"expected,omitempty"`
+	// ID is actual commit ID of external tool.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 }
 
 // Connection is metadata about a pub-sub connection.
@@ -474,14 +493,10 @@ type Connection struct {
 	HttpReqStats int `json:"http_req_stats,omitempty" yaml:"http_req_stats,omitempty"`
 	// HttpsPort is the https port of the server.
 	HttpsPort int `json:"https_port,omitempty" yaml:"https_port,omitempty"`
-	// ID is the ID as known by the most recently connected server.
-	ID int `json:"id,omitempty" yaml:"id,omitempty"`
 	// InBytes is the count of inbound bytes for the server.
 	InBytes int `json:"in_bytes,omitempty" yaml:"in_bytes,omitempty"`
 	// InMsgs is the number of inbound messages for the server.
 	InMsgs int `json:"in_msgs,omitempty" yaml:"in_msgs,omitempty"`
-	// Ip is the client IP as known by the most recently connected server.
-	Ip string `json:"ip,omitempty" yaml:"ip,omitempty"`
 	// Jetstream is jetstream information.
 	Jetstream Jetstream `json:"jetstream,omitempty" yaml:"jetstream,omitempty"`
 	// Leaf is information about leaf nodes.
@@ -516,8 +531,6 @@ type Connection struct {
 	Remotes int `json:"remotes,omitempty" yaml:"remotes,omitempty"`
 	// Routes is the number of routes for the server.
 	Routes int `json:"routes,omitempty" yaml:"routes,omitempty"`
-	// Rtt is the round trip time between this client and the server.
-	Rtt Duration `json:"rtt,omitempty" yaml:"rtt,omitempty"`
 	// ServerID is the server ID.
 	ServerID string `json:"server_id,omitempty" yaml:"server_id,omitempty"`
 	// ServerName is the server name.
@@ -868,8 +881,173 @@ type Customer struct {
 	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
 }
 
+// DeviceAccessTokenRequestForm is the form for a device access token request.
+type DeviceAccessTokenRequestForm struct {
+	// ClientID is the client ID.
+	ClientID string `json:"client_id,omitempty" yaml:"client_id,omitempty"`
+	// DeviceCode is the device code.
+	DeviceCode string `json:"device_code,omitempty" yaml:"device_code,omitempty"`
+	// GrantType is the grant type.
+	GrantType OAuth2GrantType `json:"grant_type,omitempty" yaml:"grant_type,omitempty"`
+}
+
+// DeviceAuthRequestForm is the request parameters for the OAuth 2.0 Device Authorization Grant flow.
+type DeviceAuthRequestForm struct {
+	// ClientID is the client ID.
+	ClientID string `json:"client_id,omitempty" yaml:"client_id,omitempty"`
+}
+
+// DeviceAuthVerifyParams is the request parameters to verify the `user_code` for the OAuth 2.0 Device Authorization Grant.
+type DeviceAuthVerifyParams struct {
+	// UserCode is the user code.
+	UserCode string `json:"user_code,omitempty" yaml:"user_code,omitempty"`
+}
+
+// DockerSystemInfo is docker system info.
+type DockerSystemInfo struct {
+	// Architecture is hardware architecture of the host, as returned by the Go runtime (`GOARCH`).  A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
+	Architecture string `json:"architecture,omitempty" yaml:"architecture,omitempty"`
+	// BridgeNfIp6Tables is indicates if `bridge-nf-call-ip6tables` is available on the host.
+	BridgeNfIp6Tables bool `json:"bridge_nf_ip6tables,omitempty" yaml:"bridge_nf_ip6tables,omitempty"`
+	// BridgeNfIptables is indicates if `bridge-nf-call-iptables` is available on the host.
+	BridgeNfIptables bool `json:"bridge_nf_iptables,omitempty" yaml:"bridge_nf_iptables,omitempty"`
+	// CgroupDriver is the driver to use for managing cgroups.
+	CgroupDriver SystemInfoCgroupDriverEnum `json:"cgroup_driver,omitempty" yaml:"cgroup_driver,omitempty"`
+	// CgroupVersion is the version of the cgroup.
+	CgroupVersion SystemInfoCgroupVersionEnum `json:"cgroup_version,omitempty" yaml:"cgroup_version,omitempty"`
+	// ClusterAdvertise is the network endpoint that the Engine advertises for the purpose of node discovery. ClusterAdvertise is a `host:port` combination on which the daemon is reachable by other hosts.
+	//
+	// **Deprecated**: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store. Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
+	ClusterAdvertise string `json:"cluster_advertise,omitempty" yaml:"cluster_advertise,omitempty"`
+	// ClusterStore is uRL of the distributed storage backend.   The storage backend is used for multihost networking (to store network and endpoint information) and by the node discovery mechanism.
+	//
+	// **Deprecated**: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store. Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
+	ClusterStore     string `json:"cluster_store,omitempty" yaml:"cluster_store,omitempty"`
+	ContainerdCommit Commit `json:"containerd_commit,omitempty" yaml:"containerd_commit,omitempty"`
+	// Containers is total number of containers on the host.
+	Containers int `json:"containers,omitempty" yaml:"containers,omitempty"`
+	// ContainersPaused is number of containers with status `\"paused\"`.
+	ContainersPaused int `json:"containers_paused,omitempty" yaml:"containers_paused,omitempty"`
+	// ContainersRunning is number of containers with status `\"running\"`.
+	ContainersRunning int `json:"containers_running,omitempty" yaml:"containers_running,omitempty"`
+	// ContainersStopped is number of containers with status `\"stopped\"`.
+	ContainersStopped int `json:"containers_stopped,omitempty" yaml:"containers_stopped,omitempty"`
+	// CpuCfsPeriod is indicates if CPU CFS(Completely Fair Scheduler) period is supported by the host.
+	CpuCfsPeriod bool `json:"cpu_cfs_period,omitempty" yaml:"cpu_cfs_period,omitempty"`
+	// CpuCfsQuota is indicates if CPU CFS(Completely Fair Scheduler) quota is supported by the host.
+	CpuCfsQuota bool `json:"cpu_cfs_quota,omitempty" yaml:"cpu_cfs_quota,omitempty"`
+	// CpuSet is indicates if CPUsets (cpuset.cpus, cpuset.mems) are supported by the host.  See [cpuset(7)](https://www.kernel.org/doc/Documentation/cgroup-v1/cpusets.txt)
+	CpuSet bool `json:"cpu_set,omitempty" yaml:"cpu_set,omitempty"`
+	// CpuShares is indicates if CPU Shares limiting is supported by the host.
+	CpuShares bool `json:"cpu_shares,omitempty" yaml:"cpu_shares,omitempty"`
+	// Debug is indicates if the daemon is running in debug-mode / with debug-level logging enabled.
+	Debug bool `json:"debug,omitempty" yaml:"debug,omitempty"`
+	// DefaultAddressPools is list of custom default address pools for local networks, which can be specified in the daemon.json file or dockerd option.  Example: a Base \"10.10.0.0/16\" with Size 24 will define the set of 256 10.10.[0-255].0/24 address pools.
+	DefaultAddressPools []SystemInfoDefaultAddressPools `json:"default_address_pools,omitempty" yaml:"default_address_pools,omitempty"`
+	// DefaultRuntime is name of the default OCI runtime that is used when starting containers.  The default can be overridden per-container at create time.
+	DefaultRuntime string `json:"default_runtime,omitempty" yaml:"default_runtime,omitempty"`
+	// DockerRootDir is root directory of persistent Docker state.  Defaults to `/var/lib/docker` on Linux, and `C:\\ProgramData\\docker` on Windows.
+	DockerRootDir string `json:"docker_root_dir,omitempty" yaml:"docker_root_dir,omitempty"`
+	// Driver is name of the storage driver in use.
+	Driver string `json:"driver,omitempty" yaml:"driver,omitempty"`
+	// DriverStatus is information specific to the storage driver, provided as \"label\" / \"value\" pairs.  This information is provided by the storage driver, and formatted in a way consistent with the output of `docker info` on the command line.
+	//
+	// **Note**: The information returned in this field, including the formatting of values and labels, should not be considered stable, and may change without notice.
+	DriverStatus []string `json:"driver_status,omitempty" yaml:"driver_status,omitempty"`
+	// ExperimentalBuild is indicates if experimental features are enabled on the daemon.
+	ExperimentalBuild bool `json:"experimental_build,omitempty" yaml:"experimental_build,omitempty"`
+	// HttpProxy is hTTP-proxy configured for the daemon. This value is obtained from the [`HTTP_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration.
+	HttpProxy string `json:"http_proxy,omitempty" yaml:"http_proxy,omitempty"`
+	// HttpsProxy is hTTPS-proxy configured for the daemon. This value is obtained from the [`HTTPS_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration.
+	HttpsProxy string `json:"https_proxy,omitempty" yaml:"https_proxy,omitempty"`
+	// ID is unique identifier of the daemon.
+	//
+	// **Note**: The format of the ID itself is not part of the API, and should not be considered stable.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
+	// Images is total number of images on the host. Both _tagged_ and _untagged_ (dangling) images are counted.
+	Images int `json:"images,omitempty" yaml:"images,omitempty"`
+	// IndexServerAddress is address / URL of the index server that is used for image search, and as a default for user authentication for Docker Hub and Docker Cloud.
+	IndexServerAddress string `json:"index_server_address,omitempty" yaml:"index_server_address,omitempty"`
+	// InitBinary is name and, optional, path of the `docker-init` binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result.
+	InitBinary string `json:"init_binary,omitempty" yaml:"init_binary,omitempty"`
+	InitCommit Commit `json:"init_commit,omitempty" yaml:"init_commit,omitempty"`
+	// Ipv4Forwarding is indicates IPv4 forwarding is enabled.
+	Ipv4Forwarding bool `json:"ipv4_forwarding,omitempty" yaml:"ipv4_forwarding,omitempty"`
+	// Isolation is represents the isolation technology to use as a default for containers. The supported values are platform-specific.  If no isolation value is specified on daemon start, on Windows client, the default is `hyperv`, and on Windows server, the default is `process`.  This option is currently not used on other platforms.
+	Isolation SystemInfoIsolationEnum `json:"isolation,omitempty" yaml:"isolation,omitempty"`
+	// KernelMemory is indicates if the host has kernel memory limit support enabled.
+	//
+	// **Deprecated**: This field is deprecated as the kernel 5.4 deprecated `kmem.limit_in_bytes`.
+	KernelMemory bool `json:"kernel_memory,omitempty" yaml:"kernel_memory,omitempty"`
+	// KernelMemoryTcp is indicates if the host has kernel memory TCP limit support enabled.  Kernel memory TCP limits are not supported when using cgroups v2, which does not support the corresponding `memory.kmem.tcp.limit_in_bytes` cgroup.
+	KernelMemoryTcp bool `json:"kernel_memory_tcp,omitempty" yaml:"kernel_memory_tcp,omitempty"`
+	// KernelVersion is kernel version of the host.  On Linux, this information obtained from `uname`. On Windows this information is queried from the <kbd>HKEY_LOCAL_MACHINE\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\</kbd> registry value, for example _\"10.0 14393 (14393.1198.amd64fre.rs1_release_sec.170427-1353)\"_.
+	KernelVersion string `json:"kernel_version,omitempty" yaml:"kernel_version,omitempty"`
+	// Labels is user-defined labels (key/value metadata) as set on the daemon.
+	//
+	// **Note**: When part of a Swarm, nodes can both have _daemon_ labels, set through the daemon configuration, and _node_ labels, set from a manager node in the Swarm. Node labels are not included in this field. Node labels can be retrieved using the `/nodes/(id)` endpoint on a manager node in the Swarm.
+	Labels []string `json:"labels,omitempty" yaml:"labels,omitempty"`
+	// LiveRestoreEnabled is indicates if live restore is enabled.  If enabled, containers are kept running when the daemon is shutdown or upon daemon start if running containers are detected.
+	LiveRestoreEnabled bool `json:"live_restore_enabled,omitempty" yaml:"live_restore_enabled,omitempty"`
+	// LoggingDriver is the logging driver to use as a default for new containers.
+	LoggingDriver string `json:"logging_driver,omitempty" yaml:"logging_driver,omitempty"`
+	// MemTotal is total amount of physical memory available on the host, in bytes.
+	MemTotal int `json:"mem_total,omitempty" yaml:"mem_total,omitempty"`
+	// MemoryLimit is indicates if the host has memory limit support enabled.
+	MemoryLimit bool `json:"memory_limit,omitempty" yaml:"memory_limit,omitempty"`
+	// NEventsListener is number of event listeners subscribed.
+	NEventsListener int `json:"n_events_listener,omitempty" yaml:"n_events_listener,omitempty"`
+	// NFd is the total number of file Descriptors in use by the daemon process.  This information is only returned if debug-mode is enabled.
+	NFd int `json:"n_fd,omitempty" yaml:"n_fd,omitempty"`
+	// Name is hostname of the host.
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+	// Ncpu is the number of logical CPUs usable by the daemon.  The number of available CPUs is checked by querying the operating system when the daemon starts. Changes to operating system CPU allocation after the daemon is started are not reflected.
+	Ncpu int `json:"ncpu,omitempty" yaml:"ncpu,omitempty"`
+	// NoProxy is comma-separated list of domain extensions for which no proxy should be used. This value is obtained from the [`NO_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable.  Containers do not automatically inherit this configuration.
+	NoProxy string `json:"no_proxy,omitempty" yaml:"no_proxy,omitempty"`
+	// OomKillDisable is indicates if OOM killer disable is supported on the host.
+	OomKillDisable bool `json:"oom_kill_disable,omitempty" yaml:"oom_kill_disable,omitempty"`
+	// OperatingSystem is name of the host's operating system, for example: \"Ubuntu 16.04.2 LTS\" or \"Windows Server 2016 Datacenter\"
+	OperatingSystem string `json:"operating_system,omitempty" yaml:"operating_system,omitempty"`
+	// OsType is generic type of the operating system of the host, as returned by the Go runtime (`GOOS`).  Currently returned values are \"linux\" and \"windows\". A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
+	OsType string `json:"os_type,omitempty" yaml:"os_type,omitempty"`
+	// OsVersion is version of the host's operating system
+	//
+	// **Note**: The information returned in this field, including its very existence, and the formatting of values, should not be considered stable, and may change without notice.
+	OsVersion string `json:"os_version,omitempty" yaml:"os_version,omitempty"`
+	// PidsLimit is indicates if the host kernel has PID limit support enabled.
+	PidsLimit bool        `json:"pids_limit,omitempty" yaml:"pids_limit,omitempty"`
+	Plugins   PluginsInfo `json:"plugins,omitempty" yaml:"plugins,omitempty"`
+	// ProductLicense is reports a summary of the product license on the daemon.  If a commercial license has been applied to the daemon, information such as number of nodes, and expiration are included.
+	ProductLicense string                `json:"product_license,omitempty" yaml:"product_license,omitempty"`
+	RegistryConfig RegistryServiceConfig `json:"registry_config,omitempty" yaml:"registry_config,omitempty"`
+	RuncCommit     Commit                `json:"runc_commit,omitempty" yaml:"runc_commit,omitempty"`
+	Runtimes       Runtime               `json:"runtimes,omitempty" yaml:"runtimes,omitempty"`
+	// SecurityOptions is list of security features that are enabled on the daemon, such as apparmor, seccomp, SELinux, user-namespaces (userns), and rootless.  Additional configuration options for each security feature may be present, and are included as a comma-separated list of key/value pairs.
+	SecurityOptions []string `json:"security_options,omitempty" yaml:"security_options,omitempty"`
+	// ServerVersion is version string of the daemon. **Note**: the [standalone Swarm API](https://docs.docker.com/swarm/swarm-api/) returns the Swarm version instead of the daemon  version, for example `swarm/1.2.8`.
+	ServerVersion string `json:"server_version,omitempty" yaml:"server_version,omitempty"`
+	// SwapLimit is indicates if the host has memory swap limit support enabled.
+	SwapLimit bool `json:"swap_limit,omitempty" yaml:"swap_limit,omitempty"`
+	// SystemTime is the  number of goroutines that currently exist.  This information is only returned if debug-mode is enabled.
+	SystemTime string `json:"system_time,omitempty" yaml:"system_time,omitempty"`
+	// Warnings is list of warnings / informational messages about missing features, or issues related to the daemon configuration.  These messages can be printed by the client as information to the user.
+	Warnings []string `json:"warnings,omitempty" yaml:"warnings,omitempty"`
+}
+
 // Duration is the type definition for a Duration.
 type Duration int
+
+// EmailAuthenticationForm is the body of the form for email authentication.
+type EmailAuthenticationForm struct {
+	// CallbackUrl is the URL to redirect back to after we have authenticated.
+	CallbackUrl string `json:"callback_url,omitempty" yaml:"callback_url,omitempty"`
+	// Email is the user's email.
+	Email string `json:"email,omitempty" yaml:"email,omitempty"`
+}
+
+// Empty is an "empty" type used to represent responses that have no associated data payload. This isn't intended for general use, but must be pub since it's used as the Body type for certain responses.
+type Empty string
 
 // EngineMetadata is metadata about our currently running server.
 //
@@ -906,6 +1084,18 @@ type Error struct {
 	ErrorCode string `json:"error_code,omitempty" yaml:"error_code,omitempty"`
 	Message   string `json:"message,omitempty" yaml:"message,omitempty"`
 	RequestID string `json:"request_id,omitempty" yaml:"request_id,omitempty"`
+}
+
+// ExecutorMetadata is metadata about our currently running server.
+//
+// This is mostly used for internal purposes and debugging.
+type ExecutorMetadata struct {
+	// DockerInfo is information about the docker daemon.
+	DockerInfo DockerSystemInfo `json:"docker_info,omitempty" yaml:"docker_info,omitempty"`
+	// Environment is the environment we are running in.
+	Environment Environment `json:"environment,omitempty" yaml:"environment,omitempty"`
+	// GitHash is the git hash of the server.
+	GitHash string `json:"git_hash,omitempty" yaml:"git_hash,omitempty"`
 }
 
 // ExtendedUser is extended user information.
@@ -967,7 +1157,7 @@ type FileConversion struct {
 	// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// Output is the converted file, if completed, base64 encoded.
-	Output string `json:"output,omitempty" yaml:"output,omitempty"`
+	Output Base64Data `json:"output,omitempty" yaml:"output,omitempty"`
 	// OutputFormat is the output format of the file conversion.
 	OutputFormat FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
 	// SrcFormat is the source format of the file conversion.
@@ -1120,6 +1310,20 @@ type Gateway struct {
 	TlsTimeout int `json:"tls_timeout,omitempty" yaml:"tls_timeout,omitempty"`
 }
 
+// IndexInfo is indexInfo contains information about a registry.
+type IndexInfo struct {
+	// Mirrors is list of mirrors, expressed as URIs.
+	Mirrors []string `json:"mirrors,omitempty" yaml:"mirrors,omitempty"`
+	// Name is name of the registry, such as \"docker.io\".
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+	// Official is indicates whether this is an official registry (i.e., Docker Hub / docker.io)
+	Official bool `json:"official,omitempty" yaml:"official,omitempty"`
+	// Secure is indicates if the registry is part of the list of insecure registries.  If `false`, the registry is insecure. Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.
+	//
+	// **Warning**: Insecure registries can be useful when running a local registry. However, because its use creates security vulnerabilities it should ONLY be enabled for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
+	Secure bool `json:"secure,omitempty" yaml:"secure,omitempty"`
+}
+
 // Invoice is an invoice.
 type Invoice struct {
 	// AmountDue is final amount due at this time for this invoice.
@@ -1142,14 +1346,16 @@ type Invoice struct {
 	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// Currency is three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
 	Currency Currency `json:"currency,omitempty" yaml:"currency,omitempty"`
+	// CustomerEmail is the email address for the customer. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated.
+	CustomerEmail string `json:"customer_email,omitempty" yaml:"customer_email,omitempty"`
+	// CustomerID is customer ID. The unique identifier for the customer this invoice belongs to. This is the customer ID in the payments service, not our database customer ID.
+	CustomerID string `json:"customer_id,omitempty" yaml:"customer_id,omitempty"`
+	// DefaultPaymentMethod is default payment method.
+	DefaultPaymentMethod string `json:"default_payment_method,omitempty" yaml:"default_payment_method,omitempty"`
 	// Description is description of the invoice.
 	Description string `json:"description,omitempty" yaml:"description,omitempty"`
 	// ID is unique identifier for the object.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
-	// InvoicePdf is the link to download the PDF for the invoice.
-	InvoicePdf string `json:"invoice_pdf,omitempty" yaml:"invoice_pdf,omitempty"`
-	// InvoiceUrl is the URL for the hosted invoice page, which allows customers to view and pay an invoice.
-	InvoiceUrl string `json:"invoice_url,omitempty" yaml:"invoice_url,omitempty"`
 	// Lines is the individual line items that make up the invoice.
 	//
 	// `lines` is sorted as follows: invoice items in reverse chronological order, followed by the subscription, if any.
@@ -1162,6 +1368,8 @@ type Invoice struct {
 	//
 	// An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
 	Paid bool `json:"paid,omitempty" yaml:"paid,omitempty"`
+	// Pdf is the link to download the PDF for the invoice.
+	Pdf string `json:"pdf,omitempty" yaml:"pdf,omitempty"`
 	// ReceiptNumber is this is the transaction number that appears on email receipts sent for this invoice.
 	ReceiptNumber string `json:"receipt_number,omitempty" yaml:"receipt_number,omitempty"`
 	// StatementDescriptor is extra information about an invoice for the customer's credit card statement.
@@ -1180,6 +1388,8 @@ type Invoice struct {
 	Tax int `json:"tax,omitempty" yaml:"tax,omitempty"`
 	// Total is total after discounts and taxes.
 	Total int `json:"total,omitempty" yaml:"total,omitempty"`
+	// Url is the URL for the hosted invoice page, which allows customers to view and pay an invoice.
+	Url string `json:"url,omitempty" yaml:"url,omitempty"`
 }
 
 // InvoiceLineItem is an invoice line item.
@@ -1217,6 +1427,9 @@ const (
 	// InvoiceStatusVoid represents the InvoiceStatus `"void"`.
 	InvoiceStatusVoid InvoiceStatus = "void"
 )
+
+// IpAddr is the type definition for a IpAddr.
+type IpAddr string
 
 // Jetstream is jetstream information.
 type Jetstream struct {
@@ -1280,12 +1493,6 @@ type LeafNode struct {
 	TlsTimeout int `json:"tls_timeout,omitempty" yaml:"tls_timeout,omitempty"`
 }
 
-// LoginParams is the parameters passed to login.
-type LoginParams struct {
-	// Session is the session token we should set as a cookie.
-	Session string `json:"session,omitempty" yaml:"session,omitempty"`
-}
-
 // MetaClusterInfo is jetstream statistics.
 type MetaClusterInfo struct {
 	// ClusterSize is the size of the cluster.
@@ -1306,6 +1513,8 @@ type Metadata struct {
 	Engine EngineMetadata `json:"engine,omitempty" yaml:"engine,omitempty"`
 	// Environment is the environment we are running in.
 	Environment Environment `json:"environment,omitempty" yaml:"environment,omitempty"`
+	// Executor is metadata about our executor API connection.
+	Executor ExecutorMetadata `json:"executor,omitempty" yaml:"executor,omitempty"`
 	// Fs is metadata about our file system.
 	Fs FileSystemMetadata `json:"fs,omitempty" yaml:"fs,omitempty"`
 	// GitHash is the git hash of the server.
@@ -1342,6 +1551,24 @@ const (
 	MethodPATCH Method = "PATCH"
 	// MethodEXTENSION represents the Method `"EXTENSION"`.
 	MethodEXTENSION Method = "EXTENSION"
+)
+
+// OAuth2ClientInfo is information about an OAuth 2.0 client.
+type OAuth2ClientInfo struct {
+	// CsrfToken is value used for [CSRF](https://tools.ietf.org/html/rfc6749#section-10.12) protection via the `state` parameter.
+	CsrfToken string `json:"csrf_token,omitempty" yaml:"csrf_token,omitempty"`
+	// PkceCodeVerifier is code Verifier used for [PKCE]((https://tools.ietf.org/html/rfc7636)) protection via the `code_verifier` parameter. The value must have a minimum length of 43 characters and a maximum length of 128 characters.  Each character must be ASCII alphanumeric or one of the characters "-" / "." / "_" / "~".
+	PkceCodeVerifier string `json:"pkce_code_verifier,omitempty" yaml:"pkce_code_verifier,omitempty"`
+	// Url is the URL for consent.
+	Url string `json:"url,omitempty" yaml:"url,omitempty"`
+}
+
+// OAuth2GrantType is an OAuth 2.0 Grant Type. These are documented here: <https://oauth.net/2/grant-types/>.
+type OAuth2GrantType string
+
+const (
+	// OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode represents the OAuth2GrantType `"urn:ietf:params:oauth:grant-type:device_code"`.
+	OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode OAuth2GrantType = "urn:ietf:params:oauth:grant-type:device_code"
 )
 
 // OutputFile is output file contents.
@@ -1395,10 +1622,51 @@ const (
 // PhoneNumber is the type definition for a PhoneNumber.
 type PhoneNumber string
 
+// PluginsInfo is available plugins per type.
+//
+// **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
+type PluginsInfo struct {
+	// Authorization is names of available authorization plugins.
+	Authorization []string `json:"authorization,omitempty" yaml:"authorization,omitempty"`
+	// Log is names of available logging-drivers, and logging-driver plugins.
+	Log []string `json:"log,omitempty" yaml:"log,omitempty"`
+	// Network is names of available network-drivers, and network-driver plugins.
+	Network []string `json:"network,omitempty" yaml:"network,omitempty"`
+	// Volume is names of available volume-drivers, and network-driver plugins.
+	Volume []string `json:"volume,omitempty" yaml:"volume,omitempty"`
+}
+
 // Pong is the response from the `/ping` endpoint.
 type Pong struct {
 	// Message is the pong response.
 	Message string `json:"message,omitempty" yaml:"message,omitempty"`
+}
+
+// RegistryServiceConfig is registryServiceConfig stores daemon registry services configuration.
+type RegistryServiceConfig struct {
+	// AllowNondistributableArtifactsCidRs is list of IP ranges to which nondistributable artifacts can be pushed, using the CIDR syntax [RFC 4632](https://tools.ietf.org/html/4632).  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior, and enables the daemon to push nondistributable artifacts to all registries whose resolved IP address is within the subnet described by the CIDR syntax.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.
+	//
+	// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
+	AllowNondistributableArtifactsCidRs []string `json:"allow_nondistributable_artifacts_cid_rs,omitempty" yaml:"allow_nondistributable_artifacts_cid_rs,omitempty"`
+	// AllowNondistributableArtifactsHostnames is list of registry hostnames to which nondistributable artifacts can be pushed, using the format `<hostname>[:<port>]` or `<IP address>[:<port>]`.  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior for the specified registries.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.
+	//
+	// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
+	AllowNondistributableArtifactsHostnames []string  `json:"allow_nondistributable_artifacts_hostnames,omitempty" yaml:"allow_nondistributable_artifacts_hostnames,omitempty"`
+	IndexConfigs                            IndexInfo `json:"index_configs,omitempty" yaml:"index_configs,omitempty"`
+	// InsecureRegistryCidRs is list of IP ranges of insecure registries, using the CIDR syntax ([RFC 4632](https://tools.ietf.org/html/4632)). Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.  By default, local registries (`127.0.0.0/8`) are configured as insecure. All other registries are secure. Communicating with an insecure registry is not possible if the daemon assumes that registry is secure.  This configuration override this behavior, insecure communication with registries whose resolved IP address is within the subnet described by the CIDR syntax.  Registries can also be marked insecure by hostname. Those registries are listed under `IndexConfigs` and have their `Secure` field set to `false`.
+	//
+	// **Warning**: Using this option can be useful when running a local  registry, but introduces security vulnerabilities. This option should therefore ONLY be used for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
+	InsecureRegistryCidRs []string `json:"insecure_registry_cid_rs,omitempty" yaml:"insecure_registry_cid_rs,omitempty"`
+	// Mirrors is list of registry URLs that act as a mirror for the official (`docker.io`) registry.
+	Mirrors []string `json:"mirrors,omitempty" yaml:"mirrors,omitempty"`
+}
+
+// Runtime is runtime describes an [OCI compliant](https://github.com/opencontainers/runtime-spec) runtime.  The runtime is invoked by the daemon via the `containerd` daemon. OCI runtimes act as an interface to the Linux kernel namespaces, cgroups, and SELinux.
+type Runtime struct {
+	// Path is name and, optional, path, of the OCI executable binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result.
+	Path string `json:"path,omitempty" yaml:"path,omitempty"`
+	// RuntimeArgs is list of command-line arguments to pass to the runtime when invoked.
+	RuntimeArgs []string `json:"runtime_args,omitempty" yaml:"runtime_args,omitempty"`
 }
 
 // Session is an authentication session.
@@ -1421,6 +1689,54 @@ type Session struct {
 
 // StatusCode is the type definition for a StatusCode.
 type StatusCode int
+
+// SystemInfoCgroupDriverEnum is the type definition for a SystemInfoCgroupDriverEnum.
+type SystemInfoCgroupDriverEnum string
+
+const (
+	// SystemInfoCgroupDriverEnumEmpty represents the SystemInfoCgroupDriverEnum `"empty"`.
+	SystemInfoCgroupDriverEnumEmpty SystemInfoCgroupDriverEnum = ""
+	// SystemInfoCgroupDriverEnumCgroupfs represents the SystemInfoCgroupDriverEnum `"cgroupfs"`.
+	SystemInfoCgroupDriverEnumCgroupfs SystemInfoCgroupDriverEnum = "cgroupfs"
+	// SystemInfoCgroupDriverEnumSystemd represents the SystemInfoCgroupDriverEnum `"systemd"`.
+	SystemInfoCgroupDriverEnumSystemd SystemInfoCgroupDriverEnum = "systemd"
+	// SystemInfoCgroupDriverEnumNone represents the SystemInfoCgroupDriverEnum `"none"`.
+	SystemInfoCgroupDriverEnumNone SystemInfoCgroupDriverEnum = "none"
+)
+
+// SystemInfoCgroupVersionEnum is the type definition for a SystemInfoCgroupVersionEnum.
+type SystemInfoCgroupVersionEnum string
+
+const (
+	// SystemInfoCgroupVersionEnumEmpty represents the SystemInfoCgroupVersionEnum `"empty"`.
+	SystemInfoCgroupVersionEnumEmpty SystemInfoCgroupVersionEnum = ""
+	// SystemInfoCgroupVersionEnum1 represents the SystemInfoCgroupVersionEnum `"1"`.
+	SystemInfoCgroupVersionEnum1 SystemInfoCgroupVersionEnum = "1"
+	// SystemInfoCgroupVersionEnum2 represents the SystemInfoCgroupVersionEnum `"2"`.
+	SystemInfoCgroupVersionEnum2 SystemInfoCgroupVersionEnum = "2"
+)
+
+// SystemInfoDefaultAddressPools is the type definition for a SystemInfoDefaultAddressPools.
+type SystemInfoDefaultAddressPools struct {
+	// Base is the network address in CIDR format
+	Base string `json:"base,omitempty" yaml:"base,omitempty"`
+	// Size is the network pool size
+	Size int `json:"size,omitempty" yaml:"size,omitempty"`
+}
+
+// SystemInfoIsolationEnum is the type definition for a SystemInfoIsolationEnum.
+type SystemInfoIsolationEnum string
+
+const (
+	// SystemInfoIsolationEnumEmpty represents the SystemInfoIsolationEnum `"empty"`.
+	SystemInfoIsolationEnumEmpty SystemInfoIsolationEnum = ""
+	// SystemInfoIsolationEnumDefault represents the SystemInfoIsolationEnum `"default"`.
+	SystemInfoIsolationEnumDefault SystemInfoIsolationEnum = "default"
+	// SystemInfoIsolationEnumHyperv represents the SystemInfoIsolationEnum `"hyperv"`.
+	SystemInfoIsolationEnumHyperv SystemInfoIsolationEnum = "hyperv"
+	// SystemInfoIsolationEnumProcess represents the SystemInfoIsolationEnum `"process"`.
+	SystemInfoIsolationEnumProcess SystemInfoIsolationEnum = "process"
+)
 
 // UnitConversion is a unit conversion.
 type UnitConversion struct {
@@ -1570,6 +1886,12 @@ var APICallStatuses = []APICallStatus{
 	APICallStatusUploaded,
 }
 
+// AccountProviders is the collection of all AccountProvider values.
+var AccountProviders = []AccountProvider{
+	AccountProviderGithub,
+	AccountProviderGoogle,
+}
+
 // AsyncAPICallOutputTypes is the collection of all AsyncAPICallOutputType values.
 var AsyncAPICallOutputTypes = []AsyncAPICallOutputType{
 	AsyncAPICallOutputTypeFileConversion,
@@ -1591,7 +1913,6 @@ var CodeLanguages = []CodeLanguage{
 	CodeLanguageGo,
 	CodeLanguageNode,
 	CodeLanguagePython,
-	CodeLanguageRust,
 }
 
 // CreatedAtSortModes is the collection of all CreatedAtSortMode values.
@@ -1743,6 +2064,9 @@ var Currencys = []Currency{
 	CurrencyZmw,
 }
 
+// Emptys is the collection of all Empty values.
+var Emptys = []Empty{}
+
 // Environments is the collection of all Environment values.
 var Environments = []Environment{
 	EnvironmentDEVELOPMENT,
@@ -1793,9 +2117,37 @@ var Methods = []Method{
 	MethodTRACE,
 }
 
+// OAuth2GrantTypes is the collection of all OAuth2GrantType values.
+var OAuth2GrantTypes = []OAuth2GrantType{
+	OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode,
+}
+
 // PaymentMethodTypes is the collection of all PaymentMethodType values.
 var PaymentMethodTypes = []PaymentMethodType{
 	PaymentMethodTypeCard,
+}
+
+// SystemInfoCgroupDriverEnums is the collection of all SystemInfoCgroupDriverEnum values.
+var SystemInfoCgroupDriverEnums = []SystemInfoCgroupDriverEnum{
+	SystemInfoCgroupDriverEnumCgroupfs,
+	SystemInfoCgroupDriverEnumEmpty,
+	SystemInfoCgroupDriverEnumNone,
+	SystemInfoCgroupDriverEnumSystemd,
+}
+
+// SystemInfoCgroupVersionEnums is the collection of all SystemInfoCgroupVersionEnum values.
+var SystemInfoCgroupVersionEnums = []SystemInfoCgroupVersionEnum{
+	SystemInfoCgroupVersionEnum1,
+	SystemInfoCgroupVersionEnum2,
+	SystemInfoCgroupVersionEnumEmpty,
+}
+
+// SystemInfoIsolationEnums is the collection of all SystemInfoIsolationEnum values.
+var SystemInfoIsolationEnums = []SystemInfoIsolationEnum{
+	SystemInfoIsolationEnumDefault,
+	SystemInfoIsolationEnumEmpty,
+	SystemInfoIsolationEnumHyperv,
+	SystemInfoIsolationEnumProcess,
 }
 
 // UnitMetricFormats is the collection of all UnitMetricFormat values.

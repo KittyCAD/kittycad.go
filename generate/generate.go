@@ -229,6 +229,11 @@ func generatePaths(doc *openapi3.T) {
 			continue
 		}
 
+		// Ignore the oauth2 paths.
+		if strings.HasPrefix(path, "/oauth2/") {
+			continue
+		}
+
 		writePath(doc, f, path, p)
 	}
 }
@@ -849,12 +854,18 @@ func writeSchemaType(f *os.File, name string, s *openapi3.Schema, additionalName
 					fmt.Printf("[WARN] TODO: enum value is not a string for %q -> %#v\n", name, v)
 					continue
 				}
+
+				// If the enum is empty we want to reflect that in the naming.
+				enumName := enum
+				if len(enum) <= 0 {
+					enumName = "empty"
+				}
 				// Write the description of the constant.
-				fmt.Fprintf(f, "// %s represents the %s `%q`.\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enum)), makeSingular(name), enum)
-				fmt.Fprintf(f, "\t%s %s = %q\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enum)), makeSingular(name), enum)
+				fmt.Fprintf(f, "// %s represents the %s `%q`.\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enumName)), makeSingular(name), enumName)
+				fmt.Fprintf(f, "\t%s %s = %q\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enumName)), makeSingular(name), enum)
 
 				// Add the enum type to the list of enum types.
-				EnumStringTypes[makeSingular(typeName)] = append(EnumStringTypes[makeSingular(typeName)], enum)
+				EnumStringTypes[makeSingular(typeName)] = append(EnumStringTypes[makeSingular(typeName)], enumName)
 			}
 			// Close the enum values.
 			fmt.Fprintf(f, ")\n")

@@ -25,6 +25,8 @@ type Client struct {
 	Hidden *HiddenService
 	// Meta: Meta information about the API.
 	Meta *MetaService
+	// Oauth2: Endpoints that implement OAuth 2.0 grant flows.
+	Oauth2 *Oauth2Service
 	// Payment: Operations around payments and billing.
 	Payment *PaymentService
 	// Session: Sessions allow users to call the API from their session cookie in the browser.
@@ -49,6 +51,9 @@ type HiddenService service
 
 // MetaService: Meta information about the API.
 type MetaService service
+
+// Oauth2Service: Endpoints that implement OAuth 2.0 grant flows.
+type Oauth2Service service
 
 // PaymentService: Operations around payments and billing.
 type PaymentService service
