@@ -1046,9 +1046,6 @@ type EmailAuthenticationForm struct {
 	Email string `json:"email,omitempty" yaml:"email,omitempty"`
 }
 
-// Empty is an "empty" type used to represent responses that have no associated data payload. This isn't intended for general use, but must be pub since it's used as the Body type for certain responses.
-type Empty string
-
 // EngineMetadata is metadata about our currently running server.
 //
 // This is mostly used for internal purposes and debugging.
@@ -2063,9 +2060,6 @@ var Currencys = []Currency{
 	CurrencyZar,
 	CurrencyZmw,
 }
-
-// Emptys is the collection of all Empty values.
-var Emptys = []Empty{}
 
 // Environments is the collection of all Environment values.
 var Environments = []Environment{
