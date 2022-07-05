@@ -1975,13 +1975,6 @@
         ],
         "type": "object"
       },
-      "Empty": {
-        "description": "An \"empty\" type used to represent responses that have no associated data payload. This isn't intended for general use, but must be pub since it's used as the Body type for certain responses.",
-        "enum": [
-          null
-        ],
-        "type": "string"
-      },
       "EngineMetadata": {
         "description": "Metadata about our currently running server.\n\nThis is mostly used for internal purposes and debugging.",
         "properties": {
@@ -4466,13 +4459,6 @@
         ],
         "responses": {
           "302": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Empty"
-                }
-              }
-            },
             "description": "Temporary Redirect",
             "headers": {
               "Access-Control-Allow-Credentials": {
@@ -5201,19 +5187,9 @@
       }
     },
     "/oauth2/device/confirm": {
-      "post": {
-        "description": "This endpoint is designed to be accessed by the user agent (browser), not the client requesting the token. So we do not actually return the token here; it will be returned in response to the poll on `/oauth2/device/token`.",
-        "operationId": "device_auth_confirm",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeviceAuthVerifyParams"
-              }
-            }
-          },
-          "required": true
-        },
+      "options": {
+        "description": "This is necessary for some preflight requests, specifically DELETE, PUT, and POST since it has a request body.",
+        "operationId": "options_device_auth_confirm",
         "responses": {
           "200": {
             "content": {
@@ -5228,6 +5204,69 @@
               }
             },
             "description": "successful operation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "OPTIONS endpoint `/oauth2/device/confirm`.",
+        "tags": [
+          "hidden"
+        ]
+      },
+      "post": {
+        "description": "This endpoint is designed to be accessed by the user agent (browser), not the client requesting the token. So we do not actually return the token here; it will be returned in response to the poll on `/oauth2/device/token`.",
+        "operationId": "device_auth_confirm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceAuthVerifyParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "successful operation, no content",
             "headers": {
               "Access-Control-Allow-Credentials": {
                 "description": "Access-Control-Allow-Credentials header.",
@@ -5310,7 +5349,7 @@
     },
     "/oauth2/device/verify": {
       "get": {
-        "description": "This endpoint should be accessed in a full user agent (e.g., a browser). If the user is not logged in, we redirect them to the login page and use the `state` parameter to get them back here on completion. If they are logged in, serve up the console verification page so they can verify the user code.",
+        "description": "This endpoint should be accessed in a full user agent (e.g., a browser). If the user is not logged in, we redirect them to the login page and use the `callback_url` parameter to get them to the UI verification form upon logging in. If they are logged in, we redirect them to the UI verification form on the website.",
         "operationId": "device_auth_verify",
         "parameters": [
           {
@@ -5326,13 +5365,6 @@
         ],
         "responses": {
           "302": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Empty"
-                }
-              }
-            },
             "description": "Temporary Redirect",
             "headers": {
               "Access-Control-Allow-Credentials": {
@@ -5418,13 +5450,6 @@
         ],
         "responses": {
           "302": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Empty"
-                }
-              }
-            },
             "description": "Temporary Redirect",
             "headers": {
               "Access-Control-Allow-Credentials": {
