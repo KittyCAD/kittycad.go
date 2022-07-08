@@ -85,7 +85,7 @@ type APICallWithPrice struct {
 	// CreatedAt is the date and time the API call was created.
 	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// Duration is the duration of the API call.
-	Duration Duration `json:"duration,omitempty" yaml:"duration,omitempty"`
+	Duration int `json:"duration,omitempty" yaml:"duration,omitempty"`
 	// Email is the user's email address.
 	Email string `json:"email,omitempty" yaml:"email,omitempty"`
 	// Endpoint is the endpoint requested by the API call.
@@ -93,7 +93,7 @@ type APICallWithPrice struct {
 	// ID is the unique identifier for the API call.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// IPAddress is the ip address of the origin.
-	IPAddress IpAddr `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
+	IPAddress string `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
 	// Method is the HTTP method requsted by the API call.
 	Method Method `json:"method,omitempty" yaml:"method,omitempty"`
 	// Minutes is the number of minutes the API call was billed for.
@@ -111,7 +111,7 @@ type APICallWithPrice struct {
 	// StartedAt is the date and time the API call started billing.
 	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
 	// StatusCode is the status code returned by the API call.
-	StatusCode StatusCode `json:"status_code,omitempty" yaml:"status_code,omitempty"`
+	StatusCode int `json:"status_code,omitempty" yaml:"status_code,omitempty"`
 	// StripeInvoiceItemID is the Stripe invoice item ID of the API call if it is billable.
 	StripeInvoiceItemID string `json:"stripe_invoice_item_id,omitempty" yaml:"stripe_invoice_item_id,omitempty"`
 	// Token is the API token that made the API call.
@@ -201,7 +201,7 @@ type AsyncAPICallOutputFileConversion struct {
 	// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// Output is the converted file, if completed, base64 encoded.
-	Output Base64Data `json:"output,omitempty" yaml:"output,omitempty"`
+	Output string `json:"output,omitempty" yaml:"output,omitempty"`
 	// OutputFormat is the output format of the file conversion.
 	OutputFormat FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
 	// SrcFormat is the source format of the file conversion.
@@ -331,7 +331,7 @@ type AsyncAPICallOutput struct {
 	CreatedAt       *JSONTime        `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	Error           string           `json:"error,omitempty" yaml:"error,omitempty"`
 	ID              Uuid             `json:"id,omitempty" yaml:"id,omitempty"`
-	Output          Base64Data       `json:"output,omitempty" yaml:"output,omitempty"`
+	Output          string           `json:"output,omitempty" yaml:"output,omitempty"`
 	OutputFormat    FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
 	SrcFormat       FileSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
 	StartedAt       *JSONTime        `json:"started_at,omitempty" yaml:"started_at,omitempty"`
@@ -368,9 +368,6 @@ const (
 	AsyncAPICallTypeFileDensity AsyncAPICallType = "FileDensity"
 )
 
-// Base64Data is the type definition for a Base64Data.
-type Base64Data string
-
 // BillingInfo is the billing information for payments.
 type BillingInfo struct {
 	// Address is the address of the customer.
@@ -378,7 +375,7 @@ type BillingInfo struct {
 	// Name is the name of the customer.
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	// Phone is the phone for the customer.
-	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
+	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
 }
 
 // CacheMetadata is metadata about our cache.
@@ -860,7 +857,7 @@ type Customer struct {
 	// Balance is current balance, if any, being stored on the customer.
 	//
 	// If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.
-	Balance int `json:"balance,omitempty" yaml:"balance,omitempty"`
+	Balance float64 `json:"balance,omitempty" yaml:"balance,omitempty"`
 	// CreatedAt is time at which the object was created.
 	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// Currency is three-letter ISO code for the currency the customer can be charged in for recurring billing purposes.
@@ -878,7 +875,7 @@ type Customer struct {
 	// Name is the customer's full name or business name.
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	// Phone is the customer's phone number.
-	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
+	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
 }
 
 // DeviceAccessTokenRequestForm is the form for a device access token request.
@@ -1035,9 +1032,6 @@ type DockerSystemInfo struct {
 	Warnings []string `json:"warnings,omitempty" yaml:"warnings,omitempty"`
 }
 
-// Duration is the type definition for a Duration.
-type Duration int
-
 // EmailAuthenticationForm is the body of the form for email authentication.
 type EmailAuthenticationForm struct {
 	// CallbackUrl is the URL to redirect back to after we have authenticated.
@@ -1124,7 +1118,7 @@ type ExtendedUser struct {
 	// Name is the name of the user. This is auto populated at first from the authentication provider (if there was a name). It can be updated by the user by updating their `first_name` and `last_name` fields.
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	// Phone is the user's phone number.
-	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
+	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
 	// StripeID is the user's Stripe ID. This is mostly used for internal mapping.
 	StripeID string `json:"stripe_id,omitempty" yaml:"stripe_id,omitempty"`
 	// UpdatedAt is the date and time the user was last updated.
@@ -1154,7 +1148,7 @@ type FileConversion struct {
 	// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// Output is the converted file, if completed, base64 encoded.
-	Output Base64Data `json:"output,omitempty" yaml:"output,omitempty"`
+	Output string `json:"output,omitempty" yaml:"output,omitempty"`
 	// OutputFormat is the output format of the file conversion.
 	OutputFormat FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
 	// SrcFormat is the source format of the file conversion.
@@ -1326,11 +1320,11 @@ type Invoice struct {
 	// AmountDue is final amount due at this time for this invoice.
 	//
 	// If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the `amount_due` may be 0. If there is a positive `starting_balance` for the invoice (the customer owes money), the `amount_due` will also take that into account. The charge that gets generated for the invoice will be for the amount specified in `amount_due`.
-	AmountDue int `json:"amount_due,omitempty" yaml:"amount_due,omitempty"`
-	// AmountPaid is the amount, in %s, that was paid.
-	AmountPaid int `json:"amount_paid,omitempty" yaml:"amount_paid,omitempty"`
-	// AmountRemaining is the amount remaining, in %s, that is due.
-	AmountRemaining int `json:"amount_remaining,omitempty" yaml:"amount_remaining,omitempty"`
+	AmountDue float64 `json:"amount_due,omitempty" yaml:"amount_due,omitempty"`
+	// AmountPaid is the amount, in USD, that was paid.
+	AmountPaid float64 `json:"amount_paid,omitempty" yaml:"amount_paid,omitempty"`
+	// AmountRemaining is the amount remaining, in USD, that is due.
+	AmountRemaining float64 `json:"amount_remaining,omitempty" yaml:"amount_remaining,omitempty"`
 	// AttemptCount is number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
 	//
 	// Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count. In other words, manual payment attempts after the first attempt do not affect the retry schedule.
@@ -1378,21 +1372,21 @@ type Invoice struct {
 	// Subtotal is total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.
 	//
 	// Item discounts are already incorporated.
-	Subtotal int `json:"subtotal,omitempty" yaml:"subtotal,omitempty"`
+	Subtotal float64 `json:"subtotal,omitempty" yaml:"subtotal,omitempty"`
 	// Tax is the amount of tax on this invoice.
 	//
 	// This is the sum of all the tax amounts on this invoice.
-	Tax int `json:"tax,omitempty" yaml:"tax,omitempty"`
+	Tax float64 `json:"tax,omitempty" yaml:"tax,omitempty"`
 	// Total is total after discounts and taxes.
-	Total int `json:"total,omitempty" yaml:"total,omitempty"`
+	Total float64 `json:"total,omitempty" yaml:"total,omitempty"`
 	// Url is the URL for the hosted invoice page, which allows customers to view and pay an invoice.
 	Url string `json:"url,omitempty" yaml:"url,omitempty"`
 }
 
 // InvoiceLineItem is an invoice line item.
 type InvoiceLineItem struct {
-	// Amount is the amount, in %s.
-	Amount int `json:"amount,omitempty" yaml:"amount,omitempty"`
+	// Amount is the amount, in USD.
+	Amount float64 `json:"amount,omitempty" yaml:"amount,omitempty"`
 	// Currency is three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
 	Currency Currency `json:"currency,omitempty" yaml:"currency,omitempty"`
 	// Description is the description.
@@ -1424,9 +1418,6 @@ const (
 	// InvoiceStatusVoid represents the InvoiceStatus `"void"`.
 	InvoiceStatusVoid InvoiceStatus = "void"
 )
-
-// IpAddr is the type definition for a IpAddr.
-type IpAddr string
 
 // Jetstream is jetstream information.
 type Jetstream struct {
@@ -1616,9 +1607,6 @@ const (
 	PaymentMethodTypeCard PaymentMethodType = "card"
 )
 
-// PhoneNumber is the type definition for a PhoneNumber.
-type PhoneNumber string
-
 // PluginsInfo is available plugins per type.
 //
 // **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
@@ -1683,9 +1671,6 @@ type Session struct {
 	// UserID is the user ID of the user that the session belongs to.
 	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
-
-// StatusCode is the type definition for a StatusCode.
-type StatusCode int
 
 // SystemInfoCgroupDriverEnum is the type definition for a SystemInfoCgroupDriverEnum.
 type SystemInfoCgroupDriverEnum string
@@ -1818,7 +1803,7 @@ type UpdateUser struct {
 	// LastName is the user's last name.
 	LastName string `json:"last_name,omitempty" yaml:"last_name,omitempty"`
 	// Phone is the user's phone number.
-	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
+	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
 }
 
 // User is a user.
@@ -1846,7 +1831,7 @@ type User struct {
 	// Name is the name of the user. This is auto populated at first from the authentication provider (if there was a name). It can be updated by the user by updating their `first_name` and `last_name` fields.
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	// Phone is the user's phone number.
-	Phone PhoneNumber `json:"phone,omitempty" yaml:"phone,omitempty"`
+	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
 	// UpdatedAt is the date and time the user was last updated.
 	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 }
@@ -1863,6 +1848,22 @@ type UserResultsPage struct {
 //
 // A Version 4 UUID is a universally unique identifier that is generated using random numbers.
 type Uuid string
+
+// VerificationToken is a verification token for a user.
+//
+// This is typically used to verify a user's email address.
+type VerificationToken struct {
+	// CreatedAt is the date and time the verification token was created.
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// Expires is the date and time the verification token expires.
+	Expires *JSONTime `json:"expires,omitempty" yaml:"expires,omitempty"`
+	// ID is the token used for verification. This is used as the id for the table since it is unique per record.
+	ID string `json:"id,omitempty" yaml:"id,omitempty"`
+	// Identifier is the identifier for the user. This is typically the user's email address since that is what we are verifying.
+	Identifier string `json:"identifier,omitempty" yaml:"identifier,omitempty"`
+	// UpdatedAt is the date and time the verification token was last updated.
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+}
 
 // APICallQueryGroupBys is the collection of all APICallQueryGroupBy values.
 var APICallQueryGroupBys = []APICallQueryGroupBy{

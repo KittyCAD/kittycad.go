@@ -133,13 +133,11 @@
             "type": "string"
           },
           "duration": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Duration"
-              }
-            ],
             "description": "The duration of the API call.",
-            "nullable": true
+            "format": "duration",
+            "nullable": true,
+            "title": "int64",
+            "type": "integer"
           },
           "email": {
             "description": "The user's email address.",
@@ -159,13 +157,11 @@
             "description": "The unique identifier for the API call."
           },
           "ip_address": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/IpAddr"
-              }
-            ],
             "default": "",
-            "description": "The ip address of the origin."
+            "description": "The ip address of the origin.",
+            "format": "ip",
+            "title": "String",
+            "type": "string"
           },
           "method": {
             "allOf": [
@@ -187,7 +183,9 @@
           },
           "price": {
             "description": "The price of the API call.",
+            "format": "money-usd",
             "nullable": true,
+            "title": "Number",
             "type": "number"
           },
           "request_body": {
@@ -211,13 +209,11 @@
             "type": "string"
           },
           "status_code": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/StatusCode"
-              }
-            ],
             "description": "The status code returned by the API call.",
-            "nullable": true
+            "format": "int32",
+            "nullable": true,
+            "title": "int32",
+            "type": "integer"
           },
           "stripe_invoice_item_id": {
             "description": "The Stripe invoice item ID of the API call if it is billable.",
@@ -449,13 +445,11 @@
                 "description": "The unique identifier of the file conversion.\n\nThis is the same as the API call ID."
               },
               "output": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/Base64Data"
-                  }
-                ],
                 "description": "The converted file, if completed, base64 encoded.",
-                "nullable": true
+                "format": "byte",
+                "nullable": true,
+                "title": "String",
+                "type": "string"
               },
               "output_format": {
                 "allOf": [
@@ -802,11 +796,6 @@
         ],
         "type": "string"
       },
-      "Base64Data": {
-        "format": "byte",
-        "title": "String",
-        "type": "string"
-      },
       "BillingInfo": {
         "description": "The billing information for payments.",
         "properties": {
@@ -824,13 +813,11 @@
             "type": "string"
           },
           "phone": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PhoneNumber"
-              }
-            ],
             "default": "",
-            "description": "The phone for the customer."
+            "description": "The phone for the customer.",
+            "format": "phone",
+            "title": "String",
+            "type": "string"
           }
         },
         "type": "object"
@@ -900,6 +887,7 @@
         "properties": {
           "addr": {
             "description": "The IP address of the cluster.",
+            "format": "ip",
             "nullable": true,
             "type": "string"
           },
@@ -1062,6 +1050,7 @@
           },
           "host": {
             "description": "The host of the server.",
+            "format": "ip",
             "type": "string"
           },
           "http_base_path": {
@@ -1478,10 +1467,11 @@
             "nullable": true
           },
           "balance": {
-            "default": 0,
+            "default": "0",
             "description": "Current balance, if any, being stored on the customer.\n\nIf negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.",
-            "format": "int64",
-            "type": "integer"
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
           },
           "created_at": {
             "description": "Time at which the object was created.",
@@ -1523,13 +1513,11 @@
             "type": "string"
           },
           "phone": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PhoneNumber"
-              }
-            ],
             "default": "",
-            "description": "The customer's phone number."
+            "description": "The customer's phone number.",
+            "format": "phone",
+            "title": "String",
+            "type": "string"
           }
         },
         "required": [
@@ -1950,11 +1938,6 @@
         },
         "type": "object"
       },
-      "Duration": {
-        "format": "duration",
-        "title": "int64",
-        "type": "integer"
-      },
       "EmailAuthenticationForm": {
         "description": "The body of the form for email authentication.",
         "properties": {
@@ -2129,6 +2112,8 @@
           },
           "image": {
             "description": "The image avatar for the user. This is a URL.",
+            "format": "uri",
+            "title": "String",
             "type": "string"
           },
           "last_name": {
@@ -2145,13 +2130,11 @@
             "type": "string"
           },
           "phone": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PhoneNumber"
-              }
-            ],
             "default": "",
-            "description": "The user's phone number."
+            "description": "The user's phone number.",
+            "format": "phone",
+            "title": "String",
+            "type": "string"
           },
           "stripe_id": {
             "description": "The user's Stripe ID. This is mostly used for internal mapping.",
@@ -2171,6 +2154,7 @@
         },
         "required": [
           "created_at",
+          "image",
           "updated_at"
         ],
         "type": "object"
@@ -2224,13 +2208,11 @@
             "description": "The unique identifier of the file conversion.\n\nThis is the same as the API call ID."
           },
           "output": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Base64Data"
-              }
-            ],
             "description": "The converted file, if completed, base64 encoded.",
-            "nullable": true
+            "format": "byte",
+            "nullable": true,
+            "title": "String",
+            "type": "string"
           },
           "output_format": {
             "allOf": [
@@ -2618,22 +2600,25 @@
         "description": "An invoice.",
         "properties": {
           "amount_due": {
-            "default": 0,
+            "default": "0",
             "description": "Final amount due at this time for this invoice.\n\nIf the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the `amount_due` may be 0. If there is a positive `starting_balance` for the invoice (the customer owes money), the `amount_due` will also take that into account. The charge that gets generated for the invoice will be for the amount specified in `amount_due`.",
-            "format": "int64",
-            "type": "integer"
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
           },
           "amount_paid": {
-            "default": 0,
-            "description": "The amount, in %s, that was paid.",
-            "format": "int64",
-            "type": "integer"
+            "default": "0",
+            "description": "The amount, in USD, that was paid.",
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
           },
           "amount_remaining": {
-            "default": 0,
-            "description": "The amount remaining, in %s, that is due.",
-            "format": "int64",
-            "type": "integer"
+            "default": "0",
+            "description": "The amount remaining, in USD, that is due.",
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
           },
           "attempt_count": {
             "default": 0,
@@ -2729,22 +2714,25 @@
             "nullable": true
           },
           "subtotal": {
-            "default": 0,
+            "default": "0",
             "description": "Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.\n\nItem discounts are already incorporated.",
-            "format": "int64",
-            "type": "integer"
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
           },
           "tax": {
-            "default": 0,
+            "default": "0",
             "description": "The amount of tax on this invoice.\n\nThis is the sum of all the tax amounts on this invoice.",
-            "format": "int64",
-            "type": "integer"
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
           },
           "total": {
-            "default": 0,
+            "default": "0",
             "description": "Total after discounts and taxes.",
-            "format": "int64",
-            "type": "integer"
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
           },
           "url": {
             "description": "The URL for the hosted invoice page, which allows customers to view and pay an invoice.",
@@ -2763,10 +2751,11 @@
         "description": "An invoice line item.",
         "properties": {
           "amount": {
-            "default": 0,
-            "description": "The amount, in %s.",
-            "format": "int64",
-            "type": "integer"
+            "default": "0",
+            "description": "The amount, in USD.",
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
           },
           "currency": {
             "allOf": [
@@ -2812,11 +2801,6 @@
           "uncollectible",
           "void"
         ],
-        "type": "string"
-      },
-      "IpAddr": {
-        "format": "ip",
-        "title": "String",
         "type": "string"
       },
       "Jetstream": {
@@ -3247,11 +3231,6 @@
         ],
         "type": "string"
       },
-      "PhoneNumber": {
-        "format": "phone",
-        "title": "String",
-        "type": "string"
-      },
       "PluginsInfo": {
         "description": "Available plugins per type.\n\n**Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \\\"lazily\\\" loaded, and are not returned in this list if there is no resource using the plugin.",
         "properties": {
@@ -3399,11 +3378,6 @@
           "updated_at"
         ],
         "type": "object"
-      },
-      "StatusCode": {
-        "format": "int32",
-        "title": "int32",
-        "type": "integer"
       },
       "SystemInfoCgroupDriverEnum": {
         "enum": [
@@ -3583,13 +3557,11 @@
             "type": "string"
           },
           "phone": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PhoneNumber"
-              }
-            ],
             "default": "",
-            "description": "The user's phone number."
+            "description": "The user's phone number.",
+            "format": "phone",
+            "title": "String",
+            "type": "string"
           }
         },
         "type": "object"
@@ -3635,6 +3607,8 @@
           },
           "image": {
             "description": "The image avatar for the user. This is a URL.",
+            "format": "uri",
+            "title": "String",
             "type": "string"
           },
           "last_name": {
@@ -3646,13 +3620,11 @@
             "type": "string"
           },
           "phone": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PhoneNumber"
-              }
-            ],
             "default": "",
-            "description": "The user's phone number."
+            "description": "The user's phone number.",
+            "format": "phone",
+            "title": "String",
+            "type": "string"
           },
           "updated_at": {
             "description": "The date and time the user was last updated.",
@@ -3662,6 +3634,7 @@
         },
         "required": [
           "created_at",
+          "image",
           "updated_at"
         ],
         "type": "object"
@@ -3691,6 +3664,40 @@
         "description": "A uuid.\n\nA Version 4 UUID is a universally unique identifier that is generated using random numbers.",
         "format": "uuid",
         "type": "string"
+      },
+      "VerificationToken": {
+        "description": "A verification token for a user.\n\nThis is typically used to verify a user's email address.",
+        "properties": {
+          "created_at": {
+            "description": "The date and time the verification token was created.",
+            "format": "partial-date-time",
+            "type": "string"
+          },
+          "expires": {
+            "description": "The date and time the verification token expires.",
+            "format": "partial-date-time",
+            "type": "string"
+          },
+          "id": {
+            "description": "The token used for verification. This is used as the id for the table since it is unique per record.",
+            "type": "string"
+          },
+          "identifier": {
+            "description": "The identifier for the user. This is typically the user's email address since that is what we are verifying.",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "The date and time the verification token was last updated.",
+            "format": "partial-date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "expires",
+          "updated_at"
+        ],
+        "type": "object"
       }
     }
   },
@@ -4366,8 +4373,15 @@
           "required": true
         },
         "responses": {
-          "204": {
-            "description": "resource updated",
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationToken"
+                }
+              }
+            },
+            "description": "successful creation",
             "headers": {
               "Access-Control-Allow-Credentials": {
                 "description": "Access-Control-Allow-Credentials header.",
@@ -4415,7 +4429,7 @@
           "hidden"
         ],
         "x-go": {
-          "example": "// ListenAuthEmail: Create an email verification request for a user.\nif err := client.Hidden.ListenAuthEmail(body); err != nil {\n\tpanic(err)\n}",
+          "example": "// ListenAuthEmail: Create an email verification request for a user.\nverificationToken, err := client.Hidden.ListenAuthEmail(body)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.ListenAuthEmail"
         }
       }
@@ -5758,6 +5772,63 @@
       }
     },
     "/user": {
+      "delete": {
+        "description": "This endpoint requires authentication by any KittyCAD user. It deletes the authenticated user from KittyCAD's database.\nThis call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.",
+        "operationId": "delete_user_self",
+        "responses": {
+          "204": {
+            "description": "successful deletion",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Delete your user.",
+        "tags": [
+          "users"
+        ],
+        "x-go": {
+          "example": "// DeleteSelf: Delete your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It deletes the authenticated user from KittyCAD's database.\n// This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.\nif err := client.User.DeleteSelf(); err != nil {\n\tpanic(err)\n}",
+          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.DeleteSelf"
+        }
+      },
       "get": {
         "description": "Get the user information for the authenticated user.\nAlternatively, you can also use the `/users/me` endpoint.",
         "operationId": "get_user_self",

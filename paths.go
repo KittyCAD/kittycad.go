@@ -371,32 +371,40 @@ func (s *APICallService) GetAsyncOperation(id string) (*AsyncAPICallOutput, erro
 }
 
 // ListenAuthEmail: Create an email verification request for a user.
-func (s *HiddenService) ListenAuthEmail(j *EmailAuthenticationForm) error {
+func (s *HiddenService) ListenAuthEmail(j *EmailAuthenticationForm) (*VerificationToken, error) {
 	// Create the url.
 	path := "/auth/email"
 	uri := resolveRelative(s.client.server, path)
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
 	if err := json.NewEncoder(b).Encode(j); err != nil {
-		return fmt.Errorf("encoding json body request failed: %v", err)
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
 	}
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
 	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
+		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
+		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return err
+		return nil, err
 	}
-	// Return.
-	return nil
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body VerificationToken
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
 }
 
 // ListenAuthEmailCallback: Listen for callbacks for email verification for users.
@@ -885,6 +893,33 @@ func (s *UserService) UpdateSelf(j *UpdateUser) (*User, error) {
 	}
 	// Return the response.
 	return &body, nil
+}
+
+// DeleteSelf: Delete your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It deletes the authenticated user from KittyCAD's database.
+// This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.
+func (s *UserService) DeleteSelf() error {
+	// Create the url.
+	path := "/user"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+	// Return.
+	return nil
 }
 
 // UserList: List API calls for your user.
