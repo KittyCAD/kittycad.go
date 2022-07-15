@@ -1455,6 +1455,40 @@ func (s *PaymentService) DeleteInformationForUser() error {
 	return nil
 }
 
+// GetBalanceForUser: Get balance for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It gets the balance information for the authenticated user.
+func (s *PaymentService) GetBalanceForUser() (*CustomerBalance, error) {
+	// Create the url.
+	path := "/user/payment/balance"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body CustomerBalance
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
 // CreateIntentForUser: Create a payment intent for your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It creates a new payment intent for the authenticated user.

@@ -1468,7 +1468,7 @@
           },
           "balance": {
             "default": "0",
-            "description": "Current balance, if any, being stored on the customer.\n\nIf negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.",
+            "description": "Current balance, if any, being stored on the customer in the payments service.\n\nIf negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.",
             "format": "money-usd",
             "title": "Number",
             "type": "number"
@@ -1523,6 +1523,67 @@
         "required": [
           "created_at",
           "currency"
+        ],
+        "type": "object"
+      },
+      "CustomerBalance": {
+        "description": "A balance for a user.\n\nThis holds information about the financial balance for the user.",
+        "properties": {
+          "created_at": {
+            "description": "The date and time the balance was created.",
+            "format": "partial-date-time",
+            "type": "string"
+          },
+          "id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            ],
+            "description": "The unique identifier for the balance."
+          },
+          "monthly_credits_remaining": {
+            "description": "The monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the user per month.",
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
+          },
+          "pre_pay_cash_remaining": {
+            "description": "The amount of pre-pay cash remaining in the balance. This number goes down as the user uses their pre-paid credits. The reason we track this amount is if a user ever wants to withdraw their pre-pay cash, we can use this amount to determine how much to give them. Say a user has $100 in pre-paid cash, their bill is worth, $50 after subtracting any other credits (like monthly etc.) Their bill is $50, their pre-pay cash remaining will be subtracted by 50 to pay the bill and their `pre_pay_credits_remaining` will be subtracted by 50 to pay the bill. This way if they want to withdraw money after, they can only withdraw $50 since that is the amount of cash they have remaining.",
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
+          },
+          "pre_pay_credits_remaining": {
+            "description": "The amount of credits remaining in the balance. This is typically the amount of cash * some multiplier they get for pre-paying their account. This number lowers every time a bill is paid with the balance. This number increases every time a user adds funds to their balance. This may be through a subscription or a one off payment.",
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
+          },
+          "total_due": {
+            "description": "This includes any outstanding, draft, or open invoices and any pending invoice items. This does not include any credits the user has on their account.",
+            "format": "money-usd",
+            "title": "Number",
+            "type": "number"
+          },
+          "updated_at": {
+            "description": "The date and time the balance was last updated.",
+            "format": "partial-date-time",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "The user ID the balance belongs to.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "monthly_credits_remaining",
+          "pre_pay_cash_remaining",
+          "pre_pay_credits_remaining",
+          "total_due",
+          "updated_at"
         ],
         "type": "object"
       },
@@ -4297,22 +4358,11 @@
     },
     "/auth/email": {
       "options": {
-        "description": "This is necessary for some preflight requests, specifically DELETE, PUT, and POST since it has a request body.",
+        "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
         "operationId": "options_auth_email",
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "enum": [
-                    null
-                  ],
-                  "title": "Null",
-                  "type": "string"
-                }
-              }
-            },
-            "description": "successful operation",
+          "204": {
+            "description": "successful operation, no content",
             "headers": {
               "Access-Control-Allow-Credentials": {
                 "description": "Access-Control-Allow-Credentials header.",
@@ -4355,7 +4405,7 @@
             "$ref": "#/components/responses/Error"
           }
         },
-        "summary": "OPTIONS endpoint for email authentication.",
+        "summary": "OPTIONS endoint.",
         "tags": [
           "hidden"
         ]
@@ -5202,22 +5252,11 @@
     },
     "/oauth2/device/confirm": {
       "options": {
-        "description": "This is necessary for some preflight requests, specifically DELETE, PUT, and POST since it has a request body.",
+        "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
         "operationId": "options_device_auth_confirm",
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "enum": [
-                    null
-                  ],
-                  "title": "Null",
-                  "type": "string"
-                }
-              }
-            },
-            "description": "successful operation",
+          "204": {
+            "description": "successful operation, no content",
             "headers": {
               "Access-Control-Allow-Credentials": {
                 "description": "Access-Control-Allow-Credentials header.",
@@ -5260,7 +5299,7 @@
             "$ref": "#/components/responses/Error"
           }
         },
-        "summary": "OPTIONS endpoint `/oauth2/device/confirm`.",
+        "summary": "OPTIONS endoint.",
         "tags": [
           "hidden"
         ]
@@ -5894,22 +5933,11 @@
         }
       },
       "options": {
-        "description": "This is necessary for some preflight requests, specifically DELETE and PUT.",
+        "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
         "operationId": "options_user_self",
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "enum": [
-                    null
-                  ],
-                  "title": "Null",
-                  "type": "string"
-                }
-              }
-            },
-            "description": "successful operation",
+          "204": {
+            "description": "successful operation, no content",
             "headers": {
               "Access-Control-Allow-Credentials": {
                 "description": "Access-Control-Allow-Credentials header.",
@@ -5952,7 +5980,7 @@
             "$ref": "#/components/responses/Error"
           }
         },
-        "summary": "OPTIONS endpoint for users.",
+        "summary": "OPTIONS endoint.",
         "tags": [
           "hidden"
         ]
@@ -6521,7 +6549,7 @@
         }
       },
       "options": {
-        "description": "This is necessary for some preflight requests, specifically DELETE.",
+        "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
         "operationId": "options_api_token_for_user",
         "parameters": [
           {
@@ -6537,19 +6565,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "enum": [
-                    null
-                  ],
-                  "title": "Null",
-                  "type": "string"
-                }
-              }
-            },
-            "description": "successful operation",
+          "204": {
+            "description": "successful operation, no content",
             "headers": {
               "Access-Control-Allow-Credentials": {
                 "description": "Access-Control-Allow-Credentials header.",
@@ -6592,7 +6609,7 @@
             "$ref": "#/components/responses/Error"
           }
         },
-        "summary": "OPTIONS endpoint for API tokens.",
+        "summary": "OPTIONS endoint.",
         "tags": [
           "hidden"
         ]
@@ -6865,22 +6882,11 @@
         }
       },
       "options": {
-        "description": "This is necessary for some preflight requests, specifically DELETE and PUT.",
+        "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
         "operationId": "options_payment_information_for_user",
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "enum": [
-                    null
-                  ],
-                  "title": "Null",
-                  "type": "string"
-                }
-              }
-            },
-            "description": "successful operation",
+          "204": {
+            "description": "successful operation, no content",
             "headers": {
               "Access-Control-Allow-Credentials": {
                 "description": "Access-Control-Allow-Credentials header.",
@@ -6923,7 +6929,7 @@
             "$ref": "#/components/responses/Error"
           }
         },
-        "summary": "OPTIONS endpoint for user payment information.",
+        "summary": "OPTIONS endoint.",
         "tags": [
           "hidden"
         ]
@@ -7074,6 +7080,72 @@
         "x-go": {
           "example": "// UpdateInformationForUser: Update payment info for your user.\n//\n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any KittyCAD user. It updates the payment information for the authenticated user.\ncustomer, err := client.Payment.UpdateInformationForUser(body)",
           "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.UpdateInformationForUser"
+        }
+      }
+    },
+    "/user/payment/balance": {
+      "get": {
+        "description": "This endpoint requires authentication by any KittyCAD user. It gets the balance information for the authenticated user.",
+        "operationId": "get_payment_balance_for_user",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerBalance"
+                }
+              }
+            },
+            "description": "successful operation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Get balance for your user.",
+        "tags": [
+          "payments"
+        ],
+        "x-go": {
+          "example": "// GetBalanceForUser: Get balance for your user.\n//\n// This endpoint requires authentication by any KittyCAD user. It gets the balance information for the authenticated user.\ncustomerBalance, err := client.Payment.GetBalanceForUser()",
+          "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetBalanceForUser"
         }
       }
     },
@@ -7356,7 +7428,7 @@
         }
       },
       "options": {
-        "description": "This is necessary for some preflight requests, specifically DELETE.",
+        "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
         "operationId": "options_payment_methods_for_user",
         "parameters": [
           {
@@ -7371,19 +7443,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "enum": [
-                    null
-                  ],
-                  "title": "Null",
-                  "type": "string"
-                }
-              }
-            },
-            "description": "successful operation",
+          "204": {
+            "description": "successful operation, no content",
             "headers": {
               "Access-Control-Allow-Credentials": {
                 "description": "Access-Control-Allow-Credentials header.",
@@ -7426,7 +7487,7 @@
             "$ref": "#/components/responses/Error"
           }
         },
-        "summary": "OPTIONS endpoint for user payment methods.",
+        "summary": "OPTIONS endoint.",
         "tags": [
           "hidden"
         ]
