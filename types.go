@@ -854,7 +854,7 @@ const (
 type Customer struct {
 	// Address is the customer's address.
 	Address Address `json:"address,omitempty" yaml:"address,omitempty"`
-	// Balance is current balance, if any, being stored on the customer.
+	// Balance is current balance, if any, being stored on the customer in the payments service.
 	//
 	// If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.
 	Balance float64 `json:"balance,omitempty" yaml:"balance,omitempty"`
@@ -876,6 +876,28 @@ type Customer struct {
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	// Phone is the customer's phone number.
 	Phone string `json:"phone,omitempty" yaml:"phone,omitempty"`
+}
+
+// CustomerBalance is a balance for a user.
+//
+// This holds information about the financial balance for the user.
+type CustomerBalance struct {
+	// CreatedAt is the date and time the balance was created.
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	// ID is the unique identifier for the balance.
+	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
+	// MonthlyCreditsRemaining is the monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the user per month.
+	MonthlyCreditsRemaining float64 `json:"monthly_credits_remaining,omitempty" yaml:"monthly_credits_remaining,omitempty"`
+	// PrePayCashRemaining is the amount of pre-pay cash remaining in the balance. This number goes down as the user uses their pre-paid credits. The reason we track this amount is if a user ever wants to withdraw their pre-pay cash, we can use this amount to determine how much to give them. Say a user has $100 in pre-paid cash, their bill is worth, $50 after subtracting any other credits (like monthly etc.) Their bill is $50, their pre-pay cash remaining will be subtracted by 50 to pay the bill and their `pre_pay_credits_remaining` will be subtracted by 50 to pay the bill. This way if they want to withdraw money after, they can only withdraw $50 since that is the amount of cash they have remaining.
+	PrePayCashRemaining float64 `json:"pre_pay_cash_remaining,omitempty" yaml:"pre_pay_cash_remaining,omitempty"`
+	// PrePayCreditsRemaining is the amount of credits remaining in the balance. This is typically the amount of cash * some multiplier they get for pre-paying their account. This number lowers every time a bill is paid with the balance. This number increases every time a user adds funds to their balance. This may be through a subscription or a one off payment.
+	PrePayCreditsRemaining float64 `json:"pre_pay_credits_remaining,omitempty" yaml:"pre_pay_credits_remaining,omitempty"`
+	// TotalDue is this includes any outstanding, draft, or open invoices and any pending invoice items. This does not include any credits the user has on their account.
+	TotalDue float64 `json:"total_due,omitempty" yaml:"total_due,omitempty"`
+	// UpdatedAt is the date and time the balance was last updated.
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	// UserID is the user ID the balance belongs to.
+	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
 }
 
 // DeviceAccessTokenRequestForm is the form for a device access token request.
