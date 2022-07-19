@@ -34,7 +34,8 @@
           },
           "created_at": {
             "description": "The time and date the address was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "id": {
@@ -59,7 +60,8 @@
           },
           "updated_at": {
             "description": "The time and date the address was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_id": {
@@ -123,13 +125,15 @@
         "properties": {
           "completed_at": {
             "description": "The date and time the API call completed billing.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "created_at": {
             "description": "The date and time the API call was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "duration": {
@@ -204,8 +208,9 @@
           },
           "started_at": {
             "description": "The date and time the API call started billing.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "status_code": {
@@ -229,7 +234,8 @@
           },
           "updated_at": {
             "description": "The date and time the API call was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_agent": {
@@ -277,7 +283,8 @@
         "properties": {
           "created_at": {
             "description": "The date and time the API token was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "id": {
@@ -298,7 +305,8 @@
           },
           "updated_at": {
             "description": "The date and time the API token was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_id": {
@@ -340,13 +348,15 @@
         "properties": {
           "completed_at": {
             "description": "The time and date the async API call was completed.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "created_at": {
             "description": "The time and date the async API call was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "error": {
@@ -371,8 +381,9 @@
           },
           "started_at": {
             "description": "The time and date the async API call was started.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "status": {
@@ -393,7 +404,8 @@
           },
           "updated_at": {
             "description": "The time and date the async API call was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_id": {
@@ -422,13 +434,15 @@
             "properties": {
               "completed_at": {
                 "description": "The time and date the file conversion was completed.",
-                "format": "partial-date-time",
+                "format": "date-time",
                 "nullable": true,
+                "title": "DateTime",
                 "type": "string"
               },
               "created_at": {
                 "description": "The time and date the file conversion was created.",
-                "format": "partial-date-time",
+                "format": "date-time",
+                "title": "DateTime",
                 "type": "string"
               },
               "error": {
@@ -469,8 +483,9 @@
               },
               "started_at": {
                 "description": "The time and date the file conversion was started.",
-                "format": "partial-date-time",
+                "format": "date-time",
                 "nullable": true,
+                "title": "DateTime",
                 "type": "string"
               },
               "status": {
@@ -489,7 +504,8 @@
               },
               "updated_at": {
                 "description": "The time and date the file conversion was last updated.",
-                "format": "partial-date-time",
+                "format": "date-time",
+                "title": "DateTime",
                 "type": "string"
               },
               "user_id": {
@@ -513,13 +529,15 @@
             "properties": {
               "completed_at": {
                 "description": "The time and date the mass was completed.",
-                "format": "partial-date-time",
+                "format": "date-time",
                 "nullable": true,
+                "title": "DateTime",
                 "type": "string"
               },
               "created_at": {
                 "description": "The time and date the mass was created.",
-                "format": "partial-date-time",
+                "format": "date-time",
+                "title": "DateTime",
                 "type": "string"
               },
               "error": {
@@ -557,8 +575,9 @@
               },
               "started_at": {
                 "description": "The time and date the mass was started.",
-                "format": "partial-date-time",
+                "format": "date-time",
                 "nullable": true,
+                "title": "DateTime",
                 "type": "string"
               },
               "status": {
@@ -577,7 +596,8 @@
               },
               "updated_at": {
                 "description": "The time and date the mass was last updated.",
-                "format": "partial-date-time",
+                "format": "date-time",
+                "title": "DateTime",
                 "type": "string"
               },
               "user_id": {
@@ -600,13 +620,15 @@
             "properties": {
               "completed_at": {
                 "description": "The time and date the volume was completed.",
-                "format": "partial-date-time",
+                "format": "date-time",
                 "nullable": true,
+                "title": "DateTime",
                 "type": "string"
               },
               "created_at": {
                 "description": "The time and date the volume was created.",
-                "format": "partial-date-time",
+                "format": "date-time",
+                "title": "DateTime",
                 "type": "string"
               },
               "error": {
@@ -632,8 +654,9 @@
               },
               "started_at": {
                 "description": "The time and date the volume was started.",
-                "format": "partial-date-time",
+                "format": "date-time",
                 "nullable": true,
+                "title": "DateTime",
                 "type": "string"
               },
               "status": {
@@ -652,7 +675,8 @@
               },
               "updated_at": {
                 "description": "The time and date the volume was last updated.",
-                "format": "partial-date-time",
+                "format": "date-time",
+                "title": "DateTime",
                 "type": "string"
               },
               "user_id": {
@@ -681,13 +705,15 @@
             "properties": {
               "completed_at": {
                 "description": "The time and date the density was completed.",
-                "format": "partial-date-time",
+                "format": "date-time",
                 "nullable": true,
+                "title": "DateTime",
                 "type": "string"
               },
               "created_at": {
                 "description": "The time and date the density was created.",
-                "format": "partial-date-time",
+                "format": "date-time",
+                "title": "DateTime",
                 "type": "string"
               },
               "density": {
@@ -725,8 +751,9 @@
               },
               "started_at": {
                 "description": "The time and date the density was started.",
-                "format": "partial-date-time",
+                "format": "date-time",
                 "nullable": true,
+                "title": "DateTime",
                 "type": "string"
               },
               "status": {
@@ -745,7 +772,8 @@
               },
               "updated_at": {
                 "description": "The time and date the density was last updated.",
-                "format": "partial-date-time",
+                "format": "date-time",
+                "title": "DateTime",
                 "type": "string"
               },
               "user_id": {
@@ -1467,7 +1495,7 @@
             "nullable": true
           },
           "balance": {
-            "default": "0",
+            "default": 0,
             "description": "Current balance, if any, being stored on the customer in the payments service.\n\nIf negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.",
             "format": "money-usd",
             "title": "Number",
@@ -1531,7 +1559,8 @@
         "properties": {
           "created_at": {
             "description": "The date and time the balance was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "id": {
@@ -1568,7 +1597,8 @@
           },
           "updated_at": {
             "description": "The date and time the balance was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_id": {
@@ -2141,7 +2171,8 @@
           },
           "created_at": {
             "description": "The date and time the user was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "discord": {
@@ -2155,8 +2186,9 @@
           },
           "email_verified": {
             "description": "The date and time the email address was verified.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "first_name": {
@@ -2204,7 +2236,8 @@
           },
           "updated_at": {
             "description": "The date and time the user was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "zendesk_id": {
@@ -2246,13 +2279,15 @@
         "properties": {
           "completed_at": {
             "description": "The time and date the file conversion was completed.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "created_at": {
             "description": "The time and date the file conversion was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "error": {
@@ -2293,8 +2328,9 @@
           },
           "started_at": {
             "description": "The time and date the file conversion was started.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "status": {
@@ -2307,7 +2343,8 @@
           },
           "updated_at": {
             "description": "The time and date the file conversion was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_id": {
@@ -2330,13 +2367,15 @@
         "properties": {
           "completed_at": {
             "description": "The time and date the density was completed.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "created_at": {
             "description": "The time and date the density was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "density": {
@@ -2374,8 +2413,9 @@
           },
           "started_at": {
             "description": "The time and date the density was started.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "status": {
@@ -2388,7 +2428,8 @@
           },
           "updated_at": {
             "description": "The time and date the density was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_id": {
@@ -2410,13 +2451,15 @@
         "properties": {
           "completed_at": {
             "description": "The time and date the mass was completed.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "created_at": {
             "description": "The time and date the mass was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "error": {
@@ -2454,8 +2497,9 @@
           },
           "started_at": {
             "description": "The time and date the mass was started.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "status": {
@@ -2468,7 +2512,8 @@
           },
           "updated_at": {
             "description": "The time and date the mass was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_id": {
@@ -2526,13 +2571,15 @@
         "properties": {
           "completed_at": {
             "description": "The time and date the volume was completed.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "created_at": {
             "description": "The time and date the volume was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "error": {
@@ -2558,8 +2605,9 @@
           },
           "started_at": {
             "description": "The time and date the volume was started.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "status": {
@@ -2572,7 +2620,8 @@
           },
           "updated_at": {
             "description": "The time and date the volume was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_id": {
@@ -2661,21 +2710,21 @@
         "description": "An invoice.",
         "properties": {
           "amount_due": {
-            "default": "0",
+            "default": 0,
             "description": "Final amount due at this time for this invoice.\n\nIf the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the `amount_due` may be 0. If there is a positive `starting_balance` for the invoice (the customer owes money), the `amount_due` will also take that into account. The charge that gets generated for the invoice will be for the amount specified in `amount_due`.",
             "format": "money-usd",
             "title": "Number",
             "type": "number"
           },
           "amount_paid": {
-            "default": "0",
+            "default": 0,
             "description": "The amount, in USD, that was paid.",
             "format": "money-usd",
             "title": "Number",
             "type": "number"
           },
           "amount_remaining": {
-            "default": "0",
+            "default": 0,
             "description": "The amount remaining, in USD, that is due.",
             "format": "money-usd",
             "title": "Number",
@@ -2775,21 +2824,21 @@
             "nullable": true
           },
           "subtotal": {
-            "default": "0",
+            "default": 0,
             "description": "Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.\n\nItem discounts are already incorporated.",
             "format": "money-usd",
             "title": "Number",
             "type": "number"
           },
           "tax": {
-            "default": "0",
+            "default": 0,
             "description": "The amount of tax on this invoice.\n\nThis is the sum of all the tax amounts on this invoice.",
             "format": "money-usd",
             "title": "Number",
             "type": "number"
           },
           "total": {
-            "default": "0",
+            "default": 0,
             "description": "Total after discounts and taxes.",
             "format": "money-usd",
             "title": "Number",
@@ -2812,7 +2861,7 @@
         "description": "An invoice line item.",
         "properties": {
           "amount": {
-            "default": "0",
+            "default": 0,
             "description": "The amount, in USD.",
             "format": "money-usd",
             "title": "Number",
@@ -3402,12 +3451,14 @@
         "properties": {
           "created_at": {
             "description": "The date and time the session was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "expires": {
             "description": "The date and time the session expires.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "id": {
@@ -3424,7 +3475,8 @@
           },
           "updated_at": {
             "description": "The date and time the session was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_id": {
@@ -3487,13 +3539,15 @@
         "properties": {
           "completed_at": {
             "description": "The time and date the unit conversion was completed.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "created_at": {
             "description": "The time and date the unit conversion was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "error": {
@@ -3539,8 +3593,9 @@
           },
           "started_at": {
             "description": "The time and date the unit conversion was started.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "status": {
@@ -3553,7 +3608,8 @@
           },
           "updated_at": {
             "description": "The time and date the unit conversion was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "user_id": {
@@ -3636,7 +3692,8 @@
           },
           "created_at": {
             "description": "The date and time the user was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "discord": {
@@ -3650,8 +3707,9 @@
           },
           "email_verified": {
             "description": "The date and time the email address was verified.",
-            "format": "partial-date-time",
+            "format": "date-time",
             "nullable": true,
+            "title": "DateTime",
             "type": "string"
           },
           "first_name": {
@@ -3689,7 +3747,8 @@
           },
           "updated_at": {
             "description": "The date and time the user was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           }
         },
@@ -3731,12 +3790,14 @@
         "properties": {
           "created_at": {
             "description": "The date and time the verification token was created.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "expires": {
             "description": "The date and time the verification token expires.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           },
           "id": {
@@ -3749,7 +3810,8 @@
           },
           "updated_at": {
             "description": "The date and time the verification token was last updated.",
-            "format": "partial-date-time",
+            "format": "date-time",
+            "title": "DateTime",
             "type": "string"
           }
         },
