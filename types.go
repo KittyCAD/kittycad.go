@@ -15,33 +15,33 @@ const (
 // Address: An address.
 type Address struct {
 	// City: The city component.
-	City string `json:"city" yaml:"city"`
+	City string `json:"city" yaml:"city" schema:"city"`
 	// Country: The country component.
-	Country string `json:"country" yaml:"country"`
+	Country string `json:"country" yaml:"country" schema:"country"`
 	// CreatedAt: The time and date the address was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// ID: The unique identifier of the address.
-	ID UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// State: The state component.
-	State string `json:"state" yaml:"state"`
+	State string `json:"state" yaml:"state" schema:"state"`
 	// Street1: The first street component.
-	Street1 string `json:"street1" yaml:"street1"`
+	Street1 string `json:"street1" yaml:"street1" schema:"street1"`
 	// Street2: The second street component.
-	Street2 string `json:"street2" yaml:"street2"`
+	Street2 string `json:"street2" yaml:"street2" schema:"street2"`
 	// UpdatedAt: The time and date the address was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The user ID that this address belongs to.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 	// Zip: The zip component.
-	Zip string `json:"zip" yaml:"zip"`
+	Zip string `json:"zip" yaml:"zip" schema:"zip"`
 }
 
 // APICallQueryGroup: A response for a query on the API call table that is grouped by something.
 type APICallQueryGroup struct {
 	// Count:
-	Count int `json:"count" yaml:"count"`
+	Count int `json:"count" yaml:"count" schema:"count"`
 	// Query:
-	Query string `json:"query" yaml:"query"`
+	Query string `json:"query" yaml:"query" schema:"query"`
 }
 
 // APICallQueryGroupBy: The field of an API call to group by.
@@ -83,55 +83,55 @@ const (
 // This is a join of the `ApiCall` and `ApiCallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt: The date and time the API call completed billing.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The date and time the API call was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Duration: The duration of the API call.
-	Duration int `json:"duration" yaml:"duration"`
+	Duration int `json:"duration" yaml:"duration" schema:"duration"`
 	// Email: The user's email address.
-	Email string `json:"email" yaml:"email"`
+	Email string `json:"email" yaml:"email" schema:"email"`
 	// Endpoint: The endpoint requested by the API call.
-	Endpoint string `json:"endpoint" yaml:"endpoint"`
+	Endpoint string `json:"endpoint" yaml:"endpoint" schema:"endpoint"`
 	// ID: The unique identifier for the API call.
-	ID UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// IPAddress: The ip address of the origin.
-	IPAddress IP `json:"ip_address" yaml:"ip_address"`
+	IPAddress IP `json:"ip_address" yaml:"ip_address" schema:"ip_address"`
 	// Method: The HTTP method requsted by the API call.
-	Method Method `json:"method" yaml:"method"`
+	Method Method `json:"method" yaml:"method" schema:"method"`
 	// Minutes: The number of minutes the API call was billed for.
-	Minutes int `json:"minutes" yaml:"minutes"`
+	Minutes int `json:"minutes" yaml:"minutes" schema:"minutes"`
 	// Origin: The origin of the API call.
-	Origin string `json:"origin" yaml:"origin"`
+	Origin string `json:"origin" yaml:"origin" schema:"origin"`
 	// Price: The price of the API call.
-	Price float64 `json:"price" yaml:"price"`
+	Price float64 `json:"price" yaml:"price" schema:"price"`
 	// RequestBody: The request body sent by the API call.
-	RequestBody string `json:"request_body" yaml:"request_body"`
+	RequestBody string `json:"request_body" yaml:"request_body" schema:"request_body"`
 	// RequestQueryParams: The request query params sent by the API call.
-	RequestQueryParams string `json:"request_query_params" yaml:"request_query_params"`
+	RequestQueryParams string `json:"request_query_params" yaml:"request_query_params" schema:"request_query_params"`
 	// ResponseBody: The response body returned by the API call. We do not store this information if it is above a certain size.
-	ResponseBody string `json:"response_body" yaml:"response_body"`
+	ResponseBody string `json:"response_body" yaml:"response_body" schema:"response_body"`
 	// StartedAt: The date and time the API call started billing.
-	StartedAt Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// StatusCode: The status code returned by the API call.
-	StatusCode int `json:"status_code" yaml:"status_code"`
+	StatusCode int `json:"status_code" yaml:"status_code" schema:"status_code"`
 	// StripeInvoiceItemID: The Stripe invoice item ID of the API call if it is billable.
-	StripeInvoiceItemID string `json:"stripe_invoice_item_id" yaml:"stripe_invoice_item_id"`
+	StripeInvoiceItemID string `json:"stripe_invoice_item_id" yaml:"stripe_invoice_item_id" schema:"stripe_invoice_item_id"`
 	// Token: The API token that made the API call.
-	Token UUID `json:"token" yaml:"token"`
+	Token UUID `json:"token" yaml:"token" schema:"token"`
 	// UpdatedAt: The date and time the API call was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserAgent: The user agent of the request.
-	UserAgent string `json:"user_agent" yaml:"user_agent"`
+	UserAgent string `json:"user_agent" yaml:"user_agent" schema:"user_agent"`
 	// UserID: The ID of the user that made the API call.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
 // APICallWithPriceResultsPage: A single page of results
 type APICallWithPriceResultsPage struct {
 	// Items: list of items on this page of results
-	Items []APICallWithPrice `json:"items" yaml:"items"`
+	Items []APICallWithPrice `json:"items" yaml:"items" schema:"items"`
 	// NextPage: token used to fetch the next page of results (if any)
-	NextPage string `json:"next_page" yaml:"next_page"`
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
 // APIToken: An API token.
@@ -139,99 +139,99 @@ type APICallWithPriceResultsPage struct {
 // These are used to authenticate users with Bearer authentication.
 type APIToken struct {
 	// CreatedAt: The date and time the API token was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// ID: The unique identifier for the API token.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 	// IsValid: If the token is valid. We never delete API tokens, but we can mark them as invalid. We save them for ever to preserve the history of the API token.
-	IsValid bool `json:"is_valid" yaml:"is_valid"`
+	IsValid bool `json:"is_valid" yaml:"is_valid" schema:"is_valid"`
 	// Token: The API token itself.
-	Token UUID `json:"token" yaml:"token"`
+	Token UUID `json:"token" yaml:"token" schema:"token"`
 	// UpdatedAt: The date and time the API token was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The ID of the user that owns the API token.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
 // APITokenResultsPage: A single page of results
 type APITokenResultsPage struct {
 	// Items: list of items on this page of results
-	Items []APIToken `json:"items" yaml:"items"`
+	Items []APIToken `json:"items" yaml:"items" schema:"items"`
 	// NextPage: token used to fetch the next page of results (if any)
-	NextPage string `json:"next_page" yaml:"next_page"`
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
 // AppClientInfo: Information about a third party app client.
 type AppClientInfo struct {
 	// Url: The URL for consent.
-	Url string `json:"url" yaml:"url"`
+	Url string `json:"url" yaml:"url" schema:"url"`
 }
 
 // AsyncAPICall: An async API call.
 type AsyncAPICall struct {
 	// CompletedAt: The time and date the async API call was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the async API call was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error"`
+	Error string `json:"error" yaml:"error" schema:"error"`
 	// ID: The unique identifier of the async API call.
 	//
 	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// Input: The JSON input for the API call. These are determined by the endpoint that is run.
-	Input interface{} `json:"input" yaml:"input"`
+	Input interface{} `json:"input" yaml:"input" schema:"input"`
 	// Output: The JSON output for the API call. These are determined by the endpoint that is run.
-	Output interface{} `json:"output" yaml:"output"`
+	Output interface{} `json:"output" yaml:"output" schema:"output"`
 	// StartedAt: The time and date the async API call was started.
-	StartedAt Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the async API call.
-	Status APICallStatus `json:"status" yaml:"status"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status"`
 	// Type: The type of async API call.
-	Type AsyncAPICallType `json:"type" yaml:"type"`
+	Type AsyncAPICallType `json:"type" yaml:"type" schema:"type"`
 	// UpdatedAt: The time and date the async API call was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The user ID of the user who created the async API call.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 	// Worker: The worker node that is performing or performed the async API call.
-	Worker string `json:"worker" yaml:"worker"`
+	Worker string `json:"worker" yaml:"worker" schema:"worker"`
 }
 
 // AsyncAPICallOutput: A file conversion.
 type AsyncAPICallOutput struct {
 	// CompletedAt: The time and date the file conversion was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the file conversion was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error"`
+	Error string `json:"error" yaml:"error" schema:"error"`
 	// ID: The unique identifier of the file conversion.
 	//
 	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// Output: The converted file, if completed, base64 encoded.
-	Output string `json:"output" yaml:"output"`
+	Output string `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
-	OutputFormat FileOutputFormat `json:"output_format" yaml:"output_format"`
+	OutputFormat FileOutputFormat `json:"output_format" yaml:"output_format" schema:"output_format"`
 	// SrcFormat: The source format of the file conversion.
-	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
+	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format" schema:"src_format"`
 	// StartedAt: The time and date the file conversion was started.
-	StartedAt Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the file conversion.
-	Status APICallStatus `json:"status" yaml:"status"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status"`
 	// Type:
-	Type string `json:"type" yaml:"type"`
+	Type string `json:"type" yaml:"type" schema:"type"`
 	// UpdatedAt: The time and date the file conversion was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The user ID of the user who created the file conversion.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
 // AsyncAPICallResultsPage: A single page of results
 type AsyncAPICallResultsPage struct {
 	// Items: list of items on this page of results
-	Items []AsyncAPICall `json:"items" yaml:"items"`
+	Items []AsyncAPICall `json:"items" yaml:"items" schema:"items"`
 	// NextPage: token used to fetch the next page of results (if any)
-	NextPage string `json:"next_page" yaml:"next_page"`
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
 // AsyncAPICallType: The type of async API call.
@@ -251,11 +251,11 @@ const (
 // BillingInfo: The billing information for payments.
 type BillingInfo struct {
 	// Address: The address of the customer.
-	Address Address `json:"address" yaml:"address"`
+	Address Address `json:"address" yaml:"address" schema:"address"`
 	// Name: The name of the customer.
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name" schema:"name"`
 	// Phone: The phone for the customer.
-	Phone string `json:"phone" yaml:"phone"`
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 }
 
 // CacheMetadata: Metadata about our cache.
@@ -263,7 +263,7 @@ type BillingInfo struct {
 // This is mostly used for internal purposes and debugging.
 type CacheMetadata struct {
 	// Ok: If the cache returned an ok response from ping.
-	Ok bool `json:"ok" yaml:"ok"`
+	Ok bool `json:"ok" yaml:"ok" schema:"ok"`
 }
 
 // CardDetails: The card details of a payment method.
@@ -271,39 +271,39 @@ type CardDetails struct {
 	// Brand: Card brand.
 	//
 	// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
-	Brand string `json:"brand" yaml:"brand"`
+	Brand string `json:"brand" yaml:"brand" schema:"brand"`
 	// Checks: Checks on Card address and CVC if provided.
-	Checks PaymentMethodCardChecks `json:"checks" yaml:"checks"`
+	Checks PaymentMethodCardChecks `json:"checks" yaml:"checks" schema:"checks"`
 	// Country: Two-letter ISO code representing the country of the card.
-	Country string `json:"country" yaml:"country"`
+	Country string `json:"country" yaml:"country" schema:"country"`
 	// ExpMonth: Two-digit number representing the card's expiration month.
-	ExpMonth int `json:"exp_month" yaml:"exp_month"`
+	ExpMonth int `json:"exp_month" yaml:"exp_month" schema:"exp_month"`
 	// ExpYear: Four-digit number representing the card's expiration year.
-	ExpYear int `json:"exp_year" yaml:"exp_year"`
+	ExpYear int `json:"exp_year" yaml:"exp_year" schema:"exp_year"`
 	// Fingerprint: Uniquely identifies this particular card number.
-	Fingerprint string `json:"fingerprint" yaml:"fingerprint"`
+	Fingerprint string `json:"fingerprint" yaml:"fingerprint" schema:"fingerprint"`
 	// Funding: Card funding type.
 	//
 	// Can be `credit`, `debit`, `prepaid`, or `unknown`.
-	Funding string `json:"funding" yaml:"funding"`
+	Funding string `json:"funding" yaml:"funding" schema:"funding"`
 	// Last4: The last four digits of the card.
-	Last4 string `json:"last4" yaml:"last4"`
+	Last4 string `json:"last4" yaml:"last4" schema:"last4"`
 }
 
 // Cluster: Cluster information.
 type Cluster struct {
 	// Addr: The IP address of the cluster.
-	Addr IP `json:"addr" yaml:"addr"`
+	Addr IP `json:"addr" yaml:"addr" schema:"addr"`
 	// AuthTimeout: The auth timeout of the cluster.
-	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout"`
+	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout" schema:"auth_timeout"`
 	// ClusterPort: The port of the cluster.
-	ClusterPort int `json:"cluster_port" yaml:"cluster_port"`
+	ClusterPort int `json:"cluster_port" yaml:"cluster_port" schema:"cluster_port"`
 	// Name: The name of the cluster.
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name" schema:"name"`
 	// TlsTimeout: The TLS timeout for the cluster.
-	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout"`
+	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
 	// Urls: The urls of the cluster.
-	Urls []string `json:"urls" yaml:"urls"`
+	Urls []string `json:"urls" yaml:"urls" schema:"urls"`
 }
 
 // CodeLanguage: The language code is written in.
@@ -321,19 +321,19 @@ const (
 // CodeOutput: Output of the code being executed.
 type CodeOutput struct {
 	// OutputFiles: The contents of the files requested if they were passed.
-	OutputFiles []OutputFile `json:"output_files" yaml:"output_files"`
+	OutputFiles []OutputFile `json:"output_files" yaml:"output_files" schema:"output_files"`
 	// Stderr: The stderr of the code.
-	Stderr string `json:"stderr" yaml:"stderr"`
+	Stderr string `json:"stderr" yaml:"stderr" schema:"stderr"`
 	// Stdout: The stdout of the code.
-	Stdout string `json:"stdout" yaml:"stdout"`
+	Stdout string `json:"stdout" yaml:"stdout" schema:"stdout"`
 }
 
 // Commit: Commit holds the Git-commit (SHA1) that a binary was built from, as reported in the version-string of external tools, such as `containerd`, or `runC`.
 type Commit struct {
 	// Expected: Commit ID of external tool expected by dockerd as set at build time.
-	Expected string `json:"expected" yaml:"expected"`
+	Expected string `json:"expected" yaml:"expected" schema:"expected"`
 	// ID: Actual commit ID of external tool.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 }
 
 // Connection: Metadata about a pub-sub connection.
@@ -341,97 +341,97 @@ type Commit struct {
 // This is mostly used for internal purposes and debugging.
 type Connection struct {
 	// AuthTimeout: The auth timeout of the server.
-	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout"`
+	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout" schema:"auth_timeout"`
 	// Cluster: Information about the cluster.
-	Cluster Cluster `json:"cluster" yaml:"cluster"`
+	Cluster Cluster `json:"cluster" yaml:"cluster" schema:"cluster"`
 	// ConfigLoadTime: The time the configuration was loaded.
-	ConfigLoadTime Time `json:"config_load_time" yaml:"config_load_time"`
+	ConfigLoadTime Time `json:"config_load_time" yaml:"config_load_time" schema:"config_load_time"`
 	// Connections: The number of connections to the server.
-	Connections int `json:"connections" yaml:"connections"`
+	Connections int `json:"connections" yaml:"connections" schema:"connections"`
 	// Cores: The CPU core usage of the server.
-	Cores int `json:"cores" yaml:"cores"`
+	Cores int `json:"cores" yaml:"cores" schema:"cores"`
 	// Cpu:
-	Cpu float64 `json:"cpu" yaml:"cpu"`
+	Cpu float64 `json:"cpu" yaml:"cpu" schema:"cpu"`
 	// Gateway: Information about the gateway.
-	Gateway Gateway `json:"gateway" yaml:"gateway"`
+	Gateway Gateway `json:"gateway" yaml:"gateway" schema:"gateway"`
 	// GitCommit: The git commit.
-	GitCommit string `json:"git_commit" yaml:"git_commit"`
+	GitCommit string `json:"git_commit" yaml:"git_commit" schema:"git_commit"`
 	// Go: The go version.
-	Go string `json:"go" yaml:"go"`
+	Go string `json:"go" yaml:"go" schema:"go"`
 	// Gomaxprocs: `GOMAXPROCS` of the server.
-	Gomaxprocs int `json:"gomaxprocs" yaml:"gomaxprocs"`
+	Gomaxprocs int `json:"gomaxprocs" yaml:"gomaxprocs" schema:"gomaxprocs"`
 	// Host: The host of the server.
-	Host IP `json:"host" yaml:"host"`
+	Host IP `json:"host" yaml:"host" schema:"host"`
 	// HttpBasePath: The http base path of the server.
-	HttpBasePath string `json:"http_base_path" yaml:"http_base_path"`
+	HttpBasePath string `json:"http_base_path" yaml:"http_base_path" schema:"http_base_path"`
 	// HttpHost: The http host of the server.
-	HttpHost string `json:"http_host" yaml:"http_host"`
+	HttpHost string `json:"http_host" yaml:"http_host" schema:"http_host"`
 	// HttpPort: The http port of the server.
-	HttpPort int `json:"http_port" yaml:"http_port"`
+	HttpPort int `json:"http_port" yaml:"http_port" schema:"http_port"`
 	// HttpReqStats:
-	HttpReqStats int `json:"http_req_stats" yaml:"http_req_stats"`
+	HttpReqStats int `json:"http_req_stats" yaml:"http_req_stats" schema:"http_req_stats"`
 	// HttpsPort: The https port of the server.
-	HttpsPort int `json:"https_port" yaml:"https_port"`
+	HttpsPort int `json:"https_port" yaml:"https_port" schema:"https_port"`
 	// InBytes: The count of inbound bytes for the server.
-	InBytes int `json:"in_bytes" yaml:"in_bytes"`
+	InBytes int `json:"in_bytes" yaml:"in_bytes" schema:"in_bytes"`
 	// InMsgs: The number of inbound messages for the server.
-	InMsgs int `json:"in_msgs" yaml:"in_msgs"`
+	InMsgs int `json:"in_msgs" yaml:"in_msgs" schema:"in_msgs"`
 	// Jetstream: Jetstream information.
-	Jetstream Jetstream `json:"jetstream" yaml:"jetstream"`
+	Jetstream Jetstream `json:"jetstream" yaml:"jetstream" schema:"jetstream"`
 	// Leaf: Information about leaf nodes.
-	Leaf LeafNode `json:"leaf" yaml:"leaf"`
+	Leaf LeafNode `json:"leaf" yaml:"leaf" schema:"leaf"`
 	// Leafnodes: The number of leaf nodes for the server.
-	Leafnodes int `json:"leafnodes" yaml:"leafnodes"`
+	Leafnodes int `json:"leafnodes" yaml:"leafnodes" schema:"leafnodes"`
 	// MaxConnections: The max connections of the server.
-	MaxConnections int `json:"max_connections" yaml:"max_connections"`
+	MaxConnections int `json:"max_connections" yaml:"max_connections" schema:"max_connections"`
 	// MaxControlLine: The max control line of the server.
-	MaxControlLine int `json:"max_control_line" yaml:"max_control_line"`
+	MaxControlLine int `json:"max_control_line" yaml:"max_control_line" schema:"max_control_line"`
 	// MaxPayload: The max payload of the server.
-	MaxPayload int `json:"max_payload" yaml:"max_payload"`
+	MaxPayload int `json:"max_payload" yaml:"max_payload" schema:"max_payload"`
 	// MaxPending: The max pending of the server.
-	MaxPending int `json:"max_pending" yaml:"max_pending"`
+	MaxPending int `json:"max_pending" yaml:"max_pending" schema:"max_pending"`
 	// Mem: The memory usage of the server.
-	Mem int `json:"mem" yaml:"mem"`
+	Mem int `json:"mem" yaml:"mem" schema:"mem"`
 	// Now: The time now.
-	Now Time `json:"now" yaml:"now"`
+	Now Time `json:"now" yaml:"now" schema:"now"`
 	// OutBytes: The count of outbound bytes for the server.
-	OutBytes int `json:"out_bytes" yaml:"out_bytes"`
+	OutBytes int `json:"out_bytes" yaml:"out_bytes" schema:"out_bytes"`
 	// OutMsgs: The number of outbound messages for the server.
-	OutMsgs int `json:"out_msgs" yaml:"out_msgs"`
+	OutMsgs int `json:"out_msgs" yaml:"out_msgs" schema:"out_msgs"`
 	// PingInterval: The ping interval of the server.
-	PingInterval int `json:"ping_interval" yaml:"ping_interval"`
+	PingInterval int `json:"ping_interval" yaml:"ping_interval" schema:"ping_interval"`
 	// PingMax: The ping max of the server.
-	PingMax int `json:"ping_max" yaml:"ping_max"`
+	PingMax int `json:"ping_max" yaml:"ping_max" schema:"ping_max"`
 	// Port: The port of the server.
-	Port int `json:"port" yaml:"port"`
+	Port int `json:"port" yaml:"port" schema:"port"`
 	// Proto: The protocol version.
-	Proto int `json:"proto" yaml:"proto"`
+	Proto int `json:"proto" yaml:"proto" schema:"proto"`
 	// Remotes: The number of remotes for the server.
-	Remotes int `json:"remotes" yaml:"remotes"`
+	Remotes int `json:"remotes" yaml:"remotes" schema:"remotes"`
 	// Routes: The number of routes for the server.
-	Routes int `json:"routes" yaml:"routes"`
+	Routes int `json:"routes" yaml:"routes" schema:"routes"`
 	// ServerID: The server ID.
-	ServerID string `json:"server_id" yaml:"server_id"`
+	ServerID string `json:"server_id" yaml:"server_id" schema:"server_id"`
 	// ServerName: The server name.
-	ServerName string `json:"server_name" yaml:"server_name"`
+	ServerName string `json:"server_name" yaml:"server_name" schema:"server_name"`
 	// SlowConsumers: The number of slow consumers for the server.
-	SlowConsumers int `json:"slow_consumers" yaml:"slow_consumers"`
+	SlowConsumers int `json:"slow_consumers" yaml:"slow_consumers" schema:"slow_consumers"`
 	// Start: When the server was started.
-	Start Time `json:"start" yaml:"start"`
+	Start Time `json:"start" yaml:"start" schema:"start"`
 	// Subscriptions: The number of subscriptions for the server.
-	Subscriptions int `json:"subscriptions" yaml:"subscriptions"`
+	Subscriptions int `json:"subscriptions" yaml:"subscriptions" schema:"subscriptions"`
 	// SystemAccount: The system account.
-	SystemAccount string `json:"system_account" yaml:"system_account"`
+	SystemAccount string `json:"system_account" yaml:"system_account" schema:"system_account"`
 	// TlsTimeout: The TLS timeout of the server.
-	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout"`
+	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
 	// TotalConnections: The total number of connections to the server.
-	TotalConnections int `json:"total_connections" yaml:"total_connections"`
+	TotalConnections int `json:"total_connections" yaml:"total_connections" schema:"total_connections"`
 	// Uptime: The uptime of the server.
-	Uptime string `json:"uptime" yaml:"uptime"`
+	Uptime string `json:"uptime" yaml:"uptime" schema:"uptime"`
 	// Version: The version of the service.
-	Version string `json:"version" yaml:"version"`
+	Version string `json:"version" yaml:"version" schema:"version"`
 	// WriteDeadline: The write deadline of the server.
-	WriteDeadline int `json:"write_deadline" yaml:"write_deadline"`
+	WriteDeadline int `json:"write_deadline" yaml:"write_deadline" schema:"write_deadline"`
 }
 
 // CreatedAtSortMode: Supported set of sort modes for scanning by created_at only.
@@ -735,29 +735,29 @@ const (
 // Customer: The resource representing a payment "Customer".
 type Customer struct {
 	// Address: The customer's address.
-	Address Address `json:"address" yaml:"address"`
+	Address Address `json:"address" yaml:"address" schema:"address"`
 	// Balance: Current balance, if any, being stored on the customer in the payments service.
 	//
 	// If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.
-	Balance float64 `json:"balance" yaml:"balance"`
+	Balance float64 `json:"balance" yaml:"balance" schema:"balance"`
 	// CreatedAt: Time at which the object was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Currency: Three-letter ISO code for the currency the customer can be charged in for recurring billing purposes.
-	Currency Currency `json:"currency" yaml:"currency"`
+	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
 	// Delinquent: When the customer's latest invoice is billed by charging automatically, `delinquent` is `true` if the invoice's latest charge failed.
 	//
 	// When the customer's latest invoice is billed by sending an invoice, `delinquent` is `true` if the invoice isn't paid by its due date.  If an invoice is marked uncollectible by dunning, `delinquent` doesn't get reset to `false`.
-	Delinquent bool `json:"delinquent" yaml:"delinquent"`
+	Delinquent bool `json:"delinquent" yaml:"delinquent" schema:"delinquent"`
 	// Email: The customer's email address.
-	Email string `json:"email" yaml:"email"`
+	Email string `json:"email" yaml:"email" schema:"email"`
 	// ID: Unique identifier for the object.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 	// Metadata: Set of key-value pairs.
-	Metadata string `json:"metadata" yaml:"metadata"`
+	Metadata string `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Name: The customer's full name or business name.
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name" schema:"name"`
 	// Phone: The customer's phone number.
-	Phone string `json:"phone" yaml:"phone"`
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 }
 
 // CustomerBalance: A balance for a user.
@@ -765,189 +765,189 @@ type Customer struct {
 // This holds information about the financial balance for the user.
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// ID: The unique identifier for the balance.
-	ID UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// MonthlyCreditsRemaining: The monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the user per month.
-	MonthlyCreditsRemaining float64 `json:"monthly_credits_remaining" yaml:"monthly_credits_remaining"`
+	MonthlyCreditsRemaining float64 `json:"monthly_credits_remaining" yaml:"monthly_credits_remaining" schema:"monthly_credits_remaining"`
 	// PrePayCashRemaining: The amount of pre-pay cash remaining in the balance. This number goes down as the user uses their pre-paid credits. The reason we track this amount is if a user ever wants to withdraw their pre-pay cash, we can use this amount to determine how much to give them. Say a user has $100 in pre-paid cash, their bill is worth, $50 after subtracting any other credits (like monthly etc.) Their bill is $50, their pre-pay cash remaining will be subtracted by 50 to pay the bill and their `pre_pay_credits_remaining` will be subtracted by 50 to pay the bill. This way if they want to withdraw money after, they can only withdraw $50 since that is the amount of cash they have remaining.
-	PrePayCashRemaining float64 `json:"pre_pay_cash_remaining" yaml:"pre_pay_cash_remaining"`
+	PrePayCashRemaining float64 `json:"pre_pay_cash_remaining" yaml:"pre_pay_cash_remaining" schema:"pre_pay_cash_remaining"`
 	// PrePayCreditsRemaining: The amount of credits remaining in the balance. This is typically the amount of cash * some multiplier they get for pre-paying their account. This number lowers every time a bill is paid with the balance. This number increases every time a user adds funds to their balance. This may be through a subscription or a one off payment.
-	PrePayCreditsRemaining float64 `json:"pre_pay_credits_remaining" yaml:"pre_pay_credits_remaining"`
+	PrePayCreditsRemaining float64 `json:"pre_pay_credits_remaining" yaml:"pre_pay_credits_remaining" schema:"pre_pay_credits_remaining"`
 	// TotalDue: This includes any outstanding, draft, or open invoices and any pending invoice items. This does not include any credits the user has on their account.
-	TotalDue float64 `json:"total_due" yaml:"total_due"`
+	TotalDue float64 `json:"total_due" yaml:"total_due" schema:"total_due"`
 	// UpdatedAt: The date and time the balance was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The user ID the balance belongs to.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
 // DeviceAccessTokenRequestForm: The form for a device access token request.
 type DeviceAccessTokenRequestForm struct {
 	// ClientID: The client ID.
-	ClientID UUID `json:"client_id" yaml:"client_id"`
+	ClientID UUID `json:"client_id" yaml:"client_id" schema:"client_id"`
 	// DeviceCode: The device code.
-	DeviceCode UUID `json:"device_code" yaml:"device_code"`
+	DeviceCode UUID `json:"device_code" yaml:"device_code" schema:"device_code"`
 	// GrantType: The grant type.
-	GrantType OAuth2GrantType `json:"grant_type" yaml:"grant_type"`
+	GrantType OAuth2GrantType `json:"grant_type" yaml:"grant_type" schema:"grant_type"`
 }
 
 // DeviceAuthRequestForm: The request parameters for the OAuth 2.0 Device Authorization Grant flow.
 type DeviceAuthRequestForm struct {
 	// ClientID: The client ID.
-	ClientID UUID `json:"client_id" yaml:"client_id"`
+	ClientID UUID `json:"client_id" yaml:"client_id" schema:"client_id"`
 }
 
 // DeviceAuthVerifyParams: The request parameters to verify the `user_code` for the OAuth 2.0 Device Authorization Grant.
 type DeviceAuthVerifyParams struct {
 	// UserCode: The user code.
-	UserCode string `json:"user_code" yaml:"user_code"`
+	UserCode string `json:"user_code" yaml:"user_code" schema:"user_code"`
 }
 
 // DockerSystemInfo: Docker system info.
 type DockerSystemInfo struct {
 	// Architecture: Hardware architecture of the host, as returned by the Go runtime (`GOARCH`).  A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
-	Architecture string `json:"architecture" yaml:"architecture"`
+	Architecture string `json:"architecture" yaml:"architecture" schema:"architecture"`
 	// BridgeNfIp6Tables: Indicates if `bridge-nf-call-ip6tables` is available on the host.
-	BridgeNfIp6Tables bool `json:"bridge_nf_ip6tables" yaml:"bridge_nf_ip6tables"`
+	BridgeNfIp6Tables bool `json:"bridge_nf_ip6tables" yaml:"bridge_nf_ip6tables" schema:"bridge_nf_ip6tables"`
 	// BridgeNfIptables: Indicates if `bridge-nf-call-iptables` is available on the host.
-	BridgeNfIptables bool `json:"bridge_nf_iptables" yaml:"bridge_nf_iptables"`
+	BridgeNfIptables bool `json:"bridge_nf_iptables" yaml:"bridge_nf_iptables" schema:"bridge_nf_iptables"`
 	// CgroupDriver: The driver to use for managing cgroups.
-	CgroupDriver SystemInfoCgroupDriverEnum `json:"cgroup_driver" yaml:"cgroup_driver"`
+	CgroupDriver SystemInfoCgroupDriverEnum `json:"cgroup_driver" yaml:"cgroup_driver" schema:"cgroup_driver"`
 	// CgroupVersion: The version of the cgroup.
-	CgroupVersion SystemInfoCgroupVersionEnum `json:"cgroup_version" yaml:"cgroup_version"`
+	CgroupVersion SystemInfoCgroupVersionEnum `json:"cgroup_version" yaml:"cgroup_version" schema:"cgroup_version"`
 	// ClusterAdvertise: The network endpoint that the Engine advertises for the purpose of node discovery. ClusterAdvertise is a `host:port` combination on which the daemon is reachable by other hosts.
 	//
 	// **Deprecated**: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store. Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
-	ClusterAdvertise string `json:"cluster_advertise" yaml:"cluster_advertise"`
+	ClusterAdvertise string `json:"cluster_advertise" yaml:"cluster_advertise" schema:"cluster_advertise"`
 	// ClusterStore: URL of the distributed storage backend.   The storage backend is used for multihost networking (to store network and endpoint information) and by the node discovery mechanism.
 	//
 	// **Deprecated**: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store. Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
-	ClusterStore string `json:"cluster_store" yaml:"cluster_store"`
+	ClusterStore string `json:"cluster_store" yaml:"cluster_store" schema:"cluster_store"`
 	// ContainerdCommit:
-	ContainerdCommit Commit `json:"containerd_commit" yaml:"containerd_commit"`
+	ContainerdCommit Commit `json:"containerd_commit" yaml:"containerd_commit" schema:"containerd_commit"`
 	// Containers: Total number of containers on the host.
-	Containers int `json:"containers" yaml:"containers"`
+	Containers int `json:"containers" yaml:"containers" schema:"containers"`
 	// ContainersPaused: Number of containers with status `\"paused\"`.
-	ContainersPaused int `json:"containers_paused" yaml:"containers_paused"`
+	ContainersPaused int `json:"containers_paused" yaml:"containers_paused" schema:"containers_paused"`
 	// ContainersRunning: Number of containers with status `\"running\"`.
-	ContainersRunning int `json:"containers_running" yaml:"containers_running"`
+	ContainersRunning int `json:"containers_running" yaml:"containers_running" schema:"containers_running"`
 	// ContainersStopped: Number of containers with status `\"stopped\"`.
-	ContainersStopped int `json:"containers_stopped" yaml:"containers_stopped"`
+	ContainersStopped int `json:"containers_stopped" yaml:"containers_stopped" schema:"containers_stopped"`
 	// CpuCfsPeriod: Indicates if CPU CFS(Completely Fair Scheduler) period is supported by the host.
-	CpuCfsPeriod bool `json:"cpu_cfs_period" yaml:"cpu_cfs_period"`
+	CpuCfsPeriod bool `json:"cpu_cfs_period" yaml:"cpu_cfs_period" schema:"cpu_cfs_period"`
 	// CpuCfsQuota: Indicates if CPU CFS(Completely Fair Scheduler) quota is supported by the host.
-	CpuCfsQuota bool `json:"cpu_cfs_quota" yaml:"cpu_cfs_quota"`
+	CpuCfsQuota bool `json:"cpu_cfs_quota" yaml:"cpu_cfs_quota" schema:"cpu_cfs_quota"`
 	// CpuSet: Indicates if CPUsets (cpuset.cpus, cpuset.mems) are supported by the host.  See [cpuset(7)](https://www.kernel.org/doc/Documentation/cgroup-v1/cpusets.txt)
-	CpuSet bool `json:"cpu_set" yaml:"cpu_set"`
+	CpuSet bool `json:"cpu_set" yaml:"cpu_set" schema:"cpu_set"`
 	// CpuShares: Indicates if CPU Shares limiting is supported by the host.
-	CpuShares bool `json:"cpu_shares" yaml:"cpu_shares"`
+	CpuShares bool `json:"cpu_shares" yaml:"cpu_shares" schema:"cpu_shares"`
 	// Debug: Indicates if the daemon is running in debug-mode / with debug-level logging enabled.
-	Debug bool `json:"debug" yaml:"debug"`
+	Debug bool `json:"debug" yaml:"debug" schema:"debug"`
 	// DefaultAddressPools: List of custom default address pools for local networks, which can be specified in the daemon.json file or dockerd option.  Example: a Base \"10.10.0.0/16\" with Size 24 will define the set of 256 10.10.[0-255].0/24 address pools.
-	DefaultAddressPools []SystemInfoDefaultAddressPools `json:"default_address_pools" yaml:"default_address_pools"`
+	DefaultAddressPools []SystemInfoDefaultAddressPools `json:"default_address_pools" yaml:"default_address_pools" schema:"default_address_pools"`
 	// DefaultRuntime: Name of the default OCI runtime that is used when starting containers.  The default can be overridden per-container at create time.
-	DefaultRuntime string `json:"default_runtime" yaml:"default_runtime"`
+	DefaultRuntime string `json:"default_runtime" yaml:"default_runtime" schema:"default_runtime"`
 	// DockerRootDir: Root directory of persistent Docker state.  Defaults to `/var/lib/docker` on Linux, and `C:\\ProgramData\\docker` on Windows.
-	DockerRootDir string `json:"docker_root_dir" yaml:"docker_root_dir"`
+	DockerRootDir string `json:"docker_root_dir" yaml:"docker_root_dir" schema:"docker_root_dir"`
 	// Driver: Name of the storage driver in use.
-	Driver string `json:"driver" yaml:"driver"`
+	Driver string `json:"driver" yaml:"driver" schema:"driver"`
 	// DriverStatus: Information specific to the storage driver, provided as \"label\" / \"value\" pairs.  This information is provided by the storage driver, and formatted in a way consistent with the output of `docker info` on the command line.
 	//
 	// **Note**: The information returned in this field, including the formatting of values and labels, should not be considered stable, and may change without notice.
-	DriverStatus []string `json:"driver_status" yaml:"driver_status"`
+	DriverStatus []string `json:"driver_status" yaml:"driver_status" schema:"driver_status"`
 	// ExperimentalBuild: Indicates if experimental features are enabled on the daemon.
-	ExperimentalBuild bool `json:"experimental_build" yaml:"experimental_build"`
+	ExperimentalBuild bool `json:"experimental_build" yaml:"experimental_build" schema:"experimental_build"`
 	// HttpProxy: HTTP-proxy configured for the daemon. This value is obtained from the [`HTTP_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration.
-	HttpProxy string `json:"http_proxy" yaml:"http_proxy"`
+	HttpProxy string `json:"http_proxy" yaml:"http_proxy" schema:"http_proxy"`
 	// HttpsProxy: HTTPS-proxy configured for the daemon. This value is obtained from the [`HTTPS_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration.
-	HttpsProxy string `json:"https_proxy" yaml:"https_proxy"`
+	HttpsProxy string `json:"https_proxy" yaml:"https_proxy" schema:"https_proxy"`
 	// ID: Unique identifier of the daemon.
 	//
 	// **Note**: The format of the ID itself is not part of the API, and should not be considered stable.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 	// Images: Total number of images on the host. Both _tagged_ and _untagged_ (dangling) images are counted.
-	Images int `json:"images" yaml:"images"`
+	Images int `json:"images" yaml:"images" schema:"images"`
 	// IndexServerAddress: Address / URL of the index server that is used for image search, and as a default for user authentication for Docker Hub and Docker Cloud.
-	IndexServerAddress string `json:"index_server_address" yaml:"index_server_address"`
+	IndexServerAddress string `json:"index_server_address" yaml:"index_server_address" schema:"index_server_address"`
 	// InitBinary: Name and, optional, path of the `docker-init` binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result.
-	InitBinary string `json:"init_binary" yaml:"init_binary"`
+	InitBinary string `json:"init_binary" yaml:"init_binary" schema:"init_binary"`
 	// InitCommit:
-	InitCommit Commit `json:"init_commit" yaml:"init_commit"`
+	InitCommit Commit `json:"init_commit" yaml:"init_commit" schema:"init_commit"`
 	// Ipv4Forwarding: Indicates IPv4 forwarding is enabled.
-	Ipv4Forwarding bool `json:"ipv4_forwarding" yaml:"ipv4_forwarding"`
+	Ipv4Forwarding bool `json:"ipv4_forwarding" yaml:"ipv4_forwarding" schema:"ipv4_forwarding"`
 	// Isolation: Represents the isolation technology to use as a default for containers. The supported values are platform-specific.  If no isolation value is specified on daemon start, on Windows client, the default is `hyperv`, and on Windows server, the default is `process`.  This option is currently not used on other platforms.
-	Isolation SystemInfoIsolationEnum `json:"isolation" yaml:"isolation"`
+	Isolation SystemInfoIsolationEnum `json:"isolation" yaml:"isolation" schema:"isolation"`
 	// KernelMemory: Indicates if the host has kernel memory limit support enabled.
 	//
 	// **Deprecated**: This field is deprecated as the kernel 5.4 deprecated `kmem.limit_in_bytes`.
-	KernelMemory bool `json:"kernel_memory" yaml:"kernel_memory"`
+	KernelMemory bool `json:"kernel_memory" yaml:"kernel_memory" schema:"kernel_memory"`
 	// KernelMemoryTcp: Indicates if the host has kernel memory TCP limit support enabled.  Kernel memory TCP limits are not supported when using cgroups v2, which does not support the corresponding `memory.kmem.tcp.limit_in_bytes` cgroup.
-	KernelMemoryTcp bool `json:"kernel_memory_tcp" yaml:"kernel_memory_tcp"`
+	KernelMemoryTcp bool `json:"kernel_memory_tcp" yaml:"kernel_memory_tcp" schema:"kernel_memory_tcp"`
 	// KernelVersion: Kernel version of the host.  On Linux, this information obtained from `uname`. On Windows this information is queried from the <kbd>HKEY_LOCAL_MACHINE\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\</kbd> registry value, for example _\"10.0 14393 (14393.1198.amd64fre.rs1_release_sec.170427-1353)\"_.
-	KernelVersion string `json:"kernel_version" yaml:"kernel_version"`
+	KernelVersion string `json:"kernel_version" yaml:"kernel_version" schema:"kernel_version"`
 	// Labels: User-defined labels (key/value metadata) as set on the daemon.
 	//
 	// **Note**: When part of a Swarm, nodes can both have _daemon_ labels, set through the daemon configuration, and _node_ labels, set from a manager node in the Swarm. Node labels are not included in this field. Node labels can be retrieved using the `/nodes/(id)` endpoint on a manager node in the Swarm.
-	Labels []string `json:"labels" yaml:"labels"`
+	Labels []string `json:"labels" yaml:"labels" schema:"labels"`
 	// LiveRestoreEnabled: Indicates if live restore is enabled.  If enabled, containers are kept running when the daemon is shutdown or upon daemon start if running containers are detected.
-	LiveRestoreEnabled bool `json:"live_restore_enabled" yaml:"live_restore_enabled"`
+	LiveRestoreEnabled bool `json:"live_restore_enabled" yaml:"live_restore_enabled" schema:"live_restore_enabled"`
 	// LoggingDriver: The logging driver to use as a default for new containers.
-	LoggingDriver string `json:"logging_driver" yaml:"logging_driver"`
+	LoggingDriver string `json:"logging_driver" yaml:"logging_driver" schema:"logging_driver"`
 	// MemTotal: Total amount of physical memory available on the host, in bytes.
-	MemTotal int `json:"mem_total" yaml:"mem_total"`
+	MemTotal int `json:"mem_total" yaml:"mem_total" schema:"mem_total"`
 	// MemoryLimit: Indicates if the host has memory limit support enabled.
-	MemoryLimit bool `json:"memory_limit" yaml:"memory_limit"`
+	MemoryLimit bool `json:"memory_limit" yaml:"memory_limit" schema:"memory_limit"`
 	// NEventsListener: Number of event listeners subscribed.
-	NEventsListener int `json:"n_events_listener" yaml:"n_events_listener"`
+	NEventsListener int `json:"n_events_listener" yaml:"n_events_listener" schema:"n_events_listener"`
 	// NFd: The total number of file Descriptors in use by the daemon process.  This information is only returned if debug-mode is enabled.
-	NFd int `json:"n_fd" yaml:"n_fd"`
+	NFd int `json:"n_fd" yaml:"n_fd" schema:"n_fd"`
 	// Name: Hostname of the host.
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name" schema:"name"`
 	// Ncpu: The number of logical CPUs usable by the daemon.  The number of available CPUs is checked by querying the operating system when the daemon starts. Changes to operating system CPU allocation after the daemon is started are not reflected.
-	Ncpu int `json:"ncpu" yaml:"ncpu"`
+	Ncpu int `json:"ncpu" yaml:"ncpu" schema:"ncpu"`
 	// NoProxy: Comma-separated list of domain extensions for which no proxy should be used. This value is obtained from the [`NO_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable.  Containers do not automatically inherit this configuration.
-	NoProxy string `json:"no_proxy" yaml:"no_proxy"`
+	NoProxy string `json:"no_proxy" yaml:"no_proxy" schema:"no_proxy"`
 	// OomKillDisable: Indicates if OOM killer disable is supported on the host.
-	OomKillDisable bool `json:"oom_kill_disable" yaml:"oom_kill_disable"`
+	OomKillDisable bool `json:"oom_kill_disable" yaml:"oom_kill_disable" schema:"oom_kill_disable"`
 	// OperatingSystem: Name of the host's operating system, for example: \"Ubuntu 16.04.2 LTS\" or \"Windows Server 2016 Datacenter\"
-	OperatingSystem string `json:"operating_system" yaml:"operating_system"`
+	OperatingSystem string `json:"operating_system" yaml:"operating_system" schema:"operating_system"`
 	// OsType: Generic type of the operating system of the host, as returned by the Go runtime (`GOOS`).  Currently returned values are \"linux\" and \"windows\". A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
-	OsType string `json:"os_type" yaml:"os_type"`
+	OsType string `json:"os_type" yaml:"os_type" schema:"os_type"`
 	// OsVersion: Version of the host's operating system
 	//
 	// **Note**: The information returned in this field, including its very existence, and the formatting of values, should not be considered stable, and may change without notice.
-	OsVersion string `json:"os_version" yaml:"os_version"`
+	OsVersion string `json:"os_version" yaml:"os_version" schema:"os_version"`
 	// PidsLimit: Indicates if the host kernel has PID limit support enabled.
-	PidsLimit bool `json:"pids_limit" yaml:"pids_limit"`
+	PidsLimit bool `json:"pids_limit" yaml:"pids_limit" schema:"pids_limit"`
 	// Plugins:
-	Plugins PluginsInfo `json:"plugins" yaml:"plugins"`
+	Plugins PluginsInfo `json:"plugins" yaml:"plugins" schema:"plugins"`
 	// ProductLicense: Reports a summary of the product license on the daemon.  If a commercial license has been applied to the daemon, information such as number of nodes, and expiration are included.
-	ProductLicense string `json:"product_license" yaml:"product_license"`
+	ProductLicense string `json:"product_license" yaml:"product_license" schema:"product_license"`
 	// RegistryConfig:
-	RegistryConfig RegistryServiceConfig `json:"registry_config" yaml:"registry_config"`
+	RegistryConfig RegistryServiceConfig `json:"registry_config" yaml:"registry_config" schema:"registry_config"`
 	// RuncCommit:
-	RuncCommit Commit `json:"runc_commit" yaml:"runc_commit"`
+	RuncCommit Commit `json:"runc_commit" yaml:"runc_commit" schema:"runc_commit"`
 	// Runtimes:
-	Runtimes Runtime `json:"runtimes" yaml:"runtimes"`
+	Runtimes Runtime `json:"runtimes" yaml:"runtimes" schema:"runtimes"`
 	// SecurityOptions: List of security features that are enabled on the daemon, such as apparmor, seccomp, SELinux, user-namespaces (userns), and rootless.  Additional configuration options for each security feature may be present, and are included as a comma-separated list of key/value pairs.
-	SecurityOptions []string `json:"security_options" yaml:"security_options"`
+	SecurityOptions []string `json:"security_options" yaml:"security_options" schema:"security_options"`
 	// ServerVersion: Version string of the daemon. **Note**: the [standalone Swarm API](https://docs.docker.com/swarm/swarm-api/) returns the Swarm version instead of the daemon  version, for example `swarm/1.2.8`.
-	ServerVersion string `json:"server_version" yaml:"server_version"`
+	ServerVersion string `json:"server_version" yaml:"server_version" schema:"server_version"`
 	// SwapLimit: Indicates if the host has memory swap limit support enabled.
-	SwapLimit bool `json:"swap_limit" yaml:"swap_limit"`
+	SwapLimit bool `json:"swap_limit" yaml:"swap_limit" schema:"swap_limit"`
 	// SystemTime: The  number of goroutines that currently exist.  This information is only returned if debug-mode is enabled.
-	SystemTime string `json:"system_time" yaml:"system_time"`
+	SystemTime string `json:"system_time" yaml:"system_time" schema:"system_time"`
 	// Warnings: List of warnings / informational messages about missing features, or issues related to the daemon configuration.  These messages can be printed by the client as information to the user.
-	Warnings []string `json:"warnings" yaml:"warnings"`
+	Warnings []string `json:"warnings" yaml:"warnings" schema:"warnings"`
 }
 
 // EmailAuthenticationForm: The body of the form for email authentication.
 type EmailAuthenticationForm struct {
 	// CallbackUrl: The URL to redirect back to after we have authenticated.
-	CallbackUrl URL `json:"callback_url" yaml:"callback_url"`
+	CallbackUrl URL `json:"callback_url" yaml:"callback_url" schema:"callback_url"`
 	// Email: The user's email.
-	Email string `json:"email" yaml:"email"`
+	Email string `json:"email" yaml:"email" schema:"email"`
 }
 
 // EngineMetadata: Metadata about our currently running server.
@@ -955,17 +955,17 @@ type EmailAuthenticationForm struct {
 // This is mostly used for internal purposes and debugging.
 type EngineMetadata struct {
 	// AsyncJobsRunning: If any async job is currently running.
-	AsyncJobsRunning bool `json:"async_jobs_running" yaml:"async_jobs_running"`
+	AsyncJobsRunning bool `json:"async_jobs_running" yaml:"async_jobs_running" schema:"async_jobs_running"`
 	// Cache: Metadata about our cache.
-	Cache CacheMetadata `json:"cache" yaml:"cache"`
+	Cache CacheMetadata `json:"cache" yaml:"cache" schema:"cache"`
 	// Environment: The environment we are running in.
-	Environment Environment `json:"environment" yaml:"environment"`
+	Environment Environment `json:"environment" yaml:"environment" schema:"environment"`
 	// Fs: Metadata about our file system.
-	Fs FileSystemMetadata `json:"fs" yaml:"fs"`
+	Fs FileSystemMetadata `json:"fs" yaml:"fs" schema:"fs"`
 	// GitHash: The git hash of the server.
-	GitHash string `json:"git_hash" yaml:"git_hash"`
+	GitHash string `json:"git_hash" yaml:"git_hash" schema:"git_hash"`
 	// Pubsub: Metadata about our pub-sub connection.
-	Pubsub Connection `json:"pubsub" yaml:"pubsub"`
+	Pubsub Connection `json:"pubsub" yaml:"pubsub" schema:"pubsub"`
 }
 
 // Environment: The environment the server is running in.
@@ -983,11 +983,11 @@ const (
 // Error: Error information from a response.
 type Error struct {
 	// ErrorCode:
-	ErrorCode string `json:"error_code" yaml:"error_code"`
+	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code"`
 	// Message:
-	Message string `json:"message" yaml:"message"`
+	Message string `json:"message" yaml:"message" schema:"message"`
 	// RequestID:
-	RequestID string `json:"request_id" yaml:"request_id"`
+	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id"`
 }
 
 // ExecutorMetadata: Metadata about our currently running server.
@@ -995,11 +995,11 @@ type Error struct {
 // This is mostly used for internal purposes and debugging.
 type ExecutorMetadata struct {
 	// DockerInfo: Information about the docker daemon.
-	DockerInfo DockerSystemInfo `json:"docker_info" yaml:"docker_info"`
+	DockerInfo DockerSystemInfo `json:"docker_info" yaml:"docker_info" schema:"docker_info"`
 	// Environment: The environment we are running in.
-	Environment Environment `json:"environment" yaml:"environment"`
+	Environment Environment `json:"environment" yaml:"environment" schema:"environment"`
 	// GitHash: The git hash of the server.
-	GitHash string `json:"git_hash" yaml:"git_hash"`
+	GitHash string `json:"git_hash" yaml:"git_hash" schema:"git_hash"`
 }
 
 // ExtendedUser: Extended user information.
@@ -1007,129 +1007,129 @@ type ExecutorMetadata struct {
 // This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Zendesk.
 type ExtendedUser struct {
 	// Company: The user's company.
-	Company string `json:"company" yaml:"company"`
+	Company string `json:"company" yaml:"company" schema:"company"`
 	// CreatedAt: The date and time the user was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Discord: The user's Discord handle.
-	Discord string `json:"discord" yaml:"discord"`
+	Discord string `json:"discord" yaml:"discord" schema:"discord"`
 	// Email: The email address of the user.
-	Email string `json:"email" yaml:"email"`
+	Email string `json:"email" yaml:"email" schema:"email"`
 	// EmailVerified: The date and time the email address was verified.
-	EmailVerified Time `json:"email_verified" yaml:"email_verified"`
+	EmailVerified Time `json:"email_verified" yaml:"email_verified" schema:"email_verified"`
 	// FirstName: The user's first name.
-	FirstName string `json:"first_name" yaml:"first_name"`
+	FirstName string `json:"first_name" yaml:"first_name" schema:"first_name"`
 	// Github: The user's GitHub handle.
-	Github string `json:"github" yaml:"github"`
+	Github string `json:"github" yaml:"github" schema:"github"`
 	// ID: The unique identifier for the user.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 	// Image: The image avatar for the user. This is a URL.
-	Image URL `json:"image" yaml:"image"`
+	Image URL `json:"image" yaml:"image" schema:"image"`
 	// LastName: The user's last name.
-	LastName string `json:"last_name" yaml:"last_name"`
+	LastName string `json:"last_name" yaml:"last_name" schema:"last_name"`
 	// MailchimpID: The user's MailChimp ID. This is mostly used for internal mapping.
-	MailchimpID string `json:"mailchimp_id" yaml:"mailchimp_id"`
+	MailchimpID string `json:"mailchimp_id" yaml:"mailchimp_id" schema:"mailchimp_id"`
 	// Name: The name of the user. This is auto populated at first from the authentication provider (if there was a name). It can be updated by the user by updating their `first_name` and `last_name` fields.
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name" schema:"name"`
 	// Phone: The user's phone number.
-	Phone string `json:"phone" yaml:"phone"`
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 	// StripeID: The user's Stripe ID. This is mostly used for internal mapping.
-	StripeID string `json:"stripe_id" yaml:"stripe_id"`
+	StripeID string `json:"stripe_id" yaml:"stripe_id" schema:"stripe_id"`
 	// UpdatedAt: The date and time the user was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// ZendeskID: The user's Zendesk ID. This is mostly used for internal mapping.
-	ZendeskID string `json:"zendesk_id" yaml:"zendesk_id"`
+	ZendeskID string `json:"zendesk_id" yaml:"zendesk_id" schema:"zendesk_id"`
 }
 
 // ExtendedUserResultsPage: A single page of results
 type ExtendedUserResultsPage struct {
 	// Items: list of items on this page of results
-	Items []ExtendedUser `json:"items" yaml:"items"`
+	Items []ExtendedUser `json:"items" yaml:"items" schema:"items"`
 	// NextPage: token used to fetch the next page of results (if any)
-	NextPage string `json:"next_page" yaml:"next_page"`
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
 // FileConversion: A file conversion.
 type FileConversion struct {
 	// CompletedAt: The time and date the file conversion was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the file conversion was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error"`
+	Error string `json:"error" yaml:"error" schema:"error"`
 	// ID: The unique identifier of the file conversion.
 	//
 	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// Output: The converted file, if completed, base64 encoded.
-	Output string `json:"output" yaml:"output"`
+	Output string `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
-	OutputFormat FileOutputFormat `json:"output_format" yaml:"output_format"`
+	OutputFormat FileOutputFormat `json:"output_format" yaml:"output_format" schema:"output_format"`
 	// SrcFormat: The source format of the file conversion.
-	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
+	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format" schema:"src_format"`
 	// StartedAt: The time and date the file conversion was started.
-	StartedAt Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the file conversion.
-	Status APICallStatus `json:"status" yaml:"status"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status"`
 	// UpdatedAt: The time and date the file conversion was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The user ID of the user who created the file conversion.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
 // FileDensity: A file density result.
 type FileDensity struct {
 	// CompletedAt: The time and date the density was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the density was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Density: The resulting density.
-	Density float64 `json:"density" yaml:"density"`
+	Density float64 `json:"density" yaml:"density" schema:"density"`
 	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error"`
+	Error string `json:"error" yaml:"error" schema:"error"`
 	// ID: The unique identifier of the density request.
 	//
 	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// MaterialMass: The material mass as denoted by the user.
-	MaterialMass float64 `json:"material_mass" yaml:"material_mass"`
+	MaterialMass float64 `json:"material_mass" yaml:"material_mass" schema:"material_mass"`
 	// SrcFormat: The source format of the file.
-	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
+	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format" schema:"src_format"`
 	// StartedAt: The time and date the density was started.
-	StartedAt Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the density.
-	Status APICallStatus `json:"status" yaml:"status"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status"`
 	// UpdatedAt: The time and date the density was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The user ID of the user who created the density.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
 // FileMass: A file mass result.
 type FileMass struct {
 	// CompletedAt: The time and date the mass was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the mass was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error"`
+	Error string `json:"error" yaml:"error" schema:"error"`
 	// ID: The unique identifier of the mass request.
 	//
 	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// Mass: The resulting mass.
-	Mass float64 `json:"mass" yaml:"mass"`
+	Mass float64 `json:"mass" yaml:"mass" schema:"mass"`
 	// MaterialDensity: The material density as denoted by the user.
-	MaterialDensity float64 `json:"material_density" yaml:"material_density"`
+	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
 	// SrcFormat: The source format of the file.
-	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
+	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format" schema:"src_format"`
 	// StartedAt: The time and date the mass was started.
-	StartedAt Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the mass.
-	Status APICallStatus `json:"status" yaml:"status"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status"`
 	// UpdatedAt: The time and date the mass was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The user ID of the user who created the mass.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
 // FileOutputFormat: The valid types of output file formats.
@@ -1171,61 +1171,61 @@ const (
 // This is mostly used for internal purposes and debugging.
 type FileSystemMetadata struct {
 	// Ok: If the file system passed a sanity check.
-	Ok bool `json:"ok" yaml:"ok"`
+	Ok bool `json:"ok" yaml:"ok" schema:"ok"`
 }
 
 // FileVolume: A file volume result.
 type FileVolume struct {
 	// CompletedAt: The time and date the volume was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the volume was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error"`
+	Error string `json:"error" yaml:"error" schema:"error"`
 	// ID: The unique identifier of the volume request.
 	//
 	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// SrcFormat: The source format of the file.
-	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
+	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format" schema:"src_format"`
 	// StartedAt: The time and date the volume was started.
-	StartedAt Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the volume.
-	Status APICallStatus `json:"status" yaml:"status"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status"`
 	// UpdatedAt: The time and date the volume was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The user ID of the user who created the volume.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 	// Volume: The resulting volume.
-	Volume float64 `json:"volume" yaml:"volume"`
+	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
 }
 
 // Gateway: Gateway information.
 type Gateway struct {
 	// AuthTimeout: The auth timeout of the gateway.
-	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout"`
+	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout" schema:"auth_timeout"`
 	// Host: The host of the gateway.
-	Host string `json:"host" yaml:"host"`
+	Host string `json:"host" yaml:"host" schema:"host"`
 	// Name: The name of the gateway.
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name" schema:"name"`
 	// Port: The port of the gateway.
-	Port int `json:"port" yaml:"port"`
+	Port int `json:"port" yaml:"port" schema:"port"`
 	// TlsTimeout: The TLS timeout for the gateway.
-	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout"`
+	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
 }
 
 // IndexInfo: IndexInfo contains information about a registry.
 type IndexInfo struct {
 	// Mirrors: List of mirrors, expressed as URIs.
-	Mirrors []string `json:"mirrors" yaml:"mirrors"`
+	Mirrors []string `json:"mirrors" yaml:"mirrors" schema:"mirrors"`
 	// Name: Name of the registry, such as \"docker.io\".
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name" schema:"name"`
 	// Official: Indicates whether this is an official registry (i.e., Docker Hub / docker.io)
-	Official bool `json:"official" yaml:"official"`
+	Official bool `json:"official" yaml:"official" schema:"official"`
 	// Secure: Indicates if the registry is part of the list of insecure registries.  If `false`, the registry is insecure. Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.
 	//
 	// **Warning**: Insecure registries can be useful when running a local registry. However, because its use creates security vulnerabilities it should ONLY be enabled for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
-	Secure bool `json:"secure" yaml:"secure"`
+	Secure bool `json:"secure" yaml:"secure" schema:"secure"`
 }
 
 // Invoice: An invoice.
@@ -1233,85 +1233,85 @@ type Invoice struct {
 	// AmountDue: Final amount due at this time for this invoice.
 	//
 	// If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the `amount_due` may be 0. If there is a positive `starting_balance` for the invoice (the customer owes money), the `amount_due` will also take that into account. The charge that gets generated for the invoice will be for the amount specified in `amount_due`.
-	AmountDue float64 `json:"amount_due" yaml:"amount_due"`
+	AmountDue float64 `json:"amount_due" yaml:"amount_due" schema:"amount_due"`
 	// AmountPaid: The amount, in USD, that was paid.
-	AmountPaid float64 `json:"amount_paid" yaml:"amount_paid"`
+	AmountPaid float64 `json:"amount_paid" yaml:"amount_paid" schema:"amount_paid"`
 	// AmountRemaining: The amount remaining, in USD, that is due.
-	AmountRemaining float64 `json:"amount_remaining" yaml:"amount_remaining"`
+	AmountRemaining float64 `json:"amount_remaining" yaml:"amount_remaining" schema:"amount_remaining"`
 	// AttemptCount: Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
 	//
 	// Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count. In other words, manual payment attempts after the first attempt do not affect the retry schedule.
-	AttemptCount int `json:"attempt_count" yaml:"attempt_count"`
+	AttemptCount int `json:"attempt_count" yaml:"attempt_count" schema:"attempt_count"`
 	// Attempted: Whether an attempt has been made to pay the invoice.
 	//
 	// An invoice is not attempted until 1 hour after the `invoice.created` webhook, for example, so you might not want to display that invoice as unpaid to your users.
-	Attempted bool `json:"attempted" yaml:"attempted"`
+	Attempted bool `json:"attempted" yaml:"attempted" schema:"attempted"`
 	// CreatedAt: Time at which the object was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-	Currency Currency `json:"currency" yaml:"currency"`
+	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
 	// CustomerEmail: The email address for the customer. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated.
-	CustomerEmail string `json:"customer_email" yaml:"customer_email"`
+	CustomerEmail string `json:"customer_email" yaml:"customer_email" schema:"customer_email"`
 	// CustomerID: Customer ID. The unique identifier for the customer this invoice belongs to. This is the customer ID in the payments service, not our database customer ID.
-	CustomerID string `json:"customer_id" yaml:"customer_id"`
+	CustomerID string `json:"customer_id" yaml:"customer_id" schema:"customer_id"`
 	// DefaultPaymentMethod: Default payment method.
-	DefaultPaymentMethod string `json:"default_payment_method" yaml:"default_payment_method"`
+	DefaultPaymentMethod string `json:"default_payment_method" yaml:"default_payment_method" schema:"default_payment_method"`
 	// Description: Description of the invoice.
-	Description string `json:"description" yaml:"description"`
+	Description string `json:"description" yaml:"description" schema:"description"`
 	// ID: Unique identifier for the object.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 	// Lines: The individual line items that make up the invoice.
 	//
 	// `lines` is sorted as follows: invoice items in reverse chronological order, followed by the subscription, if any.
-	Lines []InvoiceLineItem `json:"lines" yaml:"lines"`
+	Lines []InvoiceLineItem `json:"lines" yaml:"lines" schema:"lines"`
 	// Metadata: Set of key-value pairs.
-	Metadata string `json:"metadata" yaml:"metadata"`
+	Metadata string `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Number: A unique, identifying string that appears on emails sent to the customer for this invoice.
-	Number string `json:"number" yaml:"number"`
+	Number string `json:"number" yaml:"number" schema:"number"`
 	// Paid: Whether payment was successfully collected for this invoice.
 	//
 	// An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
-	Paid bool `json:"paid" yaml:"paid"`
+	Paid bool `json:"paid" yaml:"paid" schema:"paid"`
 	// Pdf: The link to download the PDF for the invoice.
-	Pdf URL `json:"pdf" yaml:"pdf"`
+	Pdf URL `json:"pdf" yaml:"pdf" schema:"pdf"`
 	// ReceiptNumber: This is the transaction number that appears on email receipts sent for this invoice.
-	ReceiptNumber string `json:"receipt_number" yaml:"receipt_number"`
+	ReceiptNumber string `json:"receipt_number" yaml:"receipt_number" schema:"receipt_number"`
 	// StatementDescriptor: Extra information about an invoice for the customer's credit card statement.
-	StatementDescriptor string `json:"statement_descriptor" yaml:"statement_descriptor"`
+	StatementDescriptor string `json:"statement_descriptor" yaml:"statement_descriptor" schema:"statement_descriptor"`
 	// Status: The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
 	//
 	// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
-	Status InvoiceStatus `json:"status" yaml:"status"`
+	Status InvoiceStatus `json:"status" yaml:"status" schema:"status"`
 	// Subtotal: Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.
 	//
 	// Item discounts are already incorporated.
-	Subtotal float64 `json:"subtotal" yaml:"subtotal"`
+	Subtotal float64 `json:"subtotal" yaml:"subtotal" schema:"subtotal"`
 	// Tax: The amount of tax on this invoice.
 	//
 	// This is the sum of all the tax amounts on this invoice.
-	Tax float64 `json:"tax" yaml:"tax"`
+	Tax float64 `json:"tax" yaml:"tax" schema:"tax"`
 	// Total: Total after discounts and taxes.
-	Total float64 `json:"total" yaml:"total"`
+	Total float64 `json:"total" yaml:"total" schema:"total"`
 	// Url: The URL for the hosted invoice page, which allows customers to view and pay an invoice.
-	Url URL `json:"url" yaml:"url"`
+	Url URL `json:"url" yaml:"url" schema:"url"`
 }
 
 // InvoiceLineItem: An invoice line item.
 type InvoiceLineItem struct {
 	// Amount: The amount, in USD.
-	Amount float64 `json:"amount" yaml:"amount"`
+	Amount float64 `json:"amount" yaml:"amount" schema:"amount"`
 	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-	Currency Currency `json:"currency" yaml:"currency"`
+	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
 	// Description: The description.
-	Description string `json:"description" yaml:"description"`
+	Description string `json:"description" yaml:"description" schema:"description"`
 	// ID: Unique identifier for the object.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 	// InvoiceItem: The ID of the invoice item associated with this line item if any.
-	InvoiceItem string `json:"invoice_item" yaml:"invoice_item"`
+	InvoiceItem string `json:"invoice_item" yaml:"invoice_item" schema:"invoice_item"`
 	// Metadata: Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
 	//
 	// Set of key-value pairs.
-	Metadata string `json:"metadata" yaml:"metadata"`
+	Metadata string `json:"metadata" yaml:"metadata" schema:"metadata"`
 }
 
 // InvoiceStatus: An enum representing the possible values of an `Invoice`'s `status` field.
@@ -1335,73 +1335,73 @@ const (
 // Jetstream: Jetstream information.
 type Jetstream struct {
 	// Config: The Jetstream config.
-	Config JetstreamConfig `json:"config" yaml:"config"`
+	Config JetstreamConfig `json:"config" yaml:"config" schema:"config"`
 	// Meta: Meta information about the cluster.
-	Meta MetaClusterInfo `json:"meta" yaml:"meta"`
+	Meta MetaClusterInfo `json:"meta" yaml:"meta" schema:"meta"`
 	// Stats: Jetstream statistics.
-	Stats JetstreamStats `json:"stats" yaml:"stats"`
+	Stats JetstreamStats `json:"stats" yaml:"stats" schema:"stats"`
 }
 
 // JetstreamAPIStats: Jetstream API statistics.
 type JetstreamAPIStats struct {
 	// Errors: The number of errors.
-	Errors int `json:"errors" yaml:"errors"`
+	Errors int `json:"errors" yaml:"errors" schema:"errors"`
 	// Inflight: The number of inflight requests.
-	Inflight int `json:"inflight" yaml:"inflight"`
+	Inflight int `json:"inflight" yaml:"inflight" schema:"inflight"`
 	// Total: The number of requests.
-	Total int `json:"total" yaml:"total"`
+	Total int `json:"total" yaml:"total" schema:"total"`
 }
 
 // JetstreamConfig: Jetstream configuration.
 type JetstreamConfig struct {
 	// Domain: The domain.
-	Domain string `json:"domain" yaml:"domain"`
+	Domain string `json:"domain" yaml:"domain" schema:"domain"`
 	// MaxMemory: The max memory.
-	MaxMemory int `json:"max_memory" yaml:"max_memory"`
+	MaxMemory int `json:"max_memory" yaml:"max_memory" schema:"max_memory"`
 	// MaxStorage: The max storage.
-	MaxStorage int `json:"max_storage" yaml:"max_storage"`
+	MaxStorage int `json:"max_storage" yaml:"max_storage" schema:"max_storage"`
 	// StoreDir: The store directory.
-	StoreDir string `json:"store_dir" yaml:"store_dir"`
+	StoreDir string `json:"store_dir" yaml:"store_dir" schema:"store_dir"`
 }
 
 // JetstreamStats: Jetstream statistics.
 type JetstreamStats struct {
 	// Accounts: The number of accounts.
-	Accounts int `json:"accounts" yaml:"accounts"`
+	Accounts int `json:"accounts" yaml:"accounts" schema:"accounts"`
 	// API: API stats.
-	API JetstreamAPIStats `json:"api" yaml:"api"`
+	API JetstreamAPIStats `json:"api" yaml:"api" schema:"api"`
 	// HaAssets: The number of HA assets.
-	HaAssets int `json:"ha_assets" yaml:"ha_assets"`
+	HaAssets int `json:"ha_assets" yaml:"ha_assets" schema:"ha_assets"`
 	// Memory: The memory used by the Jetstream server.
-	Memory int `json:"memory" yaml:"memory"`
+	Memory int `json:"memory" yaml:"memory" schema:"memory"`
 	// ReservedMemory: The reserved memory for the Jetstream server.
-	ReservedMemory int `json:"reserved_memory" yaml:"reserved_memory"`
+	ReservedMemory int `json:"reserved_memory" yaml:"reserved_memory" schema:"reserved_memory"`
 	// ReservedStore: The reserved storage for the Jetstream server.
-	ReservedStore int `json:"reserved_store" yaml:"reserved_store"`
+	ReservedStore int `json:"reserved_store" yaml:"reserved_store" schema:"reserved_store"`
 	// Store: The storage used by the Jetstream server.
-	Store int `json:"store" yaml:"store"`
+	Store int `json:"store" yaml:"store" schema:"store"`
 }
 
 // LeafNode: Leaf node information.
 type LeafNode struct {
 	// AuthTimeout: The auth timeout of the leaf node.
-	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout"`
+	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout" schema:"auth_timeout"`
 	// Host: The host of the leaf node.
-	Host string `json:"host" yaml:"host"`
+	Host string `json:"host" yaml:"host" schema:"host"`
 	// Port: The port of the leaf node.
-	Port int `json:"port" yaml:"port"`
+	Port int `json:"port" yaml:"port" schema:"port"`
 	// TlsTimeout: The TLS timeout for the leaf node.
-	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout"`
+	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
 }
 
 // MetaClusterInfo: Jetstream statistics.
 type MetaClusterInfo struct {
 	// ClusterSize: The size of the cluster.
-	ClusterSize int `json:"cluster_size" yaml:"cluster_size"`
+	ClusterSize int `json:"cluster_size" yaml:"cluster_size" schema:"cluster_size"`
 	// Leader: The leader of the cluster.
-	Leader string `json:"leader" yaml:"leader"`
+	Leader string `json:"leader" yaml:"leader" schema:"leader"`
 	// Name: The name of the cluster.
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name" schema:"name"`
 }
 
 // Metadata: Metadata about our currently running server.
@@ -1409,19 +1409,19 @@ type MetaClusterInfo struct {
 // This is mostly used for internal purposes and debugging.
 type Metadata struct {
 	// Cache: Metadata about our cache.
-	Cache CacheMetadata `json:"cache" yaml:"cache"`
+	Cache CacheMetadata `json:"cache" yaml:"cache" schema:"cache"`
 	// Engine: Metadata about our engine API connection.
-	Engine EngineMetadata `json:"engine" yaml:"engine"`
+	Engine EngineMetadata `json:"engine" yaml:"engine" schema:"engine"`
 	// Environment: The environment we are running in.
-	Environment Environment `json:"environment" yaml:"environment"`
+	Environment Environment `json:"environment" yaml:"environment" schema:"environment"`
 	// Executor: Metadata about our executor API connection.
-	Executor ExecutorMetadata `json:"executor" yaml:"executor"`
+	Executor ExecutorMetadata `json:"executor" yaml:"executor" schema:"executor"`
 	// Fs: Metadata about our file system.
-	Fs FileSystemMetadata `json:"fs" yaml:"fs"`
+	Fs FileSystemMetadata `json:"fs" yaml:"fs" schema:"fs"`
 	// GitHash: The git hash of the server.
-	GitHash string `json:"git_hash" yaml:"git_hash"`
+	GitHash string `json:"git_hash" yaml:"git_hash" schema:"git_hash"`
 	// Pubsub: Metadata about our pub-sub connection.
-	Pubsub Connection `json:"pubsub" yaml:"pubsub"`
+	Pubsub Connection `json:"pubsub" yaml:"pubsub" schema:"pubsub"`
 }
 
 // Method: The Request Method (VERB)
@@ -1457,11 +1457,11 @@ const (
 // OAuth2ClientInfo: Information about an OAuth 2.0 client.
 type OAuth2ClientInfo struct {
 	// CsrfToken: Value used for [CSRF](https://tools.ietf.org/html/rfc6749#section-10.12) protection via the `state` parameter.
-	CsrfToken string `json:"csrf_token" yaml:"csrf_token"`
+	CsrfToken string `json:"csrf_token" yaml:"csrf_token" schema:"csrf_token"`
 	// PkceCodeVerifier: Code Verifier used for [PKCE]((https://tools.ietf.org/html/rfc7636)) protection via the `code_verifier` parameter. The value must have a minimum length of 43 characters and a maximum length of 128 characters.  Each character must be ASCII alphanumeric or one of the characters "-" / "." / "_" / "~".
-	PkceCodeVerifier string `json:"pkce_code_verifier" yaml:"pkce_code_verifier"`
+	PkceCodeVerifier string `json:"pkce_code_verifier" yaml:"pkce_code_verifier" schema:"pkce_code_verifier"`
 	// Url: The URL for consent.
-	Url string `json:"url" yaml:"url"`
+	Url string `json:"url" yaml:"url" schema:"url"`
 }
 
 // OAuth2GrantType: An OAuth 2.0 Grant Type. These are documented here: <https://oauth.net/2/grant-types/>.
@@ -1475,41 +1475,41 @@ const (
 // OutputFile: Output file contents.
 type OutputFile struct {
 	// Contents: The contents of the file. This is base64 encoded so we can ensure it is UTF-8 for JSON.
-	Contents string `json:"contents" yaml:"contents"`
+	Contents string `json:"contents" yaml:"contents" schema:"contents"`
 	// Name: The name of the file.
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name" schema:"name"`
 }
 
 // PaymentIntent: A payment intent response.
 type PaymentIntent struct {
 	// ClientSecret: The client secret is used for client-side retrieval using a publishable key. The client secret can be used to complete payment setup from your frontend. It should not be stored, logged, or exposed to anyone other than the customer. Make sure that you have TLS enabled on any page that includes the client secret.
-	ClientSecret string `json:"client_secret" yaml:"client_secret"`
+	ClientSecret string `json:"client_secret" yaml:"client_secret" schema:"client_secret"`
 }
 
 // PaymentMethod: A payment method.
 type PaymentMethod struct {
 	// BillingInfo: The billing info for the payment method.
-	BillingInfo BillingInfo `json:"billing_info" yaml:"billing_info"`
+	BillingInfo BillingInfo `json:"billing_info" yaml:"billing_info" schema:"billing_info"`
 	// Card: The card, if it is one. For our purposes, this is the only type of payment method that we support.
-	Card CardDetails `json:"card" yaml:"card"`
+	Card CardDetails `json:"card" yaml:"card" schema:"card"`
 	// CreatedAt: Time at which the object was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// ID: Unique identifier for the object.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 	// Metadata: Set of key-value pairs.
-	Metadata string `json:"metadata" yaml:"metadata"`
+	Metadata string `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Type: The type of payment method.
-	Type PaymentMethodType `json:"type" yaml:"type"`
+	Type PaymentMethodType `json:"type" yaml:"type" schema:"type"`
 }
 
 // PaymentMethodCardChecks: Card checks.
 type PaymentMethodCardChecks struct {
 	// AddressLine1Check: If a address line1 was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
-	AddressLine1Check string `json:"address_line1_check" yaml:"address_line1_check"`
+	AddressLine1Check string `json:"address_line1_check" yaml:"address_line1_check" schema:"address_line1_check"`
 	// AddressPostalCodeCheck: If a address postal code was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
-	AddressPostalCodeCheck string `json:"address_postal_code_check" yaml:"address_postal_code_check"`
+	AddressPostalCodeCheck string `json:"address_postal_code_check" yaml:"address_postal_code_check" schema:"address_postal_code_check"`
 	// CvcCheck: If a CVC was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
-	CvcCheck string `json:"cvc_check" yaml:"cvc_check"`
+	CvcCheck string `json:"cvc_check" yaml:"cvc_check" schema:"cvc_check"`
 }
 
 // PaymentMethodType: An enum representing the possible values of an `PaymentMethod`'s `type` field.
@@ -1525,19 +1525,19 @@ const (
 // **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
 type PluginsInfo struct {
 	// Authorization: Names of available authorization plugins.
-	Authorization []string `json:"authorization" yaml:"authorization"`
+	Authorization []string `json:"authorization" yaml:"authorization" schema:"authorization"`
 	// Log: Names of available logging-drivers, and logging-driver plugins.
-	Log []string `json:"log" yaml:"log"`
+	Log []string `json:"log" yaml:"log" schema:"log"`
 	// Network: Names of available network-drivers, and network-driver plugins.
-	Network []string `json:"network" yaml:"network"`
+	Network []string `json:"network" yaml:"network" schema:"network"`
 	// Volume: Names of available volume-drivers, and network-driver plugins.
-	Volume []string `json:"volume" yaml:"volume"`
+	Volume []string `json:"volume" yaml:"volume" schema:"volume"`
 }
 
 // Pong: The response from the `/ping` endpoint.
 type Pong struct {
 	// Message: The pong response.
-	Message string `json:"message" yaml:"message"`
+	Message string `json:"message" yaml:"message" schema:"message"`
 }
 
 // RegistryServiceConfig: RegistryServiceConfig stores daemon registry services configuration.
@@ -1545,27 +1545,27 @@ type RegistryServiceConfig struct {
 	// AllowNondistributableArtifactsCidRs: List of IP ranges to which nondistributable artifacts can be pushed, using the CIDR syntax [RFC 4632](https://tools.ietf.org/html/4632).  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior, and enables the daemon to push nondistributable artifacts to all registries whose resolved IP address is within the subnet described by the CIDR syntax.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.
 	//
 	// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
-	AllowNondistributableArtifactsCidRs []string `json:"allow_nondistributable_artifacts_cid_rs" yaml:"allow_nondistributable_artifacts_cid_rs"`
+	AllowNondistributableArtifactsCidRs []string `json:"allow_nondistributable_artifacts_cid_rs" yaml:"allow_nondistributable_artifacts_cid_rs" schema:"allow_nondistributable_artifacts_cid_rs"`
 	// AllowNondistributableArtifactsHostnames: List of registry hostnames to which nondistributable artifacts can be pushed, using the format `<hostname>[:<port>]` or `<IP address>[:<port>]`.  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior for the specified registries.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.
 	//
 	// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
-	AllowNondistributableArtifactsHostnames []string `json:"allow_nondistributable_artifacts_hostnames" yaml:"allow_nondistributable_artifacts_hostnames"`
+	AllowNondistributableArtifactsHostnames []string `json:"allow_nondistributable_artifacts_hostnames" yaml:"allow_nondistributable_artifacts_hostnames" schema:"allow_nondistributable_artifacts_hostnames"`
 	// IndexConfigs:
-	IndexConfigs IndexInfo `json:"index_configs" yaml:"index_configs"`
+	IndexConfigs IndexInfo `json:"index_configs" yaml:"index_configs" schema:"index_configs"`
 	// InsecureRegistryCidRs: List of IP ranges of insecure registries, using the CIDR syntax ([RFC 4632](https://tools.ietf.org/html/4632)). Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.  By default, local registries (`127.0.0.0/8`) are configured as insecure. All other registries are secure. Communicating with an insecure registry is not possible if the daemon assumes that registry is secure.  This configuration override this behavior, insecure communication with registries whose resolved IP address is within the subnet described by the CIDR syntax.  Registries can also be marked insecure by hostname. Those registries are listed under `IndexConfigs` and have their `Secure` field set to `false`.
 	//
 	// **Warning**: Using this option can be useful when running a local  registry, but introduces security vulnerabilities. This option should therefore ONLY be used for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
-	InsecureRegistryCidRs []string `json:"insecure_registry_cid_rs" yaml:"insecure_registry_cid_rs"`
+	InsecureRegistryCidRs []string `json:"insecure_registry_cid_rs" yaml:"insecure_registry_cid_rs" schema:"insecure_registry_cid_rs"`
 	// Mirrors: List of registry URLs that act as a mirror for the official (`docker.io`) registry.
-	Mirrors []string `json:"mirrors" yaml:"mirrors"`
+	Mirrors []string `json:"mirrors" yaml:"mirrors" schema:"mirrors"`
 }
 
 // Runtime: Runtime describes an [OCI compliant](https://github.com/opencontainers/runtime-spec) runtime.  The runtime is invoked by the daemon via the `containerd` daemon. OCI runtimes act as an interface to the Linux kernel namespaces, cgroups, and SELinux.
 type Runtime struct {
 	// Path: Name and, optional, path, of the OCI executable binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result.
-	Path string `json:"path" yaml:"path"`
+	Path string `json:"path" yaml:"path" schema:"path"`
 	// RuntimeArgs: List of command-line arguments to pass to the runtime when invoked.
-	RuntimeArgs []string `json:"runtime_args" yaml:"runtime_args"`
+	RuntimeArgs []string `json:"runtime_args" yaml:"runtime_args" schema:"runtime_args"`
 }
 
 // Session: An authentication session.
@@ -1573,17 +1573,17 @@ type Runtime struct {
 // For our UIs, these are automatically created by Next.js.
 type Session struct {
 	// CreatedAt: The date and time the session was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Expires: The date and time the session expires.
-	Expires Time `json:"expires" yaml:"expires"`
+	Expires Time `json:"expires" yaml:"expires" schema:"expires"`
 	// ID: The unique identifier for the session.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 	// SessionToken: The session token.
-	SessionToken UUID `json:"session_token" yaml:"session_token"`
+	SessionToken UUID `json:"session_token" yaml:"session_token" schema:"session_token"`
 	// UpdatedAt: The date and time the session was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The user ID of the user that the session belongs to.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
 // SystemInfoCgroupDriverEnum is the type definition for a SystemInfoCgroupDriverEnum.
@@ -1615,9 +1615,9 @@ const (
 // SystemInfoDefaultAddressPools is the type definition for a SystemInfoDefaultAddressPools.
 type SystemInfoDefaultAddressPools struct {
 	// Base: The network address in CIDR format
-	Base string `json:"base" yaml:"base"`
+	Base string `json:"base" yaml:"base" schema:"base"`
 	// Size: The network pool size
-	Size int `json:"size" yaml:"size"`
+	Size int `json:"size" yaml:"size" schema:"size"`
 }
 
 // SystemInfoIsolationEnum is the type definition for a SystemInfoIsolationEnum.
@@ -1637,31 +1637,31 @@ const (
 // UnitConversion: A unit conversion.
 type UnitConversion struct {
 	// CompletedAt: The time and date the unit conversion was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the unit conversion was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error"`
+	Error string `json:"error" yaml:"error" schema:"error"`
 	// ID: The unique identifier of the unit conversion.
 	//
 	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// Input: The input value.
-	Input float64 `json:"input" yaml:"input"`
+	Input float64 `json:"input" yaml:"input" schema:"input"`
 	// Output: The resulting value.
-	Output float64 `json:"output" yaml:"output"`
+	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat UnitMetricFormat `json:"output_format" yaml:"output_format"`
+	OutputFormat UnitMetricFormat `json:"output_format" yaml:"output_format" schema:"output_format"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat UnitMetricFormat `json:"src_format" yaml:"src_format"`
+	SrcFormat UnitMetricFormat `json:"src_format" yaml:"src_format" schema:"src_format"`
 	// StartedAt: The time and date the unit conversion was started.
-	StartedAt Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the unit conversion.
-	Status APICallStatus `json:"status" yaml:"status"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status"`
 	// UpdatedAt: The time and date the unit conversion was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 	// UserID: The user ID of the user who created the unit conversion.
-	UserID string `json:"user_id" yaml:"user_id"`
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
 // UnitMetricFormat: The valid types of metric unit formats.
@@ -1707,55 +1707,55 @@ const (
 // UpdateUser: The user-modifiable parts of a User.
 type UpdateUser struct {
 	// Company: The user's company.
-	Company string `json:"company" yaml:"company"`
+	Company string `json:"company" yaml:"company" schema:"company"`
 	// Discord: The user's Discord handle.
-	Discord string `json:"discord" yaml:"discord"`
+	Discord string `json:"discord" yaml:"discord" schema:"discord"`
 	// FirstName: The user's first name.
-	FirstName string `json:"first_name" yaml:"first_name"`
+	FirstName string `json:"first_name" yaml:"first_name" schema:"first_name"`
 	// Github: The user's GitHub handle.
-	Github string `json:"github" yaml:"github"`
+	Github string `json:"github" yaml:"github" schema:"github"`
 	// LastName: The user's last name.
-	LastName string `json:"last_name" yaml:"last_name"`
+	LastName string `json:"last_name" yaml:"last_name" schema:"last_name"`
 	// Phone: The user's phone number.
-	Phone string `json:"phone" yaml:"phone"`
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 }
 
 // User: A user.
 type User struct {
 	// Company: The user's company.
-	Company string `json:"company" yaml:"company"`
+	Company string `json:"company" yaml:"company" schema:"company"`
 	// CreatedAt: The date and time the user was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Discord: The user's Discord handle.
-	Discord string `json:"discord" yaml:"discord"`
+	Discord string `json:"discord" yaml:"discord" schema:"discord"`
 	// Email: The email address of the user.
-	Email string `json:"email" yaml:"email"`
+	Email string `json:"email" yaml:"email" schema:"email"`
 	// EmailVerified: The date and time the email address was verified.
-	EmailVerified Time `json:"email_verified" yaml:"email_verified"`
+	EmailVerified Time `json:"email_verified" yaml:"email_verified" schema:"email_verified"`
 	// FirstName: The user's first name.
-	FirstName string `json:"first_name" yaml:"first_name"`
+	FirstName string `json:"first_name" yaml:"first_name" schema:"first_name"`
 	// Github: The user's GitHub handle.
-	Github string `json:"github" yaml:"github"`
+	Github string `json:"github" yaml:"github" schema:"github"`
 	// ID: The unique identifier for the user.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 	// Image: The image avatar for the user. This is a URL.
-	Image URL `json:"image" yaml:"image"`
+	Image URL `json:"image" yaml:"image" schema:"image"`
 	// LastName: The user's last name.
-	LastName string `json:"last_name" yaml:"last_name"`
+	LastName string `json:"last_name" yaml:"last_name" schema:"last_name"`
 	// Name: The name of the user. This is auto populated at first from the authentication provider (if there was a name). It can be updated by the user by updating their `first_name` and `last_name` fields.
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name" schema:"name"`
 	// Phone: The user's phone number.
-	Phone string `json:"phone" yaml:"phone"`
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 	// UpdatedAt: The date and time the user was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 }
 
 // UserResultsPage: A single page of results
 type UserResultsPage struct {
 	// Items: list of items on this page of results
-	Items []User `json:"items" yaml:"items"`
+	Items []User `json:"items" yaml:"items" schema:"items"`
 	// NextPage: token used to fetch the next page of results (if any)
-	NextPage string `json:"next_page" yaml:"next_page"`
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
 // VerificationToken: A verification token for a user.
@@ -1763,23 +1763,23 @@ type UserResultsPage struct {
 // This is typically used to verify a user's email address.
 type VerificationToken struct {
 	// CreatedAt: The date and time the verification token was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at"`
 	// Expires: The date and time the verification token expires.
-	Expires Time `json:"expires" yaml:"expires"`
+	Expires Time `json:"expires" yaml:"expires" schema:"expires"`
 	// ID: The token used for verification. This is used as the id for the table since it is unique per record.
-	ID string `json:"id" yaml:"id"`
+	ID string `json:"id" yaml:"id" schema:"id"`
 	// Identifier: The identifier for the user. This is typically the user's email address since that is what we are verifying.
-	Identifier string `json:"identifier" yaml:"identifier"`
+	Identifier string `json:"identifier" yaml:"identifier" schema:"identifier"`
 	// UpdatedAt: The date and time the verification token was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at"`
 }
 
 // ResponseError: Error information from a response.
 type ResponseError struct {
 	// ErrorCode:
-	ErrorCode string `json:"error_code" yaml:"error_code"`
+	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code"`
 	// Message:
-	Message string `json:"message" yaml:"message"`
+	Message string `json:"message" yaml:"message" schema:"message"`
 	// RequestID:
-	RequestID string `json:"request_id" yaml:"request_id"`
+	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id"`
 }

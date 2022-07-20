@@ -108,9 +108,9 @@ func (function Path) getDescription(operation *openapi3.Operation) string {
 	}
 	if len(function.Args) > 0 {
 		description = fmt.Sprintf("\nParameters:\n")
-		for _, arg := range args {
-			if args.Description != "" {
-				description = fmt.Sprintf("%s\t- `%s`: %s\n", description, arg.Name, strings.ReplaceAll(args.Description, "\n", "\n\t\t"))
+		for _, arg := range function.Args {
+			if arg.Description != "" {
+				description = fmt.Sprintf("%s\t- `%s`: %s\n", description, arg.Name, strings.ReplaceAll(arg.Description, "\n", "\n\t\t"))
 			} else {
 				description = fmt.Sprintf("%s\t- `%s`\n", description, arg.Name)
 			}
@@ -164,12 +164,14 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 
 	logrus.Debugf("writing method %q for path %q -> %q", method, pathName, function.Name)
 
-	respType, pagedRespType, err := getSuccessResponseType(operation, isGetAllPages, spec)
+	// Get the response type for the function.
+	respType, _, err := getSuccessResponseType(operation, isGetAllPages, spec)
 	if err != nil {
 		return err
 	}
-
-	pageResult := false
+	if respType != "" {
+		function.Response = &Response{Type: respType}
+	}
 
 	// Parse the parameters.
 	for _, p := range operation.Parameters {
@@ -195,17 +197,12 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 			arg.ToString = arg.Name
 		} else if typeName == "int" {
 			arg.ToString = fmt.Sprintf("strconv.Itoa(%s)", arg.Name)
-		} else if t == "float64" {
+		} else if typeName == "float64" {
 			arg.ToString = fmt.Sprintf("fmt.Sprintf(\"%%f\", %s)", arg.Name)
-		} else if isTypeToString(t) {
+		} else if isTypeToString(typeName) {
 			arg.ToString = fmt.Sprintf("%s.ToString()", arg.Name)
 		} else {
 			arg.ToString = fmt.Sprintf("string(%s)", arg.Name)
-		}
-
-		// Check if we have a page result.
-		if isPageParam(arg.Name) && method == http.MethodGet {
-			pageResult = true
 		}
 
 		// Add our arg to the function.
@@ -214,13 +211,11 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 
 	// Parse the request body.
 	if operation.RequestBody != nil {
-		rb := operation
-
-		if rb.Ref != "" {
-			return fmt.Errorf("request body for %q %q, is a reference: %q, not yet handled", pathName, method, rb.Ref)
+		if operation.RequestBody.Ref != "" {
+			return fmt.Errorf("request body for %q %q, is a reference: %q, not yet handled", pathName, method, operation.RequestBody.Ref)
 		}
 
-		for mt, r := range rb.Value.Content {
+		for mt, r := range operation.RequestBody.Value.Content {
 			typeName, err := printType("", r.Schema, spec)
 			if err != nil {
 				return err
@@ -232,8 +227,8 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 				MediaType: mt,
 			}
 
-			if rb.Value.Description != "" {
-				function.RequestBody.Description = rb.Value.Description
+			if operation.RequestBody.Value.Description != "" {
+				function.RequestBody.Description = operation.RequestBody.Value.Description
 			}
 
 			break

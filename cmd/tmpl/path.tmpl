@@ -1,13 +1,40 @@
 // {{.Description}}
-func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -}}{{if .RequestBody}}body {{.Type}}{{end}}) {{if .Response}}({{.Type}}, error){{.Type}}{{else}}error{{end}} {
+func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -}}{{if .RequestBody}}body {{.RequestBody.Type}}{{end}}) {{if .Response}}(*{{.Response.Type}}, error){{else}}error{{end}} {
 	// Create the url.
     path := "{{.Path}}"
 	uri := resolveRelative(s.client.server, path)
+
+    {{if .RequestBody}}
+        {{if eq .RequestBody.MediaType "application/json"}}
+            // Encode the request body as json.
+	        b := new(bytes.Buffer)
+	        if err := json.NewEncoder(b).Encode(body); err != nil {
+		        return {{if .Response}}nil,{{end}} fmt.Errorf("encoding json body request failed: %v", err)
+	        }
+        {{else if eq .RequestBody.MediaType "application/x-www-form-urlencoded"}}
+            // Encode the request body as a form.
+            form := url.Values{}
+            err := encoder.Encode(person, form)
+            if err != nil {
+		        return {{if .Response}}nil,{{end}} fmt.Errorf("encoding form body request failed: %v", err)
+            }
+            b := strings.NewReader(form.Encode())
+        {{else}}
+            b := &body
+        {{end}}
+    {{else}}
+    {{end}}
+
 	// Create the request.
-    req, err := http.NewRequest("{{.Method}}", uri, {{if .RequestBody}}&body{{else}}nil{{end}})
+    req, err := http.NewRequest("{{.Method}}", uri, {{if .RequestBody}}b{{else}}nil{{end}})
 	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
+        return {{if .Response}}nil,{{end}} fmt.Errorf("error creating request: %v", err)
 	}
+
+    {{if .RequestBody}}
+        // Add our headers.
+        req.Header.Add("Content-Type", "{{.RequestBody.MediaType}}")
+    {{end}}
 
     {{if .Args}}
 	// Add the parameters to the url.
@@ -16,22 +43,36 @@ func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -
         "{{.Property}}": {{.ToString}},
     {{end -}}
 	}); err != nil {
-		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+		return {{if .Response}}nil,{{end}} fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
     {{end}}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
+		return {{if .Response}}nil,{{end}} fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return err
+		return {{if .Response}}nil,{{end}} err
 	}
 
-	// Return.
-	return nil
+    {{if .Response}}
+        // Decode the body from the response.
+        if resp.Body == nil {
+            return nil, errors.New("request returned an empty body in the response")
+        }
+        var body {{.Response.Type}}
+        if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+            return nil, fmt.Errorf("error decoding response body: %v", err)
+        }
+
+        // Return the response.
+	    return &body, nil
+    {{else}}
+	    // Return.
+	    return nil
+    {{end}}
 }
