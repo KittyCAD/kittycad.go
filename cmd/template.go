@@ -6,10 +6,10 @@ import (
 	"embed"
 	"fmt"
 	"go/format"
-	"html/template"
 	"os"
 	"path"
 	"path/filepath"
+	"text/template"
 
 	"github.com/sirupsen/logrus"
 )
@@ -41,6 +41,7 @@ func templateToString(templateName string, data Data) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error executing template %q: %v", templateName, err)
 	}
+
 	formatted, err := format.Source(processed.Bytes())
 	if err != nil {
 		return "", fmt.Errorf("error formatting template %q output: %v", templateName, err)
@@ -55,10 +56,8 @@ func processTemplate(templateName string, outputFile string, data Data) error {
 		return err
 	}
 
-	fmt.Println(formatted)
-
 	outputPath := filepath.Join(data.WorkingDirectory, outputFile)
-	logrus.Debugf("Writing file: ", outputPath)
+	logrus.Debugf("Writing file: %s", outputPath)
 
 	f, err := os.Create(outputPath)
 	if err != nil {

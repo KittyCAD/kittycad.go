@@ -98,20 +98,20 @@ func run() error {
 	if err != nil {
 		logrus.Errorf("error comparing old and new openAPI spec: %v", err)
 	}
-	patchJson, err := json.MarshalIndent(patch, "", " ")
+	patchJSON, err := json.MarshalIndent(patch, "", " ")
 	if err != nil {
 		return fmt.Errorf("error marshalling openAPI spec: %v", err)
 	}
 
 	diffFile := filepath.Join(wd, "kittycad.go.patch.json")
-	if err := ioutil.WriteFile(diffFile, patchJson, 0644); err != nil {
+	if err := ioutil.WriteFile(diffFile, patchJSON, 0644); err != nil {
 		return fmt.Errorf("error writing openAPI spec patch to %s: %v", diffFile, err)
 	}
 
 	return nil
 }
 
-var EnumStringTypes map[string][]string = map[string][]string{}
+var enumStringTypes map[string][]string = map[string][]string{}
 
 // Generate the types.go file.
 func generateTypes(doc *openapi3.T) {
@@ -138,12 +138,12 @@ func generateTypes(doc *openapi3.T) {
 	// Iterate over all the enum types and add in the slices.
 	// We want to ensure we keep the order so the diffs don't look like shit.
 	keys = make([]string, 0)
-	for k := range EnumStringTypes {
+	for k := range enumStringTypes {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	for _, name := range keys {
-		enums := EnumStringTypes[name]
+		enums := enumStringTypes[name]
 		// Make the enum a collection of the values.
 		// Add a description.
 		fmt.Fprintf(f, "// %s is the collection of all %s values.\n", makePlural(name), makeSingular(name))
@@ -199,7 +199,10 @@ func generateClient(doc *openapi3.T, data Data) error {
 
 func generateExamplesFile(doc *openapi3.T, data Data) error {
 	// Generate the example template.
-	if err := processTemplate("examples.tmpl", "examples.go", data); err != nil {
+	// All examples lack output because:
+	// Examples without output comments are useful for demonstrating code that cannot run as unit tests, such as that which accesses the network, while guaranteeing the example at least compiles. (https://go.dev/blog/examples)
+	// If we executed the examples it might delete a user in production or something.
+	if err := processTemplate("examples.tmpl", "examples_test.go", data); err != nil {
 		return err
 	}
 
@@ -835,14 +838,14 @@ func writeSchemaType(f *os.File, name string, s *openapi3.Schema, additionalName
 		// If this is an enum, write the enum type.
 		if len(s.Enum) > 0 {
 			// Make sure we don't redeclare the enum type.
-			if _, ok := EnumStringTypes[makeSingular(typeName)]; !ok {
+			if _, ok := enumStringTypes[makeSingular(typeName)]; !ok {
 				// Write the type description.
 				writeSchemaTypeDescription(makeSingular(typeName), s, f)
 
 				// Write the enum type.
 				fmt.Fprintf(f, "type %s string\n", makeSingular(typeName))
 
-				EnumStringTypes[makeSingular(typeName)] = []string{}
+				enumStringTypes[makeSingular(typeName)] = []string{}
 			}
 
 			// Define the enum values.
@@ -865,7 +868,7 @@ func writeSchemaType(f *os.File, name string, s *openapi3.Schema, additionalName
 				fmt.Fprintf(f, "\t%s %s = %q\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enumName)), makeSingular(name), enum)
 
 				// Add the enum type to the list of enum types.
-				EnumStringTypes[makeSingular(typeName)] = append(EnumStringTypes[makeSingular(typeName)], enumName)
+				enumStringTypes[makeSingular(typeName)] = append(enumStringTypes[makeSingular(typeName)], enumName)
 			}
 			// Close the enum values.
 			fmt.Fprintf(f, ")\n")
