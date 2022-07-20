@@ -1,6 +1,6 @@
 module github.com/kittycad/kittycad.go
 
-go 1.17
+go 1.18
 
 require (
 	github.com/getkin/kin-openapi v0.97.0

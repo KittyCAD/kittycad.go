@@ -1,0 +1,9 @@
+// {{.Description}}
+type {{.Name}} string
+
+const (
+    {{range .Values -}}
+        // {{.Name}} represents the {{$.Name}} `"{{.Value}}"`.
+        {{.Name}} {{$.Name}} = "{{.Value}}"
+    {{end -}}
+)

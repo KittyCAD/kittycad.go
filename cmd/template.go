@@ -36,7 +36,7 @@ type Tag struct {
 	Description string
 }
 
-func templateToString(templateName string, data Data) (string, error) {
+func templateToString(templateName string, data any) (string, error) {
 	tmpl := template.Must(template.New("").ParseFS(templateFiles, path.Join("tmpl", templateName)))
 	var processed bytes.Buffer
 	err := tmpl.ExecuteTemplate(&processed, templateName, data)
@@ -52,7 +52,7 @@ func templateToString(templateName string, data Data) (string, error) {
 	return string(formatted), nil
 }
 
-func processTemplate(templateName string, outputFile string, data Data) error {
+func processTemplate(templateName string, outputFile string, data any) error {
 	formatted, err := templateToString(templateName, data)
 	if err != nil {
 		return err

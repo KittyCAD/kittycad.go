@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"unicode"
 
@@ -76,10 +75,6 @@ func run() error {
 		return err
 	}
 
-	// Generate the responses.go file.
-	logrus.Info("Generating responses...")
-	generateResponses(doc)
-
 	// Generate the paths.go file.
 	logrus.Info("Generating paths...")
 	if err := data.generatePaths(doc); err != nil {
@@ -112,29 +107,6 @@ func run() error {
 	}
 
 	return nil
-}
-
-// Generate the responses.go file.
-func generateResponses(doc *openapi3.T) {
-	f := openGeneratedFile("responses.go")
-	defer f.Close()
-
-	// Iterate over all the responses in the spec and write the types.
-	// We want to ensure we keep the order so the diffs don't look like shit.
-	keys := make([]string, 0)
-	for k := range doc.Components.Responses {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	for _, name := range keys {
-		r := doc.Components.Responses[name]
-		if r.Ref != "" {
-			logrus.Warnf("TODO: skipping response for %q, since it is a reference", name)
-			continue
-		}
-
-		writeResponseType(f, name, r.Value)
-	}
 }
 
 // Generate the client.go file.
@@ -256,51 +228,6 @@ func makePlural(s string) string {
 	}
 
 	return singular + "s"
-}
-
-// writeReponseTypeDescription writes the description of the given type.
-func writeResponseTypeDescription(name string, r *openapi3.Response, f *os.File) {
-	if r.Description != nil {
-		fmt.Fprintf(f, "// %s is the response given when %s\n", name, toLowerFirstLetter(
-			strings.ReplaceAll(*r.Description, "\n", "\n// ")))
-	} else {
-		fmt.Fprintf(f, "// %s is the type definition for a %s response.\n", name, name)
-	}
-}
-
-func getReferenceSchema(v *openapi3.SchemaRef) string {
-	if v.Ref != "" {
-		ref := strings.TrimPrefix(v.Ref, "#/components/schemas/")
-		if len(v.Value.Enum) > 0 {
-			return printProperty(makeSingular(ref))
-		}
-
-		return strings.ReplaceAll(printProperty(ref), "Api", "API")
-	}
-
-	return ""
-}
-
-// writeResponseType writes a type definition for the given response.
-func writeResponseType(f *os.File, name string, r *openapi3.Response) {
-	// Write the type definition.
-	for k, v := range r.Content {
-		logrus.Debugf("writing type for response %q -> %q", name, k)
-
-		name := fmt.Sprintf("Response%s", name)
-
-		// Write the type description.
-		writeResponseTypeDescription(name, r, f)
-
-		// Print the type definition.
-		s := v.Schema
-		if s.Ref != "" {
-			fmt.Fprintf(f, "type %s %s\n", name, getReferenceSchema(s))
-			continue
-		}
-
-		writeSchemaType(f, name, s.Value, "")
-	}
 }
 
 func contains(s []string, str string) bool {
