@@ -26,7 +26,7 @@ func (data *Data) generateTypes(doc *openapi3.T) error {
 			continue
 		}
 
-		if err := data.generateSchemaType(name, s.Value, ""); err != nil {
+		if err := data.generateSchemaType(name, s.Value); err != nil {
 			return err
 		}
 	}
@@ -63,17 +63,16 @@ func (data *Data) generateTypes(doc *openapi3.T) error {
 // generateSchemaType writes a type definition for the given schema.
 // The additional parameter is only used as a suffix for the type name.
 // This is mostly for oneOf types.
-func (data *Data) generateSchemaType(name string, s *openapi3.Schema, additionalName string) error {
+func (data *Data) generateSchemaType(name string, s *openapi3.Schema) error {
 	otype := s.Type
 	logrus.Debugf("writing type for schema %q -> %s", name, otype)
 
 	name = printProperty(name)
-	typeName := strings.ReplaceAll(strings.TrimSpace(fmt.Sprintf("%s%s", name, printProperty(additionalName))), "Api", "API")
 
 	if otype == "string" {
 		// If this is an enum, write the enum type.
 		if len(s.Enum) > 0 {
-			if err := data.generateEnumType(typeName, s); err != nil {
+			if err := data.generateEnumType(name, s); err != nil {
 				return err
 			}
 		} else {
@@ -88,77 +87,18 @@ func (data *Data) generateSchemaType(name string, s *openapi3.Schema, additional
 	} else if otype == "array" {
 		// TODO	fmt.Fprintf(f, "type %s []%s\n", name, s.Items.Value.Type)
 	} else if otype == "object" {
-		if err := data.generateObjectType(typeName, s); err != nil {
+		if err := data.generateObjectType(name, s); err != nil {
 			return err
 		}
 	} else if s.OneOf != nil {
-		// We want to convert these to a different data type to be more idiomatic.
-		// But first, we need to make sure we have a type for each one.
-		var oneOfTypes []string
-		var properties []string
-		for _, v := range s.OneOf {
-			// We want to iterate over the properties of the embedded object
-			// and find the type that is a string.
-			var typeName string
-
-			// Iterate over all the schema components in the spec and write the types.
-			// We want to ensure we keep the order so the diffs don't look like shit.
-			keys := make([]string, 0)
-			for k := range v.Value.Properties {
-				keys = append(keys, k)
-			}
-			sort.Strings(keys)
-			for _, prop := range keys {
-				p := v.Value.Properties[prop]
-				// We want to collect all the unique properties to create our global oneOf type.
-				propertyName := printType(prop, p)
-
-				propertyString := fmt.Sprintf("\t%s %s `json:\"%s,omitempty\" yaml:\"%s,omitempty\"`\n", printProperty(prop), propertyName, prop, prop)
-				if !containsMatchFirstWord(properties, propertyString) {
-					properties = append(properties, propertyString)
-				}
-
-				if p.Value.Type == "string" {
-					if p.Value.Enum != nil {
-						// We want to get the enum value.
-						// Make sure there is only one.
-						if len(p.Value.Enum) != 1 {
-							logrus.Warnf("TODO: oneOf for %q -> %q enum %#v", name, prop, p.Value.Enum)
-							continue
-						}
-
-						typeName = printProperty(p.Value.Enum[0].(string))
-					}
-				}
-			}
-
-			// Basically all of these will have one type embedded in them that is a
-			// string and the type, since these come from a Rust sum type.
-			oneOfType := fmt.Sprintf("%s%s", name, typeName)
-			generateSchemaType(f, name, v.Value, typeName)
-			// Add it to our array.
-			oneOfTypes = append(oneOfTypes, oneOfType)
+		if err := data.generateOneOfType(name, s); err != nil {
+			return err
 		}
-
-		// Now let's create the global oneOf type.
-		// Write the type description.
-		getTypeDescription(typeName, s, f)
-		fmt.Fprintf(f, "type %s struct {\n", typeName)
-		// Iterate over the properties and write the types, if we need to.
-		for _, p := range properties {
-			fmt.Fprintf(f, p)
-		}
-		// Close the struct.
-		fmt.Fprintf(f, "}\n")
-
 	} else if s.AnyOf != nil {
 		logrus.Warnf("TODO: skipping type for %q, since it is a ANYOF", name)
 	} else if s.AllOf != nil {
 		logrus.Warnf("TODO: skipping type for %q, since it is a ALLOF", name)
 	}
-
-	// Add a newline at the end of the type.
-	fmt.Fprintln(f, "")
 
 	return nil
 }
@@ -180,7 +120,7 @@ func (data *Data) generateResponseType(name string, r *openapi3.Response) error 
 			fmt.Fprintf(f, "// %s is the type definition for a %s response.\n", name, name)
 		}*/
 
-		if err := data.generateSchemaType(f, name, v.Schema.Value, ""); err != nil {
+		if err := data.generateSchemaType(name, v.Schema.Value); err != nil {
 			return err
 		}
 	}
@@ -211,14 +151,22 @@ func (data *Data) generateEnumType(name string, s *openapi3.Schema) error {
 
 	for _, v := range s.Enum {
 		// Most likely, the enum values are strings.
-		enum, ok := v.(string)
+		enumValue, ok := v.(string)
 		if !ok {
 			return fmt.Errorf("enum value for %q is not a string: %#v", name, v)
 		}
+		enumValue = strings.TrimSpace(enumValue)
+
+		enumValueName := printProperty(fmt.Sprintf("%s %s", enumName, enumValue))
+
+		if enumValue == "" {
+			// Make the type have empty in the name.
+			enumValueName = fmt.Sprintf("%sEmpty", enumValueName)
+		}
 
 		enum.Values = append(enum.Values, EnumValue{
-			Name:  strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enumName)),
-			Value: enum,
+			Name:  enumValueName,
+			Value: enumValue,
 		})
 	}
 
@@ -234,11 +182,28 @@ func (data *Data) generateEnumType(name string, s *openapi3.Schema) error {
 	return nil
 }
 
+// Object holds the information for an object.
+type Object struct {
+	Name        string
+	Description string
+	Values      map[string]ObjectValue
+}
+
+// ObjectValue holds the information for an object value.
+type ObjectValue struct {
+	Name        string
+	Description string
+	Type        string
+	Property    string
+}
+
 func (data *Data) generateObjectType(name string, s *openapi3.Schema) error {
-	// Get the type description.
-	description := getTypeDescription(typeName, s)
-	recursive := false
-	fmt.Fprintf(f, "type %s struct {\n", typeName)
+	object := Object{
+		Name:        name,
+		Description: getTypeDescription(name, s),
+		Values:      map[string]ObjectValue{},
+	}
+
 	// We want to ensure we keep the order so the diffs don't look like shit.
 	keys := make([]string, 0)
 	for k := range s.Properties {
@@ -247,43 +212,34 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema) error {
 	sort.Strings(keys)
 	for _, k := range keys {
 		v := s.Properties[k]
-		// Check if we need to generate a type for this type.
-		typeName := printType(k, v)
 
-		if isLocalEnum(v) {
-			recursive = true
-			typeName = fmt.Sprintf("%s%s", name, printProperty(k))
-		}
-
-		if isLocalObject(v) {
-			recursive = true
-			logrus.Warnf("TODO: skipping object for %q -> %#v", name, v)
-			typeName = fmt.Sprintf("%s%s", name, printProperty(k))
+		objectValue := ObjectValue{
+			Name:     printProperty(k),
+			Type:     printType(k, v),
+			Property: k,
 		}
 
 		if v.Value.Description != "" {
-			fmt.Fprintf(f, "\t// %s is %s\n", printProperty(k), toLowerFirstLetter(strings.ReplaceAll(v.Value.Description, "\n", "\n// ")))
+			objectValue.Description = strings.ReplaceAll(v.Value.Description, "\n", "\n// ")
 		}
-		fmt.Fprintf(f, "\t%s %s `json:\"%s,omitempty\" yaml:\"%s,omitempty\"`\n", printProperty(k), typeName, k, k)
-	}
-	fmt.Fprintf(f, "}\n")
 
-	if recursive {
-		// Add a newline at the end of the type.
-		fmt.Fprintln(f, "")
-
-		// Iterate over the properties and write the types, if we need to.
-		for k, v := range s.Properties {
-			if isLocalEnum(v) {
-				generateSchemaType(f, fmt.Sprintf("%s%s", name, printProperty(k)), v.Value, "")
-			}
-
-			if isLocalObject(v) {
-				generateSchemaType(f, fmt.Sprintf("%s%s", name, printProperty(k)), v.Value, "")
-			}
-		}
+		object.Values[k] = objectValue
 	}
 
+	// Print the template for the struct.
+	objectString, err := templateToString("struct.tmpl", object)
+	if err != nil {
+		return err
+	}
+
+	// Add the type to our types.
+	data.Types = append(data.Types, objectString)
+
+	return nil
+}
+
+func (data *Data) generateOneOfType(name string, s *openapi3.Schema) error {
+	logrus.Warnf("TODO: oneof type for %q", name)
 	return nil
 }
 
@@ -294,7 +250,7 @@ func getReferenceSchema(v *openapi3.SchemaRef) string {
 			return printProperty(makeSingular(ref))
 		}
 
-		return strings.ReplaceAll(printProperty(ref), "Api", "API")
+		return printProperty(ref)
 	}
 
 	return ""
@@ -303,10 +259,10 @@ func getReferenceSchema(v *openapi3.SchemaRef) string {
 // getTypeDescription gets the description of the given type.
 func getTypeDescription(name string, s *openapi3.Schema) string {
 	if s.Description != "" {
-		return fmt.Sprintf("%s: %s", name, s.Description)
+		return fmt.Sprintf("%s: %s", name, strings.ReplaceAll(s.Description, "\n", "\n// "))
 	}
 
-	fmt.Sprintf("%s is the type definition for a %s.", name, name)
+	return fmt.Sprintf("%s is the type definition for a %s.", name, name)
 }
 
 func isLocalEnum(v *openapi3.SchemaRef) bool {
@@ -331,14 +287,12 @@ func formatStringType(t *openapi3.Schema) string {
 		return "string"
 	} else if t.Format == "hostname" {
 		return "string"
-	} else if t.Format == "ipv4" {
-		return "string"
-	} else if t.Format == "ipv6" {
-		return "string"
-	} else if t.Format == "uri" {
-		return "string"
+	} else if t.Format == "ip" || t.Format == "ipv4" || t.Format == "ipv6" {
+		return "net.IP"
+	} else if t.Format == "uri" || t.Format == "url" {
+		return "url.URL"
 	} else if t.Format == "uuid" {
-		return "string"
+		return "uuid.UUID"
 	} else if t.Format == "uuid3" {
 		return "string"
 	}

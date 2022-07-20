@@ -35,14 +35,13 @@ func run() error {
 	}
 
 	data := Data{
-		PackageName:      "kittycad",
-		BaseURL:          "https://api.kittycad.io",
-		EnvVariable:      "KITTYCAD_API_TOKEN",
-		Tags:             []Tag{},
-		WorkingDirectory: wd,
-		Examples:         []string{},
-		Paths:            []string{},
-		Types:            []string{},
+		PackageName: "kittycad",
+		BaseURL:     "https://api.kittycad.io",
+		EnvVariable: "KITTYCAD_API_TOKEN",
+		Tags:        []Tag{},
+		Examples:    []string{},
+		Paths:       []string{},
+		Types:       []string{},
 	}
 	// Format the tags for our data.
 	for _, tag := range doc.Tags {
@@ -137,7 +136,7 @@ func generateExamplesFile(doc *openapi3.T, data Data) error {
 }
 
 func printTagName(tag string) string {
-	return strings.ReplaceAll(strcase.ToCamel(makeSingular(tag)), "Api", "API")
+	return printProperty(makeSingular(tag))
 }
 
 func openGeneratedFile(filename string) *os.File {
@@ -171,14 +170,10 @@ func printProperty(p string) string {
 	c := strcase.ToCamel(p)
 	if c == "Id" {
 		c = "ID"
-	} else if c == "Ncpus" {
-		c = "NCPUs"
 	} else if c == "IpAddress" {
 		c = "IPAddress"
 	} else if c == "UserId" {
 		c = "UserID"
-	} else if strings.Contains(c, "IdSortMode") {
-		strings.ReplaceAll(c, "IdSortMode", "IDSortMode")
 	} else if strings.HasPrefix(c, "Gpu") {
 		c = strings.Replace(c, "Gpu", "GPU", 1)
 	} else if strings.HasSuffix(c, "Id") {

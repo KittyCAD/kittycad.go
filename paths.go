@@ -9,7 +9,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
+
+	"github.com/google/uuid"
 )
 
 // GetSchema: Get OpenAPI schema.
@@ -424,7 +427,7 @@ func (s *HiddenService) AuthEmail(j *EmailAuthenticationForm) (*VerificationToke
 //	- `callbackUrl`: The URL to redirect back to after we have authenticated.
 //	- `email`: The user's email.
 //	- `token`: The verification token.
-func (s *HiddenService) AuthEmailCallback(callbackUrl string, email string, token string) error {
+func (s *HiddenService) AuthEmailCallback(callbackUrl url.URL, email string, token string) error {
 	// Create the url.
 	path := "/auth/email/callback"
 	uri := resolveRelative(s.client.server, path)
@@ -435,7 +438,7 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl string, email string, toke
 	}
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"callback_url": callbackUrl,
+		"callback_url": string(callbackUrl),
 		"email":        email,
 		"token":        token,
 	}); err != nil {
@@ -1330,7 +1333,7 @@ func (s *APITokenService) CreateForUser() (*APIToken, error) {
 //
 // Parameters:
 //	- `token`: The API token.
-func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
+func (s *APITokenService) GetForUser(token uuid.UUID) (*APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1341,7 +1344,7 @@ func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
 	}
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token,
+		"token": string(token),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1374,7 +1377,7 @@ func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
 //
 // Parameters:
 //	- `token`: The API token.
-func (s *APITokenService) DeleteForUser(token string) error {
+func (s *APITokenService) DeleteForUser(token uuid.UUID) error {
 	// Create the url.
 	path := "/user/api-tokens/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1385,7 +1388,7 @@ func (s *APITokenService) DeleteForUser(token string) error {
 	}
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token,
+		"token": string(token),
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1801,7 +1804,7 @@ func (s *PaymentService) DeleteMethodForUser(id string) error {
 //
 // Parameters:
 //	- `token`: The API token.
-func (s *SessionService) GetForUser(token string) (*Session, error) {
+func (s *SessionService) GetForUser(token uuid.UUID) (*Session, error) {
 	// Create the url.
 	path := "/user/session/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1812,7 +1815,7 @@ func (s *SessionService) GetForUser(token string) (*Session, error) {
 	}
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token,
+		"token": string(token),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}

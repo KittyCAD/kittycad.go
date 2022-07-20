@@ -58,7 +58,12 @@ func processTemplate(templateName string, outputFile string, data any) error {
 		return err
 	}
 
-	outputPath := filepath.Join(data.WorkingDirectory, outputFile)
+	wd, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("error getting current working directory: %v", err)
+	}
+	outputPath := filepath.Join(wd, outputFile)
+
 	logrus.Debugf("Writing file: %s", outputPath)
 
 	f, err := os.Create(outputPath)

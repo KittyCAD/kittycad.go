@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/getkin/kin-openapi v0.97.0
+	github.com/google/uuid v1.3.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/wI2L/jsondiff v0.2.0

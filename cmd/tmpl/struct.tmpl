@@ -1,0 +1,7 @@
+// {{.Description}}
+type {{.Name}} struct {
+    {{range .Values -}}
+        // {{.Name}}: {{.Description}}
+        {{.Name}} {{.Type}} `json:"{{.Property}}" yaml:"{{.Property}}"`
+    {{end -}}
+}
