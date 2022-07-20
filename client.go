@@ -19,6 +19,8 @@ type Client struct {
 	APICall *APICallService
 	// APIToken: API tokens allow users to call the API outside of their session token that is used as a cookie in the user interface. Users can create, delete, and list their API tokens. But, of course, you need an API token to do this, so first be sure to generate one in the account UI.
 	APIToken *APITokenService
+	// App: Endpoints for third party app grant flows.
+	App *AppService
 	// File: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 	File *FileService
 	// Hidden: Hidden API endpoints that should not show up in the docs.
@@ -42,6 +44,9 @@ type APICallService service
 
 // APITokenService: API tokens allow users to call the API outside of their session token that is used as a cookie in the user interface. Users can create, delete, and list their API tokens. But, of course, you need an API token to do this, so first be sure to generate one in the account UI.
 type APITokenService service
+
+// AppService: Endpoints for third party app grant flows.
+type AppService service
 
 // FileService: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 type FileService service

@@ -243,6 +243,73 @@ func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 	return &body, nil
 }
 
+// GithubCallback: Listen for callbacks to GitHub app authentication.
+//
+// This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
+// The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
+func (s *AppService) GithubCallback(j *interface{}) error {
+	// Create the url.
+	path := "/apps/github/callback"
+	uri := resolveRelative(s.client.server, path)
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(j); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+	// Return.
+	return nil
+}
+
+// GithubConsent: Get the consent URL for GitHub app authentication.
+//
+// This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
+// The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
+func (s *AppService) GithubConsent() (*AppClientInfo, error) {
+	// Create the url.
+	path := "/apps/github/consent"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body AppClientInfo
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
 // ListAsyncOperations: List async operations.
 //
 // For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
@@ -370,8 +437,8 @@ func (s *APICallService) GetAsyncOperation(id string) (*AsyncAPICallOutput, erro
 	return &body, nil
 }
 
-// ListenAuthEmail: Create an email verification request for a user.
-func (s *HiddenService) ListenAuthEmail(j *EmailAuthenticationForm) (*VerificationToken, error) {
+// AuthEmail: Create an email verification request for a user.
+func (s *HiddenService) AuthEmail(j *EmailAuthenticationForm) (*VerificationToken, error) {
 	// Create the url.
 	path := "/auth/email"
 	uri := resolveRelative(s.client.server, path)
@@ -407,13 +474,13 @@ func (s *HiddenService) ListenAuthEmail(j *EmailAuthenticationForm) (*Verificati
 	return &body, nil
 }
 
-// ListenAuthEmailCallback: Listen for callbacks for email verification for users.
+// AuthEmailCallback: Listen for callbacks for email verification for users.
 //
 // Parameters:
 //	- `callbackUrl`: The URL to redirect back to after we have authenticated.
 //	- `email`: The user's email.
 //	- `token`: The verification token.
-func (s *HiddenService) ListenAuthEmailCallback(callbackUrl string, email string, token string) error {
+func (s *HiddenService) AuthEmailCallback(callbackUrl string, email string, token string) error {
 	// Create the url.
 	path := "/auth/email/callback"
 	uri := resolveRelative(s.client.server, path)
