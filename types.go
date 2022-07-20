@@ -158,6 +158,12 @@ type APITokenResultsPage struct {
 	NextPage string `json:"next_page,omitempty" yaml:"next_page,omitempty"`
 }
 
+// AppClientInfo is information about a third party app client.
+type AppClientInfo struct {
+	// Url is the URL for consent.
+	Url string `json:"url,omitempty" yaml:"url,omitempty"`
+}
+
 // AsyncAPICall is an async API call.
 type AsyncAPICall struct {
 	// CompletedAt is the time and date the async API call was completed.
