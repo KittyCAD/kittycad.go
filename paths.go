@@ -17,7 +17,7 @@ import (
 
 // GetSchema: Get OpenAPI schema.
 //
-func (s *MetaService) GetSchema() (*interface{}, error) {
+func (s *MetaService) GetSchema() error {
 	// Create the url.
 	path := "/"
 	uri := resolveRelative(s.client.server, path)
@@ -25,32 +25,23 @@ func (s *MetaService) GetSchema() (*interface{}, error) {
 	// Create the request.
 	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
+		return fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
+		return fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return nil, err
+		return err
 	}
 
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
+	// Return.
+	return nil
 
 }
 
@@ -886,7 +877,7 @@ func (s *HiddenService) Logout() error {
 // This endpoint is designed to be accessed from an *unauthenticated* API client. It generates and records a `device_code` and `user_code` which must be verified and confirmed prior to a token being granted.
 // 	- `body`
 //
-func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) (*interface{}, error) {
+func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) error {
 	// Create the url.
 	path := "/oauth2/device/auth"
 	uri := resolveRelative(s.client.server, path)
@@ -896,14 +887,14 @@ func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) (*interfac
 	encoder := schema.NewEncoder()
 	err := encoder.Encode(body, form)
 	if err != nil {
-		return nil, fmt.Errorf("encoding form body request failed: %v", err)
+		return fmt.Errorf("encoding form body request failed: %v", err)
 	}
 	b := strings.NewReader(form.Encode())
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
 	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
+		return fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
@@ -912,26 +903,17 @@ func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) (*interfac
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
+		return fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return nil, err
+		return err
 	}
 
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
+	// Return.
+	return nil
 
 }
 
@@ -982,7 +964,7 @@ func (s *Oauth2Service) DeviceAuthConfirm(body DeviceAuthVerifyParams) error {
 // This endpoint should be polled by the client until the user code is verified and the grant is confirmed.
 // 	- `body`
 //
-func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) (*interface{}, error) {
+func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) error {
 	// Create the url.
 	path := "/oauth2/device/token"
 	uri := resolveRelative(s.client.server, path)
@@ -992,14 +974,14 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) (*i
 	encoder := schema.NewEncoder()
 	err := encoder.Encode(body, form)
 	if err != nil {
-		return nil, fmt.Errorf("encoding form body request failed: %v", err)
+		return fmt.Errorf("encoding form body request failed: %v", err)
 	}
 	b := strings.NewReader(form.Encode())
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
 	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
+		return fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
@@ -1008,26 +990,17 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) (*i
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
+		return fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return nil, err
+		return err
 	}
 
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
+	// Return.
+	return nil
 
 }
 

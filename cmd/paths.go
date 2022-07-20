@@ -306,6 +306,11 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool, spec *ope
 				return "", "", err
 			}
 
+			// If it's an interface then it was an empty schema and therefore there is no response.
+			if t == "interface{}" {
+				return "", getAllPagesType, nil
+			}
+
 			return t, getAllPagesType, nil
 		}
 	}
