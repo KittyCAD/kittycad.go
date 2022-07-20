@@ -301,23 +301,35 @@ func formatStringType(t *openapi3.Schema) string {
 }
 
 // printType converts a schema type to a valid Go type.
-func printType(property string, r *openapi3.SchemaRef) string {
+func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string, error) {
 	s := r.Value
 	t := s.Type
 
-	// If we have a reference, just use that.
+	// If we have a reference, we can usually just use that.
 	if r.Ref != "" {
-		return getReferenceSchema(r)
+		// Get the schema for the reference.
+		ref := strings.TrimPrefix(r.Ref, "#/components/schemas/")
+		reference, ok := spec.Components.Schemas[ref]
+		if !ok {
+			return "", fmt.Errorf("reference %q not found in schemas", ref)
+		}
+
+		// If the reference is an object or an enum, return the reference.
+		if reference.Value.Type == "object" || reference.Value.Type == "string" && len(reference.Value.Enum) > 0 {
+			return getReferenceSchema(r), nil
+		}
+
+		// Otherwise, we need to recurse.
+		return printType(property, reference, spec)
 	}
 
 	// See if we have an allOf.
 	if s.AllOf != nil {
 		if len(s.AllOf) > 1 {
-			logrus.Warnf("TODO: allOf for %q has more than 1 item", property)
-			return "TODO"
+			return "", fmt.Errorf("allOf for %q has more than 1 item", property)
 		}
 
-		return printType(property, s.AllOf[0])
+		return printType(property, s.AllOf[0]), nil
 	}
 
 	if t == "string" {
@@ -326,7 +338,7 @@ func printType(property string, r *openapi3.SchemaRef) string {
 			return reference
 		}
 
-		return formatStringType(s)
+		return formatStringType(s), nil
 	} else if t == "integer" {
 		return "int"
 	} else if t == "number" {
@@ -336,7 +348,7 @@ func printType(property string, r *openapi3.SchemaRef) string {
 	} else if t == "array" {
 		reference := getReferenceSchema(s.Items)
 		if reference != "" {
-			return fmt.Sprintf("[]%s", reference)
+			return fmt.Sprintf("[]%s", reference), nil
 		}
 
 		// TODO: handle if it is not a reference.
@@ -346,9 +358,8 @@ func printType(property string, r *openapi3.SchemaRef) string {
 			return printType(property, s.AdditionalProperties)
 		}
 		// Most likely this is a local object, we will handle it.
-		return strcase.ToCamel(property)
+		return strcase.ToCamel(property), nil
 	}
 
-	logrus.Warnf("TODO: skipping type %q for %q, marking as interface{}", t, property)
-	return "interface{}"
+	return "", fmt.Errorf("unknown type %q for %q", t, property)
 }
