@@ -11,6 +11,8 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/gorilla/schema"
 )
 
 // GetSchema: Get OpenAPI schema.
@@ -42,13 +44,13 @@ func (s *MetaService) GetSchema() (*ResponseGetSchema, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ResponseGetSchema
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded ResponseGetSchema
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -84,13 +86,13 @@ func (s *MetaService) Getdata() (*Metadata, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body Metadata
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded Metadata
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -132,13 +134,13 @@ func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQuer
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []APICallQueryGroup
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded []APICallQueryGroup
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -184,13 +186,13 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body APICallWithPriceResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded APICallWithPriceResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -232,13 +234,13 @@ func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body APICallWithPrice
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded APICallWithPrice
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -317,13 +319,13 @@ func (s *AppService) GithubConsent() (*AppClientInfo, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body AppClientInfo
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded AppClientInfo
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -371,13 +373,13 @@ func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body AsyncAPICallResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded AsyncAPICallResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -419,13 +421,13 @@ func (s *APICallService) GetAsyncOperation(id string) (*AsyncAPICallOutput, erro
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body AsyncAPICallOutput
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded AsyncAPICallOutput
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -468,13 +470,13 @@ func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTo
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body VerificationToken
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded VerificationToken
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -497,7 +499,7 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"callback_url": callbackUrl.ToString(),
+		"callback_url": callbackUrl.String(),
 		"email":        email,
 		"token":        token,
 	}); err != nil {
@@ -532,7 +534,7 @@ func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat 
 	path := "/file/conversion/{src_format}/{output_format}"
 	uri := resolveRelative(s.client.server, path)
 
-	b := &body
+	b := strings.NewReader(body)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -567,13 +569,13 @@ func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat 
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body FileConversion
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded FileConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -615,13 +617,13 @@ func (s *FileService) GetConversion(id string) (*AsyncAPICallOutput, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body AsyncAPICallOutput
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded AsyncAPICallOutput
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -636,7 +638,7 @@ func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFo
 	path := "/file/density"
 	uri := resolveRelative(s.client.server, path)
 
-	b := &body
+	b := strings.NewReader(body)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -671,13 +673,13 @@ func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFo
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body FileDensity
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded FileDensity
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -692,7 +694,7 @@ func (s *FileService) CreateExecution(lang CodeLanguage, output string, body str
 	path := "/file/execute/{lang}"
 	uri := resolveRelative(s.client.server, path)
 
-	b := &body
+	b := strings.NewReader(body)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -727,13 +729,13 @@ func (s *FileService) CreateExecution(lang CodeLanguage, output string, body str
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body CodeOutput
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded CodeOutput
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -748,7 +750,7 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFo
 	path := "/file/mass"
 	uri := resolveRelative(s.client.server, path)
 
-	b := &body
+	b := strings.NewReader(body)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -783,13 +785,13 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFo
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body FileMass
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded FileMass
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -803,7 +805,7 @@ func (s *FileService) CreateVolume(srcFormat FileSourceFormat, body string) (*Fi
 	path := "/file/volume"
 	uri := resolveRelative(s.client.server, path)
 
-	b := &body
+	b := strings.NewReader(body)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -837,13 +839,13 @@ func (s *FileService) CreateVolume(srcFormat FileSourceFormat, body string) (*Fi
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body FileVolume
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded FileVolume
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -891,7 +893,8 @@ func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) (*Response
 
 	// Encode the request body as a form.
 	form := url.Values{}
-	err := encoder.Encode(person, form)
+	encoder := schema.NewEncoder()
+	err := encoder.Encode(body, form)
 	if err != nil {
 		return nil, fmt.Errorf("encoding form body request failed: %v", err)
 	}
@@ -922,13 +925,13 @@ func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) (*Response
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ResponseDeviceAuthRequest
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded ResponseDeviceAuthRequest
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -986,7 +989,8 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) (*R
 
 	// Encode the request body as a form.
 	form := url.Values{}
-	err := encoder.Encode(person, form)
+	encoder := schema.NewEncoder()
+	err := encoder.Encode(body, form)
 	if err != nil {
 		return nil, fmt.Errorf("encoding form body request failed: %v", err)
 	}
@@ -1017,13 +1021,13 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) (*R
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ResponseDeviceAccessToken
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded ResponseDeviceAccessToken
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1149,13 +1153,13 @@ func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl st
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body OAuth2ClientInfo
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded OAuth2ClientInfo
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1188,13 +1192,13 @@ func (s *MetaService) Ping() (*Pong, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body Pong
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded Pong
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1240,13 +1244,13 @@ func (s *UnitService) CreateConversion(outputFormat UnitMetricFormat, srcFormat 
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body UnitConversion
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded UnitConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1282,13 +1286,13 @@ func (s *UserService) GetSelf() (*User, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body User
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded User
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1333,13 +1337,13 @@ func (s *UserService) UpdateSelf(body UpdateUser) (*User, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body User
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded User
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1418,13 +1422,13 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body APICallWithPriceResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded APICallWithPriceResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1466,13 +1470,13 @@ func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body APICallWithPrice
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded APICallWithPrice
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1518,13 +1522,13 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body APITokenResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded APITokenResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1559,13 +1563,13 @@ func (s *APITokenService) CreateForUser() (*APIToken, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body APIToken
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded APIToken
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1586,7 +1590,7 @@ func (s *APITokenService) GetForUser(token UUID) (*APIToken, error) {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token.ToString(),
+		"token": token.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1607,13 +1611,13 @@ func (s *APITokenService) GetForUser(token UUID) (*APIToken, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body APIToken
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded APIToken
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1634,7 +1638,7 @@ func (s *APITokenService) DeleteForUser(token UUID) error {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token.ToString(),
+		"token": token.String(),
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1688,13 +1692,13 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ExtendedUser
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded ExtendedUser
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1736,13 +1740,13 @@ func (s *FileService) GetConversionForUser(id string) (*AsyncAPICallOutput, erro
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body AsyncAPICallOutput
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded AsyncAPICallOutput
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1778,13 +1782,13 @@ func (s *PaymentService) GetInformationForUser() (*Customer, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body Customer
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded Customer
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1830,13 +1834,13 @@ func (s *PaymentService) CreateInformationForUser(body BillingInfo) (*Customer, 
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body Customer
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded Customer
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1882,13 +1886,13 @@ func (s *PaymentService) UpdateInformationForUser(body BillingInfo) (*Customer, 
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body Customer
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded Customer
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1956,13 +1960,13 @@ func (s *PaymentService) GetBalanceForUser() (*CustomerBalance, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body CustomerBalance
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded CustomerBalance
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -1997,13 +2001,13 @@ func (s *PaymentService) CreateIntentForUser() (*PaymentIntent, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body PaymentIntent
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded PaymentIntent
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -2038,13 +2042,13 @@ func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []Invoice
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded []Invoice
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -2079,13 +2083,13 @@ func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body []PaymentMethod
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded []PaymentMethod
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -2145,7 +2149,7 @@ func (s *SessionService) GetForUser(token UUID) (*Session, error) {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token.ToString(),
+		"token": token.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -2166,13 +2170,13 @@ func (s *SessionService) GetForUser(token UUID) (*Session, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body Session
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded Session
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -2218,13 +2222,13 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body UserResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded UserResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -2270,13 +2274,13 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ExtendedUserResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded ExtendedUserResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -2318,13 +2322,13 @@ func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body ExtendedUser
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded ExtendedUser
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -2366,13 +2370,13 @@ func (s *UserService) Get(id string) (*User, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body User
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded User
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }
 
@@ -2420,12 +2424,12 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var body APICallWithPriceResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	var decoded APICallWithPriceResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
-	return &body, nil
+	return &decoded, nil
 
 }

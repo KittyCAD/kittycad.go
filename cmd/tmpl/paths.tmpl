@@ -2,6 +2,10 @@
 
 package {{.PackageName}}
 
+import (
+    "github.com/gorilla/schema"
+)
+
 {{range .Paths -}}
     {{.}}
 

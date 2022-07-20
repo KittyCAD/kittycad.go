@@ -200,7 +200,7 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 		} else if typeName == "float64" {
 			arg.ToString = fmt.Sprintf("fmt.Sprintf(\"%%f\", %s)", arg.Name)
 		} else if isTypeToString(typeName) {
-			arg.ToString = fmt.Sprintf("%s.ToString()", arg.Name)
+			arg.ToString = fmt.Sprintf("%s.String()", arg.Name)
 		} else {
 			arg.ToString = fmt.Sprintf("string(%s)", arg.Name)
 		}
