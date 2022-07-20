@@ -17,6 +17,8 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/iancoleman/strcase"
+	"github.com/sirupsen/logrus"
+	"github.com/wI2L/jsondiff"
 )
 
 var EnumStringTypes map[string][]string = map[string][]string{}
@@ -39,11 +41,12 @@ func main() {
 
 	// Load the open API spec from the URI.
 	doc, err := openapi3.NewLoader().LoadFromURI(u)*/
-	doc, err := openapi3.NewLoader().LoadFromFile(p)
+	oldDoc, err := openapi3.NewLoader().LoadFromFile(p)
 	if err != nil {
-		fmt.Printf("error loading openAPI spec: %v\n", err)
-		os.Exit(1)
+		logrus.Fatalf("error loading openAPI spec: %v", err)
 	}
+	// Copy the spec.
+	doc := oldDoc
 
 	// Generate the client.go file.
 	generateClient(doc)
@@ -77,18 +80,20 @@ if err != nil {
 		"client":  clientInfo,
 	}
 
-	// Write back out the new spec.
-	out, err := json.MarshalIndent(doc, "", "  ")
+	patch, err := jsondiff.Compare(oldDoc, doc)
 	if err != nil {
-		fmt.Printf("error marshalling openAPI spec: %v\n", err)
-		os.Exit(1)
+		logrus.Errorf("error comparing old and new openAPI spec: %v", err)
 	}
 
-	if err := ioutil.WriteFile(p, out, 0644); err != nil {
-		fmt.Printf("error writing openAPI spec to %s: %v\n", p, err)
-		os.Exit(1)
+	out, err := json.MarshalIndent(patch, "", " ")
+	if err != nil {
+		logrus.Errorf("error marshalling patch: %v", err)
 	}
 
+	diffFile := filepath.Join(wd, "kittycad.go.patch.json")
+	if err := ioutil.WriteFile(diffFile, out, 0644); err != nil {
+		logrus.Fatalf("error writing openAPI spec patch to %s: %v", diffFile, err)
+	}
 }
 
 // Generate the types.go file.
