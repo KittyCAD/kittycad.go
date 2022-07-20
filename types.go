@@ -2,8 +2,6 @@
 
 package kittycad
 
-import "net"
-
 // AccountProvider: An account provider.
 type AccountProvider string
 
@@ -21,7 +19,7 @@ type Address struct {
 	// Country: The country component.
 	Country string `json:"country" yaml:"country"`
 	// CreatedAt: The time and date the address was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// ID: The unique identifier of the address.
 	ID UUID `json:"id" yaml:"id"`
 	// State: The state component.
@@ -31,7 +29,7 @@ type Address struct {
 	// Street2: The second street component.
 	Street2 string `json:"street2" yaml:"street2"`
 	// UpdatedAt: The time and date the address was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID that this address belongs to.
 	UserID string `json:"user_id" yaml:"user_id"`
 	// Zip: The zip component.
@@ -85,9 +83,9 @@ const (
 // This is a join of the `ApiCall` and `ApiCallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt: The date and time the API call completed billing.
-	CompletedAt *Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
 	// CreatedAt: The date and time the API call was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Duration: The duration of the API call.
 	Duration int `json:"duration" yaml:"duration"`
 	// Email: The user's email address.
@@ -97,7 +95,7 @@ type APICallWithPrice struct {
 	// ID: The unique identifier for the API call.
 	ID UUID `json:"id" yaml:"id"`
 	// IPAddress: The ip address of the origin.
-	IPAddress net.IP `json:"ip_address" yaml:"ip_address"`
+	IPAddress IP `json:"ip_address" yaml:"ip_address"`
 	// Method: The HTTP method requsted by the API call.
 	Method Method `json:"method" yaml:"method"`
 	// Minutes: The number of minutes the API call was billed for.
@@ -113,7 +111,7 @@ type APICallWithPrice struct {
 	// ResponseBody: The response body returned by the API call. We do not store this information if it is above a certain size.
 	ResponseBody string `json:"response_body" yaml:"response_body"`
 	// StartedAt: The date and time the API call started billing.
-	StartedAt *Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at"`
 	// StatusCode: The status code returned by the API call.
 	StatusCode int `json:"status_code" yaml:"status_code"`
 	// StripeInvoiceItemID: The Stripe invoice item ID of the API call if it is billable.
@@ -121,7 +119,7 @@ type APICallWithPrice struct {
 	// Token: The API token that made the API call.
 	Token UUID `json:"token" yaml:"token"`
 	// UpdatedAt: The date and time the API call was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserAgent: The user agent of the request.
 	UserAgent string `json:"user_agent" yaml:"user_agent"`
 	// UserID: The ID of the user that made the API call.
@@ -141,7 +139,7 @@ type APICallWithPriceResultsPage struct {
 // These are used to authenticate users with Bearer authentication.
 type APIToken struct {
 	// CreatedAt: The date and time the API token was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// ID: The unique identifier for the API token.
 	ID string `json:"id" yaml:"id"`
 	// IsValid: If the token is valid. We never delete API tokens, but we can mark them as invalid. We save them for ever to preserve the history of the API token.
@@ -149,7 +147,7 @@ type APIToken struct {
 	// Token: The API token itself.
 	Token UUID `json:"token" yaml:"token"`
 	// UpdatedAt: The date and time the API token was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The ID of the user that owns the API token.
 	UserID string `json:"user_id" yaml:"user_id"`
 }
@@ -171,9 +169,9 @@ type AppClientInfo struct {
 // AsyncAPICall: An async API call.
 type AsyncAPICall struct {
 	// CompletedAt: The time and date the async API call was completed.
-	CompletedAt *Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
 	// CreatedAt: The time and date the async API call was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error"`
 	// ID: The unique identifier of the async API call.
@@ -185,13 +183,13 @@ type AsyncAPICall struct {
 	// Output: The JSON output for the API call. These are determined by the endpoint that is run.
 	Output interface{} `json:"output" yaml:"output"`
 	// StartedAt: The time and date the async API call was started.
-	StartedAt *Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at"`
 	// Status: The status of the async API call.
 	Status APICallStatus `json:"status" yaml:"status"`
 	// Type: The type of async API call.
 	Type AsyncAPICallType `json:"type" yaml:"type"`
 	// UpdatedAt: The time and date the async API call was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID of the user who created the async API call.
 	UserID string `json:"user_id" yaml:"user_id"`
 	// Worker: The worker node that is performing or performed the async API call.
@@ -201,9 +199,9 @@ type AsyncAPICall struct {
 // AsyncAPICallOutput: A file conversion.
 type AsyncAPICallOutput struct {
 	// CompletedAt: The time and date the file conversion was completed.
-	CompletedAt *Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
 	// CreatedAt: The time and date the file conversion was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error"`
 	// ID: The unique identifier of the file conversion.
@@ -217,13 +215,13 @@ type AsyncAPICallOutput struct {
 	// SrcFormat: The source format of the file conversion.
 	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
 	// StartedAt: The time and date the file conversion was started.
-	StartedAt *Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at"`
 	// Status: The status of the file conversion.
 	Status APICallStatus `json:"status" yaml:"status"`
 	// Type:
 	Type string `json:"type" yaml:"type"`
 	// UpdatedAt: The time and date the file conversion was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID of the user who created the file conversion.
 	UserID string `json:"user_id" yaml:"user_id"`
 }
@@ -295,7 +293,7 @@ type CardDetails struct {
 // Cluster: Cluster information.
 type Cluster struct {
 	// Addr: The IP address of the cluster.
-	Addr net.IP `json:"addr" yaml:"addr"`
+	Addr IP `json:"addr" yaml:"addr"`
 	// AuthTimeout: The auth timeout of the cluster.
 	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout"`
 	// ClusterPort: The port of the cluster.
@@ -347,7 +345,7 @@ type Connection struct {
 	// Cluster: Information about the cluster.
 	Cluster Cluster `json:"cluster" yaml:"cluster"`
 	// ConfigLoadTime: The time the configuration was loaded.
-	ConfigLoadTime *Time `json:"config_load_time" yaml:"config_load_time"`
+	ConfigLoadTime Time `json:"config_load_time" yaml:"config_load_time"`
 	// Connections: The number of connections to the server.
 	Connections int `json:"connections" yaml:"connections"`
 	// Cores: The CPU core usage of the server.
@@ -363,7 +361,7 @@ type Connection struct {
 	// Gomaxprocs: `GOMAXPROCS` of the server.
 	Gomaxprocs int `json:"gomaxprocs" yaml:"gomaxprocs"`
 	// Host: The host of the server.
-	Host net.IP `json:"host" yaml:"host"`
+	Host IP `json:"host" yaml:"host"`
 	// HttpBasePath: The http base path of the server.
 	HttpBasePath string `json:"http_base_path" yaml:"http_base_path"`
 	// HttpHost: The http host of the server.
@@ -395,7 +393,7 @@ type Connection struct {
 	// Mem: The memory usage of the server.
 	Mem int `json:"mem" yaml:"mem"`
 	// Now: The time now.
-	Now *Time `json:"now" yaml:"now"`
+	Now Time `json:"now" yaml:"now"`
 	// OutBytes: The count of outbound bytes for the server.
 	OutBytes int `json:"out_bytes" yaml:"out_bytes"`
 	// OutMsgs: The number of outbound messages for the server.
@@ -419,7 +417,7 @@ type Connection struct {
 	// SlowConsumers: The number of slow consumers for the server.
 	SlowConsumers int `json:"slow_consumers" yaml:"slow_consumers"`
 	// Start: When the server was started.
-	Start *Time `json:"start" yaml:"start"`
+	Start Time `json:"start" yaml:"start"`
 	// Subscriptions: The number of subscriptions for the server.
 	Subscriptions int `json:"subscriptions" yaml:"subscriptions"`
 	// SystemAccount: The system account.
@@ -743,7 +741,7 @@ type Customer struct {
 	// If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.
 	Balance float64 `json:"balance" yaml:"balance"`
 	// CreatedAt: Time at which the object was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Currency: Three-letter ISO code for the currency the customer can be charged in for recurring billing purposes.
 	Currency Currency `json:"currency" yaml:"currency"`
 	// Delinquent: When the customer's latest invoice is billed by charging automatically, `delinquent` is `true` if the invoice's latest charge failed.
@@ -767,7 +765,7 @@ type Customer struct {
 // This holds information about the financial balance for the user.
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// ID: The unique identifier for the balance.
 	ID UUID `json:"id" yaml:"id"`
 	// MonthlyCreditsRemaining: The monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the user per month.
@@ -779,7 +777,7 @@ type CustomerBalance struct {
 	// TotalDue: This includes any outstanding, draft, or open invoices and any pending invoice items. This does not include any credits the user has on their account.
 	TotalDue float64 `json:"total_due" yaml:"total_due"`
 	// UpdatedAt: The date and time the balance was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID the balance belongs to.
 	UserID string `json:"user_id" yaml:"user_id"`
 }
@@ -1011,13 +1009,13 @@ type ExtendedUser struct {
 	// Company: The user's company.
 	Company string `json:"company" yaml:"company"`
 	// CreatedAt: The date and time the user was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Discord: The user's Discord handle.
 	Discord string `json:"discord" yaml:"discord"`
 	// Email: The email address of the user.
 	Email string `json:"email" yaml:"email"`
 	// EmailVerified: The date and time the email address was verified.
-	EmailVerified *Time `json:"email_verified" yaml:"email_verified"`
+	EmailVerified Time `json:"email_verified" yaml:"email_verified"`
 	// FirstName: The user's first name.
 	FirstName string `json:"first_name" yaml:"first_name"`
 	// Github: The user's GitHub handle.
@@ -1037,7 +1035,7 @@ type ExtendedUser struct {
 	// StripeID: The user's Stripe ID. This is mostly used for internal mapping.
 	StripeID string `json:"stripe_id" yaml:"stripe_id"`
 	// UpdatedAt: The date and time the user was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// ZendeskID: The user's Zendesk ID. This is mostly used for internal mapping.
 	ZendeskID string `json:"zendesk_id" yaml:"zendesk_id"`
 }
@@ -1053,9 +1051,9 @@ type ExtendedUserResultsPage struct {
 // FileConversion: A file conversion.
 type FileConversion struct {
 	// CompletedAt: The time and date the file conversion was completed.
-	CompletedAt *Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
 	// CreatedAt: The time and date the file conversion was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error"`
 	// ID: The unique identifier of the file conversion.
@@ -1069,11 +1067,11 @@ type FileConversion struct {
 	// SrcFormat: The source format of the file conversion.
 	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
 	// StartedAt: The time and date the file conversion was started.
-	StartedAt *Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at"`
 	// Status: The status of the file conversion.
 	Status APICallStatus `json:"status" yaml:"status"`
 	// UpdatedAt: The time and date the file conversion was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID of the user who created the file conversion.
 	UserID string `json:"user_id" yaml:"user_id"`
 }
@@ -1081,9 +1079,9 @@ type FileConversion struct {
 // FileDensity: A file density result.
 type FileDensity struct {
 	// CompletedAt: The time and date the density was completed.
-	CompletedAt *Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
 	// CreatedAt: The time and date the density was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Density: The resulting density.
 	Density float64 `json:"density" yaml:"density"`
 	// Error: The error the function returned, if any.
@@ -1097,11 +1095,11 @@ type FileDensity struct {
 	// SrcFormat: The source format of the file.
 	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
 	// StartedAt: The time and date the density was started.
-	StartedAt *Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at"`
 	// Status: The status of the density.
 	Status APICallStatus `json:"status" yaml:"status"`
 	// UpdatedAt: The time and date the density was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID of the user who created the density.
 	UserID string `json:"user_id" yaml:"user_id"`
 }
@@ -1109,9 +1107,9 @@ type FileDensity struct {
 // FileMass: A file mass result.
 type FileMass struct {
 	// CompletedAt: The time and date the mass was completed.
-	CompletedAt *Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
 	// CreatedAt: The time and date the mass was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error"`
 	// ID: The unique identifier of the mass request.
@@ -1125,11 +1123,11 @@ type FileMass struct {
 	// SrcFormat: The source format of the file.
 	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
 	// StartedAt: The time and date the mass was started.
-	StartedAt *Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at"`
 	// Status: The status of the mass.
 	Status APICallStatus `json:"status" yaml:"status"`
 	// UpdatedAt: The time and date the mass was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID of the user who created the mass.
 	UserID string `json:"user_id" yaml:"user_id"`
 }
@@ -1179,9 +1177,9 @@ type FileSystemMetadata struct {
 // FileVolume: A file volume result.
 type FileVolume struct {
 	// CompletedAt: The time and date the volume was completed.
-	CompletedAt *Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
 	// CreatedAt: The time and date the volume was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error"`
 	// ID: The unique identifier of the volume request.
@@ -1191,11 +1189,11 @@ type FileVolume struct {
 	// SrcFormat: The source format of the file.
 	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
 	// StartedAt: The time and date the volume was started.
-	StartedAt *Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at"`
 	// Status: The status of the volume.
 	Status APICallStatus `json:"status" yaml:"status"`
 	// UpdatedAt: The time and date the volume was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID of the user who created the volume.
 	UserID string `json:"user_id" yaml:"user_id"`
 	// Volume: The resulting volume.
@@ -1249,7 +1247,7 @@ type Invoice struct {
 	// An invoice is not attempted until 1 hour after the `invoice.created` webhook, for example, so you might not want to display that invoice as unpaid to your users.
 	Attempted bool `json:"attempted" yaml:"attempted"`
 	// CreatedAt: Time at which the object was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
 	Currency Currency `json:"currency" yaml:"currency"`
 	// CustomerEmail: The email address for the customer. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated.
@@ -1495,7 +1493,7 @@ type PaymentMethod struct {
 	// Card: The card, if it is one. For our purposes, this is the only type of payment method that we support.
 	Card CardDetails `json:"card" yaml:"card"`
 	// CreatedAt: Time at which the object was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// ID: Unique identifier for the object.
 	ID string `json:"id" yaml:"id"`
 	// Metadata: Set of key-value pairs.
@@ -1575,15 +1573,15 @@ type Runtime struct {
 // For our UIs, these are automatically created by Next.js.
 type Session struct {
 	// CreatedAt: The date and time the session was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Expires: The date and time the session expires.
-	Expires *Time `json:"expires" yaml:"expires"`
+	Expires Time `json:"expires" yaml:"expires"`
 	// ID: The unique identifier for the session.
 	ID string `json:"id" yaml:"id"`
 	// SessionToken: The session token.
 	SessionToken UUID `json:"session_token" yaml:"session_token"`
 	// UpdatedAt: The date and time the session was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID of the user that the session belongs to.
 	UserID string `json:"user_id" yaml:"user_id"`
 }
@@ -1639,9 +1637,9 @@ const (
 // UnitConversion: A unit conversion.
 type UnitConversion struct {
 	// CompletedAt: The time and date the unit conversion was completed.
-	CompletedAt *Time `json:"completed_at" yaml:"completed_at"`
+	CompletedAt Time `json:"completed_at" yaml:"completed_at"`
 	// CreatedAt: The time and date the unit conversion was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error"`
 	// ID: The unique identifier of the unit conversion.
@@ -1657,11 +1655,11 @@ type UnitConversion struct {
 	// SrcFormat: The source format of the unit conversion.
 	SrcFormat UnitMetricFormat `json:"src_format" yaml:"src_format"`
 	// StartedAt: The time and date the unit conversion was started.
-	StartedAt *Time `json:"started_at" yaml:"started_at"`
+	StartedAt Time `json:"started_at" yaml:"started_at"`
 	// Status: The status of the unit conversion.
 	Status APICallStatus `json:"status" yaml:"status"`
 	// UpdatedAt: The time and date the unit conversion was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID of the user who created the unit conversion.
 	UserID string `json:"user_id" yaml:"user_id"`
 }
@@ -1727,13 +1725,13 @@ type User struct {
 	// Company: The user's company.
 	Company string `json:"company" yaml:"company"`
 	// CreatedAt: The date and time the user was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Discord: The user's Discord handle.
 	Discord string `json:"discord" yaml:"discord"`
 	// Email: The email address of the user.
 	Email string `json:"email" yaml:"email"`
 	// EmailVerified: The date and time the email address was verified.
-	EmailVerified *Time `json:"email_verified" yaml:"email_verified"`
+	EmailVerified Time `json:"email_verified" yaml:"email_verified"`
 	// FirstName: The user's first name.
 	FirstName string `json:"first_name" yaml:"first_name"`
 	// Github: The user's GitHub handle.
@@ -1749,7 +1747,7 @@ type User struct {
 	// Phone: The user's phone number.
 	Phone string `json:"phone" yaml:"phone"`
 	// UpdatedAt: The date and time the user was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 }
 
 // UserResultsPage: A single page of results
@@ -1765,15 +1763,15 @@ type UserResultsPage struct {
 // This is typically used to verify a user's email address.
 type VerificationToken struct {
 	// CreatedAt: The date and time the verification token was created.
-	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	CreatedAt Time `json:"created_at" yaml:"created_at"`
 	// Expires: The date and time the verification token expires.
-	Expires *Time `json:"expires" yaml:"expires"`
+	Expires Time `json:"expires" yaml:"expires"`
 	// ID: The token used for verification. This is used as the id for the table since it is unique per record.
 	ID string `json:"id" yaml:"id"`
 	// Identifier: The identifier for the user. This is typically the user's email address since that is what we are verifying.
 	Identifier string `json:"identifier" yaml:"identifier"`
 	// UpdatedAt: The date and time the verification token was last updated.
-	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at"`
 }
 
 // ResponseError: Error information from a response.

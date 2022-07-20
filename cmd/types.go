@@ -281,19 +281,19 @@ func isLocalObject(v *openapi3.SchemaRef) bool {
 // formatStringType converts a string schema to a valid Go type.
 func formatStringType(t *openapi3.Schema) string {
 	if t.Format == "date-time" {
-		return "*Time"
+		return "Time"
 	} else if t.Format == "partial-date-time" {
-		return "*Time"
+		return "Time"
 	} else if t.Format == "date" {
-		return "*Time"
+		return "Time"
 	} else if t.Format == "time" {
-		return "*Time"
+		return "Time"
 	} else if t.Format == "email" {
 		return "string"
 	} else if t.Format == "hostname" {
 		return "string"
 	} else if t.Format == "ip" || t.Format == "ipv4" || t.Format == "ipv6" {
-		return "net.IP"
+		return "IP"
 	} else if t.Format == "uri" || t.Format == "url" {
 		return "URL"
 	} else if t.Format == "uuid" {
