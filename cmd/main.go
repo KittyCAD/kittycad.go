@@ -20,16 +20,22 @@ import (
 )
 
 func main() {
+	if err := run(); err != nil {
+		logrus.Fatal(err)
+	}
+}
+
+func run() error {
 	// Load the open API spec from the file.
 	wd, err := os.Getwd()
 	if err != nil {
-		logrus.Fatalf("error getting current working directory: %v", err)
+		return fmt.Errorf("error getting current working directory: %v", err)
 	}
 	p := filepath.Join(wd, "spec.json")
 
 	doc, err := openapi3.NewLoader().LoadFromFile(p)
 	if err != nil {
-		logrus.Fatalf("error loading openAPI spec: %v", err)
+		return fmt.Errorf("error loading openAPI spec: %v", err)
 	}
 
 	data := Data{
@@ -51,7 +57,7 @@ func main() {
 	// Render the client examples.
 	clientInfo, err := templateToString("client-example.tmpl", data)
 	if err != nil {
-		logrus.Fatalf("error processing template: %v", err)
+		return fmt.Errorf("error processing template: %v", err)
 	}
 	data.Examples = append(data.Examples, clientInfo)
 	doc.Info.Extensions["x-go"] = map[string]string{
@@ -61,7 +67,9 @@ func main() {
 
 	// Generate the client.go file.
 	logrus.Info("Generating client...")
-	generateClient(doc, data)
+	if err := generateClient(doc, data); err != nil {
+		return err
+	}
 
 	// Generate the types.go file.
 	logrus.Info("Generating types...")
@@ -77,12 +85,14 @@ func main() {
 
 	// Generate the examples.go file.
 	logrus.Info("Generating examples...")
-	generateExamplesFile(doc, data)
+	if err := generateExamplesFile(doc, data); err != nil {
+		return err
+	}
 
 	// Get the old doc again.
 	oldDoc, err := openapi3.NewLoader().LoadFromFile(p)
 	if err != nil {
-		logrus.Fatalf("error loading openAPI spec: %v", err)
+		return fmt.Errorf("error loading openAPI spec: %v", err)
 	}
 	patch, err := jsondiff.Compare(oldDoc, doc)
 	if err != nil {
@@ -90,13 +100,15 @@ func main() {
 	}
 	patchJson, err := json.MarshalIndent(patch, "", " ")
 	if err != nil {
-		logrus.Fatalf("error marshalling openAPI spec: %v", err)
+		return fmt.Errorf("error marshalling openAPI spec: %v", err)
 	}
 
 	diffFile := filepath.Join(wd, "kittycad.go.patch.json")
 	if err := ioutil.WriteFile(diffFile, patchJson, 0644); err != nil {
-		logrus.Fatalf("error writing openAPI spec patch to %s: %v", diffFile, err)
+		return fmt.Errorf("error writing openAPI spec patch to %s: %v", diffFile, err)
 	}
+
+	return nil
 }
 
 var EnumStringTypes map[string][]string = map[string][]string{}
@@ -171,23 +183,27 @@ func generateResponses(doc *openapi3.T) {
 }
 
 // Generate the client.go file.
-func generateClient(doc *openapi3.T, data Data) {
+func generateClient(doc *openapi3.T, data Data) error {
 	// Generate the lib template.
 	if err := processTemplate("lib.tmpl", "lib.go", data); err != nil {
-		logrus.Fatalf("error processing template: %v", err)
+		return err
 	}
 
 	// Generate the client template.
 	if err := processTemplate("client.tmpl", "client.go", data); err != nil {
-		logrus.Fatalf("error processing template: %v", err)
+		return err
 	}
+
+	return nil
 }
 
-func generateExamplesFile(doc *openapi3.T, data Data) {
+func generateExamplesFile(doc *openapi3.T, data Data) error {
 	// Generate the example template.
 	if err := processTemplate("examples.tmpl", "examples.go", data); err != nil {
-		logrus.Fatalf("error processing template: %v", err)
+		return err
 	}
+
+	return nil
 }
 
 func printTagName(tag string) string {
