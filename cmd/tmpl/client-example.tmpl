@@ -1,0 +1,18 @@
+// Create a client with your token.
+func ExampleNewClient() {
+    client, err := {{.PackageName}}.NewClient("$TOKEN", "your apps user agent")
+    if err != nil {
+        panic(err)
+    }
+}
+
+// - OR -
+
+// Create a new client with your token parsed from the environment
+// variable: `{{.EnvVariable}}`.
+func ExampleNewClient() {
+    client, err := {{.PackageName}}.NewClientFromEnv("your apps user agent")
+    if err != nil {
+        panic(err)
+    }
+}
