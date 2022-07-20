@@ -7,15 +7,14 @@ import (
 	"fmt"
 	"go/format"
 	"os"
-	"path"
 	"path/filepath"
 	"text/template"
 
 	"github.com/sirupsen/logrus"
 )
 
-// Embed the entire directory.
-//go:embed tmpl
+// Embed the template files.
+//go:embed tmpl/*.tmpl
 var templateFiles embed.FS
 
 // Data holds information for templates.
@@ -37,7 +36,7 @@ type Tag struct {
 }
 
 func templateToString(templateName string, data any) (string, error) {
-	tmpl := template.Must(template.New("").ParseFS(templateFiles, path.Join("tmpl", templateName)))
+	tmpl := template.Must(template.New("").ParseFS(templateFiles, filepath.Join("tmpl", templateName)))
 	var processed bytes.Buffer
 	err := tmpl.ExecuteTemplate(&processed, templateName, data)
 	if err != nil {
