@@ -171,34 +171,7 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 	return &body, nil
 }
 
-// ListAllPages: List API calls.
-//
-// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.
-//
-// This method is a wrapper around the `List` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *APICallService) ListAllPages(sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
-
-	var allPages []APICallWithPrice
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.List(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // Get: Get details of an API call.
+// Get: Get details of an API call.
 //
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
 // If the user is not authenticated to view the specified API call, then it is not returned.
@@ -362,36 +335,7 @@ func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy
 	return &body, nil
 }
 
-// ListAsyncOperationsAllPages: List async operations.
-//
-// For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
-// This endpoint requires authentication by a KittyCAD employee.
-//
-// This method is a wrapper around the `ListAsyncOperations` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-//	- `status`: The status to filter by.
-func (s *APICallService) ListAsyncOperationsAllPages(sortBy CreatedAtSortMode, status APICallStatus) (*[]AsyncAPICall, error) {
-
-	var allPages []AsyncAPICall
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListAsyncOperations(limit, pageToken, sortBy, status)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // GetAsyncOperation: Get an async operation.
+// GetAsyncOperation: Get an async operation.
 //
 // Get the status and output of an async operation.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested async operation for the user.
@@ -809,6 +753,220 @@ func (s *HiddenService) Logout() error {
 	return nil
 }
 
+// DeviceAuthRequest: Start an OAuth 2.0 Device Authorization Grant.
+//
+// This endpoint is designed to be accessed from an *unauthenticated* API client. It generates and records a `device_code` and `user_code` which must be verified and confirmed prior to a token being granted.
+func (s *Oauth2Service) DeviceAuthRequest(b io.Reader) (*ResponseDeviceAuthRequest, error) {
+	// Create the url.
+	path := "/oauth2/device/auth"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body ResponseDeviceAuthRequest
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// DeviceAuthConfirm: Confirm an OAuth 2.0 Device Authorization Grant.
+//
+// This endpoint is designed to be accessed by the user agent (browser), not the client requesting the token. So we do not actually return the token here; it will be returned in response to the poll on `/oauth2/device/token`.
+func (s *Oauth2Service) DeviceAuthConfirm(j *DeviceAuthVerifyParams) error {
+	// Create the url.
+	path := "/oauth2/device/confirm"
+	uri := resolveRelative(s.client.server, path)
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(j); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+	// Return.
+	return nil
+}
+
+// DeviceAccessToken: Request a device access token.
+//
+// This endpoint should be polled by the client until the user code is verified and the grant is confirmed.
+func (s *Oauth2Service) DeviceAccessToken(b io.Reader) (*ResponseDeviceAccessToken, error) {
+	// Create the url.
+	path := "/oauth2/device/token"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body ResponseDeviceAccessToken
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
+// DeviceAuthVerify: Verify an OAuth 2.0 Device Authorization Grant.
+//
+// This endpoint should be accessed in a full user agent (e.g., a browser). If the user is not logged in, we redirect them to the login page and use the `callback_url` parameter to get them to the UI verification form upon logging in. If they are logged in, we redirect them to the UI verification form on the website.
+//
+// Parameters:
+//	- `userCode`: The user code.
+func (s *Oauth2Service) DeviceAuthVerify(userCode string) error {
+	// Create the url.
+	path := "/oauth2/device/verify"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"user_code": userCode,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+	// Return.
+	return nil
+}
+
+// ProviderCallback: Listen for callbacks for the OAuth 2.0 provider.
+//
+// Parameters:
+//	- `code`: The authorization code.
+//	- `provider`: The provider.
+//	- `state`: The state that we had passed in through the user consent URL.
+func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, state string) error {
+	// Create the url.
+	path := "/oauth2/provider/{{.provider}}/callback"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"code":     code,
+		"provider": string(provider),
+		"state":    state,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+	// Return.
+	return nil
+}
+
+// ProviderConsent: Get the consent URL and other information for the OAuth 2.0 provider.
+//
+// Parameters:
+//	- `callbackUrl`: The URL to redirect back to after we have authenticated.
+//	- `provider`: The provider.
+func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl string) (*OAuth2ClientInfo, error) {
+	// Create the url.
+	path := "/oauth2/provider/{{.provider}}/consent"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"callback_url": callbackUrl,
+		"provider":     string(provider),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var body OAuth2ClientInfo
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+	// Return the response.
+	return &body, nil
+}
+
 // Ping: Return pong.
 func (s *MetaService) Ping() (*Pong, error) {
 	// Create the url.
@@ -1039,35 +1197,7 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 	return &body, nil
 }
 
-// UserListAllPages: List API calls for your user.
-//
-// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.
-// The API calls are returned in order of creation, with the most recently created API calls first.
-//
-// This method is a wrapper around the `UserList` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *APICallService) UserListAllPages(sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
-
-	var allPages []APICallWithPrice
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.UserList(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // GetForUser: Get an API call for a user.
+// GetForUser: Get an API call for a user.
 //
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
 //
@@ -1160,35 +1290,7 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 	return &body, nil
 }
 
-// ListForUserAllPages: List API tokens for your user.
-//
-// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
-// The API tokens are returned in order of creation, with the most recently created API tokens first.
-//
-// This method is a wrapper around the `ListForUser` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *APITokenService) ListForUserAllPages(sortBy CreatedAtSortMode) (*[]APIToken, error) {
-
-	var allPages []APIToken
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListForUser(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // CreateForUser: Create a new API token for your user.
+// CreateForUser: Create a new API token for your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.
 func (s *APITokenService) CreateForUser() (*APIToken, error) {
@@ -1785,34 +1887,7 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 	return &body, nil
 }
 
-// ListAllPages: List users.
-//
-// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
-//
-// This method is a wrapper around the `List` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *UserService) ListAllPages(sortBy CreatedAtSortMode) (*[]User, error) {
-
-	var allPages []User
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.List(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // ListExtended: List users with extended information.
+// ListExtended: List users with extended information.
 //
 // This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
 //
@@ -1861,34 +1936,7 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 	return &body, nil
 }
 
-// ListExtendedAllPages: List users with extended information.
-//
-// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
-//
-// This method is a wrapper around the `ListExtended` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `sortBy`
-func (s *UserService) ListExtendedAllPages(sortBy CreatedAtSortMode) (*[]ExtendedUser, error) {
-
-	var allPages []ExtendedUser
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListExtended(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
-} // GetExtended: Get extended information about a user.
+// GetExtended: Get extended information about a user.
 //
 // To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
@@ -2030,37 +2078,4 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 	}
 	// Return the response.
 	return &body, nil
-}
-
-// ListForUserAllPages: List API calls for a user.
-//
-// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if "me" is passed as the user id.
-// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.
-// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.
-// The API calls are returned in order of creation, with the most recently created API calls first.
-//
-// This method is a wrapper around the `ListForUser` method.
-// This method returns all the pages at once.
-//
-// Parameters:
-//	- `id`: The user ID.
-//	- `sortBy`
-func (s *APICallService) ListForUserAllPages(id string, sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
-
-	var allPages []APICallWithPrice
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListForUser(id, limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
-
-	return &allPages, nil
 }
