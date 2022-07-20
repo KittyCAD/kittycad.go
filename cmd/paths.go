@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"net/http"
 	"sort"
@@ -83,367 +82,177 @@ func (data *Data) generatePath(doc *openapi3.T, pathName string, path *openapi3.
 	return nil
 }
 
+// Path holds what we need for generating our functions.
+type Path struct {
+	Name        string
+	Tag         string
+	Method      string
+	Path        string
+	Description string
+	RequestBody *RequestBody
+	Args        []Arg
+	Response    *Response
+}
+
+func (function Path) getDescription(operation *openapi3.Operation) string {
+	// Write the description for the method.
+	description := ""
+	if operation.Summary != "" {
+		description = fmt.Sprintf("%s: %s\n", function.Name, operation.Summary)
+	} else {
+		description = fmt.Sprintf("%s makes a `%s` request to `%s`.\n", function.Name, function.Method, function.Path)
+	}
+
+	if operation.Description != "" {
+		description = fmt.Sprintf("%s\n%s\n", description, operation.Description)
+	}
+	if len(function.Args) > 0 {
+		description = fmt.Sprintf("\nParameters:\n")
+		for _, arg := range args {
+			if args.Description != "" {
+				description = fmt.Sprintf("%s\t- `%s`: %s\n", description, arg.Name, strings.ReplaceAll(args.Description, "\n", "\n\t\t"))
+			} else {
+				description = fmt.Sprintf("%s\t- `%s`\n", description, arg.Name)
+			}
+		}
+	}
+	if function.RequestBody != nil {
+		if function.RequestBody.Description != "" {
+			description = fmt.Sprintf("%s\t- `body`: %s\n", description, strings.ReplaceAll(function.RequestBody.Description, "\n", "\n\t\t"))
+		} else {
+			description = fmt.Sprintf("%s\t- `body`\n", description)
+		}
+	}
+
+	return strings.ReplaceAll(description, "\n", "\n// ")
+}
+
+// Arg is an argument to a path function.
+type Arg struct {
+	Name        string
+	Description string
+	Property    string
+	Type        string
+	ToString    string
+}
+
+// RequestBody is a request body for a path function.
+type RequestBody struct {
+	Type        string
+	Description string
+	MediaType   string
+}
+
+// Response is a response for a path function.
+type Response struct {
+	Type string
+}
+
 func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string, operation *openapi3.Operation, isGetAllPages bool, spec *openapi3.T) error {
+	if len(operation.Tags) == 0 {
+		return fmt.Errorf("operation at %q %q has no tags", pathName, method)
+	}
+
+	tag := printTagName(operation.Tags[0])
+	function := Path{
+		Name:   cleanFnName(operation.OperationID, tag, pathName),
+		Tag:    tag,
+		Path:   pathName,
+		Method: method,
+		Args:   []Arg{},
+	}
+
+	logrus.Debugf("writing method %q for path %q -> %q", method, pathName, function.Name)
+
 	respType, pagedRespType, err := getSuccessResponseType(operation, isGetAllPages, spec)
 	if err != nil {
 		return err
 	}
 
-	if len(operation.Tags) == 0 {
-		return fmt.Errorf("operation at %q %q has no tags", pathName, method)
-	}
-	tag := printTagName(operation.Tags[0])
-
-	fnName := cleanFnName(operation.OperationID, tag, pathName)
-
 	pageResult := false
 
 	// Parse the parameters.
-	params := map[string]*openapi3.Parameter{}
-	paramsString := ""
-	docParamsString := ""
-	for index, p := range operation.Parameters {
+	for _, p := range operation.Parameters {
 		if p.Ref != "" {
 			return fmt.Errorf("parameter for %q %q, is a reference: %q, not yet handled", pathName, method, p.Ref)
 		}
 
-		paramName := printPropertyLower(p.Value.Name)
-
-		// Check if we have a page result.
-		if isPageParam(paramName) && method == http.MethodGet {
-			pageResult = true
-		}
-
+		// Get the type for the parameter.
 		typeName, err := printType(p.Value.Name, p.Value.Schema, spec)
 		if err != nil {
 			return err
 		}
 
-		params[p.Value.Name] = p.Value
-		paramsString += fmt.Sprintf("%s %s, ", paramName, typeName)
-		if index == len(operation.Parameters)-1 {
-			docParamsString += fmt.Sprintf("%s", paramName)
-		} else {
-			docParamsString += fmt.Sprintf("%s, ", paramName)
+		// Ready ourselves for adding our arg.
+		arg := Arg{
+			Name:        printPropertyLower(p.Value.Name),
+			Property:    p.Value.Name,
+			Description: p.Value.Description,
+			Type:        typeName,
 		}
-	}
 
-	if pageResult && isGetAllPages && len(pagedRespType) > 0 {
-		respType = pagedRespType
+		if typeName == "string" {
+			arg.ToString = arg.Name
+		} else if typeName == "int" {
+			arg.ToString = fmt.Sprintf("strconv.Itoa(%s)", arg.Name)
+		} else if t == "float64" {
+			arg.ToString = fmt.Sprintf("fmt.Sprintf(\"%%f\", %s)", arg.Name)
+		} else if isTypeToString(t) {
+			arg.ToString = fmt.Sprintf("%s.ToString()", arg.Name)
+		} else {
+			arg.ToString = fmt.Sprintf("string(%s)", arg.Name)
+		}
+
+		// Check if we have a page result.
+		if isPageParam(arg.Name) && method == http.MethodGet {
+			pageResult = true
+		}
+
+		// Add our arg to the function.
+		function.Args = append(function.Args, arg)
 	}
 
 	// Parse the request body.
-	reqBodyParam := "nil"
-	reqBodyDescription := ""
 	if operation.RequestBody != nil {
-		rb := operation.RequestBody
-
-		if rb.Value.Description != "" {
-			reqBodyDescription = rb.Value.Description
-		}
+		rb := operation
 
 		if rb.Ref != "" {
 			return fmt.Errorf("request body for %q %q, is a reference: %q, not yet handled", pathName, method, rb.Ref)
 		}
 
 		for mt, r := range rb.Value.Content {
-			if mt != "application/json" {
-				paramsString += "b io.Reader"
-				reqBodyParam = "b"
-
-				if len(docParamsString) > 0 {
-					docParamsString += ", "
-				}
-				docParamsString += "body"
-				break
-			}
-
 			typeName, err := printType("", r.Schema, spec)
 			if err != nil {
 				return err
 			}
 
-			paramsString += "j *" + typeName
-
-			if len(docParamsString) > 0 {
-				docParamsString += ", "
+			// Add our request body to the function.
+			function.RequestBody = &RequestBody{
+				Type:      typeName,
+				MediaType: mt,
 			}
-			docParamsString += "body"
 
-			reqBodyParam = "j"
+			if rb.Value.Description != "" {
+				function.RequestBody.Description = rb.Value.Description
+			}
+
 			break
 		}
-
 	}
 
-	ogFnName := fnName
-	ogDocParamsString := docParamsString
-	if len(pagedRespType) > 0 {
-		fnName += "AllPages"
-		docParamsString = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(docParamsString, "pageToken", ""), "limit", ""), ", ,", ""))
-		paramsString = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(paramsString, "pageToken string", ""), "limit int", ""), ", ,", ""))
-		delete(params, "page_token")
-		delete(params, "limit")
+	// Now we can get the description since we have filled in everything else.
+	function.Description = function.getDescription(operation)
+
+	// TODO: Build the example function.
+
+	// Print the template for the function.
+	f, err := templateToString("path.tmpl", function)
+	if err != nil {
+		return err
 	}
-
-	logrus.Debugf("writing method %q for path %q -> %q", method, pathName, fnName)
-
-	var description bytes.Buffer
-	// Write the description for the method.
-	if operation.Summary != "" {
-		fmt.Fprintf(&description, "// %s: %s\n", fnName, operation.Summary)
-	} else {
-		fmt.Fprintf(&description, "// %s\n", fnName)
-	}
-	if operation.Description != "" {
-		fmt.Fprintln(&description, "//")
-		fmt.Fprintf(&description, "// %s\n", strings.ReplaceAll(operation.Description, "\n", "\n// "))
-	}
-	if pageResult && !isGetAllPages {
-		fmt.Fprintf(&description, "//\n// To iterate over all pages, use the `%sAllPages` method, instead.\n", fnName)
-	}
-	if len(pagedRespType) > 0 {
-		fmt.Fprintf(&description, "//\n// This method is a wrapper around the `%s` method.\n", ogFnName)
-		fmt.Fprintf(&description, "// This method returns all the pages at once.\n")
-	}
-	if len(params) > 0 {
-		fmt.Fprintf(&description, "//\n// Parameters:\n")
-		keys := make([]string, 0)
-		for k := range params {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
-		for _, name := range keys {
-			t := params[name]
-			if t.Description != "" {
-				fmt.Fprintf(&description, "//\t- `%s`: %s\n", strcase.ToLowerCamel(name), strings.ReplaceAll(t.Description, "\n", "\n//\t\t"))
-			} else {
-				fmt.Fprintf(&description, "//\t- `%s`\n", strcase.ToLowerCamel(name))
-			}
-		}
-	}
-
-	if reqBodyDescription != "" && reqBodyParam != "nil" {
-		fmt.Fprintf(&description, "//\t- `%s`: %s\n", reqBodyParam, strings.ReplaceAll(reqBodyDescription, "\n", "\n// "))
-	}
-
-	var f bytes.Buffer
-
-	// Write the description to the file.
-	fmt.Fprintf(&f, description.String())
-
-	docInfo := map[string]string{
-		"example":     fmt.Sprintf("%s", description.String()),
-		"libDocsLink": fmt.Sprintf("https://pkg.go.dev/github.com/kittycad/kittycad.go/#%sService.%s", tag, fnName),
-	}
-	if isGetAllPages {
-		og := doc.Paths[pathName].Get.Extensions["x-go"].(map[string]string)
-		docInfo["example"] = fmt.Sprintf("%s\n\n// - OR -\n\n%s", og["example"], docInfo["example"])
-		docInfo["libDocsLink"] = fmt.Sprintf("https://pkg.go.dev/github.com/kittycad/kittycad.go/#%sService.%s", tag, ogFnName)
-	}
-
-	// Write the method.
-	if respType != "" {
-		fmt.Fprintf(&f, "func (s *%sService) %s(%s) (*%s, error) {\n",
-			tag,
-			fnName,
-			paramsString,
-			respType)
-		docInfo["example"] += fmt.Sprintf("%s, err := client.%s.%s(%s)", strcase.ToLowerCamel(respType), tag, fnName, docParamsString)
-	} else {
-		fmt.Fprintf(&f, "func (s *%sService) %s(%s) (error) {\n",
-			tag,
-			fnName,
-			paramsString)
-		docInfo["example"] += fmt.Sprintf(`if err := client.%s.%s(%s); err != nil {
-	panic(err)
-}`, tag, fnName, docParamsString)
-	}
-
-	// Special case for functions with Base64 helpers.
-	if fnName == "CreateConversion" || fnName == "GetConversion" {
-		docInfo["example"] = fmt.Sprintf(`%s
-
-// - OR -
-
-// %sWithBase64Helper will automatically base64 encode and decode the contents
-// of the file body.
-//
-// This function is a wrapper around the %s function.
-%s, err := client.%s.%sWithBase64Helper(%s)`, docInfo["example"], fnName, fnName, strcase.ToLowerCamel(respType), tag, fnName, docParamsString)
-	}
-
-	if method == http.MethodGet {
-		doc.Paths[pathName].Get.Extensions["x-go"] = docInfo
-	} else if method == http.MethodPost {
-		doc.Paths[pathName].Post.Extensions["x-go"] = docInfo
-	} else if method == http.MethodPut {
-		doc.Paths[pathName].Put.Extensions["x-go"] = docInfo
-	} else if method == http.MethodDelete {
-		doc.Paths[pathName].Delete.Extensions["x-go"] = docInfo
-	} else if method == http.MethodPatch {
-		doc.Paths[pathName].Patch.Extensions["x-go"] = docInfo
-	}
-
-	if len(pagedRespType) > 0 {
-		// We want to just recursively call the method for each page.
-		fmt.Fprintf(&f, `
-			var allPages %s
-			pageToken := ""
-			limit := 100
-			for {
-				page, err := s.%s(%s)
-				if err != nil {
-					return nil, err
-				}
-				allPages = append(allPages, page.Items...)
-				if  page.NextPage == "" {
-					break
-				}
-				pageToken = page.NextPage
-			}
-
-			return &allPages, nil
-		}`, pagedRespType, ogFnName, ogDocParamsString)
-
-		// Return early.
-		return nil
-	}
-
-	// Create the url.
-	fmt.Fprintln(&f, "// Create the url.")
-	fmt.Fprintf(&f, "path := %q\n", cleanPath(pathName))
-	fmt.Fprintln(&f, "uri := resolveRelative(s.client.server, path)")
-
-	if operation.RequestBody != nil {
-		for mt := range operation.RequestBody.Value.Content {
-			if mt != "application/json" {
-				break
-			}
-
-			// We need to encode the request body as json.
-			fmt.Fprintln(&f, "// Encode the request body as json.")
-			fmt.Fprintln(&f, "b := new(bytes.Buffer)")
-			fmt.Fprintln(&f, "if err := json.NewEncoder(b).Encode(j); err != nil {")
-			if respType != "" {
-				fmt.Fprintln(&f, `return nil, fmt.Errorf("encoding json body request failed: %v", err)`)
-			} else {
-				fmt.Fprintln(&f, `return fmt.Errorf("encoding json body request failed: %v", err)`)
-			}
-			fmt.Fprintln(&f, "}")
-			reqBodyParam = "b"
-			break
-		}
-
-	}
-
-	// Create the request.
-	fmt.Fprintln(&f, "// Create the request.")
-
-	fmt.Fprintf(&f, "req, err := http.NewRequest(%q, uri, %s)\n", method, reqBodyParam)
-	fmt.Fprintln(&f, "if err != nil {")
-	if respType != "" {
-		fmt.Fprintln(&f, `return nil, fmt.Errorf("error creating request: %v", err)`)
-	} else {
-		fmt.Fprintln(&f, `return fmt.Errorf("error creating request: %v", err)`)
-	}
-	fmt.Fprintln(&f, "}")
-
-	// Add the parameters to the url.
-	if len(params) > 0 {
-		fmt.Fprintln(&f, "// Add the parameters to the url.")
-		fmt.Fprintln(&f, "if err := expandURL(req.URL, map[string]string{")
-		// Iterate over all the paths in the spec and write the types.
-		// We want to ensure we keep the order so the diffs don't look like shit.
-		keys := make([]string, 0)
-		for k := range params {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
-		for _, name := range keys {
-			p := params[name]
-
-			t, err := printType(name, p.Schema, spec)
-			if err != nil {
-				return err
-			}
-
-			n := printPropertyLower(name)
-			if t == "string" {
-				fmt.Fprintf(&f, "	%q: %s,\n", name, n)
-			} else if t == "int" {
-				fmt.Fprintf(&f, "	%q: strconv.Itoa(%s),\n", name, n)
-			} else if t == "float64" {
-				fmt.Fprintf(&f, "	%q: fmt.Sprintf(\"%%f\", %s),\n", name, n)
-			} else if isTypeToString(t) {
-				fmt.Fprintf(&f, "	%q: %s.String(),\n", name, n)
-			} else {
-				fmt.Fprintf(&f, "	%q: string(%s),\n", name, n)
-			}
-		}
-		fmt.Fprintln(&f, "}); err != nil {")
-		if respType != "" {
-			fmt.Fprintln(&f, `return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)`)
-		} else {
-			fmt.Fprintln(&f, `return fmt.Errorf("expanding URL with parameters failed: %v", err)`)
-		}
-		fmt.Fprintln(&f, "}")
-	}
-
-	// Send the request.
-	fmt.Fprintln(&f, "// Send the request.")
-	fmt.Fprintln(&f, "resp, err := s.client.client.Do(req)")
-	fmt.Fprintln(&f, "if err != nil {")
-	if respType != "" {
-		fmt.Fprintln(&f, `return nil, fmt.Errorf("error sending request: %v", err)`)
-	} else {
-		fmt.Fprintln(&f, `return fmt.Errorf("error sending request: %v", err)`)
-	}
-	fmt.Fprintln(&f, "}")
-	fmt.Fprintln(&f, "defer resp.Body.Close()")
-
-	// Check the response if there were any errors.
-	fmt.Fprintln(&f, "// Check the response.")
-	fmt.Fprintln(&f, "if err := checkResponse(resp); err != nil {")
-	if respType != "" {
-		fmt.Fprintln(&f, "return nil, err")
-	} else {
-		fmt.Fprintln(&f, "return err")
-	}
-	fmt.Fprintln(&f, "}")
-
-	if respType != "" {
-		// Decode the body from the response.
-		fmt.Fprintln(&f, "// Decode the body from the response.")
-		fmt.Fprintln(&f, "if resp.Body == nil {")
-		fmt.Fprintln(&f, `return nil, errors.New("request returned an empty body in the response")`)
-		fmt.Fprintln(&f, "}")
-
-		fmt.Fprintf(&f, "var body %s\n", respType)
-		fmt.Fprintln(&f, "if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {")
-		fmt.Fprintln(&f, `return nil, fmt.Errorf("error decoding response body: %v", err)`)
-		fmt.Fprintln(&f, "}")
-
-		// Return the response.
-		fmt.Fprintln(&f, "// Return the response.")
-		fmt.Fprintln(&f, "return &body, nil")
-	} else {
-		fmt.Fprintln(&f, "// Return.")
-		fmt.Fprintln(&f, "return nil")
-	}
-
-	// Close the method.
-	fmt.Fprintln(&f, "}")
-	fmt.Fprintln(&f, "")
 
 	// Add the function to our list of functions.
-	data.Paths = append(data.Paths, f.String())
-
-	if pageResult && !isGetAllPages {
-		// Run the method again with get all pages.
-		// Skip doing all pages for now.
-		data.generateMethod(doc, method, pathName, operation, true, spec)
-	}
+	data.Paths = append(data.Paths, f)
 
 	return nil
 }

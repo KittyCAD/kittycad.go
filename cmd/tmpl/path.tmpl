@@ -1,0 +1,37 @@
+// {{.Description}}
+func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -}}{{if .RequestBody}}body {{.Type}}{{end}}) {{if .Response}}({{.Type}}, error){{.Type}}{{else}}error{{end}} {
+	// Create the url.
+    path := "{{.Path}}"
+	uri := resolveRelative(s.client.server, path)
+	// Create the request.
+    req, err := http.NewRequest("{{.Method}}", uri, {{if .RequestBody}}&body{{else}}nil{{end}})
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+    {{if .Args}}
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+    {{range .Args -}}
+        "{{.Property}}": {{.ToString}},
+    {{end -}}
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+    {{end}}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+}
