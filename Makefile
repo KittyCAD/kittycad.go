@@ -15,13 +15,10 @@ VERSION := $(shell cat $(CURDIR)/VERSION.txt)
 
 .PHONY: generate
 generate:
-	go get github.com/getkin/kin-openapi/openapi3
-	go get github.com/iancoleman/strcase
-	go get github.com/sirupsen/logrus
-	go get github.com/wI2L/jsondiff
 	go install golang.org/x/tools/cmd/goimports@latest || go get -u golang.org/x/tools/cmd/goimports
 	go install golang.org/x/lint/golint || go get -u golang.org/x/lint/golint
-	go generate
+	go build -o $(CURDIR)/generate $(CURDIR)/cmd
+	./generate
 	goimports -w *.go
 	gofmt -s -w *.go
 	go mod tidy
