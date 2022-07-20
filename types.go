@@ -28,7 +28,7 @@ type Address struct {
 	// CreatedAt: The time and date the address was created.
 	CreatedAt *JSONTime `json:"created_at" yaml:"created_at"`
 	// ID: The unique identifier of the address.
-	ID Uuid `json:"id" yaml:"id"`
+	ID uuid.UUID `json:"id" yaml:"id"`
 	// State: The state component.
 	State string `json:"state" yaml:"state"`
 	// Street1: The first street component.
@@ -100,7 +100,7 @@ type APICallWithPrice struct {
 	// Endpoint: The endpoint requested by the API call.
 	Endpoint string `json:"endpoint" yaml:"endpoint"`
 	// ID: The unique identifier for the API call.
-	ID Uuid `json:"id" yaml:"id"`
+	ID uuid.UUID `json:"id" yaml:"id"`
 	// IPAddress: The ip address of the origin.
 	IPAddress net.IP `json:"ip_address" yaml:"ip_address"`
 	// Method: The HTTP method requsted by the API call.
@@ -124,7 +124,7 @@ type APICallWithPrice struct {
 	// StripeInvoiceItemID: The Stripe invoice item ID of the API call if it is billable.
 	StripeInvoiceItemID string `json:"stripe_invoice_item_id" yaml:"stripe_invoice_item_id"`
 	// Token: The API token that made the API call.
-	Token Uuid `json:"token" yaml:"token"`
+	Token uuid.UUID `json:"token" yaml:"token"`
 	// UpdatedAt: The date and time the API call was last updated.
 	UpdatedAt *JSONTime `json:"updated_at" yaml:"updated_at"`
 	// UserAgent: The user agent of the request.
@@ -152,7 +152,7 @@ type APIToken struct {
 	// IsValid: If the token is valid. We never delete API tokens, but we can mark them as invalid. We save them for ever to preserve the history of the API token.
 	IsValid bool `json:"is_valid" yaml:"is_valid"`
 	// Token: The API token itself.
-	Token Uuid `json:"token" yaml:"token"`
+	Token uuid.UUID `json:"token" yaml:"token"`
 	// UpdatedAt: The date and time the API token was last updated.
 	UpdatedAt *JSONTime `json:"updated_at" yaml:"updated_at"`
 	// UserID: The ID of the user that owns the API token.
@@ -184,7 +184,7 @@ type AsyncAPICall struct {
 	// ID: The unique identifier of the async API call.
 	//
 	// This is the same as the API call ID.
-	ID Uuid `json:"id" yaml:"id"`
+	ID uuid.UUID `json:"id" yaml:"id"`
 	// Input: The JSON input for the API call. These are determined by the endpoint that is run.
 	Input interface{} `json:"input" yaml:"input"`
 	// Output: The JSON output for the API call. These are determined by the endpoint that is run.
@@ -744,7 +744,7 @@ type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
 	CreatedAt *JSONTime `json:"created_at" yaml:"created_at"`
 	// ID: The unique identifier for the balance.
-	ID Uuid `json:"id" yaml:"id"`
+	ID uuid.UUID `json:"id" yaml:"id"`
 	// MonthlyCreditsRemaining: The monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the user per month.
 	MonthlyCreditsRemaining float64 `json:"monthly_credits_remaining" yaml:"monthly_credits_remaining"`
 	// PrePayCashRemaining: The amount of pre-pay cash remaining in the balance. This number goes down as the user uses their pre-paid credits. The reason we track this amount is if a user ever wants to withdraw their pre-pay cash, we can use this amount to determine how much to give them. Say a user has $100 in pre-paid cash, their bill is worth, $50 after subtracting any other credits (like monthly etc.) Their bill is $50, their pre-pay cash remaining will be subtracted by 50 to pay the bill and their `pre_pay_credits_remaining` will be subtracted by 50 to pay the bill. This way if they want to withdraw money after, they can only withdraw $50 since that is the amount of cash they have remaining.
@@ -1036,7 +1036,7 @@ type FileConversion struct {
 	// ID: The unique identifier of the file conversion.
 	//
 	// This is the same as the API call ID.
-	ID Uuid `json:"id" yaml:"id"`
+	ID uuid.UUID `json:"id" yaml:"id"`
 	// Output: The converted file, if completed, base64 encoded.
 	Output string `json:"output" yaml:"output"`
 	// OutputFormat: The output format of the file conversion.
@@ -1066,7 +1066,7 @@ type FileDensity struct {
 	// ID: The unique identifier of the density request.
 	//
 	// This is the same as the API call ID.
-	ID Uuid `json:"id" yaml:"id"`
+	ID uuid.UUID `json:"id" yaml:"id"`
 	// MaterialMass: The material mass as denoted by the user.
 	MaterialMass float64 `json:"material_mass" yaml:"material_mass"`
 	// SrcFormat: The source format of the file.
@@ -1092,7 +1092,7 @@ type FileMass struct {
 	// ID: The unique identifier of the mass request.
 	//
 	// This is the same as the API call ID.
-	ID Uuid `json:"id" yaml:"id"`
+	ID uuid.UUID `json:"id" yaml:"id"`
 	// Mass: The resulting mass.
 	Mass float64 `json:"mass" yaml:"mass"`
 	// MaterialDensity: The material density as denoted by the user.
@@ -1162,7 +1162,7 @@ type FileVolume struct {
 	// ID: The unique identifier of the volume request.
 	//
 	// This is the same as the API call ID.
-	ID Uuid `json:"id" yaml:"id"`
+	ID uuid.UUID `json:"id" yaml:"id"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
 	// StartedAt: The time and date the volume was started.
@@ -1556,7 +1556,7 @@ type Session struct {
 	// ID: The unique identifier for the session.
 	ID string `json:"id" yaml:"id"`
 	// SessionToken: The session token.
-	SessionToken Uuid `json:"session_token" yaml:"session_token"`
+	SessionToken uuid.UUID `json:"session_token" yaml:"session_token"`
 	// UpdatedAt: The date and time the session was last updated.
 	UpdatedAt *JSONTime `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID of the user that the session belongs to.
@@ -1622,7 +1622,7 @@ type UnitConversion struct {
 	// ID: The unique identifier of the unit conversion.
 	//
 	// This is the same as the API call ID.
-	ID Uuid `json:"id" yaml:"id"`
+	ID uuid.UUID `json:"id" yaml:"id"`
 	// Input: The input value.
 	Input float64 `json:"input" yaml:"input"`
 	// Output: The resulting value.

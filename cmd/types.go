@@ -26,7 +26,7 @@ func (data *Data) generateTypes(doc *openapi3.T) error {
 			continue
 		}
 
-		if err := data.generateSchemaType(name, s.Value); err != nil {
+		if err := data.generateSchemaType(name, s.Value, doc); err != nil {
 			return err
 		}
 	}
@@ -45,7 +45,7 @@ func (data *Data) generateTypes(doc *openapi3.T) error {
 			continue
 		}
 
-		if err := data.generateResponseType(name, r.Value); err != nil {
+		if err := data.generateResponseType(name, r.Value, doc); err != nil {
 			return err
 		}
 	}
@@ -63,7 +63,7 @@ func (data *Data) generateTypes(doc *openapi3.T) error {
 // generateSchemaType writes a type definition for the given schema.
 // The additional parameter is only used as a suffix for the type name.
 // This is mostly for oneOf types.
-func (data *Data) generateSchemaType(name string, s *openapi3.Schema) error {
+func (data *Data) generateSchemaType(name string, s *openapi3.Schema, spec *openapi3.T) error {
 	otype := s.Type
 	logrus.Debugf("writing type for schema %q -> %s", name, otype)
 
@@ -87,7 +87,7 @@ func (data *Data) generateSchemaType(name string, s *openapi3.Schema) error {
 	} else if otype == "array" {
 		// TODO	fmt.Fprintf(f, "type %s []%s\n", name, s.Items.Value.Type)
 	} else if otype == "object" {
-		if err := data.generateObjectType(name, s); err != nil {
+		if err := data.generateObjectType(name, s, spec); err != nil {
 			return err
 		}
 	} else if s.OneOf != nil {
@@ -104,7 +104,7 @@ func (data *Data) generateSchemaType(name string, s *openapi3.Schema) error {
 }
 
 // generateResponseType writes a type definition for the given response.
-func (data *Data) generateResponseType(name string, r *openapi3.Response) error {
+func (data *Data) generateResponseType(name string, r *openapi3.Response, spec *openapi3.T) error {
 	// Write the type definition.
 	for k, v := range r.Content {
 		logrus.Debugf("writing type for response %q -> %q", name, k)
@@ -120,7 +120,7 @@ func (data *Data) generateResponseType(name string, r *openapi3.Response) error 
 			fmt.Fprintf(f, "// %s is the type definition for a %s response.\n", name, name)
 		}*/
 
-		if err := data.generateSchemaType(name, v.Schema.Value); err != nil {
+		if err := data.generateSchemaType(name, v.Schema.Value, spec); err != nil {
 			return err
 		}
 	}
@@ -197,7 +197,7 @@ type ObjectValue struct {
 	Property    string
 }
 
-func (data *Data) generateObjectType(name string, s *openapi3.Schema) error {
+func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *openapi3.T) error {
 	object := Object{
 		Name:        name,
 		Description: getTypeDescription(name, s),
@@ -213,9 +213,14 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema) error {
 	for _, k := range keys {
 		v := s.Properties[k]
 
+		typeName, err := printType(k, v, spec)
+		if err != nil {
+			return err
+		}
+
 		objectValue := ObjectValue{
 			Name:     printProperty(k),
-			Type:     printType(k, v),
+			Type:     typeName,
 			Property: k,
 		}
 
@@ -329,22 +334,22 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 			return "", fmt.Errorf("allOf for %q has more than 1 item", property)
 		}
 
-		return printType(property, s.AllOf[0]), nil
+		return printType(property, s.AllOf[0], spec)
 	}
 
 	if t == "string" {
 		reference := getReferenceSchema(r)
 		if reference != "" {
-			return reference
+			return reference, nil
 		}
 
 		return formatStringType(s), nil
 	} else if t == "integer" {
-		return "int"
+		return "int", nil
 	} else if t == "number" {
-		return "float64"
+		return "float64", nil
 	} else if t == "boolean" {
-		return "bool"
+		return "bool", nil
 	} else if t == "array" {
 		reference := getReferenceSchema(s.Items)
 		if reference != "" {
@@ -352,14 +357,14 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 		}
 
 		// TODO: handle if it is not a reference.
-		return "[]string"
+		return "[]string", nil
 	} else if t == "object" {
 		if s.AdditionalProperties != nil {
-			return printType(property, s.AdditionalProperties)
+			return printType(property, s.AdditionalProperties, spec)
 		}
 		// Most likely this is a local object, we will handle it.
 		return strcase.ToCamel(property), nil
 	}
 
-	return "", fmt.Errorf("unknown type %q for %q", t, property)
+	return "interface{}", nil
 }

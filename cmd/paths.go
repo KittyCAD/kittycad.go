@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -30,7 +29,7 @@ func (data *Data) generatePaths(doc *openapi3.T) error {
 			continue
 		}
 
-		if err := data.generatePath(doc, pathName, path); err != nil {
+		if err := data.generatePath(doc, pathName, path, doc); err != nil {
 			return err
 		}
 	}
@@ -44,39 +43,39 @@ func (data *Data) generatePaths(doc *openapi3.T) error {
 }
 
 // generatePath writes the given path as an http request to the given file.
-func (data *Data) generatePath(doc *openapi3.T, pathName string, path *openapi3.PathItem) error {
+func (data *Data) generatePath(doc *openapi3.T, pathName string, path *openapi3.PathItem, spec *openapi3.T) error {
 	if path.Get != nil {
-		if err := data.generateMethod(doc, http.MethodGet, pathName, path.Get, false); err != nil {
+		if err := data.generateMethod(doc, http.MethodGet, pathName, path.Get, false, spec); err != nil {
 			return err
 		}
 	}
 
 	if path.Post != nil {
-		if err := data.generateMethod(doc, http.MethodPost, pathName, path.Post, false); err != nil {
+		if err := data.generateMethod(doc, http.MethodPost, pathName, path.Post, false, spec); err != nil {
 			return err
 		}
 	}
 
 	if path.Put != nil {
-		if err := data.generateMethod(doc, http.MethodPut, pathName, path.Put, false); err != nil {
+		if err := data.generateMethod(doc, http.MethodPut, pathName, path.Put, false, spec); err != nil {
 			return err
 		}
 	}
 
 	if path.Delete != nil {
-		if err := data.generateMethod(doc, http.MethodDelete, pathName, path.Delete, false); err != nil {
+		if err := data.generateMethod(doc, http.MethodDelete, pathName, path.Delete, false, spec); err != nil {
 			return err
 		}
 	}
 
 	if path.Patch != nil {
-		if err := data.generateMethod(doc, http.MethodPatch, pathName, path.Patch, false); err != nil {
+		if err := data.generateMethod(doc, http.MethodPatch, pathName, path.Patch, false, spec); err != nil {
 			return err
 		}
 	}
 
 	if path.Head != nil {
-		if err := data.generateMethod(doc, http.MethodHead, pathName, path.Head, false); err != nil {
+		if err := data.generateMethod(doc, http.MethodHead, pathName, path.Head, false, spec); err != nil {
 			return err
 		}
 	}
@@ -84,8 +83,11 @@ func (data *Data) generatePath(doc *openapi3.T, pathName string, path *openapi3.
 	return nil
 }
 
-func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string, operation *openapi3.Operation, isGetAllPages bool) error {
-	respType, pagedRespType := getSuccessResponseType(operation, isGetAllPages)
+func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string, operation *openapi3.Operation, isGetAllPages bool, spec *openapi3.T) error {
+	respType, pagedRespType, err := getSuccessResponseType(operation, isGetAllPages, spec)
+	if err != nil {
+		return err
+	}
 
 	if len(operation.Tags) == 0 {
 		return fmt.Errorf("operation at %q %q has no tags", pathName, method)
@@ -112,8 +114,13 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 			pageResult = true
 		}
 
+		typeName, err := printType(p.Value.Name, p.Value.Schema, spec)
+		if err != nil {
+			return err
+		}
+
 		params[p.Value.Name] = p.Value
-		paramsString += fmt.Sprintf("%s %s, ", paramName, printType(p.Value.Name, p.Value.Schema))
+		paramsString += fmt.Sprintf("%s %s, ", paramName, typeName)
 		if index == len(operation.Parameters)-1 {
 			docParamsString += fmt.Sprintf("%s", paramName)
 		} else {
@@ -151,7 +158,10 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 				break
 			}
 
-			typeName := printType("", r.Schema)
+			typeName, err := printType("", r.Schema, spec)
+			if err != nil {
+				return err
+			}
 
 			paramsString += "j *" + typeName
 
@@ -352,7 +362,12 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 		sort.Strings(keys)
 		for _, name := range keys {
 			p := params[name]
-			t := printType(name, p.Schema)
+
+			t, err := printType(name, p.Schema, spec)
+			if err != nil {
+				return err
+			}
+
 			n := printPropertyLower(name)
 			if t == "string" {
 				fmt.Fprintf(&f, "	%q: %s,\n", name, n)
@@ -425,13 +440,13 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 	if pageResult && !isGetAllPages {
 		// Run the method again with get all pages.
 		// Skip doing all pages for now.
-		data.generateMethod(doc, method, pathName, operation, true)
+		data.generateMethod(doc, method, pathName, operation, true, spec)
 	}
 
 	return nil
 }
 
-func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool) (string, string) {
+func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool, spec *openapi3.T) (string, string, error) {
 	for name, response := range o.Responses {
 		if name == "default" {
 			name = "200"
@@ -439,8 +454,7 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool) (string, 
 
 		statusCode, err := strconv.Atoi(strings.ReplaceAll(name, "XX", "00"))
 		if err != nil {
-			fmt.Printf("error converting %q to an integer: %v\n", name, err)
-			os.Exit(1)
+			return "", "", fmt.Errorf("converting %q to an integer failed: %v", name, err)
 		}
 
 		if statusCode < 200 || statusCode >= 300 {
@@ -456,30 +470,37 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool) (string, 
 		for _, content := range response.Value.Content {
 			getAllPagesType := ""
 			if isGetAllPages {
-
 				if items, ok := content.Schema.Value.Properties["items"]; ok {
-					getAllPagesType = printType("", items)
+					getAllPagesType, err = printType("", items, spec)
+					if err != nil {
+						return "", "", err
+					}
 				} else {
 					logrus.Warnf("TODO: skipping response for %q, since it is a get all pages response and has no `items` property:\n%#v", o.OperationID, content.Schema.Value.Properties)
 				}
 			}
 			if content.Schema.Ref != "" {
-				return getReferenceSchema(content.Schema), getAllPagesType
+				return getReferenceSchema(content.Schema), getAllPagesType, nil
 			}
 
 			if content.Schema.Value.Title == "Null" {
-				return "", ""
+				return "", "", nil
 			}
 
 			if content.Schema.Value.Type == "array" {
-				return printType("", content.Schema), getAllPagesType
+				t, err := printType("", content.Schema, spec)
+				if err != nil {
+					return "", "", err
+				}
+				return t, getAllPagesType, nil
 			}
 
-			return fmt.Sprintf("Response%s", strcase.ToCamel(o.OperationID)), getAllPagesType
+			return fmt.Sprintf("Response%s", strcase.ToCamel(o.OperationID)), getAllPagesType, nil
 		}
 	}
 
-	return "", ""
+	// This endpoint does not have a response.
+	return "", "", nil
 }
 
 func cleanFnName(name string, tag string, path string) string {
