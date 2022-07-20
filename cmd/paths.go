@@ -375,6 +375,8 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 				fmt.Fprintf(&f, "	%q: strconv.Itoa(%s),\n", name, n)
 			} else if t == "float64" {
 				fmt.Fprintf(&f, "	%q: fmt.Sprintf(\"%%f\", %s),\n", name, n)
+			} else if isTypeToString(t) {
+				fmt.Fprintf(&f, "	%q: %s.String(),\n", name, n)
 			} else {
 				fmt.Fprintf(&f, "	%q: string(%s),\n", name, n)
 			}

@@ -16,7 +16,15 @@ func (u URL) MarshalJSON() ([]byte, error) {
 		return []byte("null"), nil
 	}
 
-	return []byte(`"` + u.String() + `"`), nil
+	return []byte(`"` + u.URL.String() + `"`), nil
+}
+
+func (u URL) String() string {
+	if u.URL == nil {
+		return ""
+	}
+
+	return u.URL.String()
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.

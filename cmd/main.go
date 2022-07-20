@@ -152,6 +152,8 @@ func generateSourceFiles(data Data) error {
 		"json_time_test.go",
 		"json_url.go",
 		"json_url_test.go",
+		"json_uuid.go",
+		"json_uuid_test.go",
 	}
 
 	for _, sourceFile := range sourceFiles {

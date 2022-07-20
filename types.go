@@ -2,11 +2,7 @@
 
 package kittycad
 
-import (
-	"net"
-
-	"github.com/google/uuid"
-)
+import "net"
 
 // AccountProvider: An account provider.
 type AccountProvider string
@@ -27,7 +23,7 @@ type Address struct {
 	// CreatedAt: The time and date the address was created.
 	CreatedAt *Time `json:"created_at" yaml:"created_at"`
 	// ID: The unique identifier of the address.
-	ID uuid.UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id"`
 	// State: The state component.
 	State string `json:"state" yaml:"state"`
 	// Street1: The first street component.
@@ -99,7 +95,7 @@ type APICallWithPrice struct {
 	// Endpoint: The endpoint requested by the API call.
 	Endpoint string `json:"endpoint" yaml:"endpoint"`
 	// ID: The unique identifier for the API call.
-	ID uuid.UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id"`
 	// IPAddress: The ip address of the origin.
 	IPAddress net.IP `json:"ip_address" yaml:"ip_address"`
 	// Method: The HTTP method requsted by the API call.
@@ -123,7 +119,7 @@ type APICallWithPrice struct {
 	// StripeInvoiceItemID: The Stripe invoice item ID of the API call if it is billable.
 	StripeInvoiceItemID string `json:"stripe_invoice_item_id" yaml:"stripe_invoice_item_id"`
 	// Token: The API token that made the API call.
-	Token uuid.UUID `json:"token" yaml:"token"`
+	Token UUID `json:"token" yaml:"token"`
 	// UpdatedAt: The date and time the API call was last updated.
 	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
 	// UserAgent: The user agent of the request.
@@ -151,7 +147,7 @@ type APIToken struct {
 	// IsValid: If the token is valid. We never delete API tokens, but we can mark them as invalid. We save them for ever to preserve the history of the API token.
 	IsValid bool `json:"is_valid" yaml:"is_valid"`
 	// Token: The API token itself.
-	Token uuid.UUID `json:"token" yaml:"token"`
+	Token UUID `json:"token" yaml:"token"`
 	// UpdatedAt: The date and time the API token was last updated.
 	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The ID of the user that owns the API token.
@@ -183,7 +179,7 @@ type AsyncAPICall struct {
 	// ID: The unique identifier of the async API call.
 	//
 	// This is the same as the API call ID.
-	ID uuid.UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id"`
 	// Input: The JSON input for the API call. These are determined by the endpoint that is run.
 	Input interface{} `json:"input" yaml:"input"`
 	// Output: The JSON output for the API call. These are determined by the endpoint that is run.
@@ -200,6 +196,36 @@ type AsyncAPICall struct {
 	UserID string `json:"user_id" yaml:"user_id"`
 	// Worker: The worker node that is performing or performed the async API call.
 	Worker string `json:"worker" yaml:"worker"`
+}
+
+// AsyncAPICallOutput: A file conversion.
+type AsyncAPICallOutput struct {
+	// CompletedAt: The time and date the file conversion was completed.
+	CompletedAt *Time `json:"completed_at" yaml:"completed_at"`
+	// CreatedAt: The time and date the file conversion was created.
+	CreatedAt *Time `json:"created_at" yaml:"created_at"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error"`
+	// ID: The unique identifier of the file conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id"`
+	// Output: The converted file, if completed, base64 encoded.
+	Output string `json:"output" yaml:"output"`
+	// OutputFormat: The output format of the file conversion.
+	OutputFormat FileOutputFormat `json:"output_format" yaml:"output_format"`
+	// SrcFormat: The source format of the file conversion.
+	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
+	// StartedAt: The time and date the file conversion was started.
+	StartedAt *Time `json:"started_at" yaml:"started_at"`
+	// Status: The status of the file conversion.
+	Status APICallStatus `json:"status" yaml:"status"`
+	// Type:
+	Type string `json:"type" yaml:"type"`
+	// UpdatedAt: The time and date the file conversion was last updated.
+	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
+	// UserID: The user ID of the user who created the file conversion.
+	UserID string `json:"user_id" yaml:"user_id"`
 }
 
 // AsyncAPICallResultsPage: A single page of results
@@ -743,7 +769,7 @@ type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
 	CreatedAt *Time `json:"created_at" yaml:"created_at"`
 	// ID: The unique identifier for the balance.
-	ID uuid.UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id"`
 	// MonthlyCreditsRemaining: The monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the user per month.
 	MonthlyCreditsRemaining float64 `json:"monthly_credits_remaining" yaml:"monthly_credits_remaining"`
 	// PrePayCashRemaining: The amount of pre-pay cash remaining in the balance. This number goes down as the user uses their pre-paid credits. The reason we track this amount is if a user ever wants to withdraw their pre-pay cash, we can use this amount to determine how much to give them. Say a user has $100 in pre-paid cash, their bill is worth, $50 after subtracting any other credits (like monthly etc.) Their bill is $50, their pre-pay cash remaining will be subtracted by 50 to pay the bill and their `pre_pay_credits_remaining` will be subtracted by 50 to pay the bill. This way if they want to withdraw money after, they can only withdraw $50 since that is the amount of cash they have remaining.
@@ -761,9 +787,9 @@ type CustomerBalance struct {
 // DeviceAccessTokenRequestForm: The form for a device access token request.
 type DeviceAccessTokenRequestForm struct {
 	// ClientID: The client ID.
-	ClientID uuid.UUID `json:"client_id" yaml:"client_id"`
+	ClientID UUID `json:"client_id" yaml:"client_id"`
 	// DeviceCode: The device code.
-	DeviceCode uuid.UUID `json:"device_code" yaml:"device_code"`
+	DeviceCode UUID `json:"device_code" yaml:"device_code"`
 	// GrantType: The grant type.
 	GrantType OAuth2GrantType `json:"grant_type" yaml:"grant_type"`
 }
@@ -771,7 +797,7 @@ type DeviceAccessTokenRequestForm struct {
 // DeviceAuthRequestForm: The request parameters for the OAuth 2.0 Device Authorization Grant flow.
 type DeviceAuthRequestForm struct {
 	// ClientID: The client ID.
-	ClientID uuid.UUID `json:"client_id" yaml:"client_id"`
+	ClientID UUID `json:"client_id" yaml:"client_id"`
 }
 
 // DeviceAuthVerifyParams: The request parameters to verify the `user_code` for the OAuth 2.0 Device Authorization Grant.
@@ -921,7 +947,7 @@ type DockerSystemInfo struct {
 // EmailAuthenticationForm: The body of the form for email authentication.
 type EmailAuthenticationForm struct {
 	// CallbackUrl: The URL to redirect back to after we have authenticated.
-	CallbackUrl *URL `json:"callback_url" yaml:"callback_url"`
+	CallbackUrl URL `json:"callback_url" yaml:"callback_url"`
 	// Email: The user's email.
 	Email string `json:"email" yaml:"email"`
 }
@@ -999,7 +1025,7 @@ type ExtendedUser struct {
 	// ID: The unique identifier for the user.
 	ID string `json:"id" yaml:"id"`
 	// Image: The image avatar for the user. This is a URL.
-	Image *URL `json:"image" yaml:"image"`
+	Image URL `json:"image" yaml:"image"`
 	// LastName: The user's last name.
 	LastName string `json:"last_name" yaml:"last_name"`
 	// MailchimpID: The user's MailChimp ID. This is mostly used for internal mapping.
@@ -1035,7 +1061,7 @@ type FileConversion struct {
 	// ID: The unique identifier of the file conversion.
 	//
 	// This is the same as the API call ID.
-	ID uuid.UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id"`
 	// Output: The converted file, if completed, base64 encoded.
 	Output string `json:"output" yaml:"output"`
 	// OutputFormat: The output format of the file conversion.
@@ -1065,7 +1091,7 @@ type FileDensity struct {
 	// ID: The unique identifier of the density request.
 	//
 	// This is the same as the API call ID.
-	ID uuid.UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id"`
 	// MaterialMass: The material mass as denoted by the user.
 	MaterialMass float64 `json:"material_mass" yaml:"material_mass"`
 	// SrcFormat: The source format of the file.
@@ -1091,7 +1117,7 @@ type FileMass struct {
 	// ID: The unique identifier of the mass request.
 	//
 	// This is the same as the API call ID.
-	ID uuid.UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id"`
 	// Mass: The resulting mass.
 	Mass float64 `json:"mass" yaml:"mass"`
 	// MaterialDensity: The material density as denoted by the user.
@@ -1161,7 +1187,7 @@ type FileVolume struct {
 	// ID: The unique identifier of the volume request.
 	//
 	// This is the same as the API call ID.
-	ID uuid.UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format"`
 	// StartedAt: The time and date the volume was started.
@@ -1249,7 +1275,7 @@ type Invoice struct {
 	// An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
 	Paid bool `json:"paid" yaml:"paid"`
 	// Pdf: The link to download the PDF for the invoice.
-	Pdf *URL `json:"pdf" yaml:"pdf"`
+	Pdf URL `json:"pdf" yaml:"pdf"`
 	// ReceiptNumber: This is the transaction number that appears on email receipts sent for this invoice.
 	ReceiptNumber string `json:"receipt_number" yaml:"receipt_number"`
 	// StatementDescriptor: Extra information about an invoice for the customer's credit card statement.
@@ -1269,7 +1295,7 @@ type Invoice struct {
 	// Total: Total after discounts and taxes.
 	Total float64 `json:"total" yaml:"total"`
 	// Url: The URL for the hosted invoice page, which allows customers to view and pay an invoice.
-	Url *URL `json:"url" yaml:"url"`
+	Url URL `json:"url" yaml:"url"`
 }
 
 // InvoiceLineItem: An invoice line item.
@@ -1555,7 +1581,7 @@ type Session struct {
 	// ID: The unique identifier for the session.
 	ID string `json:"id" yaml:"id"`
 	// SessionToken: The session token.
-	SessionToken uuid.UUID `json:"session_token" yaml:"session_token"`
+	SessionToken UUID `json:"session_token" yaml:"session_token"`
 	// UpdatedAt: The date and time the session was last updated.
 	UpdatedAt *Time `json:"updated_at" yaml:"updated_at"`
 	// UserID: The user ID of the user that the session belongs to.
@@ -1621,7 +1647,7 @@ type UnitConversion struct {
 	// ID: The unique identifier of the unit conversion.
 	//
 	// This is the same as the API call ID.
-	ID uuid.UUID `json:"id" yaml:"id"`
+	ID UUID `json:"id" yaml:"id"`
 	// Input: The input value.
 	Input float64 `json:"input" yaml:"input"`
 	// Output: The resulting value.
@@ -1715,7 +1741,7 @@ type User struct {
 	// ID: The unique identifier for the user.
 	ID string `json:"id" yaml:"id"`
 	// Image: The image avatar for the user. This is a URL.
-	Image *URL `json:"image" yaml:"image"`
+	Image URL `json:"image" yaml:"image"`
 	// LastName: The user's last name.
 	LastName string `json:"last_name" yaml:"last_name"`
 	// Name: The name of the user. This is auto populated at first from the authentication provider (if there was a name). It can be updated by the user by updating their `first_name` and `last_name` fields.

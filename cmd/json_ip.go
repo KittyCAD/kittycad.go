@@ -1,35 +1,35 @@
-package kittycad
+package main
 
 import (
 	"bytes"
-	"net/url"
+	"net"
 )
 
-// URL is a wrapper around url.URL which marshals to and from empty strings.
-type URL struct {
-	*url.URL
+// IP is a wrapper around ip.IP which marshals to and from empty strings.
+type IP struct {
+	*net.IP
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-func (u URL) MarshalJSON() ([]byte, error) {
-	if u.URL == nil {
+func (u IP) MarshalJSON() ([]byte, error) {
+	if u.IP == nil {
 		return []byte("null"), nil
 	}
 
-	return []byte(`"` + u.URL.String() + `"`), nil
+	return []byte(`"` + u.IP.String() + `"`), nil
 }
 
-func (u URL) String() string {
-	if u.URL == nil {
+func (u IP) String() string {
+	if u.IP == nil {
 		return ""
 	}
 
-	return u.URL.String()
+	return u.IP.String()
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
 // The time is expected to be a quoted string in RFC 3339 format.
-func (u *URL) UnmarshalJSON(data []byte) (err error) {
+func (u *IP) UnmarshalJSON(data []byte) (err error) {
 	// By convention, unmarshalers implement UnmarshalJSON([]byte("null")) as a no-op.
 	if bytes.Equal(data, []byte("null")) {
 		return nil
@@ -43,11 +43,10 @@ func (u *URL) UnmarshalJSON(data []byte) (err error) {
 		return nil
 	}
 
-	// Fractional seconds are handled implicitly by Parse.
-	uu, err := url.Parse(string(data))
-	if err != nil {
+	var ip *net.IP = nil
+	if err = ip.UnmarshalText(data); err != nil {
 		return err
 	}
-	*u = URL{uu}
+	*u = IP{ip}
 	return
 }

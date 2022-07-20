@@ -91,7 +91,7 @@ func (data *Data) generateSchemaType(name string, s *openapi3.Schema, spec *open
 			return err
 		}
 	} else if s.OneOf != nil {
-		if err := data.generateOneOfType(name, s); err != nil {
+		if err := data.generateOneOfType(name, s, spec); err != nil {
 			return err
 		}
 	} else if s.AnyOf != nil {
@@ -243,9 +243,9 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 	return nil
 }
 
-func (data *Data) generateOneOfType(name string, s *openapi3.Schema) error {
+func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *openapi3.T) error {
 	logrus.Warnf("TODO: oneof type for %q", name)
-	return nil
+	return data.generateObjectType(name, s.OneOf[0].Value, spec)
 }
 
 func getReferenceSchema(v *openapi3.SchemaRef) string {
@@ -295,14 +295,19 @@ func formatStringType(t *openapi3.Schema) string {
 	} else if t.Format == "ip" || t.Format == "ipv4" || t.Format == "ipv6" {
 		return "net.IP"
 	} else if t.Format == "uri" || t.Format == "url" {
-		return "*URL"
+		return "URL"
 	} else if t.Format == "uuid" {
-		return "uuid.UUID"
+		return "UUID"
 	} else if t.Format == "uuid3" {
 		return "string"
 	}
 
 	return "string"
+}
+
+func isTypeToString(s string) bool {
+	s = strings.TrimPrefix(s, "*")
+	return s == "URL" || s == "UUID" || s == "IP" || s == "Time"
 }
 
 // printType converts a schema type to a valid Go type.
