@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"strconv"
 
 	"github.com/google/uuid"
@@ -427,7 +426,7 @@ func (s *HiddenService) AuthEmail(j *EmailAuthenticationForm) (*VerificationToke
 //	- `callbackUrl`: The URL to redirect back to after we have authenticated.
 //	- `email`: The user's email.
 //	- `token`: The verification token.
-func (s *HiddenService) AuthEmailCallback(callbackUrl url.URL, email string, token string) error {
+func (s *HiddenService) AuthEmailCallback(callbackUrl *URL, email string, token string) error {
 	// Create the url.
 	path := "/auth/email/callback"
 	uri := resolveRelative(s.client.server, path)

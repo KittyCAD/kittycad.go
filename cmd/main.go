@@ -149,6 +149,9 @@ func generateExamplesFile(doc *openapi3.T, data Data) error {
 func generateSourceFiles(data Data) error {
 	sourceFiles := []string{
 		"json_time.go",
+		"json_time_test.go",
+		"json_url.go",
+		"json_url_test.go",
 	}
 
 	for _, sourceFile := range sourceFiles {

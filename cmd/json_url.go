@@ -1,29 +1,28 @@
-package kittycad
+package main
 
 import (
 	"bytes"
-	"time"
+	"net/url"
 )
 
-// Time is a wrapper around time.Time which marshals to and from empty strings.
-type Time struct {
-	*time.Time
+// URL is a wrapper around url.URL which marshals to and from empty strings.
+type URL struct {
+	*url.URL
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-func (t Time) MarshalJSON() ([]byte, error) {
-	if t.Time == nil {
+func (u URL) MarshalJSON() ([]byte, error) {
+	if u.URL == nil {
 		return []byte("null"), nil
 	}
 
-	return []byte(t.Format(`"` + time.RFC3339 + `"`)), nil
+	return []byte(`"` + u.String() + `"`), nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
 // The time is expected to be a quoted string in RFC 3339 format.
-func (t *Time) UnmarshalJSON(data []byte) (err error) {
-
-	// by convention, unmarshalers implement UnmarshalJSON([]byte("null")) as a no-op.
+func (u *URL) UnmarshalJSON(data []byte) (err error) {
+	// By convention, unmarshalers implement UnmarshalJSON([]byte("null")) as a no-op.
 	if bytes.Equal(data, []byte("null")) {
 		return nil
 	}
@@ -37,11 +36,10 @@ func (t *Time) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	// Fractional seconds are handled implicitly by Parse.
-	tt, err := time.Parse(`"`+time.RFC3339+`"`, string(data))
+	uu, err := url.Parse(string(data))
 	if err != nil {
 		return err
 	}
-
-	*t = Time{&tt}
+	*u = URL{uu}
 	return
 }
