@@ -269,8 +269,7 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool, spec *ope
 		}
 
 		if response.Ref != "" {
-			logrus.Warnf("TODO: skipping response for %q, since it is a reference: %q", name, response.Ref)
-			continue
+			return "", "", fmt.Errorf("response for %q, is a reference: %q", name, response.Ref)
 		}
 
 		for _, content := range response.Value.Content {
@@ -282,7 +281,7 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool, spec *ope
 						return "", "", err
 					}
 				} else {
-					logrus.Warnf("TODO: skipping response for %q, since it is a get all pages response and has no `items` property:\n%#v", o.OperationID, content.Schema.Value.Properties)
+					return "", "", fmt.Errorf("TODO: skipping response for %q, since it is a get all pages response and has no `items` property:\n%#v", o.OperationID, content.Schema.Value.Properties)
 				}
 			}
 			if content.Schema.Ref != "" {
@@ -301,7 +300,13 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool, spec *ope
 				return t, getAllPagesType, nil
 			}
 
-			return fmt.Sprintf("Response%s", strcase.ToCamel(o.OperationID)), getAllPagesType, nil
+			// Get the type for the schema.
+			t, err := printType("", content.Schema, spec)
+			if err != nil {
+				return "", "", err
+			}
+
+			return t, getAllPagesType, nil
 		}
 	}
 

@@ -17,7 +17,7 @@ import (
 
 // GetSchema: Get OpenAPI schema.
 //
-func (s *MetaService) GetSchema() (*ResponseGetSchema, error) {
+func (s *MetaService) GetSchema() (*interface{}, error) {
 	// Create the url.
 	path := "/"
 	uri := resolveRelative(s.client.server, path)
@@ -44,7 +44,7 @@ func (s *MetaService) GetSchema() (*ResponseGetSchema, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded ResponseGetSchema
+	var decoded interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -886,7 +886,7 @@ func (s *HiddenService) Logout() error {
 // This endpoint is designed to be accessed from an *unauthenticated* API client. It generates and records a `device_code` and `user_code` which must be verified and confirmed prior to a token being granted.
 // 	- `body`
 //
-func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) (*ResponseDeviceAuthRequest, error) {
+func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) (*interface{}, error) {
 	// Create the url.
 	path := "/oauth2/device/auth"
 	uri := resolveRelative(s.client.server, path)
@@ -925,7 +925,7 @@ func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) (*Response
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded ResponseDeviceAuthRequest
+	var decoded interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -982,7 +982,7 @@ func (s *Oauth2Service) DeviceAuthConfirm(body DeviceAuthVerifyParams) error {
 // This endpoint should be polled by the client until the user code is verified and the grant is confirmed.
 // 	- `body`
 //
-func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) (*ResponseDeviceAccessToken, error) {
+func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) (*interface{}, error) {
 	// Create the url.
 	path := "/oauth2/device/token"
 	uri := resolveRelative(s.client.server, path)
@@ -1021,7 +1021,7 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) (*R
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded ResponseDeviceAccessToken
+	var decoded interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
