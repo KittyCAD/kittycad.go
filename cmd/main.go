@@ -72,7 +72,9 @@ func run() error {
 
 	// Generate the types.go file.
 	logrus.Info("Generating types...")
-	generateTypes(doc)
+	if err := data.generateTypes(doc); err != nil {
+		return err
+	}
 
 	// Generate the responses.go file.
 	logrus.Info("Generating responses...")
@@ -110,54 +112,6 @@ func run() error {
 	}
 
 	return nil
-}
-
-var enumStringTypes map[string][]string = map[string][]string{}
-
-// Generate the types.go file.
-func generateTypes(doc *openapi3.T) {
-	f := openGeneratedFile("types.go")
-	defer f.Close()
-
-	// Iterate over all the schema components in the spec and write the types.
-	// We want to ensure we keep the order so the diffs don't look like shit.
-	keys := make([]string, 0)
-	for k := range doc.Components.Schemas {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	for _, name := range keys {
-		s := doc.Components.Schemas[name]
-		if s.Ref != "" {
-			logrus.Warnf("TODO: skipping type for %q, since it is a reference", name)
-			continue
-		}
-
-		writeSchemaType(f, name, s.Value, "")
-	}
-
-	// Iterate over all the enum types and add in the slices.
-	// We want to ensure we keep the order so the diffs don't look like shit.
-	keys = make([]string, 0)
-	for k := range enumStringTypes {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	for _, name := range keys {
-		enums := enumStringTypes[name]
-		// Make the enum a collection of the values.
-		// Add a description.
-		fmt.Fprintf(f, "// %s is the collection of all %s values.\n", makePlural(name), makeSingular(name))
-		fmt.Fprintf(f, "var %s = []%s{\n", makePlural(name), makeSingular(name))
-		// We want to keep the values in the same order as the enum.
-		sort.Strings(enums)
-		for _, enum := range enums {
-			// Most likely, the enum values are strings.
-			fmt.Fprintf(f, "\t%s,\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enum)))
-		}
-		// Close the enum values.
-		fmt.Fprintf(f, "}\n")
-	}
 }
 
 // Generate the responses.go file.
@@ -240,41 +194,6 @@ func openGeneratedFile(filename string) *os.File {
 	return f
 }
 
-func cleanFnName(name string, tag string, path string) string {
-	name = printProperty(name)
-
-	if strings.HasSuffix(tag, "s") {
-		tag = strings.TrimSuffix(tag, "s")
-	}
-
-	snake := strcase.ToSnake(name)
-	snake = strings.ReplaceAll(snake, "_"+strings.ToLower(tag)+"_", "_")
-
-	name = strcase.ToCamel(snake)
-
-	name = strings.ReplaceAll(name, "Api", "API")
-	name = strings.ReplaceAll(name, "Gpu", "GPU")
-
-	if strings.HasSuffix(name, "Get") && !strings.HasSuffix(path, "}") {
-		name = fmt.Sprintf("%sList", strings.TrimSuffix(name, "Get"))
-	}
-
-	if strings.HasSuffix(name, "Post") {
-		name = fmt.Sprintf("%sCreate", strings.TrimSuffix(name, "Post"))
-	}
-
-	if strings.HasPrefix(name, "s") {
-		name = strings.TrimPrefix(name, "s")
-	}
-
-	if strings.Contains(name, printTagName(tag)) {
-		name = strings.ReplaceAll(name, printTagName(tag)+"s", "")
-		name = strings.ReplaceAll(name, printTagName(tag), "")
-	}
-
-	return name
-}
-
 // printProperty converts an object's property name to a valid Go identifier.
 func printProperty(p string) string {
 	c := strcase.ToCamel(p)
@@ -313,286 +232,6 @@ func printPropertyLower(p string) string {
 	return s
 }
 
-// printType converts a schema type to a valid Go type.
-func printType(property string, r *openapi3.SchemaRef) string {
-	s := r.Value
-	t := s.Type
-
-	// If we have a reference, just use that.
-	if r.Ref != "" {
-		return getReferenceSchema(r)
-	}
-
-	// See if we have an allOf.
-	if s.AllOf != nil {
-		if len(s.AllOf) > 1 {
-			logrus.Warnf("TODO: allOf for %q has more than 1 item", property)
-			return "TODO"
-		}
-
-		return printType(property, s.AllOf[0])
-	}
-
-	if t == "string" {
-		reference := getReferenceSchema(r)
-		if reference != "" {
-			return reference
-		}
-
-		return formatStringType(s)
-	} else if t == "integer" {
-		return "int"
-	} else if t == "number" {
-		return "float64"
-	} else if t == "boolean" {
-		return "bool"
-	} else if t == "array" {
-		reference := getReferenceSchema(s.Items)
-		if reference != "" {
-			return fmt.Sprintf("[]%s", reference)
-		}
-
-		// TODO: handle if it is not a reference.
-		return "[]string"
-	} else if t == "object" {
-		if s.AdditionalProperties != nil {
-			return printType(property, s.AdditionalProperties)
-		}
-		// Most likely this is a local object, we will handle it.
-		return strcase.ToCamel(property)
-	}
-
-	logrus.Warnf("TODO: skipping type %q for %q, marking as interface{}", t, property)
-	return "interface{}"
-}
-
-// cleanPath returns the path as a function we can use for a go template.
-func cleanPath(path string) string {
-	path = strings.Replace(path, "{", "{{.", -1)
-	return strings.Replace(path, "}", "}}", -1)
-}
-
-// writeSchemaType writes a type definition for the given schema.
-// The additional parameter is only used as a suffix for the type name.
-// This is mostly for oneOf types.
-func writeSchemaType(f *os.File, name string, s *openapi3.Schema, additionalName string) {
-	otype := s.Type
-	logrus.Debugf("writing type for schema %q -> %s", name, otype)
-
-	name = printProperty(name)
-	typeName := strings.ReplaceAll(strings.TrimSpace(fmt.Sprintf("%s%s", name, printProperty(additionalName))), "Api", "API")
-
-	if len(s.Enum) == 0 && s.OneOf == nil {
-		// Write the type description.
-		writeSchemaTypeDescription(typeName, s, f)
-	}
-
-	if otype == "string" {
-		// If this is an enum, write the enum type.
-		if len(s.Enum) > 0 {
-			// Make sure we don't redeclare the enum type.
-			if _, ok := enumStringTypes[makeSingular(typeName)]; !ok {
-				// Write the type description.
-				writeSchemaTypeDescription(makeSingular(typeName), s, f)
-
-				// Write the enum type.
-				fmt.Fprintf(f, "type %s string\n", makeSingular(typeName))
-
-				enumStringTypes[makeSingular(typeName)] = []string{}
-			}
-
-			// Define the enum values.
-			fmt.Fprintf(f, "const (\n")
-			for _, v := range s.Enum {
-				// Most likely, the enum values are strings.
-				enum, ok := v.(string)
-				if !ok {
-					logrus.Warnf("TODO: enum value is not a string for %q -> %#v", name, v)
-					continue
-				}
-
-				// If the enum is empty we want to reflect that in the naming.
-				enumName := enum
-				if len(enum) <= 0 {
-					enumName = "empty"
-				}
-				// Write the description of the constant.
-				fmt.Fprintf(f, "// %s represents the %s `%q`.\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enumName)), makeSingular(name), enumName)
-				fmt.Fprintf(f, "\t%s %s = %q\n", strcase.ToCamel(fmt.Sprintf("%s_%s", makeSingular(name), enumName)), makeSingular(name), enum)
-
-				// Add the enum type to the list of enum types.
-				enumStringTypes[makeSingular(typeName)] = append(enumStringTypes[makeSingular(typeName)], enumName)
-			}
-			// Close the enum values.
-			fmt.Fprintf(f, ")\n")
-
-		} else {
-			fmt.Fprintf(f, "type %s string\n", name)
-		}
-	} else if otype == "integer" {
-		fmt.Fprintf(f, "type %s int\n", name)
-	} else if otype == "number" {
-		fmt.Fprintf(f, "type %s float64\n", name)
-	} else if otype == "boolean" {
-		fmt.Fprintf(f, "type %s bool\n", name)
-	} else if otype == "array" {
-		fmt.Fprintf(f, "type %s []%s\n", name, s.Items.Value.Type)
-	} else if otype == "object" {
-		recursive := false
-		fmt.Fprintf(f, "type %s struct {\n", typeName)
-		// We want to ensure we keep the order so the diffs don't look like shit.
-		keys := make([]string, 0)
-		for k := range s.Properties {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
-		for _, k := range keys {
-			v := s.Properties[k]
-			// Check if we need to generate a type for this type.
-			typeName := printType(k, v)
-
-			if isLocalEnum(v) {
-				recursive = true
-				typeName = fmt.Sprintf("%s%s", name, printProperty(k))
-			}
-
-			if isLocalObject(v) {
-				recursive = true
-				logrus.Warnf("TODO: skipping object for %q -> %#v", name, v)
-				typeName = fmt.Sprintf("%s%s", name, printProperty(k))
-			}
-
-			if v.Value.Description != "" {
-				fmt.Fprintf(f, "\t// %s is %s\n", printProperty(k), toLowerFirstLetter(strings.ReplaceAll(v.Value.Description, "\n", "\n// ")))
-			}
-			fmt.Fprintf(f, "\t%s %s `json:\"%s,omitempty\" yaml:\"%s,omitempty\"`\n", printProperty(k), typeName, k, k)
-		}
-		fmt.Fprintf(f, "}\n")
-
-		if recursive {
-			// Add a newline at the end of the type.
-			fmt.Fprintln(f, "")
-
-			// Iterate over the properties and write the types, if we need to.
-			for k, v := range s.Properties {
-				if isLocalEnum(v) {
-					writeSchemaType(f, fmt.Sprintf("%s%s", name, printProperty(k)), v.Value, "")
-				}
-
-				if isLocalObject(v) {
-					writeSchemaType(f, fmt.Sprintf("%s%s", name, printProperty(k)), v.Value, "")
-				}
-			}
-		}
-	} else {
-		if s.OneOf != nil {
-			// We want to convert these to a different data type to be more idiomatic.
-			// But first, we need to make sure we have a type for each one.
-			var oneOfTypes []string
-			var properties []string
-			for _, v := range s.OneOf {
-				// We want to iterate over the properties of the embedded object
-				// and find the type that is a string.
-				var typeName string
-
-				// Iterate over all the schema components in the spec and write the types.
-				// We want to ensure we keep the order so the diffs don't look like shit.
-				keys := make([]string, 0)
-				for k := range v.Value.Properties {
-					keys = append(keys, k)
-				}
-				sort.Strings(keys)
-				for _, prop := range keys {
-					p := v.Value.Properties[prop]
-					// We want to collect all the unique properties to create our global oneOf type.
-					propertyName := printType(prop, p)
-
-					propertyString := fmt.Sprintf("\t%s %s `json:\"%s,omitempty\" yaml:\"%s,omitempty\"`\n", printProperty(prop), propertyName, prop, prop)
-					if !containsMatchFirstWord(properties, propertyString) {
-						properties = append(properties, propertyString)
-					}
-
-					if p.Value.Type == "string" {
-						if p.Value.Enum != nil {
-							// We want to get the enum value.
-							// Make sure there is only one.
-							if len(p.Value.Enum) != 1 {
-								logrus.Warnf("TODO: oneOf for %q -> %q enum %#v", name, prop, p.Value.Enum)
-								continue
-							}
-
-							typeName = printProperty(p.Value.Enum[0].(string))
-						}
-					}
-				}
-
-				// Basically all of these will have one type embedded in them that is a
-				// string and the type, since these come from a Rust sum type.
-				oneOfType := fmt.Sprintf("%s%s", name, typeName)
-				writeSchemaType(f, name, v.Value, typeName)
-				// Add it to our array.
-				oneOfTypes = append(oneOfTypes, oneOfType)
-			}
-
-			// Now let's create the global oneOf type.
-			// Write the type description.
-			writeSchemaTypeDescription(typeName, s, f)
-			fmt.Fprintf(f, "type %s struct {\n", typeName)
-			// Iterate over the properties and write the types, if we need to.
-			for _, p := range properties {
-				fmt.Fprintf(f, p)
-			}
-			// Close the struct.
-			fmt.Fprintf(f, "}\n")
-
-		} else if s.AnyOf != nil {
-			logrus.Warnf("TODO: skipping type for %q, since it is a ANYOF", name)
-		} else if s.AllOf != nil {
-			logrus.Warnf("TODO: skipping type for %q, since it is a ALLOF", name)
-		}
-	}
-
-	// Add a newline at the end of the type.
-	fmt.Fprintln(f, "")
-}
-
-func isLocalEnum(v *openapi3.SchemaRef) bool {
-	return v.Ref == "" && v.Value.Type == "string" && len(v.Value.Enum) > 0
-}
-
-func isLocalObject(v *openapi3.SchemaRef) bool {
-	return v.Ref == "" && v.Value.Type == "object" && len(v.Value.Properties) > 0
-}
-
-// formatStringType converts a string schema to a valid Go type.
-func formatStringType(t *openapi3.Schema) string {
-	if t.Format == "date-time" {
-		return "*JSONTime"
-	} else if t.Format == "partial-date-time" {
-		return "*JSONTime"
-	} else if t.Format == "date" {
-		return "*JSONTime"
-	} else if t.Format == "time" {
-		return "*JSONTime"
-	} else if t.Format == "email" {
-		return "string"
-	} else if t.Format == "hostname" {
-		return "string"
-	} else if t.Format == "ipv4" {
-		return "string"
-	} else if t.Format == "ipv6" {
-		return "string"
-	} else if t.Format == "uri" {
-		return "string"
-	} else if t.Format == "uuid" {
-		return "string"
-	} else if t.Format == "uuid3" {
-		return "string"
-	}
-
-	return "string"
-}
-
 // toLowerFirstLetter returns the given string with the first letter converted to lower case.
 func toLowerFirstLetter(str string) string {
 	for i, v := range str {
@@ -617,15 +256,6 @@ func makePlural(s string) string {
 	}
 
 	return singular + "s"
-}
-
-// writeSchemaTypeDescription writes the description of the given type.
-func writeSchemaTypeDescription(name string, s *openapi3.Schema, f *os.File) {
-	if s.Description != "" {
-		fmt.Fprintf(f, "// %s is %s\n", name, toLowerFirstLetter(strings.ReplaceAll(s.Description, "\n", "\n// ")))
-	} else {
-		fmt.Fprintf(f, "// %s is the type definition for a %s.\n", name, name)
-	}
 }
 
 // writeReponseTypeDescription writes the description of the given type.
@@ -698,8 +328,4 @@ func containsMatchFirstWord(s []string, str string) bool {
 	}
 
 	return false
-}
-
-func isPageParam(s string) bool {
-	return s == "nextPage" || s == "pageToken" || s == "limit"
 }

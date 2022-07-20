@@ -30,9 +30,12 @@ func (data *Data) generatePaths(doc *openapi3.T) error {
 			continue
 		}
 
-		data.generatePath(doc, pathName, path)
+		if err := data.generatePath(doc, pathName, path); err != nil {
+			return err
+		}
 	}
 
+	// Write the paths to the template.
 	if err := processTemplate("paths.tmpl", "paths.go", *data); err != nil {
 		return err
 	}
@@ -477,4 +480,49 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool) (string, 
 	}
 
 	return "", ""
+}
+
+func cleanFnName(name string, tag string, path string) string {
+	name = printProperty(name)
+
+	if strings.HasSuffix(tag, "s") {
+		tag = strings.TrimSuffix(tag, "s")
+	}
+
+	snake := strcase.ToSnake(name)
+	snake = strings.ReplaceAll(snake, "_"+strings.ToLower(tag)+"_", "_")
+
+	name = strcase.ToCamel(snake)
+
+	name = strings.ReplaceAll(name, "Api", "API")
+	name = strings.ReplaceAll(name, "Gpu", "GPU")
+
+	if strings.HasSuffix(name, "Get") && !strings.HasSuffix(path, "}") {
+		name = fmt.Sprintf("%sList", strings.TrimSuffix(name, "Get"))
+	}
+
+	if strings.HasSuffix(name, "Post") {
+		name = fmt.Sprintf("%sCreate", strings.TrimSuffix(name, "Post"))
+	}
+
+	if strings.HasPrefix(name, "s") {
+		name = strings.TrimPrefix(name, "s")
+	}
+
+	if strings.Contains(name, printTagName(tag)) {
+		name = strings.ReplaceAll(name, printTagName(tag)+"s", "")
+		name = strings.ReplaceAll(name, printTagName(tag), "")
+	}
+
+	return name
+}
+
+// cleanPath returns the path as a function we can use for a go template.
+func cleanPath(path string) string {
+	path = strings.Replace(path, "{", "{{.", -1)
+	return strings.Replace(path, "}", "}}", -1)
+}
+
+func isPageParam(s string) bool {
+	return s == "nextPage" || s == "pageToken" || s == "limit"
 }
