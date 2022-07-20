@@ -1,4 +1,4 @@
-package kittycad
+package {{.PackageName}}
 
 import (
 	"bytes"
@@ -14,10 +14,10 @@ import (
 //go:generate go run generate/generate.go
 
 // DefaultServerURL is the default server URL for the KittyCad API.
-const DefaultServerURL = "https://api.kittycad.io"
+const DefaultServerURL = "{{.BaseURL}}"
 
 // TokenEnvVar is the environment variable that contains the token.
-const TokenEnvVar = "KITTYCAD_API_TOKEN"
+const TokenEnvVar = "{{.EnvVariable}}"
 
 type service struct {
 	client *Client
@@ -53,18 +53,10 @@ func NewClient(token, userAgent string) (*Client, error) {
 	}
 
 	// Add the services to our client.
-	client.APICall = &APICallService{client: client}
-	client.APIToken = &APITokenService{client: client}
-	client.App = &AppService{client: client}
-	client.Beta = &BetaService{client: client}
-	client.File = &FileService{client: client}
-	client.Hidden = &HiddenService{client: client}
-	client.Meta = &MetaService{client: client}
-	client.Oauth2 = &Oauth2Service{client: client}
-	client.Payment = &PaymentService{client: client}
-	client.Session = &SessionService{client: client}
-	client.Unit = &UnitService{client: client}
-	client.User = &UserService{client: client}
+{{range .Tags -}}
+    client.{{.}} = &{{.}}Service{client: client}
+{{end -}}
+
 	return client, nil
 }
 

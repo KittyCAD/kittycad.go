@@ -3,9 +3,12 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"go/format"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -23,12 +26,19 @@ import (
 
 var EnumStringTypes map[string][]string = map[string][]string{}
 
+type Data struct {
+	PackageName      string
+	BaseURL          string
+	EnvVariable      string
+	Tags             []string
+	WorkingDirectory string
+}
+
 func main() {
 	// Load the open API spec from the file.
 	wd, err := os.Getwd()
 	if err != nil {
-		fmt.Printf("error getting current working directory: %v\n", err)
-		os.Exit(1)
+		logrus.Fatalf("error getting current working directory: %v", err)
 	}
 	p := filepath.Join(wd, "spec.json")
 
@@ -46,9 +56,17 @@ func main() {
 		logrus.Fatalf("error loading openAPI spec: %v", err)
 	}
 
+	data := Data{
+		PackageName:      "kittycad",
+		BaseURL:          "https://api.kittycad.io",
+		EnvVariable:      "KITTYCAD_API_TOKEN",
+		Tags:             []string{},
+		WorkingDirectory: wd,
+	}
+
 	// Generate the client.go file.
 	logrus.Info("Generating client...")
-	generateClient(doc)
+	generateClient(doc, data)
 
 	// Generate the types.go file.
 	generateTypes(doc)
@@ -169,7 +187,7 @@ func generateResponses(doc *openapi3.T) {
 }
 
 // Generate the client.go file.
-func generateClient(doc *openapi3.T) {
+func generateClient(doc *openapi3.T, data Data) {
 	f := openGeneratedFile("client.go")
 	defer f.Close()
 
@@ -186,36 +204,60 @@ type Client struct {
 	token string
 `)
 
-	skippedTags := []string{"beta"}
-
 	for _, tag := range doc.Tags {
-		if contains(skippedTags, tag.Name) {
-			continue
-		}
-
 		if tag.Description != "" {
 			fmt.Fprintf(f, "// %s: %s\n", printTagName(tag.Name), tag.Description)
 		}
 		fmt.Fprintf(f, "%s\t*%sService\n", printTagName(tag.Name), printTagName(tag.Name))
+		data.Tags = append(data.Tags, printTagName(tag.Name))
 	}
 
 	// Close the struct.
 	fmt.Fprintf(f, "}\n\n")
 
 	for _, tag := range doc.Tags {
-		if contains(skippedTags, tag.Name) {
-			continue
-		}
-
 		if tag.Description != "" {
 			fmt.Fprintf(f, "// %sService: %s\n", printTagName(tag.Name), tag.Description)
 		}
 		fmt.Fprintf(f, "type %sService service\n\n", printTagName(tag.Name))
 	}
+
+	// Generate the lib template.
+	if err := processTemplate("lib.tmpl", "lib.go", data); err != nil {
+		logrus.Fatalf("error processing template: %v", err)
+	}
 }
 
 func printTagName(tag string) string {
 	return strings.ReplaceAll(strcase.ToCamel(makeSingular(tag)), "Api", "API")
+}
+
+func processTemplate(fileName string, outputFile string, data Data) error {
+	tmpl := template.Must(template.New("").ParseFiles(filepath.Join(data.WorkingDirectory, "generate", "tmpl", fileName)))
+	var processed bytes.Buffer
+	err := tmpl.ExecuteTemplate(&processed, fileName, data)
+	if err != nil {
+		return err
+	}
+	formatted, err := format.Source(processed.Bytes())
+	if err != nil {
+		return err
+	}
+
+	outputPath := filepath.Join(data.WorkingDirectory, outputFile)
+	fmt.Println("Writing file: ", outputPath)
+
+	f, err := os.Create(outputPath)
+	if err != nil {
+		return err
+	}
+
+	w := bufio.NewWriter(f)
+	w.WriteString(string(formatted))
+
+	w.Flush()
+
+	return nil
 }
 
 // Generate the paths.go file.

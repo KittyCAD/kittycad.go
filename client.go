@@ -21,6 +21,8 @@ type Client struct {
 	APIToken *APITokenService
 	// App: Endpoints for third party app grant flows.
 	App *AppService
+	// Beta: Beta API endpoints. We will not charge for these endpoints while they are in beta.
+	Beta *BetaService
 	// File: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 	File *FileService
 	// Hidden: Hidden API endpoints that should not show up in the docs.
@@ -47,6 +49,9 @@ type APITokenService service
 
 // AppService: Endpoints for third party app grant flows.
 type AppService service
+
+// BetaService: Beta API endpoints. We will not charge for these endpoints while they are in beta.
+type BetaService service
 
 // FileService: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 type FileService service
