@@ -54,7 +54,7 @@ func NewClient(token, userAgent string) (*Client, error) {
 
 	// Add the services to our client.
 {{range .Tags -}}
-    client.{{.}} = &{{.}}Service{client: client}
+    client.{{.Name}} = &{{.Name}}Service{client: client}
 {{end -}}
 
 	return client, nil

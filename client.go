@@ -4,10 +4,10 @@ package kittycad
 
 import "net/http"
 
-// Client which conforms to the OpenAPI3 specification for this service.
+// Client which conforms to the OpenAPI v3 specification for this service.
 type Client struct {
 	// The endpoint of the server conforming to this interface, with scheme,
-	// https://api.kittycad.io for example.
+	// https://api.example.com for example.
 	server string
 
 	// Client is the *http.Client for performing requests.
@@ -15,6 +15,7 @@ type Client struct {
 
 	// token is the API token used for authentication.
 	token string
+
 	// APICall: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
 	APICall *APICallService
 	// APIToken: API tokens allow users to call the API outside of their session token that is used as a cookie in the user interface. Users can create, delete, and list their API tokens. But, of course, you need an API token to do this, so first be sure to generate one in the account UI.

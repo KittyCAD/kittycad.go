@@ -3,12 +3,9 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"go/format"
-	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -26,14 +23,6 @@ import (
 
 var EnumStringTypes map[string][]string = map[string][]string{}
 
-type Data struct {
-	PackageName      string
-	BaseURL          string
-	EnvVariable      string
-	Tags             []string
-	WorkingDirectory string
-}
-
 func main() {
 	// Load the open API spec from the file.
 	wd, err := os.Getwd()
@@ -42,15 +31,6 @@ func main() {
 	}
 	p := filepath.Join(wd, "spec.json")
 
-	/*uri := "https://api.kittycad.io"
-	u, err := url.Parse(uri)
-	if err != nil {
-		fmt.Printf("error parsing url %q: %v\n", uri, err)
-		os.Exit(1)
-	}
-
-	// Load the open API spec from the URI.
-	doc, err := openapi3.NewLoader().LoadFromURI(u)*/
 	doc, err := openapi3.NewLoader().LoadFromFile(p)
 	if err != nil {
 		logrus.Fatalf("error loading openAPI spec: %v", err)
@@ -60,8 +40,27 @@ func main() {
 		PackageName:      "kittycad",
 		BaseURL:          "https://api.kittycad.io",
 		EnvVariable:      "KITTYCAD_API_TOKEN",
-		Tags:             []string{},
+		Tags:             []Tag{},
 		WorkingDirectory: wd,
+		Examples:         []string{},
+	}
+	// Format the tags for our data.
+	for _, tag := range doc.Tags {
+		data.Tags = append(data.Tags, Tag{
+			Name:        printTagName(tag.Name),
+			Description: tag.Description,
+		})
+	}
+
+	// Render the client examples.
+	clientInfo, err := templateToString("client-example.tmpl", data)
+	if err != nil {
+		logrus.Fatalf("error processing template: %v", err)
+	}
+	data.Examples = append(data.Examples, clientInfo)
+	doc.Info.Extensions["x-go"] = map[string]string{
+		"install": "go get github.com/kittycad/kittycad.go",
+		"client":  clientInfo,
 	}
 
 	// Generate the client.go file.
@@ -69,33 +68,20 @@ func main() {
 	generateClient(doc, data)
 
 	// Generate the types.go file.
+	logrus.Info("Generating types...")
 	generateTypes(doc)
 
 	// Generate the responses.go file.
+	logrus.Info("Generating responses...")
 	generateResponses(doc)
 
 	// Generate the paths.go file.
+	logrus.Info("Generating paths...")
 	generatePaths(doc)
 
-	clientInfo := `// Create a client with your token.
-client, err := kittycad.NewClient("$TOKEN", "your apps user agent")
-if err != nil {
-  panic(err)
-}
-
-// - OR -
-
-// Create a new client with your token parsed from the environment
-// variable: KITTYCAD_API_TOKEN.
-client, err := kittycad.NewClientFromEnv("your apps user agent")
-if err != nil {
-  panic(err)
-}`
-
-	doc.Info.Extensions["x-go"] = map[string]string{
-		"install": "go get github.com/kittycad/kittycad.go",
-		"client":  clientInfo,
-	}
+	// Generate the examples.go file.
+	logrus.Info("Generating examples...")
+	generateExamplesFile(doc, data)
 
 	// Get the old doc again.
 	oldDoc, err := openapi3.NewLoader().LoadFromFile(p)
@@ -188,76 +174,26 @@ func generateResponses(doc *openapi3.T) {
 
 // Generate the client.go file.
 func generateClient(doc *openapi3.T, data Data) {
-	f := openGeneratedFile("client.go")
-	defer f.Close()
-
-	fmt.Fprintf(f, `// Client which conforms to the OpenAPI3 specification for this service.
-type Client struct {
-	// The endpoint of the server conforming to this interface, with scheme,
-	// https://api.kittycad.io for example.
-	server string
-
-	// Client is the *http.Client for performing requests.
-	client *http.Client
-
-	// token is the API token used for authentication.
-	token string
-`)
-
-	for _, tag := range doc.Tags {
-		if tag.Description != "" {
-			fmt.Fprintf(f, "// %s: %s\n", printTagName(tag.Name), tag.Description)
-		}
-		fmt.Fprintf(f, "%s\t*%sService\n", printTagName(tag.Name), printTagName(tag.Name))
-		data.Tags = append(data.Tags, printTagName(tag.Name))
-	}
-
-	// Close the struct.
-	fmt.Fprintf(f, "}\n\n")
-
-	for _, tag := range doc.Tags {
-		if tag.Description != "" {
-			fmt.Fprintf(f, "// %sService: %s\n", printTagName(tag.Name), tag.Description)
-		}
-		fmt.Fprintf(f, "type %sService service\n\n", printTagName(tag.Name))
-	}
-
 	// Generate the lib template.
 	if err := processTemplate("lib.tmpl", "lib.go", data); err != nil {
+		logrus.Fatalf("error processing template: %v", err)
+	}
+
+	// Generate the client template.
+	if err := processTemplate("client.tmpl", "client.go", data); err != nil {
+		logrus.Fatalf("error processing template: %v", err)
+	}
+}
+
+func generateExamplesFile(doc *openapi3.T, data Data) {
+	// Generate the example template.
+	if err := processTemplate("examples.tmpl", "examples.go", data); err != nil {
 		logrus.Fatalf("error processing template: %v", err)
 	}
 }
 
 func printTagName(tag string) string {
 	return strings.ReplaceAll(strcase.ToCamel(makeSingular(tag)), "Api", "API")
-}
-
-func processTemplate(fileName string, outputFile string, data Data) error {
-	tmpl := template.Must(template.New("").ParseFiles(filepath.Join(data.WorkingDirectory, "generate", "tmpl", fileName)))
-	var processed bytes.Buffer
-	err := tmpl.ExecuteTemplate(&processed, fileName, data)
-	if err != nil {
-		return err
-	}
-	formatted, err := format.Source(processed.Bytes())
-	if err != nil {
-		return err
-	}
-
-	outputPath := filepath.Join(data.WorkingDirectory, outputFile)
-	fmt.Println("Writing file: ", outputPath)
-
-	f, err := os.Create(outputPath)
-	if err != nil {
-		return err
-	}
-
-	w := bufio.NewWriter(f)
-	w.WriteString(string(formatted))
-
-	w.Flush()
-
-	return nil
 }
 
 // Generate the paths.go file.

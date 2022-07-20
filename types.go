@@ -4,11 +4,10 @@ package kittycad
 
 // AccountProvider is an account provider.
 type AccountProvider string
-
 const (
-	// AccountProviderGoogle represents the AccountProvider `"google"`.
+// AccountProviderGoogle represents the AccountProvider `"google"`.
 	AccountProviderGoogle AccountProvider = "google"
-	// AccountProviderGithub represents the AccountProvider `"github"`.
+// AccountProviderGithub represents the AccountProvider `"github"`.
 	AccountProviderGithub AccountProvider = "github"
 )
 
@@ -38,46 +37,44 @@ type Address struct {
 
 // APICallQueryGroup is a response for a query on the API call table that is grouped by something.
 type APICallQueryGroup struct {
-	Count int    `json:"count,omitempty" yaml:"count,omitempty"`
+	Count int `json:"count,omitempty" yaml:"count,omitempty"`
 	Query string `json:"query,omitempty" yaml:"query,omitempty"`
 }
 
 // APICallQueryGroupBy is the field of an API call to group by.
 type APICallQueryGroupBy string
-
 const (
-	// APICallQueryGroupByEmail represents the APICallQueryGroupBy `"email"`.
+// APICallQueryGroupByEmail represents the APICallQueryGroupBy `"email"`.
 	APICallQueryGroupByEmail APICallQueryGroupBy = "email"
-	// APICallQueryGroupByMethod represents the APICallQueryGroupBy `"method"`.
+// APICallQueryGroupByMethod represents the APICallQueryGroupBy `"method"`.
 	APICallQueryGroupByMethod APICallQueryGroupBy = "method"
-	// APICallQueryGroupByEndpoint represents the APICallQueryGroupBy `"endpoint"`.
+// APICallQueryGroupByEndpoint represents the APICallQueryGroupBy `"endpoint"`.
 	APICallQueryGroupByEndpoint APICallQueryGroupBy = "endpoint"
-	// APICallQueryGroupByUserId represents the APICallQueryGroupBy `"user_id"`.
+// APICallQueryGroupByUserId represents the APICallQueryGroupBy `"user_id"`.
 	APICallQueryGroupByUserId APICallQueryGroupBy = "user_id"
-	// APICallQueryGroupByOrigin represents the APICallQueryGroupBy `"origin"`.
+// APICallQueryGroupByOrigin represents the APICallQueryGroupBy `"origin"`.
 	APICallQueryGroupByOrigin APICallQueryGroupBy = "origin"
-	// APICallQueryGroupByIpAddress represents the APICallQueryGroupBy `"ip_address"`.
+// APICallQueryGroupByIpAddress represents the APICallQueryGroupBy `"ip_address"`.
 	APICallQueryGroupByIpAddress APICallQueryGroupBy = "ip_address"
 )
 
 // APICallStatus is the status of an async API call.
 type APICallStatus string
-
 const (
-	// APICallStatusQueued represents the APICallStatus `"Queued"`.
+// APICallStatusQueued represents the APICallStatus `"Queued"`.
 	APICallStatusQueued APICallStatus = "Queued"
-	// APICallStatusUploaded represents the APICallStatus `"Uploaded"`.
+// APICallStatusUploaded represents the APICallStatus `"Uploaded"`.
 	APICallStatusUploaded APICallStatus = "Uploaded"
-	// APICallStatusInProgress represents the APICallStatus `"In Progress"`.
+// APICallStatusInProgress represents the APICallStatus `"In Progress"`.
 	APICallStatusInProgress APICallStatus = "In Progress"
-	// APICallStatusCompleted represents the APICallStatus `"Completed"`.
+// APICallStatusCompleted represents the APICallStatus `"Completed"`.
 	APICallStatusCompleted APICallStatus = "Completed"
-	// APICallStatusFailed represents the APICallStatus `"Failed"`.
+// APICallStatusFailed represents the APICallStatus `"Failed"`.
 	APICallStatusFailed APICallStatus = "Failed"
 )
 
 // APICallWithPrice is an API call with the price.
-//
+// 
 // This is a join of the `ApiCall` and `ApiCallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt is the date and time the API call completed billing.
@@ -133,7 +130,7 @@ type APICallWithPriceResultsPage struct {
 }
 
 // APIToken is an API token.
-//
+// 
 // These are used to authenticate users with Bearer authentication.
 type APIToken struct {
 	// CreatedAt is the date and time the API token was created.
@@ -173,8 +170,8 @@ type AsyncAPICall struct {
 	// Error is the error the function returned, if any.
 	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the async API call.
-	//
-	// This is the same as the API call ID.
+// 
+// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// Input is the JSON input for the API call. These are determined by the endpoint that is run.
 	Input interface{} `json:"input,omitempty" yaml:"input,omitempty"`
@@ -203,8 +200,8 @@ type AsyncAPICallOutputFileConversion struct {
 	// Error is the error the function returned, if any.
 	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the file conversion.
-	//
-	// This is the same as the API call ID.
+// 
+// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// Output is the converted file, if completed, base64 encoded.
 	Output string `json:"output,omitempty" yaml:"output,omitempty"`
@@ -215,8 +212,8 @@ type AsyncAPICallOutputFileConversion struct {
 	// StartedAt is the time and date the file conversion was started.
 	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
 	// Status is the status of the file conversion.
-	Status APICallStatus          `json:"status,omitempty" yaml:"status,omitempty"`
-	Type   AsyncAPICallOutputType `json:"type,omitempty" yaml:"type,omitempty"`
+	Status APICallStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	Type AsyncAPICallOutputType `json:"type,omitempty" yaml:"type,omitempty"`
 	// UpdatedAt is the time and date the file conversion was last updated.
 	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// UserID is the user ID of the user who created the file conversion.
@@ -225,11 +222,11 @@ type AsyncAPICallOutputFileConversion struct {
 
 // AsyncAPICallOutputType is the type definition for a AsyncAPICallOutputType.
 type AsyncAPICallOutputType string
-
 const (
-	// AsyncAPICallOutputTypeFileConversion represents the AsyncAPICallOutputType `"FileConversion"`.
+// AsyncAPICallOutputTypeFileConversion represents the AsyncAPICallOutputType `"FileConversion"`.
 	AsyncAPICallOutputTypeFileConversion AsyncAPICallOutputType = "FileConversion"
 )
+
 
 // AsyncAPICallOutputFileMass is a file mass.
 type AsyncAPICallOutputFileMass struct {
@@ -240,8 +237,8 @@ type AsyncAPICallOutputFileMass struct {
 	// Error is the error the function returned, if any.
 	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the mass request.
-	//
-	// This is the same as the API call ID.
+// 
+// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// Mass is the resulting mass.
 	Mass float64 `json:"mass,omitempty" yaml:"mass,omitempty"`
@@ -252,8 +249,8 @@ type AsyncAPICallOutputFileMass struct {
 	// StartedAt is the time and date the mass was started.
 	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
 	// Status is the status of the mass.
-	Status APICallStatus          `json:"status,omitempty" yaml:"status,omitempty"`
-	Type   AsyncAPICallOutputType `json:"type,omitempty" yaml:"type,omitempty"`
+	Status APICallStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	Type AsyncAPICallOutputType `json:"type,omitempty" yaml:"type,omitempty"`
 	// UpdatedAt is the time and date the mass was last updated.
 	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// UserID is the user ID of the user who created the mass.
@@ -261,9 +258,10 @@ type AsyncAPICallOutputFileMass struct {
 }
 
 const (
-	// AsyncAPICallOutputTypeFileMass represents the AsyncAPICallOutputType `"FileMass"`.
+// AsyncAPICallOutputTypeFileMass represents the AsyncAPICallOutputType `"FileMass"`.
 	AsyncAPICallOutputTypeFileMass AsyncAPICallOutputType = "FileMass"
 )
+
 
 // AsyncAPICallOutputFileVolume is a file volume.
 type AsyncAPICallOutputFileVolume struct {
@@ -274,16 +272,16 @@ type AsyncAPICallOutputFileVolume struct {
 	// Error is the error the function returned, if any.
 	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the volume request.
-	//
-	// This is the same as the API call ID.
+// 
+// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// SrcFormat is the source format of the file.
 	SrcFormat FileSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
 	// StartedAt is the time and date the volume was started.
 	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
 	// Status is the status of the volume.
-	Status APICallStatus          `json:"status,omitempty" yaml:"status,omitempty"`
-	Type   AsyncAPICallOutputType `json:"type,omitempty" yaml:"type,omitempty"`
+	Status APICallStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	Type AsyncAPICallOutputType `json:"type,omitempty" yaml:"type,omitempty"`
 	// UpdatedAt is the time and date the volume was last updated.
 	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// UserID is the user ID of the user who created the volume.
@@ -293,9 +291,10 @@ type AsyncAPICallOutputFileVolume struct {
 }
 
 const (
-	// AsyncAPICallOutputTypeFileVolume represents the AsyncAPICallOutputType `"FileVolume"`.
+// AsyncAPICallOutputTypeFileVolume represents the AsyncAPICallOutputType `"FileVolume"`.
 	AsyncAPICallOutputTypeFileVolume AsyncAPICallOutputType = "FileVolume"
 )
+
 
 // AsyncAPICallOutputFileDensity is a file density.
 type AsyncAPICallOutputFileDensity struct {
@@ -308,8 +307,8 @@ type AsyncAPICallOutputFileDensity struct {
 	// Error is the error the function returned, if any.
 	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the density request.
-	//
-	// This is the same as the API call ID.
+// 
+// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// MaterialMass is the material mass as denoted by the user.
 	MaterialMass float64 `json:"material_mass,omitempty" yaml:"material_mass,omitempty"`
@@ -318,8 +317,8 @@ type AsyncAPICallOutputFileDensity struct {
 	// StartedAt is the time and date the density was started.
 	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
 	// Status is the status of the density.
-	Status APICallStatus          `json:"status,omitempty" yaml:"status,omitempty"`
-	Type   AsyncAPICallOutputType `json:"type,omitempty" yaml:"type,omitempty"`
+	Status APICallStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	Type AsyncAPICallOutputType `json:"type,omitempty" yaml:"type,omitempty"`
 	// UpdatedAt is the time and date the density was last updated.
 	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 	// UserID is the user ID of the user who created the density.
@@ -327,29 +326,30 @@ type AsyncAPICallOutputFileDensity struct {
 }
 
 const (
-	// AsyncAPICallOutputTypeFileDensity represents the AsyncAPICallOutputType `"FileDensity"`.
+// AsyncAPICallOutputTypeFileDensity represents the AsyncAPICallOutputType `"FileDensity"`.
 	AsyncAPICallOutputTypeFileDensity AsyncAPICallOutputType = "FileDensity"
 )
 
+
 // AsyncAPICallOutput is the output from the async API call.
 type AsyncAPICallOutput struct {
-	CompletedAt     *JSONTime        `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
-	CreatedAt       *JSONTime        `json:"created_at,omitempty" yaml:"created_at,omitempty"`
-	Error           string           `json:"error,omitempty" yaml:"error,omitempty"`
-	ID              Uuid             `json:"id,omitempty" yaml:"id,omitempty"`
-	Output          string           `json:"output,omitempty" yaml:"output,omitempty"`
-	OutputFormat    FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
-	SrcFormat       FileSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
-	StartedAt       *JSONTime        `json:"started_at,omitempty" yaml:"started_at,omitempty"`
-	Status          APICallStatus    `json:"status,omitempty" yaml:"status,omitempty"`
-	Type            string           `json:"type,omitempty" yaml:"type,omitempty"`
-	UpdatedAt       *JSONTime        `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
-	UserID          string           `json:"user_id,omitempty" yaml:"user_id,omitempty"`
-	Mass            float64          `json:"mass,omitempty" yaml:"mass,omitempty"`
-	MaterialDensity float64          `json:"material_density,omitempty" yaml:"material_density,omitempty"`
-	Volume          float64          `json:"volume,omitempty" yaml:"volume,omitempty"`
-	Density         float64          `json:"density,omitempty" yaml:"density,omitempty"`
-	MaterialMass    float64          `json:"material_mass,omitempty" yaml:"material_mass,omitempty"`
+	CompletedAt *JSONTime `json:"completed_at,omitempty" yaml:"completed_at,omitempty"`
+	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	Error string `json:"error,omitempty" yaml:"error,omitempty"`
+	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
+	Output string `json:"output,omitempty" yaml:"output,omitempty"`
+	OutputFormat FileOutputFormat `json:"output_format,omitempty" yaml:"output_format,omitempty"`
+	SrcFormat FileSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
+	StartedAt *JSONTime `json:"started_at,omitempty" yaml:"started_at,omitempty"`
+	Status APICallStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	Type string `json:"type,omitempty" yaml:"type,omitempty"`
+	UpdatedAt *JSONTime `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	UserID string `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+	Mass float64 `json:"mass,omitempty" yaml:"mass,omitempty"`
+	MaterialDensity float64 `json:"material_density,omitempty" yaml:"material_density,omitempty"`
+	Volume float64 `json:"volume,omitempty" yaml:"volume,omitempty"`
+	Density float64 `json:"density,omitempty" yaml:"density,omitempty"`
+	MaterialMass float64 `json:"material_mass,omitempty" yaml:"material_mass,omitempty"`
 }
 
 // AsyncAPICallResultsPage is a single page of results
@@ -362,15 +362,14 @@ type AsyncAPICallResultsPage struct {
 
 // AsyncAPICallType is the type of async API call.
 type AsyncAPICallType string
-
 const (
-	// AsyncAPICallTypeFileConversion represents the AsyncAPICallType `"FileConversion"`.
+// AsyncAPICallTypeFileConversion represents the AsyncAPICallType `"FileConversion"`.
 	AsyncAPICallTypeFileConversion AsyncAPICallType = "FileConversion"
-	// AsyncAPICallTypeFileVolume represents the AsyncAPICallType `"FileVolume"`.
+// AsyncAPICallTypeFileVolume represents the AsyncAPICallType `"FileVolume"`.
 	AsyncAPICallTypeFileVolume AsyncAPICallType = "FileVolume"
-	// AsyncAPICallTypeFileMass represents the AsyncAPICallType `"FileMass"`.
+// AsyncAPICallTypeFileMass represents the AsyncAPICallType `"FileMass"`.
 	AsyncAPICallTypeFileMass AsyncAPICallType = "FileMass"
-	// AsyncAPICallTypeFileDensity represents the AsyncAPICallType `"FileDensity"`.
+// AsyncAPICallTypeFileDensity represents the AsyncAPICallType `"FileDensity"`.
 	AsyncAPICallTypeFileDensity AsyncAPICallType = "FileDensity"
 )
 
@@ -385,7 +384,7 @@ type BillingInfo struct {
 }
 
 // CacheMetadata is metadata about our cache.
-//
+// 
 // This is mostly used for internal purposes and debugging.
 type CacheMetadata struct {
 	// Ok is if the cache returned an ok response from ping.
@@ -395,8 +394,8 @@ type CacheMetadata struct {
 // CardDetails is the card details of a payment method.
 type CardDetails struct {
 	// Brand is card brand.
-	//
-	// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+// 
+// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
 	Brand string `json:"brand,omitempty" yaml:"brand,omitempty"`
 	// Checks is checks on Card address and CVC if provided.
 	Checks PaymentMethodCardChecks `json:"checks,omitempty" yaml:"checks,omitempty"`
@@ -409,8 +408,8 @@ type CardDetails struct {
 	// Fingerprint is uniquely identifies this particular card number.
 	Fingerprint string `json:"fingerprint,omitempty" yaml:"fingerprint,omitempty"`
 	// Funding is card funding type.
-	//
-	// Can be `credit`, `debit`, `prepaid`, or `unknown`.
+// 
+// Can be `credit`, `debit`, `prepaid`, or `unknown`.
 	Funding string `json:"funding,omitempty" yaml:"funding,omitempty"`
 	// Last4 is the last four digits of the card.
 	Last4 string `json:"last4,omitempty" yaml:"last4,omitempty"`
@@ -434,13 +433,12 @@ type Cluster struct {
 
 // CodeLanguage is the language code is written in.
 type CodeLanguage string
-
 const (
-	// CodeLanguageGo represents the CodeLanguage `"go"`.
+// CodeLanguageGo represents the CodeLanguage `"go"`.
 	CodeLanguageGo CodeLanguage = "go"
-	// CodeLanguagePython represents the CodeLanguage `"python"`.
+// CodeLanguagePython represents the CodeLanguage `"python"`.
 	CodeLanguagePython CodeLanguage = "python"
-	// CodeLanguageNode represents the CodeLanguage `"node"`.
+// CodeLanguageNode represents the CodeLanguage `"node"`.
 	CodeLanguageNode CodeLanguage = "node"
 )
 
@@ -463,7 +461,7 @@ type Commit struct {
 }
 
 // Connection is metadata about a pub-sub connection.
-//
+// 
 // This is mostly used for internal purposes and debugging.
 type Connection struct {
 	// AuthTimeout is the auth timeout of the server.
@@ -475,8 +473,8 @@ type Connection struct {
 	// Connections is the number of connections to the server.
 	Connections int `json:"connections,omitempty" yaml:"connections,omitempty"`
 	// Cores is the CPU core usage of the server.
-	Cores int     `json:"cores,omitempty" yaml:"cores,omitempty"`
-	Cpu   float64 `json:"cpu,omitempty" yaml:"cpu,omitempty"`
+	Cores int `json:"cores,omitempty" yaml:"cores,omitempty"`
+	Cpu float64 `json:"cpu,omitempty" yaml:"cpu,omitempty"`
 	// Gateway is information about the gateway.
 	Gateway Gateway `json:"gateway,omitempty" yaml:"gateway,omitempty"`
 	// GitCommit is the git commit.
@@ -492,7 +490,7 @@ type Connection struct {
 	// HttpHost is the http host of the server.
 	HttpHost string `json:"http_host,omitempty" yaml:"http_host,omitempty"`
 	// HttpPort is the http port of the server.
-	HttpPort     int `json:"http_port,omitempty" yaml:"http_port,omitempty"`
+	HttpPort int `json:"http_port,omitempty" yaml:"http_port,omitempty"`
 	HttpReqStats int `json:"http_req_stats,omitempty" yaml:"http_req_stats,omitempty"`
 	// HttpsPort is the https port of the server.
 	HttpsPort int `json:"https_port,omitempty" yaml:"https_port,omitempty"`
@@ -559,300 +557,298 @@ type Connection struct {
 }
 
 // CreatedAtSortMode is supported set of sort modes for scanning by created_at only.
-//
+// 
 // Currently, we only support scanning in ascending order.
 type CreatedAtSortMode string
-
 const (
-	// CreatedAtSortModeCreatedAtAscending represents the CreatedAtSortMode `"created-at-ascending"`.
+// CreatedAtSortModeCreatedAtAscending represents the CreatedAtSortMode `"created-at-ascending"`.
 	CreatedAtSortModeCreatedAtAscending CreatedAtSortMode = "created-at-ascending"
-	// CreatedAtSortModeCreatedAtDescending represents the CreatedAtSortMode `"created-at-descending"`.
+// CreatedAtSortModeCreatedAtDescending represents the CreatedAtSortMode `"created-at-descending"`.
 	CreatedAtSortModeCreatedAtDescending CreatedAtSortMode = "created-at-descending"
 )
 
 // Currency is currency is the list of supported currencies.
-//
+// 
 // For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
 type Currency string
-
 const (
-	// CurrencyAed represents the Currency `"aed"`.
+// CurrencyAed represents the Currency `"aed"`.
 	CurrencyAed Currency = "aed"
-	// CurrencyAfn represents the Currency `"afn"`.
+// CurrencyAfn represents the Currency `"afn"`.
 	CurrencyAfn Currency = "afn"
-	// CurrencyAll represents the Currency `"all"`.
+// CurrencyAll represents the Currency `"all"`.
 	CurrencyAll Currency = "all"
-	// CurrencyAmd represents the Currency `"amd"`.
+// CurrencyAmd represents the Currency `"amd"`.
 	CurrencyAmd Currency = "amd"
-	// CurrencyAng represents the Currency `"ang"`.
+// CurrencyAng represents the Currency `"ang"`.
 	CurrencyAng Currency = "ang"
-	// CurrencyAoa represents the Currency `"aoa"`.
+// CurrencyAoa represents the Currency `"aoa"`.
 	CurrencyAoa Currency = "aoa"
-	// CurrencyArs represents the Currency `"ars"`.
+// CurrencyArs represents the Currency `"ars"`.
 	CurrencyArs Currency = "ars"
-	// CurrencyAud represents the Currency `"aud"`.
+// CurrencyAud represents the Currency `"aud"`.
 	CurrencyAud Currency = "aud"
-	// CurrencyAwg represents the Currency `"awg"`.
+// CurrencyAwg represents the Currency `"awg"`.
 	CurrencyAwg Currency = "awg"
-	// CurrencyAzn represents the Currency `"azn"`.
+// CurrencyAzn represents the Currency `"azn"`.
 	CurrencyAzn Currency = "azn"
-	// CurrencyBam represents the Currency `"bam"`.
+// CurrencyBam represents the Currency `"bam"`.
 	CurrencyBam Currency = "bam"
-	// CurrencyBbd represents the Currency `"bbd"`.
+// CurrencyBbd represents the Currency `"bbd"`.
 	CurrencyBbd Currency = "bbd"
-	// CurrencyBdt represents the Currency `"bdt"`.
+// CurrencyBdt represents the Currency `"bdt"`.
 	CurrencyBdt Currency = "bdt"
-	// CurrencyBgn represents the Currency `"bgn"`.
+// CurrencyBgn represents the Currency `"bgn"`.
 	CurrencyBgn Currency = "bgn"
-	// CurrencyBif represents the Currency `"bif"`.
+// CurrencyBif represents the Currency `"bif"`.
 	CurrencyBif Currency = "bif"
-	// CurrencyBmd represents the Currency `"bmd"`.
+// CurrencyBmd represents the Currency `"bmd"`.
 	CurrencyBmd Currency = "bmd"
-	// CurrencyBnd represents the Currency `"bnd"`.
+// CurrencyBnd represents the Currency `"bnd"`.
 	CurrencyBnd Currency = "bnd"
-	// CurrencyBob represents the Currency `"bob"`.
+// CurrencyBob represents the Currency `"bob"`.
 	CurrencyBob Currency = "bob"
-	// CurrencyBrl represents the Currency `"brl"`.
+// CurrencyBrl represents the Currency `"brl"`.
 	CurrencyBrl Currency = "brl"
-	// CurrencyBsd represents the Currency `"bsd"`.
+// CurrencyBsd represents the Currency `"bsd"`.
 	CurrencyBsd Currency = "bsd"
-	// CurrencyBwp represents the Currency `"bwp"`.
+// CurrencyBwp represents the Currency `"bwp"`.
 	CurrencyBwp Currency = "bwp"
-	// CurrencyBzd represents the Currency `"bzd"`.
+// CurrencyBzd represents the Currency `"bzd"`.
 	CurrencyBzd Currency = "bzd"
-	// CurrencyCad represents the Currency `"cad"`.
+// CurrencyCad represents the Currency `"cad"`.
 	CurrencyCad Currency = "cad"
-	// CurrencyCdf represents the Currency `"cdf"`.
+// CurrencyCdf represents the Currency `"cdf"`.
 	CurrencyCdf Currency = "cdf"
-	// CurrencyChf represents the Currency `"chf"`.
+// CurrencyChf represents the Currency `"chf"`.
 	CurrencyChf Currency = "chf"
-	// CurrencyClp represents the Currency `"clp"`.
+// CurrencyClp represents the Currency `"clp"`.
 	CurrencyClp Currency = "clp"
-	// CurrencyCny represents the Currency `"cny"`.
+// CurrencyCny represents the Currency `"cny"`.
 	CurrencyCny Currency = "cny"
-	// CurrencyCop represents the Currency `"cop"`.
+// CurrencyCop represents the Currency `"cop"`.
 	CurrencyCop Currency = "cop"
-	// CurrencyCrc represents the Currency `"crc"`.
+// CurrencyCrc represents the Currency `"crc"`.
 	CurrencyCrc Currency = "crc"
-	// CurrencyCve represents the Currency `"cve"`.
+// CurrencyCve represents the Currency `"cve"`.
 	CurrencyCve Currency = "cve"
-	// CurrencyCzk represents the Currency `"czk"`.
+// CurrencyCzk represents the Currency `"czk"`.
 	CurrencyCzk Currency = "czk"
-	// CurrencyDjf represents the Currency `"djf"`.
+// CurrencyDjf represents the Currency `"djf"`.
 	CurrencyDjf Currency = "djf"
-	// CurrencyDkk represents the Currency `"dkk"`.
+// CurrencyDkk represents the Currency `"dkk"`.
 	CurrencyDkk Currency = "dkk"
-	// CurrencyDop represents the Currency `"dop"`.
+// CurrencyDop represents the Currency `"dop"`.
 	CurrencyDop Currency = "dop"
-	// CurrencyDzd represents the Currency `"dzd"`.
+// CurrencyDzd represents the Currency `"dzd"`.
 	CurrencyDzd Currency = "dzd"
-	// CurrencyEek represents the Currency `"eek"`.
+// CurrencyEek represents the Currency `"eek"`.
 	CurrencyEek Currency = "eek"
-	// CurrencyEgp represents the Currency `"egp"`.
+// CurrencyEgp represents the Currency `"egp"`.
 	CurrencyEgp Currency = "egp"
-	// CurrencyEtb represents the Currency `"etb"`.
+// CurrencyEtb represents the Currency `"etb"`.
 	CurrencyEtb Currency = "etb"
-	// CurrencyEur represents the Currency `"eur"`.
+// CurrencyEur represents the Currency `"eur"`.
 	CurrencyEur Currency = "eur"
-	// CurrencyFjd represents the Currency `"fjd"`.
+// CurrencyFjd represents the Currency `"fjd"`.
 	CurrencyFjd Currency = "fjd"
-	// CurrencyFkp represents the Currency `"fkp"`.
+// CurrencyFkp represents the Currency `"fkp"`.
 	CurrencyFkp Currency = "fkp"
-	// CurrencyGbp represents the Currency `"gbp"`.
+// CurrencyGbp represents the Currency `"gbp"`.
 	CurrencyGbp Currency = "gbp"
-	// CurrencyGel represents the Currency `"gel"`.
+// CurrencyGel represents the Currency `"gel"`.
 	CurrencyGel Currency = "gel"
-	// CurrencyGip represents the Currency `"gip"`.
+// CurrencyGip represents the Currency `"gip"`.
 	CurrencyGip Currency = "gip"
-	// CurrencyGmd represents the Currency `"gmd"`.
+// CurrencyGmd represents the Currency `"gmd"`.
 	CurrencyGmd Currency = "gmd"
-	// CurrencyGnf represents the Currency `"gnf"`.
+// CurrencyGnf represents the Currency `"gnf"`.
 	CurrencyGnf Currency = "gnf"
-	// CurrencyGtq represents the Currency `"gtq"`.
+// CurrencyGtq represents the Currency `"gtq"`.
 	CurrencyGtq Currency = "gtq"
-	// CurrencyGyd represents the Currency `"gyd"`.
+// CurrencyGyd represents the Currency `"gyd"`.
 	CurrencyGyd Currency = "gyd"
-	// CurrencyHkd represents the Currency `"hkd"`.
+// CurrencyHkd represents the Currency `"hkd"`.
 	CurrencyHkd Currency = "hkd"
-	// CurrencyHnl represents the Currency `"hnl"`.
+// CurrencyHnl represents the Currency `"hnl"`.
 	CurrencyHnl Currency = "hnl"
-	// CurrencyHrk represents the Currency `"hrk"`.
+// CurrencyHrk represents the Currency `"hrk"`.
 	CurrencyHrk Currency = "hrk"
-	// CurrencyHtg represents the Currency `"htg"`.
+// CurrencyHtg represents the Currency `"htg"`.
 	CurrencyHtg Currency = "htg"
-	// CurrencyHuf represents the Currency `"huf"`.
+// CurrencyHuf represents the Currency `"huf"`.
 	CurrencyHuf Currency = "huf"
-	// CurrencyIdr represents the Currency `"idr"`.
+// CurrencyIdr represents the Currency `"idr"`.
 	CurrencyIdr Currency = "idr"
-	// CurrencyIls represents the Currency `"ils"`.
+// CurrencyIls represents the Currency `"ils"`.
 	CurrencyIls Currency = "ils"
-	// CurrencyInr represents the Currency `"inr"`.
+// CurrencyInr represents the Currency `"inr"`.
 	CurrencyInr Currency = "inr"
-	// CurrencyIsk represents the Currency `"isk"`.
+// CurrencyIsk represents the Currency `"isk"`.
 	CurrencyIsk Currency = "isk"
-	// CurrencyJmd represents the Currency `"jmd"`.
+// CurrencyJmd represents the Currency `"jmd"`.
 	CurrencyJmd Currency = "jmd"
-	// CurrencyJpy represents the Currency `"jpy"`.
+// CurrencyJpy represents the Currency `"jpy"`.
 	CurrencyJpy Currency = "jpy"
-	// CurrencyKes represents the Currency `"kes"`.
+// CurrencyKes represents the Currency `"kes"`.
 	CurrencyKes Currency = "kes"
-	// CurrencyKgs represents the Currency `"kgs"`.
+// CurrencyKgs represents the Currency `"kgs"`.
 	CurrencyKgs Currency = "kgs"
-	// CurrencyKhr represents the Currency `"khr"`.
+// CurrencyKhr represents the Currency `"khr"`.
 	CurrencyKhr Currency = "khr"
-	// CurrencyKmf represents the Currency `"kmf"`.
+// CurrencyKmf represents the Currency `"kmf"`.
 	CurrencyKmf Currency = "kmf"
-	// CurrencyKrw represents the Currency `"krw"`.
+// CurrencyKrw represents the Currency `"krw"`.
 	CurrencyKrw Currency = "krw"
-	// CurrencyKyd represents the Currency `"kyd"`.
+// CurrencyKyd represents the Currency `"kyd"`.
 	CurrencyKyd Currency = "kyd"
-	// CurrencyKzt represents the Currency `"kzt"`.
+// CurrencyKzt represents the Currency `"kzt"`.
 	CurrencyKzt Currency = "kzt"
-	// CurrencyLak represents the Currency `"lak"`.
+// CurrencyLak represents the Currency `"lak"`.
 	CurrencyLak Currency = "lak"
-	// CurrencyLbp represents the Currency `"lbp"`.
+// CurrencyLbp represents the Currency `"lbp"`.
 	CurrencyLbp Currency = "lbp"
-	// CurrencyLkr represents the Currency `"lkr"`.
+// CurrencyLkr represents the Currency `"lkr"`.
 	CurrencyLkr Currency = "lkr"
-	// CurrencyLrd represents the Currency `"lrd"`.
+// CurrencyLrd represents the Currency `"lrd"`.
 	CurrencyLrd Currency = "lrd"
-	// CurrencyLsl represents the Currency `"lsl"`.
+// CurrencyLsl represents the Currency `"lsl"`.
 	CurrencyLsl Currency = "lsl"
-	// CurrencyLtl represents the Currency `"ltl"`.
+// CurrencyLtl represents the Currency `"ltl"`.
 	CurrencyLtl Currency = "ltl"
-	// CurrencyLvl represents the Currency `"lvl"`.
+// CurrencyLvl represents the Currency `"lvl"`.
 	CurrencyLvl Currency = "lvl"
-	// CurrencyMad represents the Currency `"mad"`.
+// CurrencyMad represents the Currency `"mad"`.
 	CurrencyMad Currency = "mad"
-	// CurrencyMdl represents the Currency `"mdl"`.
+// CurrencyMdl represents the Currency `"mdl"`.
 	CurrencyMdl Currency = "mdl"
-	// CurrencyMga represents the Currency `"mga"`.
+// CurrencyMga represents the Currency `"mga"`.
 	CurrencyMga Currency = "mga"
-	// CurrencyMkd represents the Currency `"mkd"`.
+// CurrencyMkd represents the Currency `"mkd"`.
 	CurrencyMkd Currency = "mkd"
-	// CurrencyMnt represents the Currency `"mnt"`.
+// CurrencyMnt represents the Currency `"mnt"`.
 	CurrencyMnt Currency = "mnt"
-	// CurrencyMop represents the Currency `"mop"`.
+// CurrencyMop represents the Currency `"mop"`.
 	CurrencyMop Currency = "mop"
-	// CurrencyMro represents the Currency `"mro"`.
+// CurrencyMro represents the Currency `"mro"`.
 	CurrencyMro Currency = "mro"
-	// CurrencyMur represents the Currency `"mur"`.
+// CurrencyMur represents the Currency `"mur"`.
 	CurrencyMur Currency = "mur"
-	// CurrencyMvr represents the Currency `"mvr"`.
+// CurrencyMvr represents the Currency `"mvr"`.
 	CurrencyMvr Currency = "mvr"
-	// CurrencyMwk represents the Currency `"mwk"`.
+// CurrencyMwk represents the Currency `"mwk"`.
 	CurrencyMwk Currency = "mwk"
-	// CurrencyMxn represents the Currency `"mxn"`.
+// CurrencyMxn represents the Currency `"mxn"`.
 	CurrencyMxn Currency = "mxn"
-	// CurrencyMyr represents the Currency `"myr"`.
+// CurrencyMyr represents the Currency `"myr"`.
 	CurrencyMyr Currency = "myr"
-	// CurrencyMzn represents the Currency `"mzn"`.
+// CurrencyMzn represents the Currency `"mzn"`.
 	CurrencyMzn Currency = "mzn"
-	// CurrencyNad represents the Currency `"nad"`.
+// CurrencyNad represents the Currency `"nad"`.
 	CurrencyNad Currency = "nad"
-	// CurrencyNgn represents the Currency `"ngn"`.
+// CurrencyNgn represents the Currency `"ngn"`.
 	CurrencyNgn Currency = "ngn"
-	// CurrencyNio represents the Currency `"nio"`.
+// CurrencyNio represents the Currency `"nio"`.
 	CurrencyNio Currency = "nio"
-	// CurrencyNok represents the Currency `"nok"`.
+// CurrencyNok represents the Currency `"nok"`.
 	CurrencyNok Currency = "nok"
-	// CurrencyNpr represents the Currency `"npr"`.
+// CurrencyNpr represents the Currency `"npr"`.
 	CurrencyNpr Currency = "npr"
-	// CurrencyNzd represents the Currency `"nzd"`.
+// CurrencyNzd represents the Currency `"nzd"`.
 	CurrencyNzd Currency = "nzd"
-	// CurrencyPab represents the Currency `"pab"`.
+// CurrencyPab represents the Currency `"pab"`.
 	CurrencyPab Currency = "pab"
-	// CurrencyPen represents the Currency `"pen"`.
+// CurrencyPen represents the Currency `"pen"`.
 	CurrencyPen Currency = "pen"
-	// CurrencyPgk represents the Currency `"pgk"`.
+// CurrencyPgk represents the Currency `"pgk"`.
 	CurrencyPgk Currency = "pgk"
-	// CurrencyPhp represents the Currency `"php"`.
+// CurrencyPhp represents the Currency `"php"`.
 	CurrencyPhp Currency = "php"
-	// CurrencyPkr represents the Currency `"pkr"`.
+// CurrencyPkr represents the Currency `"pkr"`.
 	CurrencyPkr Currency = "pkr"
-	// CurrencyPln represents the Currency `"pln"`.
+// CurrencyPln represents the Currency `"pln"`.
 	CurrencyPln Currency = "pln"
-	// CurrencyPyg represents the Currency `"pyg"`.
+// CurrencyPyg represents the Currency `"pyg"`.
 	CurrencyPyg Currency = "pyg"
-	// CurrencyQar represents the Currency `"qar"`.
+// CurrencyQar represents the Currency `"qar"`.
 	CurrencyQar Currency = "qar"
-	// CurrencyRon represents the Currency `"ron"`.
+// CurrencyRon represents the Currency `"ron"`.
 	CurrencyRon Currency = "ron"
-	// CurrencyRsd represents the Currency `"rsd"`.
+// CurrencyRsd represents the Currency `"rsd"`.
 	CurrencyRsd Currency = "rsd"
-	// CurrencyRub represents the Currency `"rub"`.
+// CurrencyRub represents the Currency `"rub"`.
 	CurrencyRub Currency = "rub"
-	// CurrencyRwf represents the Currency `"rwf"`.
+// CurrencyRwf represents the Currency `"rwf"`.
 	CurrencyRwf Currency = "rwf"
-	// CurrencySar represents the Currency `"sar"`.
+// CurrencySar represents the Currency `"sar"`.
 	CurrencySar Currency = "sar"
-	// CurrencySbd represents the Currency `"sbd"`.
+// CurrencySbd represents the Currency `"sbd"`.
 	CurrencySbd Currency = "sbd"
-	// CurrencyScr represents the Currency `"scr"`.
+// CurrencyScr represents the Currency `"scr"`.
 	CurrencyScr Currency = "scr"
-	// CurrencySek represents the Currency `"sek"`.
+// CurrencySek represents the Currency `"sek"`.
 	CurrencySek Currency = "sek"
-	// CurrencySgd represents the Currency `"sgd"`.
+// CurrencySgd represents the Currency `"sgd"`.
 	CurrencySgd Currency = "sgd"
-	// CurrencyShp represents the Currency `"shp"`.
+// CurrencyShp represents the Currency `"shp"`.
 	CurrencyShp Currency = "shp"
-	// CurrencySll represents the Currency `"sll"`.
+// CurrencySll represents the Currency `"sll"`.
 	CurrencySll Currency = "sll"
-	// CurrencySos represents the Currency `"sos"`.
+// CurrencySos represents the Currency `"sos"`.
 	CurrencySos Currency = "sos"
-	// CurrencySrd represents the Currency `"srd"`.
+// CurrencySrd represents the Currency `"srd"`.
 	CurrencySrd Currency = "srd"
-	// CurrencyStd represents the Currency `"std"`.
+// CurrencyStd represents the Currency `"std"`.
 	CurrencyStd Currency = "std"
-	// CurrencySvc represents the Currency `"svc"`.
+// CurrencySvc represents the Currency `"svc"`.
 	CurrencySvc Currency = "svc"
-	// CurrencySzl represents the Currency `"szl"`.
+// CurrencySzl represents the Currency `"szl"`.
 	CurrencySzl Currency = "szl"
-	// CurrencyThb represents the Currency `"thb"`.
+// CurrencyThb represents the Currency `"thb"`.
 	CurrencyThb Currency = "thb"
-	// CurrencyTjs represents the Currency `"tjs"`.
+// CurrencyTjs represents the Currency `"tjs"`.
 	CurrencyTjs Currency = "tjs"
-	// CurrencyTop represents the Currency `"top"`.
+// CurrencyTop represents the Currency `"top"`.
 	CurrencyTop Currency = "top"
-	// CurrencyTry represents the Currency `"try"`.
+// CurrencyTry represents the Currency `"try"`.
 	CurrencyTry Currency = "try"
-	// CurrencyTtd represents the Currency `"ttd"`.
+// CurrencyTtd represents the Currency `"ttd"`.
 	CurrencyTtd Currency = "ttd"
-	// CurrencyTwd represents the Currency `"twd"`.
+// CurrencyTwd represents the Currency `"twd"`.
 	CurrencyTwd Currency = "twd"
-	// CurrencyTzs represents the Currency `"tzs"`.
+// CurrencyTzs represents the Currency `"tzs"`.
 	CurrencyTzs Currency = "tzs"
-	// CurrencyUah represents the Currency `"uah"`.
+// CurrencyUah represents the Currency `"uah"`.
 	CurrencyUah Currency = "uah"
-	// CurrencyUgx represents the Currency `"ugx"`.
+// CurrencyUgx represents the Currency `"ugx"`.
 	CurrencyUgx Currency = "ugx"
-	// CurrencyUsd represents the Currency `"usd"`.
+// CurrencyUsd represents the Currency `"usd"`.
 	CurrencyUsd Currency = "usd"
-	// CurrencyUyu represents the Currency `"uyu"`.
+// CurrencyUyu represents the Currency `"uyu"`.
 	CurrencyUyu Currency = "uyu"
-	// CurrencyUzs represents the Currency `"uzs"`.
+// CurrencyUzs represents the Currency `"uzs"`.
 	CurrencyUzs Currency = "uzs"
-	// CurrencyVef represents the Currency `"vef"`.
+// CurrencyVef represents the Currency `"vef"`.
 	CurrencyVef Currency = "vef"
-	// CurrencyVnd represents the Currency `"vnd"`.
+// CurrencyVnd represents the Currency `"vnd"`.
 	CurrencyVnd Currency = "vnd"
-	// CurrencyVuv represents the Currency `"vuv"`.
+// CurrencyVuv represents the Currency `"vuv"`.
 	CurrencyVuv Currency = "vuv"
-	// CurrencyWst represents the Currency `"wst"`.
+// CurrencyWst represents the Currency `"wst"`.
 	CurrencyWst Currency = "wst"
-	// CurrencyXaf represents the Currency `"xaf"`.
+// CurrencyXaf represents the Currency `"xaf"`.
 	CurrencyXaf Currency = "xaf"
-	// CurrencyXcd represents the Currency `"xcd"`.
+// CurrencyXcd represents the Currency `"xcd"`.
 	CurrencyXcd Currency = "xcd"
-	// CurrencyXof represents the Currency `"xof"`.
+// CurrencyXof represents the Currency `"xof"`.
 	CurrencyXof Currency = "xof"
-	// CurrencyXpf represents the Currency `"xpf"`.
+// CurrencyXpf represents the Currency `"xpf"`.
 	CurrencyXpf Currency = "xpf"
-	// CurrencyYer represents the Currency `"yer"`.
+// CurrencyYer represents the Currency `"yer"`.
 	CurrencyYer Currency = "yer"
-	// CurrencyZar represents the Currency `"zar"`.
+// CurrencyZar represents the Currency `"zar"`.
 	CurrencyZar Currency = "zar"
-	// CurrencyZmw represents the Currency `"zmw"`.
+// CurrencyZmw represents the Currency `"zmw"`.
 	CurrencyZmw Currency = "zmw"
 )
 
@@ -861,16 +857,16 @@ type Customer struct {
 	// Address is the customer's address.
 	Address Address `json:"address,omitempty" yaml:"address,omitempty"`
 	// Balance is current balance, if any, being stored on the customer in the payments service.
-	//
-	// If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.
+// 
+// If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.
 	Balance float64 `json:"balance,omitempty" yaml:"balance,omitempty"`
 	// CreatedAt is time at which the object was created.
 	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 	// Currency is three-letter ISO code for the currency the customer can be charged in for recurring billing purposes.
 	Currency Currency `json:"currency,omitempty" yaml:"currency,omitempty"`
 	// Delinquent is when the customer's latest invoice is billed by charging automatically, `delinquent` is `true` if the invoice's latest charge failed.
-	//
-	// When the customer's latest invoice is billed by sending an invoice, `delinquent` is `true` if the invoice isn't paid by its due date.  If an invoice is marked uncollectible by dunning, `delinquent` doesn't get reset to `false`.
+// 
+// When the customer's latest invoice is billed by sending an invoice, `delinquent` is `true` if the invoice isn't paid by its due date.  If an invoice is marked uncollectible by dunning, `delinquent` doesn't get reset to `false`.
 	Delinquent bool `json:"delinquent,omitempty" yaml:"delinquent,omitempty"`
 	// Email is the customer's email address.
 	Email string `json:"email,omitempty" yaml:"email,omitempty"`
@@ -885,7 +881,7 @@ type Customer struct {
 }
 
 // CustomerBalance is a balance for a user.
-//
+// 
 // This holds information about the financial balance for the user.
 type CustomerBalance struct {
 	// CreatedAt is the date and time the balance was created.
@@ -941,13 +937,13 @@ type DockerSystemInfo struct {
 	// CgroupVersion is the version of the cgroup.
 	CgroupVersion SystemInfoCgroupVersionEnum `json:"cgroup_version,omitempty" yaml:"cgroup_version,omitempty"`
 	// ClusterAdvertise is the network endpoint that the Engine advertises for the purpose of node discovery. ClusterAdvertise is a `host:port` combination on which the daemon is reachable by other hosts.
-	//
-	// **Deprecated**: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store. Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
+// 
+// **Deprecated**: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store. Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
 	ClusterAdvertise string `json:"cluster_advertise,omitempty" yaml:"cluster_advertise,omitempty"`
 	// ClusterStore is uRL of the distributed storage backend.   The storage backend is used for multihost networking (to store network and endpoint information) and by the node discovery mechanism.
-	//
-	// **Deprecated**: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store. Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
-	ClusterStore     string `json:"cluster_store,omitempty" yaml:"cluster_store,omitempty"`
+// 
+// **Deprecated**: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store. Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
+	ClusterStore string `json:"cluster_store,omitempty" yaml:"cluster_store,omitempty"`
 	ContainerdCommit Commit `json:"containerd_commit,omitempty" yaml:"containerd_commit,omitempty"`
 	// Containers is total number of containers on the host.
 	Containers int `json:"containers,omitempty" yaml:"containers,omitempty"`
@@ -976,8 +972,8 @@ type DockerSystemInfo struct {
 	// Driver is name of the storage driver in use.
 	Driver string `json:"driver,omitempty" yaml:"driver,omitempty"`
 	// DriverStatus is information specific to the storage driver, provided as \"label\" / \"value\" pairs.  This information is provided by the storage driver, and formatted in a way consistent with the output of `docker info` on the command line.
-	//
-	// **Note**: The information returned in this field, including the formatting of values and labels, should not be considered stable, and may change without notice.
+// 
+// **Note**: The information returned in this field, including the formatting of values and labels, should not be considered stable, and may change without notice.
 	DriverStatus []string `json:"driver_status,omitempty" yaml:"driver_status,omitempty"`
 	// ExperimentalBuild is indicates if experimental features are enabled on the daemon.
 	ExperimentalBuild bool `json:"experimental_build,omitempty" yaml:"experimental_build,omitempty"`
@@ -986,8 +982,8 @@ type DockerSystemInfo struct {
 	// HttpsProxy is hTTPS-proxy configured for the daemon. This value is obtained from the [`HTTPS_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration.
 	HttpsProxy string `json:"https_proxy,omitempty" yaml:"https_proxy,omitempty"`
 	// ID is unique identifier of the daemon.
-	//
-	// **Note**: The format of the ID itself is not part of the API, and should not be considered stable.
+// 
+// **Note**: The format of the ID itself is not part of the API, and should not be considered stable.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 	// Images is total number of images on the host. Both _tagged_ and _untagged_ (dangling) images are counted.
 	Images int `json:"images,omitempty" yaml:"images,omitempty"`
@@ -1001,16 +997,16 @@ type DockerSystemInfo struct {
 	// Isolation is represents the isolation technology to use as a default for containers. The supported values are platform-specific.  If no isolation value is specified on daemon start, on Windows client, the default is `hyperv`, and on Windows server, the default is `process`.  This option is currently not used on other platforms.
 	Isolation SystemInfoIsolationEnum `json:"isolation,omitempty" yaml:"isolation,omitempty"`
 	// KernelMemory is indicates if the host has kernel memory limit support enabled.
-	//
-	// **Deprecated**: This field is deprecated as the kernel 5.4 deprecated `kmem.limit_in_bytes`.
+// 
+// **Deprecated**: This field is deprecated as the kernel 5.4 deprecated `kmem.limit_in_bytes`.
 	KernelMemory bool `json:"kernel_memory,omitempty" yaml:"kernel_memory,omitempty"`
 	// KernelMemoryTcp is indicates if the host has kernel memory TCP limit support enabled.  Kernel memory TCP limits are not supported when using cgroups v2, which does not support the corresponding `memory.kmem.tcp.limit_in_bytes` cgroup.
 	KernelMemoryTcp bool `json:"kernel_memory_tcp,omitempty" yaml:"kernel_memory_tcp,omitempty"`
 	// KernelVersion is kernel version of the host.  On Linux, this information obtained from `uname`. On Windows this information is queried from the <kbd>HKEY_LOCAL_MACHINE\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\</kbd> registry value, for example _\"10.0 14393 (14393.1198.amd64fre.rs1_release_sec.170427-1353)\"_.
 	KernelVersion string `json:"kernel_version,omitempty" yaml:"kernel_version,omitempty"`
 	// Labels is user-defined labels (key/value metadata) as set on the daemon.
-	//
-	// **Note**: When part of a Swarm, nodes can both have _daemon_ labels, set through the daemon configuration, and _node_ labels, set from a manager node in the Swarm. Node labels are not included in this field. Node labels can be retrieved using the `/nodes/(id)` endpoint on a manager node in the Swarm.
+// 
+// **Note**: When part of a Swarm, nodes can both have _daemon_ labels, set through the daemon configuration, and _node_ labels, set from a manager node in the Swarm. Node labels are not included in this field. Node labels can be retrieved using the `/nodes/(id)` endpoint on a manager node in the Swarm.
 	Labels []string `json:"labels,omitempty" yaml:"labels,omitempty"`
 	// LiveRestoreEnabled is indicates if live restore is enabled.  If enabled, containers are kept running when the daemon is shutdown or upon daemon start if running containers are detected.
 	LiveRestoreEnabled bool `json:"live_restore_enabled,omitempty" yaml:"live_restore_enabled,omitempty"`
@@ -1037,17 +1033,17 @@ type DockerSystemInfo struct {
 	// OsType is generic type of the operating system of the host, as returned by the Go runtime (`GOOS`).  Currently returned values are \"linux\" and \"windows\". A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
 	OsType string `json:"os_type,omitempty" yaml:"os_type,omitempty"`
 	// OsVersion is version of the host's operating system
-	//
-	// **Note**: The information returned in this field, including its very existence, and the formatting of values, should not be considered stable, and may change without notice.
+// 
+// **Note**: The information returned in this field, including its very existence, and the formatting of values, should not be considered stable, and may change without notice.
 	OsVersion string `json:"os_version,omitempty" yaml:"os_version,omitempty"`
 	// PidsLimit is indicates if the host kernel has PID limit support enabled.
-	PidsLimit bool        `json:"pids_limit,omitempty" yaml:"pids_limit,omitempty"`
-	Plugins   PluginsInfo `json:"plugins,omitempty" yaml:"plugins,omitempty"`
+	PidsLimit bool `json:"pids_limit,omitempty" yaml:"pids_limit,omitempty"`
+	Plugins PluginsInfo `json:"plugins,omitempty" yaml:"plugins,omitempty"`
 	// ProductLicense is reports a summary of the product license on the daemon.  If a commercial license has been applied to the daemon, information such as number of nodes, and expiration are included.
-	ProductLicense string                `json:"product_license,omitempty" yaml:"product_license,omitempty"`
+	ProductLicense string `json:"product_license,omitempty" yaml:"product_license,omitempty"`
 	RegistryConfig RegistryServiceConfig `json:"registry_config,omitempty" yaml:"registry_config,omitempty"`
-	RuncCommit     Commit                `json:"runc_commit,omitempty" yaml:"runc_commit,omitempty"`
-	Runtimes       Runtime               `json:"runtimes,omitempty" yaml:"runtimes,omitempty"`
+	RuncCommit Commit `json:"runc_commit,omitempty" yaml:"runc_commit,omitempty"`
+	Runtimes Runtime `json:"runtimes,omitempty" yaml:"runtimes,omitempty"`
 	// SecurityOptions is list of security features that are enabled on the daemon, such as apparmor, seccomp, SELinux, user-namespaces (userns), and rootless.  Additional configuration options for each security feature may be present, and are included as a comma-separated list of key/value pairs.
 	SecurityOptions []string `json:"security_options,omitempty" yaml:"security_options,omitempty"`
 	// ServerVersion is version string of the daemon. **Note**: the [standalone Swarm API](https://docs.docker.com/swarm/swarm-api/) returns the Swarm version instead of the daemon  version, for example `swarm/1.2.8`.
@@ -1069,7 +1065,7 @@ type EmailAuthenticationForm struct {
 }
 
 // EngineMetadata is metadata about our currently running server.
-//
+// 
 // This is mostly used for internal purposes and debugging.
 type EngineMetadata struct {
 	// AsyncJobsRunning is if any async job is currently running.
@@ -1088,25 +1084,24 @@ type EngineMetadata struct {
 
 // Environment is the environment the server is running in.
 type Environment string
-
 const (
-	// EnvironmentDEVELOPMENT represents the Environment `"DEVELOPMENT"`.
+// EnvironmentDEVELOPMENT represents the Environment `"DEVELOPMENT"`.
 	EnvironmentDEVELOPMENT Environment = "DEVELOPMENT"
-	// EnvironmentPREVIEW represents the Environment `"PREVIEW"`.
+// EnvironmentPREVIEW represents the Environment `"PREVIEW"`.
 	EnvironmentPREVIEW Environment = "PREVIEW"
-	// EnvironmentPRODUCTION represents the Environment `"PRODUCTION"`.
+// EnvironmentPRODUCTION represents the Environment `"PRODUCTION"`.
 	EnvironmentPRODUCTION Environment = "PRODUCTION"
 )
 
 // Error is error information from a response.
 type Error struct {
 	ErrorCode string `json:"error_code,omitempty" yaml:"error_code,omitempty"`
-	Message   string `json:"message,omitempty" yaml:"message,omitempty"`
+	Message string `json:"message,omitempty" yaml:"message,omitempty"`
 	RequestID string `json:"request_id,omitempty" yaml:"request_id,omitempty"`
 }
 
 // ExecutorMetadata is metadata about our currently running server.
-//
+// 
 // This is mostly used for internal purposes and debugging.
 type ExecutorMetadata struct {
 	// DockerInfo is information about the docker daemon.
@@ -1118,7 +1113,7 @@ type ExecutorMetadata struct {
 }
 
 // ExtendedUser is extended user information.
-//
+// 
 // This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Zendesk.
 type ExtendedUser struct {
 	// Company is the user's company.
@@ -1172,8 +1167,8 @@ type FileConversion struct {
 	// Error is the error the function returned, if any.
 	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the file conversion.
-	//
-	// This is the same as the API call ID.
+// 
+// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// Output is the converted file, if completed, base64 encoded.
 	Output string `json:"output,omitempty" yaml:"output,omitempty"`
@@ -1202,8 +1197,8 @@ type FileDensity struct {
 	// Error is the error the function returned, if any.
 	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the density request.
-	//
-	// This is the same as the API call ID.
+// 
+// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// MaterialMass is the material mass as denoted by the user.
 	MaterialMass float64 `json:"material_mass,omitempty" yaml:"material_mass,omitempty"`
@@ -1228,8 +1223,8 @@ type FileMass struct {
 	// Error is the error the function returned, if any.
 	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the mass request.
-	//
-	// This is the same as the API call ID.
+// 
+// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// Mass is the resulting mass.
 	Mass float64 `json:"mass,omitempty" yaml:"mass,omitempty"`
@@ -1249,40 +1244,38 @@ type FileMass struct {
 
 // FileOutputFormat is the valid types of output file formats.
 type FileOutputFormat string
-
 const (
-	// FileOutputFormatStl represents the FileOutputFormat `"stl"`.
+// FileOutputFormatStl represents the FileOutputFormat `"stl"`.
 	FileOutputFormatStl FileOutputFormat = "stl"
-	// FileOutputFormatObj represents the FileOutputFormat `"obj"`.
+// FileOutputFormatObj represents the FileOutputFormat `"obj"`.
 	FileOutputFormatObj FileOutputFormat = "obj"
-	// FileOutputFormatDae represents the FileOutputFormat `"dae"`.
+// FileOutputFormatDae represents the FileOutputFormat `"dae"`.
 	FileOutputFormatDae FileOutputFormat = "dae"
-	// FileOutputFormatStep represents the FileOutputFormat `"step"`.
+// FileOutputFormatStep represents the FileOutputFormat `"step"`.
 	FileOutputFormatStep FileOutputFormat = "step"
-	// FileOutputFormatFbx represents the FileOutputFormat `"fbx"`.
+// FileOutputFormatFbx represents the FileOutputFormat `"fbx"`.
 	FileOutputFormatFbx FileOutputFormat = "fbx"
-	// FileOutputFormatFbxb represents the FileOutputFormat `"fbxb"`.
+// FileOutputFormatFbxb represents the FileOutputFormat `"fbxb"`.
 	FileOutputFormatFbxb FileOutputFormat = "fbxb"
 )
 
 // FileSourceFormat is the valid types of source file formats.
 type FileSourceFormat string
-
 const (
-	// FileSourceFormatStl represents the FileSourceFormat `"stl"`.
+// FileSourceFormatStl represents the FileSourceFormat `"stl"`.
 	FileSourceFormatStl FileSourceFormat = "stl"
-	// FileSourceFormatObj represents the FileSourceFormat `"obj"`.
+// FileSourceFormatObj represents the FileSourceFormat `"obj"`.
 	FileSourceFormatObj FileSourceFormat = "obj"
-	// FileSourceFormatDae represents the FileSourceFormat `"dae"`.
+// FileSourceFormatDae represents the FileSourceFormat `"dae"`.
 	FileSourceFormatDae FileSourceFormat = "dae"
-	// FileSourceFormatStep represents the FileSourceFormat `"step"`.
+// FileSourceFormatStep represents the FileSourceFormat `"step"`.
 	FileSourceFormatStep FileSourceFormat = "step"
-	// FileSourceFormatFbx represents the FileSourceFormat `"fbx"`.
+// FileSourceFormatFbx represents the FileSourceFormat `"fbx"`.
 	FileSourceFormatFbx FileSourceFormat = "fbx"
 )
 
 // FileSystemMetadata is metadata about our file system.
-//
+// 
 // This is mostly used for internal purposes and debugging.
 type FileSystemMetadata struct {
 	// Ok is if the file system passed a sanity check.
@@ -1298,8 +1291,8 @@ type FileVolume struct {
 	// Error is the error the function returned, if any.
 	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the volume request.
-	//
-	// This is the same as the API call ID.
+// 
+// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// SrcFormat is the source format of the file.
 	SrcFormat FileSourceFormat `json:"src_format,omitempty" yaml:"src_format,omitempty"`
@@ -1338,28 +1331,28 @@ type IndexInfo struct {
 	// Official is indicates whether this is an official registry (i.e., Docker Hub / docker.io)
 	Official bool `json:"official,omitempty" yaml:"official,omitempty"`
 	// Secure is indicates if the registry is part of the list of insecure registries.  If `false`, the registry is insecure. Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.
-	//
-	// **Warning**: Insecure registries can be useful when running a local registry. However, because its use creates security vulnerabilities it should ONLY be enabled for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
+// 
+// **Warning**: Insecure registries can be useful when running a local registry. However, because its use creates security vulnerabilities it should ONLY be enabled for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
 	Secure bool `json:"secure,omitempty" yaml:"secure,omitempty"`
 }
 
 // Invoice is an invoice.
 type Invoice struct {
 	// AmountDue is final amount due at this time for this invoice.
-	//
-	// If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the `amount_due` may be 0. If there is a positive `starting_balance` for the invoice (the customer owes money), the `amount_due` will also take that into account. The charge that gets generated for the invoice will be for the amount specified in `amount_due`.
+// 
+// If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the `amount_due` may be 0. If there is a positive `starting_balance` for the invoice (the customer owes money), the `amount_due` will also take that into account. The charge that gets generated for the invoice will be for the amount specified in `amount_due`.
 	AmountDue float64 `json:"amount_due,omitempty" yaml:"amount_due,omitempty"`
 	// AmountPaid is the amount, in USD, that was paid.
 	AmountPaid float64 `json:"amount_paid,omitempty" yaml:"amount_paid,omitempty"`
 	// AmountRemaining is the amount remaining, in USD, that is due.
 	AmountRemaining float64 `json:"amount_remaining,omitempty" yaml:"amount_remaining,omitempty"`
 	// AttemptCount is number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
-	//
-	// Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count. In other words, manual payment attempts after the first attempt do not affect the retry schedule.
+// 
+// Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count. In other words, manual payment attempts after the first attempt do not affect the retry schedule.
 	AttemptCount int `json:"attempt_count,omitempty" yaml:"attempt_count,omitempty"`
 	// Attempted is whether an attempt has been made to pay the invoice.
-	//
-	// An invoice is not attempted until 1 hour after the `invoice.created` webhook, for example, so you might not want to display that invoice as unpaid to your users.
+// 
+// An invoice is not attempted until 1 hour after the `invoice.created` webhook, for example, so you might not want to display that invoice as unpaid to your users.
 	Attempted bool `json:"attempted,omitempty" yaml:"attempted,omitempty"`
 	// CreatedAt is time at which the object was created.
 	CreatedAt *JSONTime `json:"created_at,omitempty" yaml:"created_at,omitempty"`
@@ -1376,16 +1369,16 @@ type Invoice struct {
 	// ID is unique identifier for the object.
 	ID string `json:"id,omitempty" yaml:"id,omitempty"`
 	// Lines is the individual line items that make up the invoice.
-	//
-	// `lines` is sorted as follows: invoice items in reverse chronological order, followed by the subscription, if any.
+// 
+// `lines` is sorted as follows: invoice items in reverse chronological order, followed by the subscription, if any.
 	Lines []InvoiceLineItem `json:"lines,omitempty" yaml:"lines,omitempty"`
 	// Metadata is set of key-value pairs.
 	Metadata string `json:"metadata,omitempty" yaml:"metadata,omitempty"`
 	// Number is a unique, identifying string that appears on emails sent to the customer for this invoice.
 	Number string `json:"number,omitempty" yaml:"number,omitempty"`
 	// Paid is whether payment was successfully collected for this invoice.
-	//
-	// An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
+// 
+// An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
 	Paid bool `json:"paid,omitempty" yaml:"paid,omitempty"`
 	// Pdf is the link to download the PDF for the invoice.
 	Pdf string `json:"pdf,omitempty" yaml:"pdf,omitempty"`
@@ -1394,16 +1387,16 @@ type Invoice struct {
 	// StatementDescriptor is extra information about an invoice for the customer's credit card statement.
 	StatementDescriptor string `json:"statement_descriptor,omitempty" yaml:"statement_descriptor,omitempty"`
 	// Status is the status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
-	//
-	// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
+// 
+// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
 	Status InvoiceStatus `json:"status,omitempty" yaml:"status,omitempty"`
 	// Subtotal is total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.
-	//
-	// Item discounts are already incorporated.
+// 
+// Item discounts are already incorporated.
 	Subtotal float64 `json:"subtotal,omitempty" yaml:"subtotal,omitempty"`
 	// Tax is the amount of tax on this invoice.
-	//
-	// This is the sum of all the tax amounts on this invoice.
+// 
+// This is the sum of all the tax amounts on this invoice.
 	Tax float64 `json:"tax,omitempty" yaml:"tax,omitempty"`
 	// Total is total after discounts and taxes.
 	Total float64 `json:"total,omitempty" yaml:"total,omitempty"`
@@ -1424,26 +1417,25 @@ type InvoiceLineItem struct {
 	// InvoiceItem is the ID of the invoice item associated with this line item if any.
 	InvoiceItem string `json:"invoice_item,omitempty" yaml:"invoice_item,omitempty"`
 	// Metadata is set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-	//
-	// Set of key-value pairs.
+// 
+// Set of key-value pairs.
 	Metadata string `json:"metadata,omitempty" yaml:"metadata,omitempty"`
 }
 
 // InvoiceStatus is an enum representing the possible values of an `Invoice`'s `status` field.
 type InvoiceStatus string
-
 const (
-	// InvoiceStatusDeleted represents the InvoiceStatus `"deleted"`.
+// InvoiceStatusDeleted represents the InvoiceStatus `"deleted"`.
 	InvoiceStatusDeleted InvoiceStatus = "deleted"
-	// InvoiceStatusDraft represents the InvoiceStatus `"draft"`.
+// InvoiceStatusDraft represents the InvoiceStatus `"draft"`.
 	InvoiceStatusDraft InvoiceStatus = "draft"
-	// InvoiceStatusOpen represents the InvoiceStatus `"open"`.
+// InvoiceStatusOpen represents the InvoiceStatus `"open"`.
 	InvoiceStatusOpen InvoiceStatus = "open"
-	// InvoiceStatusPaid represents the InvoiceStatus `"paid"`.
+// InvoiceStatusPaid represents the InvoiceStatus `"paid"`.
 	InvoiceStatusPaid InvoiceStatus = "paid"
-	// InvoiceStatusUncollectible represents the InvoiceStatus `"uncollectible"`.
+// InvoiceStatusUncollectible represents the InvoiceStatus `"uncollectible"`.
 	InvoiceStatusUncollectible InvoiceStatus = "uncollectible"
-	// InvoiceStatusVoid represents the InvoiceStatus `"void"`.
+// InvoiceStatusVoid represents the InvoiceStatus `"void"`.
 	InvoiceStatusVoid InvoiceStatus = "void"
 )
 
@@ -1520,7 +1512,7 @@ type MetaClusterInfo struct {
 }
 
 // Metadata is metadata about our currently running server.
-//
+// 
 // This is mostly used for internal purposes and debugging.
 type Metadata struct {
 	// Cache is metadata about our cache.
@@ -1540,32 +1532,31 @@ type Metadata struct {
 }
 
 // Method is the Request Method (VERB)
-//
+// 
 // This type also contains constants for a number of common HTTP methods such as GET, POST, etc.
-//
+// 
 // Currently includes 8 variants representing the 8 methods defined in [RFC 7230](https://tools.ietf.org/html/rfc7231#section-4.1), plus PATCH, and an Extension variant for all extensions.
 type Method string
-
 const (
-	// MethodOPTIONS represents the Method `"OPTIONS"`.
+// MethodOPTIONS represents the Method `"OPTIONS"`.
 	MethodOPTIONS Method = "OPTIONS"
-	// MethodGET represents the Method `"GET"`.
+// MethodGET represents the Method `"GET"`.
 	MethodGET Method = "GET"
-	// MethodPOST represents the Method `"POST"`.
+// MethodPOST represents the Method `"POST"`.
 	MethodPOST Method = "POST"
-	// MethodPUT represents the Method `"PUT"`.
+// MethodPUT represents the Method `"PUT"`.
 	MethodPUT Method = "PUT"
-	// MethodDELETE represents the Method `"DELETE"`.
+// MethodDELETE represents the Method `"DELETE"`.
 	MethodDELETE Method = "DELETE"
-	// MethodHEAD represents the Method `"HEAD"`.
+// MethodHEAD represents the Method `"HEAD"`.
 	MethodHEAD Method = "HEAD"
-	// MethodTRACE represents the Method `"TRACE"`.
+// MethodTRACE represents the Method `"TRACE"`.
 	MethodTRACE Method = "TRACE"
-	// MethodCONNECT represents the Method `"CONNECT"`.
+// MethodCONNECT represents the Method `"CONNECT"`.
 	MethodCONNECT Method = "CONNECT"
-	// MethodPATCH represents the Method `"PATCH"`.
+// MethodPATCH represents the Method `"PATCH"`.
 	MethodPATCH Method = "PATCH"
-	// MethodEXTENSION represents the Method `"EXTENSION"`.
+// MethodEXTENSION represents the Method `"EXTENSION"`.
 	MethodEXTENSION Method = "EXTENSION"
 )
 
@@ -1581,9 +1572,8 @@ type OAuth2ClientInfo struct {
 
 // OAuth2GrantType is an OAuth 2.0 Grant Type. These are documented here: <https://oauth.net/2/grant-types/>.
 type OAuth2GrantType string
-
 const (
-	// OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode represents the OAuth2GrantType `"urn:ietf:params:oauth:grant-type:device_code"`.
+// OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode represents the OAuth2GrantType `"urn:ietf:params:oauth:grant-type:device_code"`.
 	OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode OAuth2GrantType = "urn:ietf:params:oauth:grant-type:device_code"
 )
 
@@ -1629,14 +1619,13 @@ type PaymentMethodCardChecks struct {
 
 // PaymentMethodType is an enum representing the possible values of an `PaymentMethod`'s `type` field.
 type PaymentMethodType string
-
 const (
-	// PaymentMethodTypeCard represents the PaymentMethodType `"card"`.
+// PaymentMethodTypeCard represents the PaymentMethodType `"card"`.
 	PaymentMethodTypeCard PaymentMethodType = "card"
 )
 
 // PluginsInfo is available plugins per type.
-//
+// 
 // **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
 type PluginsInfo struct {
 	// Authorization is names of available authorization plugins.
@@ -1658,17 +1647,17 @@ type Pong struct {
 // RegistryServiceConfig is registryServiceConfig stores daemon registry services configuration.
 type RegistryServiceConfig struct {
 	// AllowNondistributableArtifactsCidRs is list of IP ranges to which nondistributable artifacts can be pushed, using the CIDR syntax [RFC 4632](https://tools.ietf.org/html/4632).  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior, and enables the daemon to push nondistributable artifacts to all registries whose resolved IP address is within the subnet described by the CIDR syntax.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.
-	//
-	// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
+// 
+// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
 	AllowNondistributableArtifactsCidRs []string `json:"allow_nondistributable_artifacts_cid_rs,omitempty" yaml:"allow_nondistributable_artifacts_cid_rs,omitempty"`
 	// AllowNondistributableArtifactsHostnames is list of registry hostnames to which nondistributable artifacts can be pushed, using the format `<hostname>[:<port>]` or `<IP address>[:<port>]`.  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior for the specified registries.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.
-	//
-	// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
-	AllowNondistributableArtifactsHostnames []string  `json:"allow_nondistributable_artifacts_hostnames,omitempty" yaml:"allow_nondistributable_artifacts_hostnames,omitempty"`
-	IndexConfigs                            IndexInfo `json:"index_configs,omitempty" yaml:"index_configs,omitempty"`
+// 
+// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
+	AllowNondistributableArtifactsHostnames []string `json:"allow_nondistributable_artifacts_hostnames,omitempty" yaml:"allow_nondistributable_artifacts_hostnames,omitempty"`
+	IndexConfigs IndexInfo `json:"index_configs,omitempty" yaml:"index_configs,omitempty"`
 	// InsecureRegistryCidRs is list of IP ranges of insecure registries, using the CIDR syntax ([RFC 4632](https://tools.ietf.org/html/4632)). Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.  By default, local registries (`127.0.0.0/8`) are configured as insecure. All other registries are secure. Communicating with an insecure registry is not possible if the daemon assumes that registry is secure.  This configuration override this behavior, insecure communication with registries whose resolved IP address is within the subnet described by the CIDR syntax.  Registries can also be marked insecure by hostname. Those registries are listed under `IndexConfigs` and have their `Secure` field set to `false`.
-	//
-	// **Warning**: Using this option can be useful when running a local  registry, but introduces security vulnerabilities. This option should therefore ONLY be used for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
+// 
+// **Warning**: Using this option can be useful when running a local  registry, but introduces security vulnerabilities. This option should therefore ONLY be used for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
 	InsecureRegistryCidRs []string `json:"insecure_registry_cid_rs,omitempty" yaml:"insecure_registry_cid_rs,omitempty"`
 	// Mirrors is list of registry URLs that act as a mirror for the official (`docker.io`) registry.
 	Mirrors []string `json:"mirrors,omitempty" yaml:"mirrors,omitempty"`
@@ -1683,7 +1672,7 @@ type Runtime struct {
 }
 
 // Session is an authentication session.
-//
+// 
 // For our UIs, these are automatically created by Next.js.
 type Session struct {
 	// CreatedAt is the date and time the session was created.
@@ -1702,27 +1691,25 @@ type Session struct {
 
 // SystemInfoCgroupDriverEnum is the type definition for a SystemInfoCgroupDriverEnum.
 type SystemInfoCgroupDriverEnum string
-
 const (
-	// SystemInfoCgroupDriverEnumEmpty represents the SystemInfoCgroupDriverEnum `"empty"`.
+// SystemInfoCgroupDriverEnumEmpty represents the SystemInfoCgroupDriverEnum `"empty"`.
 	SystemInfoCgroupDriverEnumEmpty SystemInfoCgroupDriverEnum = ""
-	// SystemInfoCgroupDriverEnumCgroupfs represents the SystemInfoCgroupDriverEnum `"cgroupfs"`.
+// SystemInfoCgroupDriverEnumCgroupfs represents the SystemInfoCgroupDriverEnum `"cgroupfs"`.
 	SystemInfoCgroupDriverEnumCgroupfs SystemInfoCgroupDriverEnum = "cgroupfs"
-	// SystemInfoCgroupDriverEnumSystemd represents the SystemInfoCgroupDriverEnum `"systemd"`.
+// SystemInfoCgroupDriverEnumSystemd represents the SystemInfoCgroupDriverEnum `"systemd"`.
 	SystemInfoCgroupDriverEnumSystemd SystemInfoCgroupDriverEnum = "systemd"
-	// SystemInfoCgroupDriverEnumNone represents the SystemInfoCgroupDriverEnum `"none"`.
+// SystemInfoCgroupDriverEnumNone represents the SystemInfoCgroupDriverEnum `"none"`.
 	SystemInfoCgroupDriverEnumNone SystemInfoCgroupDriverEnum = "none"
 )
 
 // SystemInfoCgroupVersionEnum is the type definition for a SystemInfoCgroupVersionEnum.
 type SystemInfoCgroupVersionEnum string
-
 const (
-	// SystemInfoCgroupVersionEnumEmpty represents the SystemInfoCgroupVersionEnum `"empty"`.
+// SystemInfoCgroupVersionEnumEmpty represents the SystemInfoCgroupVersionEnum `"empty"`.
 	SystemInfoCgroupVersionEnumEmpty SystemInfoCgroupVersionEnum = ""
-	// SystemInfoCgroupVersionEnum1 represents the SystemInfoCgroupVersionEnum `"1"`.
+// SystemInfoCgroupVersionEnum1 represents the SystemInfoCgroupVersionEnum `"1"`.
 	SystemInfoCgroupVersionEnum1 SystemInfoCgroupVersionEnum = "1"
-	// SystemInfoCgroupVersionEnum2 represents the SystemInfoCgroupVersionEnum `"2"`.
+// SystemInfoCgroupVersionEnum2 represents the SystemInfoCgroupVersionEnum `"2"`.
 	SystemInfoCgroupVersionEnum2 SystemInfoCgroupVersionEnum = "2"
 )
 
@@ -1736,15 +1723,14 @@ type SystemInfoDefaultAddressPools struct {
 
 // SystemInfoIsolationEnum is the type definition for a SystemInfoIsolationEnum.
 type SystemInfoIsolationEnum string
-
 const (
-	// SystemInfoIsolationEnumEmpty represents the SystemInfoIsolationEnum `"empty"`.
+// SystemInfoIsolationEnumEmpty represents the SystemInfoIsolationEnum `"empty"`.
 	SystemInfoIsolationEnumEmpty SystemInfoIsolationEnum = ""
-	// SystemInfoIsolationEnumDefault represents the SystemInfoIsolationEnum `"default"`.
+// SystemInfoIsolationEnumDefault represents the SystemInfoIsolationEnum `"default"`.
 	SystemInfoIsolationEnumDefault SystemInfoIsolationEnum = "default"
-	// SystemInfoIsolationEnumHyperv represents the SystemInfoIsolationEnum `"hyperv"`.
+// SystemInfoIsolationEnumHyperv represents the SystemInfoIsolationEnum `"hyperv"`.
 	SystemInfoIsolationEnumHyperv SystemInfoIsolationEnum = "hyperv"
-	// SystemInfoIsolationEnumProcess represents the SystemInfoIsolationEnum `"process"`.
+// SystemInfoIsolationEnumProcess represents the SystemInfoIsolationEnum `"process"`.
 	SystemInfoIsolationEnumProcess SystemInfoIsolationEnum = "process"
 )
 
@@ -1757,8 +1743,8 @@ type UnitConversion struct {
 	// Error is the error the function returned, if any.
 	Error string `json:"error,omitempty" yaml:"error,omitempty"`
 	// ID is the unique identifier of the unit conversion.
-	//
-	// This is the same as the API call ID.
+// 
+// This is the same as the API call ID.
 	ID Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 	// Input is the input value.
 	Input float64 `json:"input,omitempty" yaml:"input,omitempty"`
@@ -1780,41 +1766,40 @@ type UnitConversion struct {
 
 // UnitMetricFormat is the valid types of metric unit formats.
 type UnitMetricFormat string
-
 const (
-	// UnitMetricFormatAtto represents the UnitMetricFormat `"atto"`.
+// UnitMetricFormatAtto represents the UnitMetricFormat `"atto"`.
 	UnitMetricFormatAtto UnitMetricFormat = "atto"
-	// UnitMetricFormatFemto represents the UnitMetricFormat `"femto"`.
+// UnitMetricFormatFemto represents the UnitMetricFormat `"femto"`.
 	UnitMetricFormatFemto UnitMetricFormat = "femto"
-	// UnitMetricFormatPico represents the UnitMetricFormat `"pico"`.
+// UnitMetricFormatPico represents the UnitMetricFormat `"pico"`.
 	UnitMetricFormatPico UnitMetricFormat = "pico"
-	// UnitMetricFormatNano represents the UnitMetricFormat `"nano"`.
+// UnitMetricFormatNano represents the UnitMetricFormat `"nano"`.
 	UnitMetricFormatNano UnitMetricFormat = "nano"
-	// UnitMetricFormatMicro represents the UnitMetricFormat `"micro"`.
+// UnitMetricFormatMicro represents the UnitMetricFormat `"micro"`.
 	UnitMetricFormatMicro UnitMetricFormat = "micro"
-	// UnitMetricFormatMilli represents the UnitMetricFormat `"milli"`.
+// UnitMetricFormatMilli represents the UnitMetricFormat `"milli"`.
 	UnitMetricFormatMilli UnitMetricFormat = "milli"
-	// UnitMetricFormatCenti represents the UnitMetricFormat `"centi"`.
+// UnitMetricFormatCenti represents the UnitMetricFormat `"centi"`.
 	UnitMetricFormatCenti UnitMetricFormat = "centi"
-	// UnitMetricFormatDeci represents the UnitMetricFormat `"deci"`.
+// UnitMetricFormatDeci represents the UnitMetricFormat `"deci"`.
 	UnitMetricFormatDeci UnitMetricFormat = "deci"
-	// UnitMetricFormatMetricUnit represents the UnitMetricFormat `"metric_unit"`.
+// UnitMetricFormatMetricUnit represents the UnitMetricFormat `"metric_unit"`.
 	UnitMetricFormatMetricUnit UnitMetricFormat = "metric_unit"
-	// UnitMetricFormatDeca represents the UnitMetricFormat `"deca"`.
+// UnitMetricFormatDeca represents the UnitMetricFormat `"deca"`.
 	UnitMetricFormatDeca UnitMetricFormat = "deca"
-	// UnitMetricFormatHecto represents the UnitMetricFormat `"hecto"`.
+// UnitMetricFormatHecto represents the UnitMetricFormat `"hecto"`.
 	UnitMetricFormatHecto UnitMetricFormat = "hecto"
-	// UnitMetricFormatKilo represents the UnitMetricFormat `"kilo"`.
+// UnitMetricFormatKilo represents the UnitMetricFormat `"kilo"`.
 	UnitMetricFormatKilo UnitMetricFormat = "kilo"
-	// UnitMetricFormatMega represents the UnitMetricFormat `"mega"`.
+// UnitMetricFormatMega represents the UnitMetricFormat `"mega"`.
 	UnitMetricFormatMega UnitMetricFormat = "mega"
-	// UnitMetricFormatGiga represents the UnitMetricFormat `"giga"`.
+// UnitMetricFormatGiga represents the UnitMetricFormat `"giga"`.
 	UnitMetricFormatGiga UnitMetricFormat = "giga"
-	// UnitMetricFormatTera represents the UnitMetricFormat `"tera"`.
+// UnitMetricFormatTera represents the UnitMetricFormat `"tera"`.
 	UnitMetricFormatTera UnitMetricFormat = "tera"
-	// UnitMetricFormatPeta represents the UnitMetricFormat `"peta"`.
+// UnitMetricFormatPeta represents the UnitMetricFormat `"peta"`.
 	UnitMetricFormatPeta UnitMetricFormat = "peta"
-	// UnitMetricFormatExa represents the UnitMetricFormat `"exa"`.
+// UnitMetricFormatExa represents the UnitMetricFormat `"exa"`.
 	UnitMetricFormatExa UnitMetricFormat = "exa"
 )
 
@@ -1873,12 +1858,12 @@ type UserResultsPage struct {
 }
 
 // Uuid is a uuid.
-//
+// 
 // A Version 4 UUID is a universally unique identifier that is generated using random numbers.
 type Uuid string
 
 // VerificationToken is a verification token for a user.
-//
+// 
 // This is typically used to verify a user's email address.
 type VerificationToken struct {
 	// CreatedAt is the date and time the verification token was created.
@@ -1902,7 +1887,6 @@ var APICallQueryGroupBys = []APICallQueryGroupBy{
 	APICallQueryGroupByOrigin,
 	APICallQueryGroupByUserId,
 }
-
 // APICallStatuses is the collection of all APICallStatus values.
 var APICallStatuses = []APICallStatus{
 	APICallStatusCompleted,
@@ -1911,13 +1895,11 @@ var APICallStatuses = []APICallStatus{
 	APICallStatusQueued,
 	APICallStatusUploaded,
 }
-
 // AccountProviders is the collection of all AccountProvider values.
 var AccountProviders = []AccountProvider{
 	AccountProviderGithub,
 	AccountProviderGoogle,
 }
-
 // AsyncAPICallOutputTypes is the collection of all AsyncAPICallOutputType values.
 var AsyncAPICallOutputTypes = []AsyncAPICallOutputType{
 	AsyncAPICallOutputTypeFileConversion,
@@ -1925,7 +1907,6 @@ var AsyncAPICallOutputTypes = []AsyncAPICallOutputType{
 	AsyncAPICallOutputTypeFileMass,
 	AsyncAPICallOutputTypeFileVolume,
 }
-
 // AsyncAPICallTypes is the collection of all AsyncAPICallType values.
 var AsyncAPICallTypes = []AsyncAPICallType{
 	AsyncAPICallTypeFileConversion,
@@ -1933,20 +1914,17 @@ var AsyncAPICallTypes = []AsyncAPICallType{
 	AsyncAPICallTypeFileMass,
 	AsyncAPICallTypeFileVolume,
 }
-
 // CodeLanguages is the collection of all CodeLanguage values.
 var CodeLanguages = []CodeLanguage{
 	CodeLanguageGo,
 	CodeLanguageNode,
 	CodeLanguagePython,
 }
-
 // CreatedAtSortModes is the collection of all CreatedAtSortMode values.
 var CreatedAtSortModes = []CreatedAtSortMode{
 	CreatedAtSortModeCreatedAtAscending,
 	CreatedAtSortModeCreatedAtDescending,
 }
-
 // Currencys is the collection of all Currency values.
 var Currencys = []Currency{
 	CurrencyAed,
@@ -2089,14 +2067,12 @@ var Currencys = []Currency{
 	CurrencyZar,
 	CurrencyZmw,
 }
-
 // Environments is the collection of all Environment values.
 var Environments = []Environment{
 	EnvironmentDEVELOPMENT,
 	EnvironmentPREVIEW,
 	EnvironmentPRODUCTION,
 }
-
 // FileOutputFormats is the collection of all FileOutputFormat values.
 var FileOutputFormats = []FileOutputFormat{
 	FileOutputFormatDae,
@@ -2106,7 +2082,6 @@ var FileOutputFormats = []FileOutputFormat{
 	FileOutputFormatStep,
 	FileOutputFormatStl,
 }
-
 // FileSourceFormats is the collection of all FileSourceFormat values.
 var FileSourceFormats = []FileSourceFormat{
 	FileSourceFormatDae,
@@ -2115,7 +2090,6 @@ var FileSourceFormats = []FileSourceFormat{
 	FileSourceFormatStep,
 	FileSourceFormatStl,
 }
-
 // InvoiceStatuses is the collection of all InvoiceStatus values.
 var InvoiceStatuses = []InvoiceStatus{
 	InvoiceStatusDeleted,
@@ -2125,7 +2099,6 @@ var InvoiceStatuses = []InvoiceStatus{
 	InvoiceStatusUncollectible,
 	InvoiceStatusVoid,
 }
-
 // Methods is the collection of all Method values.
 var Methods = []Method{
 	MethodCONNECT,
@@ -2139,17 +2112,14 @@ var Methods = []Method{
 	MethodPUT,
 	MethodTRACE,
 }
-
 // OAuth2GrantTypes is the collection of all OAuth2GrantType values.
 var OAuth2GrantTypes = []OAuth2GrantType{
 	OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode,
 }
-
 // PaymentMethodTypes is the collection of all PaymentMethodType values.
 var PaymentMethodTypes = []PaymentMethodType{
 	PaymentMethodTypeCard,
 }
-
 // SystemInfoCgroupDriverEnums is the collection of all SystemInfoCgroupDriverEnum values.
 var SystemInfoCgroupDriverEnums = []SystemInfoCgroupDriverEnum{
 	SystemInfoCgroupDriverEnumCgroupfs,
@@ -2157,14 +2127,12 @@ var SystemInfoCgroupDriverEnums = []SystemInfoCgroupDriverEnum{
 	SystemInfoCgroupDriverEnumNone,
 	SystemInfoCgroupDriverEnumSystemd,
 }
-
 // SystemInfoCgroupVersionEnums is the collection of all SystemInfoCgroupVersionEnum values.
 var SystemInfoCgroupVersionEnums = []SystemInfoCgroupVersionEnum{
 	SystemInfoCgroupVersionEnum1,
 	SystemInfoCgroupVersionEnum2,
 	SystemInfoCgroupVersionEnumEmpty,
 }
-
 // SystemInfoIsolationEnums is the collection of all SystemInfoIsolationEnum values.
 var SystemInfoIsolationEnums = []SystemInfoIsolationEnum{
 	SystemInfoIsolationEnumDefault,
@@ -2172,7 +2140,6 @@ var SystemInfoIsolationEnums = []SystemInfoIsolationEnum{
 	SystemInfoIsolationEnumHyperv,
 	SystemInfoIsolationEnumProcess,
 }
-
 // UnitMetricFormats is the collection of all UnitMetricFormat values.
 var UnitMetricFormats = []UnitMetricFormat{
 	UnitMetricFormatAtto,

@@ -2,46 +2,36 @@
 
 package kittycad
 
-import (
-	"bytes"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"io"
-	"net/http"
-	"strconv"
-)
-
 // GetSchema: Get OpenAPI schema.
 func (s *MetaService) GetSchema() (*ResponseGetSchema, error) {
-	// Create the url.
-	path := "/"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body ResponseGetSchema
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body ResponseGetSchema
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // Getdata: Get the metadata about our currently running server.
@@ -49,34 +39,34 @@ func (s *MetaService) GetSchema() (*ResponseGetSchema, error) {
 // This includes information on any of our other distributed systems it is connected to.
 // You must be a KittyCAD employee to perform this request.
 func (s *MetaService) Getdata() (*Metadata, error) {
-	// Create the url.
-	path := "/_meta/info"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body Metadata
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/_meta/info"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body Metadata
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // GetMetrics: Get API call metrics.
@@ -85,41 +75,41 @@ func (s *MetaService) Getdata() (*Metadata, error) {
 //
 // Parameters:
 //	- `groupBy`: What field to group the metrics by.
-func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQueryGroup, error) {
-	// Create the url.
-	path := "/api-call-metrics"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"group_by": string(groupBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body []APICallQueryGroup
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy, ) (*[]APICallQueryGroup, error) {
+// Create the url.
+path := "/api-call-metrics"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"group_by": string(groupBy),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body []APICallQueryGroup
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // List: List API calls.
@@ -132,43 +122,43 @@ func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQuer
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
-func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
-	// Create the url.
-	path := "/api-calls"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body APICallWithPriceResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode, ) (*APICallWithPriceResultsPage, error) {
+// Create the url.
+path := "/api-calls"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"limit": strconv.Itoa(limit),
+	"page_token": pageToken,
+	"sort_by": string(sortBy),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body APICallWithPriceResultsPage
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListAllPages: List API calls.
@@ -180,25 +170,25 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 //
 // Parameters:
 //	- `sortBy`
-func (s *APICallService) ListAllPages(sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
+func (s *APICallService) ListAllPages(sortBy CreatedAtSortMode,) (*[]APICallWithPrice, error) {
 
-	var allPages []APICallWithPrice
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.List(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
+			var allPages []APICallWithPrice
+			pageToken := ""
+			limit := 100
+			for {
+				page, err := s.List(limit, pageToken, sortBy)
+				if err != nil {
+					return nil, err
+				}
+				allPages = append(allPages, page.Items...)
+				if  page.NextPage == "" {
+					break
+				}
+				pageToken = page.NextPage
+			}
 
-	return &allPages, nil
-} // Get: Get details of an API call.
+			return &allPages, nil
+		}// Get: Get details of an API call.
 //
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
 // If the user is not authenticated to view the specified API call, then it is not returned.
@@ -206,73 +196,73 @@ func (s *APICallService) ListAllPages(sortBy CreatedAtSortMode) (*[]APICallWithP
 //
 // Parameters:
 //	- `id`: The ID of the API call.
-func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
-	// Create the url.
-	path := "/api-calls/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body APICallWithPrice
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *APICallService) Get(id string, ) (*APICallWithPrice, error) {
+// Create the url.
+path := "/api-calls/{{.id}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"id": id,
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body APICallWithPrice
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // GithubCallback: Listen for callbacks to GitHub app authentication.
 //
 // This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
 // The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
-func (s *AppService) GithubCallback(j *interface{}) error {
-	// Create the url.
-	path := "/apps/github/callback"
-	uri := resolveRelative(s.client.server, path)
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(j); err != nil {
-		return fmt.Errorf("encoding json body request failed: %v", err)
-	}
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, b)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-	// Return.
-	return nil
+func (s *AppService) GithubCallback(j *interface{}) (error) {
+// Create the url.
+path := "/apps/github/callback"
+uri := resolveRelative(s.client.server, path)
+// Encode the request body as json.
+b := new(bytes.Buffer)
+if err := json.NewEncoder(b).Encode(j); err != nil {
+return fmt.Errorf("encoding json body request failed: %v", err)
+}
+// Create the request.
+req, err := http.NewRequest("GET", uri, b)
+if err != nil {
+return fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return err
+}
+// Return.
+return nil
 }
 
 // GithubConsent: Get the consent URL for GitHub app authentication.
@@ -280,34 +270,34 @@ func (s *AppService) GithubCallback(j *interface{}) error {
 // This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
 // The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 func (s *AppService) GithubConsent() (*AppClientInfo, error) {
-	// Create the url.
-	path := "/apps/github/consent"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body AppClientInfo
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/apps/github/consent"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body AppClientInfo
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListAsyncOperations: List async operations.
@@ -322,44 +312,44 @@ func (s *AppService) GithubConsent() (*AppClientInfo, error) {
 //	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
 //	- `status`: The status to filter by.
-func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy CreatedAtSortMode, status APICallStatus) (*AsyncAPICallResultsPage, error) {
-	// Create the url.
-	path := "/async/operations"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-		"status":     string(status),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body AsyncAPICallResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy CreatedAtSortMode, status APICallStatus, ) (*AsyncAPICallResultsPage, error) {
+// Create the url.
+path := "/async/operations"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"limit": strconv.Itoa(limit),
+	"page_token": pageToken,
+	"sort_by": string(sortBy),
+	"status": string(status),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body AsyncAPICallResultsPage
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListAsyncOperationsAllPages: List async operations.
@@ -373,25 +363,25 @@ func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy
 // Parameters:
 //	- `sortBy`
 //	- `status`: The status to filter by.
-func (s *APICallService) ListAsyncOperationsAllPages(sortBy CreatedAtSortMode, status APICallStatus) (*[]AsyncAPICall, error) {
+func (s *APICallService) ListAsyncOperationsAllPages(sortBy CreatedAtSortMode, status APICallStatus,) (*[]AsyncAPICall, error) {
 
-	var allPages []AsyncAPICall
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListAsyncOperations(limit, pageToken, sortBy, status)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
+			var allPages []AsyncAPICall
+			pageToken := ""
+			limit := 100
+			for {
+				page, err := s.ListAsyncOperations(limit, pageToken, sortBy, status)
+				if err != nil {
+					return nil, err
+				}
+				allPages = append(allPages, page.Items...)
+				if  page.NextPage == "" {
+					break
+				}
+				pageToken = page.NextPage
+			}
 
-	return &allPages, nil
-} // GetAsyncOperation: Get an async operation.
+			return &allPages, nil
+		}// GetAsyncOperation: Get an async operation.
 //
 // Get the status and output of an async operation.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested async operation for the user.
@@ -400,78 +390,78 @@ func (s *APICallService) ListAsyncOperationsAllPages(sortBy CreatedAtSortMode, s
 //
 // Parameters:
 //	- `id`: The ID of the async operation.
-func (s *APICallService) GetAsyncOperation(id string) (*AsyncAPICallOutput, error) {
-	// Create the url.
-	path := "/async/operations/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body AsyncAPICallOutput
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *APICallService) GetAsyncOperation(id string, ) (*AsyncAPICallOutput, error) {
+// Create the url.
+path := "/async/operations/{{.id}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"id": id,
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body AsyncAPICallOutput
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // AuthEmail: Create an email verification request for a user.
 func (s *HiddenService) AuthEmail(j *EmailAuthenticationForm) (*VerificationToken, error) {
-	// Create the url.
-	path := "/auth/email"
-	uri := resolveRelative(s.client.server, path)
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(j); err != nil {
-		return nil, fmt.Errorf("encoding json body request failed: %v", err)
-	}
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body VerificationToken
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/auth/email"
+uri := resolveRelative(s.client.server, path)
+// Encode the request body as json.
+b := new(bytes.Buffer)
+if err := json.NewEncoder(b).Encode(j); err != nil {
+return nil, fmt.Errorf("encoding json body request failed: %v", err)
+}
+// Create the request.
+req, err := http.NewRequest("POST", uri, b)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body VerificationToken
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // AuthEmailCallback: Listen for callbacks for email verification for users.
@@ -480,35 +470,35 @@ func (s *HiddenService) AuthEmail(j *EmailAuthenticationForm) (*VerificationToke
 //	- `callbackUrl`: The URL to redirect back to after we have authenticated.
 //	- `email`: The user's email.
 //	- `token`: The verification token.
-func (s *HiddenService) AuthEmailCallback(callbackUrl string, email string, token string) error {
-	// Create the url.
-	path := "/auth/email/callback"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"callback_url": callbackUrl,
-		"email":        email,
-		"token":        token,
-	}); err != nil {
-		return fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-	// Return.
-	return nil
+func (s *HiddenService) AuthEmailCallback(callbackUrl string, email string, token string, ) (error) {
+// Create the url.
+path := "/auth/email/callback"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"callback_url": callbackUrl,
+	"email": email,
+	"token": token,
+}); err != nil {
+return fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return err
+}
+// Return.
+return nil
 }
 
 // CreateConversion: Convert CAD file.
@@ -521,41 +511,41 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl string, email string, toke
 //	- `outputFormat`: The format the file should be converted to.
 //	- `srcFormat`: The format of the file to convert.
 func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat FileSourceFormat, b io.Reader) (*FileConversion, error) {
-	// Create the url.
-	path := "/file/conversion/{{.src_format}}/{{.output_format}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"output_format": string(outputFormat),
-		"src_format":    string(srcFormat),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body FileConversion
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/file/conversion/{{.src_format}}/{{.output_format}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("POST", uri, b)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"output_format": string(outputFormat),
+	"src_format": string(srcFormat),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body FileConversion
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // GetConversion: Get a file conversion.
@@ -567,41 +557,41 @@ func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat 
 //
 // Parameters:
 //	- `id`: The ID of the async operation.
-func (s *FileService) GetConversion(id string) (*AsyncAPICallOutput, error) {
-	// Create the url.
-	path := "/file/conversions/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body AsyncAPICallOutput
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *FileService) GetConversion(id string, ) (*AsyncAPICallOutput, error) {
+// Create the url.
+path := "/file/conversions/{{.id}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"id": id,
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body AsyncAPICallOutput
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // CreateDensity: Get CAD file density.
@@ -613,41 +603,41 @@ func (s *FileService) GetConversion(id string) (*AsyncAPICallOutput, error) {
 //	- `materialMass`: The material mass.
 //	- `srcFormat`: The format of the file.
 func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFormat, b io.Reader) (*FileDensity, error) {
-	// Create the url.
-	path := "/file/density"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"material_mass": fmt.Sprintf("%f", materialMass),
-		"src_format":    string(srcFormat),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body FileDensity
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/file/density"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("POST", uri, b)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"material_mass": fmt.Sprintf("%f", materialMass),
+	"src_format": string(srcFormat),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body FileDensity
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // CreateExecution: Execute a KittyCAD program in a specific language.
@@ -656,41 +646,41 @@ func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFo
 //	- `lang`: The language of the code.
 //	- `output`: The output file we want to get the contents for (the paths are relative to where in litterbox it is being run). You can denote more than one file with a comma separated list of string paths.
 func (s *FileService) CreateExecution(lang CodeLanguage, output string, b io.Reader) (*CodeOutput, error) {
-	// Create the url.
-	path := "/file/execute/{{.lang}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"lang":   string(lang),
-		"output": output,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body CodeOutput
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/file/execute/{{.lang}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("POST", uri, b)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"lang": string(lang),
+	"output": output,
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body CodeOutput
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // CreateMass: Get CAD file mass.
@@ -702,41 +692,41 @@ func (s *FileService) CreateExecution(lang CodeLanguage, output string, b io.Rea
 //	- `materialDensity`: The material density.
 //	- `srcFormat`: The format of the file.
 func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFormat, b io.Reader) (*FileMass, error) {
-	// Create the url.
-	path := "/file/mass"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"material_density": fmt.Sprintf("%f", materialDensity),
-		"src_format":       string(srcFormat),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body FileMass
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/file/mass"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("POST", uri, b)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"material_density": fmt.Sprintf("%f", materialDensity),
+	"src_format": string(srcFormat),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body FileMass
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // CreateVolume: Get CAD file volume.
@@ -747,98 +737,98 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFo
 // Parameters:
 //	- `srcFormat`: The format of the file.
 func (s *FileService) CreateVolume(srcFormat FileSourceFormat, b io.Reader) (*FileVolume, error) {
-	// Create the url.
-	path := "/file/volume"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"src_format": string(srcFormat),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body FileVolume
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/file/volume"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("POST", uri, b)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"src_format": string(srcFormat),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body FileVolume
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // Logout: This endpoint removes the session cookie for a user.
 //
 // This is used in logout scenarios.
-func (s *HiddenService) Logout() error {
-	// Create the url.
-	path := "/logout"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-	// Return.
-	return nil
+func (s *HiddenService) Logout() (error) {
+// Create the url.
+path := "/logout"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("POST", uri, nil)
+if err != nil {
+return fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return err
+}
+// Return.
+return nil
 }
 
 // Ping: Return pong.
 func (s *MetaService) Ping() (*Pong, error) {
-	// Create the url.
-	path := "/ping"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body Pong
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/ping"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body Pong
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // CreateConversion: Convert units.
@@ -849,43 +839,43 @@ func (s *MetaService) Ping() (*Pong, error) {
 //	- `outputFormat`: The output format of the unit.
 //	- `srcFormat`: The source format of the unit.
 //	- `value`: The initial value.
-func (s *UnitService) CreateConversion(outputFormat UnitMetricFormat, srcFormat UnitMetricFormat, value float64) (*UnitConversion, error) {
-	// Create the url.
-	path := "/unit/conversion/{{.src_format}}/{{.output_format}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"output_format": string(outputFormat),
-		"src_format":    string(srcFormat),
-		"value":         fmt.Sprintf("%f", value),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body UnitConversion
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *UnitService) CreateConversion(outputFormat UnitMetricFormat, srcFormat UnitMetricFormat, value float64, ) (*UnitConversion, error) {
+// Create the url.
+path := "/unit/conversion/{{.src_format}}/{{.output_format}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("POST", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"output_format": string(outputFormat),
+	"src_format": string(srcFormat),
+	"value": fmt.Sprintf("%f", value),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body UnitConversion
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // GetSelf: Get your user.
@@ -893,100 +883,100 @@ func (s *UnitService) CreateConversion(outputFormat UnitMetricFormat, srcFormat 
 // Get the user information for the authenticated user.
 // Alternatively, you can also use the `/users/me` endpoint.
 func (s *UserService) GetSelf() (*User, error) {
-	// Create the url.
-	path := "/user"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body User
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body User
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // UpdateSelf: Update your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It updates information about the authenticated user.
 func (s *UserService) UpdateSelf(j *UpdateUser) (*User, error) {
-	// Create the url.
-	path := "/user"
-	uri := resolveRelative(s.client.server, path)
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(j); err != nil {
-		return nil, fmt.Errorf("encoding json body request failed: %v", err)
-	}
-	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body User
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user"
+uri := resolveRelative(s.client.server, path)
+// Encode the request body as json.
+b := new(bytes.Buffer)
+if err := json.NewEncoder(b).Encode(j); err != nil {
+return nil, fmt.Errorf("encoding json body request failed: %v", err)
+}
+// Create the request.
+req, err := http.NewRequest("PUT", uri, b)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body User
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // DeleteSelf: Delete your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It deletes the authenticated user from KittyCAD's database.
 // This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.
-func (s *UserService) DeleteSelf() error {
-	// Create the url.
-	path := "/user"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-	// Return.
-	return nil
+func (s *UserService) DeleteSelf() (error) {
+// Create the url.
+path := "/user"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("DELETE", uri, nil)
+if err != nil {
+return fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return err
+}
+// Return.
+return nil
 }
 
 // UserList: List API calls for your user.
@@ -1000,43 +990,43 @@ func (s *UserService) DeleteSelf() error {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
-func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
-	// Create the url.
-	path := "/user/api-calls"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body APICallWithPriceResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtSortMode, ) (*APICallWithPriceResultsPage, error) {
+// Create the url.
+path := "/user/api-calls"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"limit": strconv.Itoa(limit),
+	"page_token": pageToken,
+	"sort_by": string(sortBy),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body APICallWithPriceResultsPage
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // UserListAllPages: List API calls for your user.
@@ -1049,65 +1039,65 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 //
 // Parameters:
 //	- `sortBy`
-func (s *APICallService) UserListAllPages(sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
+func (s *APICallService) UserListAllPages(sortBy CreatedAtSortMode,) (*[]APICallWithPrice, error) {
 
-	var allPages []APICallWithPrice
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.UserList(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
+			var allPages []APICallWithPrice
+			pageToken := ""
+			limit := 100
+			for {
+				page, err := s.UserList(limit, pageToken, sortBy)
+				if err != nil {
+					return nil, err
+				}
+				allPages = append(allPages, page.Items...)
+				if  page.NextPage == "" {
+					break
+				}
+				pageToken = page.NextPage
+			}
 
-	return &allPages, nil
-} // GetForUser: Get an API call for a user.
+			return &allPages, nil
+		}// GetForUser: Get an API call for a user.
 //
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
 //
 // Parameters:
 //	- `id`: The ID of the API call.
-func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
-	// Create the url.
-	path := "/user/api-calls/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body APICallWithPrice
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *APICallService) GetForUser(id string, ) (*APICallWithPrice, error) {
+// Create the url.
+path := "/user/api-calls/{{.id}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"id": id,
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body APICallWithPrice
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListForUser: List API tokens for your user.
@@ -1121,43 +1111,43 @@ func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
-func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*APITokenResultsPage, error) {
-	// Create the url.
-	path := "/user/api-tokens"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body APITokenResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy CreatedAtSortMode, ) (*APITokenResultsPage, error) {
+// Create the url.
+path := "/user/api-tokens"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"limit": strconv.Itoa(limit),
+	"page_token": pageToken,
+	"sort_by": string(sortBy),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body APITokenResultsPage
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListForUserAllPages: List API tokens for your user.
@@ -1170,56 +1160,56 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 //
 // Parameters:
 //	- `sortBy`
-func (s *APITokenService) ListForUserAllPages(sortBy CreatedAtSortMode) (*[]APIToken, error) {
+func (s *APITokenService) ListForUserAllPages(sortBy CreatedAtSortMode,) (*[]APIToken, error) {
 
-	var allPages []APIToken
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListForUser(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
+			var allPages []APIToken
+			pageToken := ""
+			limit := 100
+			for {
+				page, err := s.ListForUser(limit, pageToken, sortBy)
+				if err != nil {
+					return nil, err
+				}
+				allPages = append(allPages, page.Items...)
+				if  page.NextPage == "" {
+					break
+				}
+				pageToken = page.NextPage
+			}
 
-	return &allPages, nil
-} // CreateForUser: Create a new API token for your user.
+			return &allPages, nil
+		}// CreateForUser: Create a new API token for your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.
 func (s *APITokenService) CreateForUser() (*APIToken, error) {
-	// Create the url.
-	path := "/user/api-tokens"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body APIToken
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user/api-tokens"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("POST", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body APIToken
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // GetForUser: Get an API token for your user.
@@ -1228,41 +1218,41 @@ func (s *APITokenService) CreateForUser() (*APIToken, error) {
 //
 // Parameters:
 //	- `token`: The API token.
-func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
-	// Create the url.
-	path := "/user/api-tokens/{{.token}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"token": token,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body APIToken
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *APITokenService) GetForUser(token string, ) (*APIToken, error) {
+// Create the url.
+path := "/user/api-tokens/{{.token}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"token": token,
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body APIToken
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // DeleteForUser: Delete an API token for your user.
@@ -1272,33 +1262,33 @@ func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
 //
 // Parameters:
 //	- `token`: The API token.
-func (s *APITokenService) DeleteForUser(token string) error {
-	// Create the url.
-	path := "/user/api-tokens/{{.token}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"token": token,
-	}); err != nil {
-		return fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-	// Return.
-	return nil
+func (s *APITokenService) DeleteForUser(token string, ) (error) {
+// Create the url.
+path := "/user/api-tokens/{{.token}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("DELETE", uri, nil)
+if err != nil {
+return fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"token": token,
+}); err != nil {
+return fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return err
+}
+// Return.
+return nil
 }
 
 // GetSelfExtended: Get extended information about your user.
@@ -1306,34 +1296,34 @@ func (s *APITokenService) DeleteForUser(token string) error {
 // Get the user information for the authenticated user.
 // Alternatively, you can also use the `/users-extended/me` endpoint.
 func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
-	// Create the url.
-	path := "/user/extended"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body ExtendedUser
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user/extended"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body ExtendedUser
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // GetConversionForUser: Get a file conversion for your user.
@@ -1343,41 +1333,41 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 //
 // Parameters:
 //	- `id`: The ID of the async operation.
-func (s *FileService) GetConversionForUser(id string) (*AsyncAPICallOutput, error) {
-	// Create the url.
-	path := "/user/file/conversions/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body AsyncAPICallOutput
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *FileService) GetConversionForUser(id string, ) (*AsyncAPICallOutput, error) {
+// Create the url.
+path := "/user/file/conversions/{{.id}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"id": id,
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body AsyncAPICallOutput
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // GetInformationForUser: Get payment info about your user.
@@ -1385,34 +1375,34 @@ func (s *FileService) GetConversionForUser(id string) (*AsyncAPICallOutput, erro
 // This includes billing address, phone, and name.
 // This endpoint requires authentication by any KittyCAD user. It gets the payment information for the authenticated user.
 func (s *PaymentService) GetInformationForUser() (*Customer, error) {
-	// Create the url.
-	path := "/user/payment"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body Customer
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user/payment"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body Customer
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // CreateInformationForUser: Create payment info for your user.
@@ -1420,39 +1410,39 @@ func (s *PaymentService) GetInformationForUser() (*Customer, error) {
 // This includes billing address, phone, and name.
 // This endpoint requires authentication by any KittyCAD user. It creates the payment information for the authenticated user.
 func (s *PaymentService) CreateInformationForUser(j *BillingInfo) (*Customer, error) {
-	// Create the url.
-	path := "/user/payment"
-	uri := resolveRelative(s.client.server, path)
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(j); err != nil {
-		return nil, fmt.Errorf("encoding json body request failed: %v", err)
-	}
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body Customer
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user/payment"
+uri := resolveRelative(s.client.server, path)
+// Encode the request body as json.
+b := new(bytes.Buffer)
+if err := json.NewEncoder(b).Encode(j); err != nil {
+return nil, fmt.Errorf("encoding json body request failed: %v", err)
+}
+// Create the request.
+req, err := http.NewRequest("POST", uri, b)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body Customer
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // UpdateInformationForUser: Update payment info for your user.
@@ -1460,202 +1450,202 @@ func (s *PaymentService) CreateInformationForUser(j *BillingInfo) (*Customer, er
 // This includes billing address, phone, and name.
 // This endpoint requires authentication by any KittyCAD user. It updates the payment information for the authenticated user.
 func (s *PaymentService) UpdateInformationForUser(j *BillingInfo) (*Customer, error) {
-	// Create the url.
-	path := "/user/payment"
-	uri := resolveRelative(s.client.server, path)
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(j); err != nil {
-		return nil, fmt.Errorf("encoding json body request failed: %v", err)
-	}
-	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body Customer
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user/payment"
+uri := resolveRelative(s.client.server, path)
+// Encode the request body as json.
+b := new(bytes.Buffer)
+if err := json.NewEncoder(b).Encode(j); err != nil {
+return nil, fmt.Errorf("encoding json body request failed: %v", err)
+}
+// Create the request.
+req, err := http.NewRequest("PUT", uri, b)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body Customer
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // DeleteInformationForUser: Delete payment info for your user.
 //
 // This includes billing address, phone, and name.
 // This endpoint requires authentication by any KittyCAD user. It deletes the payment information for the authenticated user.
-func (s *PaymentService) DeleteInformationForUser() error {
-	// Create the url.
-	path := "/user/payment"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-	// Return.
-	return nil
+func (s *PaymentService) DeleteInformationForUser() (error) {
+// Create the url.
+path := "/user/payment"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("DELETE", uri, nil)
+if err != nil {
+return fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return err
+}
+// Return.
+return nil
 }
 
 // GetBalanceForUser: Get balance for your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It gets the balance information for the authenticated user.
 func (s *PaymentService) GetBalanceForUser() (*CustomerBalance, error) {
-	// Create the url.
-	path := "/user/payment/balance"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body CustomerBalance
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user/payment/balance"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body CustomerBalance
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // CreateIntentForUser: Create a payment intent for your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It creates a new payment intent for the authenticated user.
 func (s *PaymentService) CreateIntentForUser() (*PaymentIntent, error) {
-	// Create the url.
-	path := "/user/payment/intent"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body PaymentIntent
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user/payment/intent"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("POST", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body PaymentIntent
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListInvoicesForUser: List invoices for your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It lists invoices for the authenticated user.
 func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
-	// Create the url.
-	path := "/user/payment/invoices"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body []Invoice
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user/payment/invoices"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body []Invoice
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListMethodsForUser: List payment methods for your user.
 //
 // This endpoint requires authentication by any KittyCAD user. It lists payment methods for the authenticated user.
 func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
-	// Create the url.
-	path := "/user/payment/methods"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body []PaymentMethod
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+// Create the url.
+path := "/user/payment/methods"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body []PaymentMethod
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // DeleteMethodForUser: Delete a payment method for your user.
@@ -1664,33 +1654,33 @@ func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
 //
 // Parameters:
 //	- `id`: The ID of the payment method.
-func (s *PaymentService) DeleteMethodForUser(id string) error {
-	// Create the url.
-	path := "/user/payment/methods/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id,
-	}); err != nil {
-		return fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-	// Return.
-	return nil
+func (s *PaymentService) DeleteMethodForUser(id string, ) (error) {
+// Create the url.
+path := "/user/payment/methods/{{.id}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("DELETE", uri, nil)
+if err != nil {
+return fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"id": id,
+}); err != nil {
+return fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return err
+}
+// Return.
+return nil
 }
 
 // GetForUser: Get a session for your user.
@@ -1699,41 +1689,41 @@ func (s *PaymentService) DeleteMethodForUser(id string) error {
 //
 // Parameters:
 //	- `token`: The API token.
-func (s *SessionService) GetForUser(token string) (*Session, error) {
-	// Create the url.
-	path := "/user/session/{{.token}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"token": token,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body Session
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *SessionService) GetForUser(token string, ) (*Session, error) {
+// Create the url.
+path := "/user/session/{{.token}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"token": token,
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body Session
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // List: List users.
@@ -1746,43 +1736,43 @@ func (s *SessionService) GetForUser(token string) (*Session, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
-func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*UserResultsPage, error) {
-	// Create the url.
-	path := "/users"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body UserResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode, ) (*UserResultsPage, error) {
+// Create the url.
+path := "/users"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"limit": strconv.Itoa(limit),
+	"page_token": pageToken,
+	"sort_by": string(sortBy),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body UserResultsPage
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListAllPages: List users.
@@ -1794,25 +1784,25 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 //
 // Parameters:
 //	- `sortBy`
-func (s *UserService) ListAllPages(sortBy CreatedAtSortMode) (*[]User, error) {
+func (s *UserService) ListAllPages(sortBy CreatedAtSortMode,) (*[]User, error) {
 
-	var allPages []User
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.List(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
+			var allPages []User
+			pageToken := ""
+			limit := 100
+			for {
+				page, err := s.List(limit, pageToken, sortBy)
+				if err != nil {
+					return nil, err
+				}
+				allPages = append(allPages, page.Items...)
+				if  page.NextPage == "" {
+					break
+				}
+				pageToken = page.NextPage
+			}
 
-	return &allPages, nil
-} // ListExtended: List users with extended information.
+			return &allPages, nil
+		}// ListExtended: List users with extended information.
 //
 // This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
 //
@@ -1822,43 +1812,43 @@ func (s *UserService) ListAllPages(sortBy CreatedAtSortMode) (*[]User, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
-func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAtSortMode) (*ExtendedUserResultsPage, error) {
-	// Create the url.
-	path := "/users-extended"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body ExtendedUserResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAtSortMode, ) (*ExtendedUserResultsPage, error) {
+// Create the url.
+path := "/users-extended"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"limit": strconv.Itoa(limit),
+	"page_token": pageToken,
+	"sort_by": string(sortBy),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body ExtendedUserResultsPage
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListExtendedAllPages: List users with extended information.
@@ -1870,25 +1860,25 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 //
 // Parameters:
 //	- `sortBy`
-func (s *UserService) ListExtendedAllPages(sortBy CreatedAtSortMode) (*[]ExtendedUser, error) {
+func (s *UserService) ListExtendedAllPages(sortBy CreatedAtSortMode,) (*[]ExtendedUser, error) {
 
-	var allPages []ExtendedUser
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListExtended(limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
+			var allPages []ExtendedUser
+			pageToken := ""
+			limit := 100
+			for {
+				page, err := s.ListExtended(limit, pageToken, sortBy)
+				if err != nil {
+					return nil, err
+				}
+				allPages = append(allPages, page.Items...)
+				if  page.NextPage == "" {
+					break
+				}
+				pageToken = page.NextPage
+			}
 
-	return &allPages, nil
-} // GetExtended: Get extended information about a user.
+			return &allPages, nil
+		}// GetExtended: Get extended information about a user.
 //
 // To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
@@ -1896,41 +1886,41 @@ func (s *UserService) ListExtendedAllPages(sortBy CreatedAtSortMode) (*[]Extende
 //
 // Parameters:
 //	- `id`: The user ID.
-func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
-	// Create the url.
-	path := "/users-extended/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body ExtendedUser
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *UserService) GetExtended(id string, ) (*ExtendedUser, error) {
+// Create the url.
+path := "/users-extended/{{.id}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"id": id,
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body ExtendedUser
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // Get: Get a user.
@@ -1941,41 +1931,41 @@ func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 //
 // Parameters:
 //	- `id`: The user ID.
-func (s *UserService) Get(id string) (*User, error) {
-	// Create the url.
-	path := "/users/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body User
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *UserService) Get(id string, ) (*User, error) {
+// Create the url.
+path := "/users/{{.id}}"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"id": id,
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body User
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListForUser: List API calls for a user.
@@ -1992,44 +1982,44 @@ func (s *UserService) Get(id string) (*User, error) {
 //	- `limit`: Maximum number of items returned by a single call
 //	- `pageToken`: Token returned by previous call to retrieve the subsequent page
 //	- `sortBy`
-func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
-	// Create the url.
-	path := "/users/{{.id}}/api-calls"
-	uri := resolveRelative(s.client.server, path)
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id":         id,
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var body APICallWithPriceResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-	// Return the response.
-	return &body, nil
+func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode, ) (*APICallWithPriceResultsPage, error) {
+// Create the url.
+path := "/users/{{.id}}/api-calls"
+uri := resolveRelative(s.client.server, path)
+// Create the request.
+req, err := http.NewRequest("GET", uri, nil)
+if err != nil {
+return nil, fmt.Errorf("error creating request: %v", err)
+}
+// Add the parameters to the url.
+if err := expandURL(req.URL, map[string]string{
+	"id": id,
+	"limit": strconv.Itoa(limit),
+	"page_token": pageToken,
+	"sort_by": string(sortBy),
+}); err != nil {
+return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+}
+// Send the request.
+resp, err := s.client.client.Do(req)
+if err != nil {
+return nil, fmt.Errorf("error sending request: %v", err)
+}
+defer resp.Body.Close()
+// Check the response.
+if err := checkResponse(resp); err != nil {
+return nil, err
+}
+// Decode the body from the response.
+if resp.Body == nil {
+return nil, errors.New("request returned an empty body in the response")
+}
+var body APICallWithPriceResultsPage
+if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+return nil, fmt.Errorf("error decoding response body: %v", err)
+}
+// Return the response.
+return &body, nil
 }
 
 // ListForUserAllPages: List API calls for a user.
@@ -2045,22 +2035,22 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 // Parameters:
 //	- `id`: The user ID.
 //	- `sortBy`
-func (s *APICallService) ListForUserAllPages(id string, sortBy CreatedAtSortMode) (*[]APICallWithPrice, error) {
+func (s *APICallService) ListForUserAllPages(id string , sortBy CreatedAtSortMode,) (*[]APICallWithPrice, error) {
 
-	var allPages []APICallWithPrice
-	pageToken := ""
-	limit := 100
-	for {
-		page, err := s.ListForUser(id, limit, pageToken, sortBy)
-		if err != nil {
-			return nil, err
-		}
-		allPages = append(allPages, page.Items...)
-		if page.NextPage == "" {
-			break
-		}
-		pageToken = page.NextPage
-	}
+			var allPages []APICallWithPrice
+			pageToken := ""
+			limit := 100
+			for {
+				page, err := s.ListForUser(id, limit, pageToken, sortBy)
+				if err != nil {
+					return nil, err
+				}
+				allPages = append(allPages, page.Items...)
+				if  page.NextPage == "" {
+					break
+				}
+				pageToken = page.NextPage
+			}
 
-	return &allPages, nil
-}
+			return &allPages, nil
+		}
