@@ -359,8 +359,14 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 		// TODO: handle if it is not a reference.
 		return "[]string", nil
 	} else if t == "object" {
-		if s.AdditionalProperties != nil {
-			return printType(property, s.AdditionalProperties, spec)
+		if s.AdditionalProperties != nil && (s.Properties == nil || len(s.Properties) == 0) {
+			// get the inner type.
+			innerType, err := printType(property, s.AdditionalProperties, spec)
+			if err != nil {
+				return "", err
+			}
+			// Now make it a map.
+			return fmt.Sprintf("map[string]%s", innerType), nil
 		}
 		// Most likely this is a local object, we will handle it.
 		return strcase.ToCamel(property), nil

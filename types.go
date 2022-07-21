@@ -369,7 +369,7 @@ type Connection struct {
 	// HttpPort: The http port of the server.
 	HttpPort int `json:"http_port" yaml:"http_port" schema:"http_port"`
 	// HttpReqStats:
-	HttpReqStats int `json:"http_req_stats" yaml:"http_req_stats" schema:"http_req_stats"`
+	HttpReqStats map[string]int `json:"http_req_stats" yaml:"http_req_stats" schema:"http_req_stats"`
 	// HttpsPort: The https port of the server.
 	HttpsPort int `json:"https_port" yaml:"https_port" schema:"https_port"`
 	// InBytes: The count of inbound bytes for the server.
@@ -753,7 +753,7 @@ type Customer struct {
 	// ID: Unique identifier for the object.
 	ID string `json:"id" yaml:"id" schema:"id"`
 	// Metadata: Set of key-value pairs.
-	Metadata string `json:"metadata" yaml:"metadata" schema:"metadata"`
+	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Name: The customer's full name or business name.
 	Name string `json:"name" yaml:"name" schema:"name"`
 	// Phone: The customer's phone number.
@@ -929,7 +929,7 @@ type DockerSystemInfo struct {
 	// RuncCommit:
 	RuncCommit Commit `json:"runc_commit" yaml:"runc_commit" schema:"runc_commit"`
 	// Runtimes:
-	Runtimes Runtime `json:"runtimes" yaml:"runtimes" schema:"runtimes"`
+	Runtimes map[string]Runtime `json:"runtimes" yaml:"runtimes" schema:"runtimes"`
 	// SecurityOptions: List of security features that are enabled on the daemon, such as apparmor, seccomp, SELinux, user-namespaces (userns), and rootless.  Additional configuration options for each security feature may be present, and are included as a comma-separated list of key/value pairs.
 	SecurityOptions []string `json:"security_options" yaml:"security_options" schema:"security_options"`
 	// ServerVersion: Version string of the daemon. **Note**: the [standalone Swarm API](https://docs.docker.com/swarm/swarm-api/) returns the Swarm version instead of the daemon  version, for example `swarm/1.2.8`.
@@ -1265,7 +1265,7 @@ type Invoice struct {
 	// `lines` is sorted as follows: invoice items in reverse chronological order, followed by the subscription, if any.
 	Lines []InvoiceLineItem `json:"lines" yaml:"lines" schema:"lines"`
 	// Metadata: Set of key-value pairs.
-	Metadata string `json:"metadata" yaml:"metadata" schema:"metadata"`
+	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Number: A unique, identifying string that appears on emails sent to the customer for this invoice.
 	Number string `json:"number" yaml:"number" schema:"number"`
 	// Paid: Whether payment was successfully collected for this invoice.
@@ -1311,7 +1311,7 @@ type InvoiceLineItem struct {
 	// Metadata: Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
 	//
 	// Set of key-value pairs.
-	Metadata string `json:"metadata" yaml:"metadata" schema:"metadata"`
+	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
 }
 
 // InvoiceStatus: An enum representing the possible values of an `Invoice`'s `status` field.
@@ -1497,7 +1497,7 @@ type PaymentMethod struct {
 	// ID: Unique identifier for the object.
 	ID string `json:"id" yaml:"id" schema:"id"`
 	// Metadata: Set of key-value pairs.
-	Metadata string `json:"metadata" yaml:"metadata" schema:"metadata"`
+	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Type: The type of payment method.
 	Type PaymentMethodType `json:"type" yaml:"type" schema:"type"`
 }
@@ -1551,7 +1551,7 @@ type RegistryServiceConfig struct {
 	// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
 	AllowNondistributableArtifactsHostnames []string `json:"allow_nondistributable_artifacts_hostnames" yaml:"allow_nondistributable_artifacts_hostnames" schema:"allow_nondistributable_artifacts_hostnames"`
 	// IndexConfigs:
-	IndexConfigs IndexInfo `json:"index_configs" yaml:"index_configs" schema:"index_configs"`
+	IndexConfigs map[string]IndexInfo `json:"index_configs" yaml:"index_configs" schema:"index_configs"`
 	// InsecureRegistryCidRs: List of IP ranges of insecure registries, using the CIDR syntax ([RFC 4632](https://tools.ietf.org/html/4632)). Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.  By default, local registries (`127.0.0.0/8`) are configured as insecure. All other registries are secure. Communicating with an insecure registry is not possible if the daemon assumes that registry is secure.  This configuration override this behavior, insecure communication with registries whose resolved IP address is within the subnet described by the CIDR syntax.  Registries can also be marked insecure by hostname. Those registries are listed under `IndexConfigs` and have their `Secure` field set to `false`.
 	//
 	// **Warning**: Using this option can be useful when running a local  registry, but introduces security vulnerabilities. This option should therefore ONLY be used for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.

@@ -1,0 +1,20 @@
+// Create a client with your token.
+func Example{{.Tag}}{{.Name}}() {
+    client, err := {{.PackageName}}.NewClientFromEnv("your apps user agent")
+    if err != nil {
+        panic(err)
+    }
+
+    {{if .Response}}
+        result, err := client.{{.Tag}}.{{.Name}}()
+        if err != nil {
+            panic(err)
+        }
+
+        fmt.Printf("%#v", result)
+    {{else}}
+    if err := client.{{.Tag}}.{{.Name}}(); err != nil {
+        panic(err)
+    }
+    {{end}}
+}

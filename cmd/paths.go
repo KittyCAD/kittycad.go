@@ -92,6 +92,7 @@ type Path struct {
 	RequestBody *RequestBody
 	Args        []Arg
 	Response    *Response
+	PackageName string
 }
 
 func (function Path) getDescription(operation *openapi3.Operation) string {
@@ -156,11 +157,12 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 
 	tag := printTagName(operation.Tags[0])
 	function := Path{
-		Name:   cleanFnName(operation.OperationID, tag, pathName),
-		Tag:    tag,
-		Path:   cleanPath(pathName),
-		Method: method,
-		Args:   []Arg{},
+		Name:        cleanFnName(operation.OperationID, tag, pathName),
+		Tag:         tag,
+		Path:        cleanPath(pathName),
+		Method:      method,
+		Args:        []Arg{},
+		PackageName: data.PackageName,
 	}
 
 	logrus.Debugf("writing method %q for path %q -> %q", method, pathName, function.Name)

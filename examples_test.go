@@ -16,12 +16,12 @@ func ExampleNewClient() {
 	}
 
 	// Call the client's methods.
-	resp, err := client.Meta.Ping()
+	result, err := client.Meta.Ping()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(resp)
+	fmt.Println(result)
 }
 
 // - OR -
@@ -35,10 +35,10 @@ func ExampleNewClientFromEnv() {
 	}
 
 	// Call the client's methods.
-	resp, err := client.Meta.Ping()
+	result, err := client.Meta.Ping()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(resp)
+	fmt.Printf("%#v", result)
 }
