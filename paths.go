@@ -520,12 +520,12 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 // 	- `srcFormat`: The format of the file to convert.
 // 	- `body`
 //
-func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat FileSourceFormat, body string) (*FileConversion, error) {
+func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat FileSourceFormat, body []byte) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{src_format}/{output_format}"
 	uri := resolveRelative(s.client.server, path)
 
-	b := strings.NewReader(body)
+	b := bytes.NewReader(body)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -624,12 +624,12 @@ func (s *FileService) GetConversion(id string) (*AsyncAPICallOutput, error) {
 // 	- `srcFormat`: The format of the file.
 // 	- `body`
 //
-func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFormat, body string) (*FileDensity, error) {
+func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFormat, body []byte) (*FileDensity, error) {
 	// Create the url.
 	path := "/file/density"
 	uri := resolveRelative(s.client.server, path)
 
-	b := strings.NewReader(body)
+	b := bytes.NewReader(body)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -680,12 +680,12 @@ func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFo
 // 	- `output`: The output file we want to get the contents for (the paths are relative to where in litterbox it is being run). You can denote more than one file with a comma separated list of string paths.
 // 	- `body`
 //
-func (s *FileService) CreateExecution(lang CodeLanguage, output string, body string) (*CodeOutput, error) {
+func (s *FileService) CreateExecution(lang CodeLanguage, output string, body []byte) (*CodeOutput, error) {
 	// Create the url.
 	path := "/file/execute/{lang}"
 	uri := resolveRelative(s.client.server, path)
 
-	b := strings.NewReader(body)
+	b := bytes.NewReader(body)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -736,12 +736,12 @@ func (s *FileService) CreateExecution(lang CodeLanguage, output string, body str
 // 	- `srcFormat`: The format of the file.
 // 	- `body`
 //
-func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFormat, body string) (*FileMass, error) {
+func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFormat, body []byte) (*FileMass, error) {
 	// Create the url.
 	path := "/file/mass"
 	uri := resolveRelative(s.client.server, path)
 
-	b := strings.NewReader(body)
+	b := bytes.NewReader(body)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -791,12 +791,12 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFo
 // 	- `srcFormat`: The format of the file.
 // 	- `body`
 //
-func (s *FileService) CreateVolume(srcFormat FileSourceFormat, body string) (*FileVolume, error) {
+func (s *FileService) CreateVolume(srcFormat FileSourceFormat, body []byte) (*FileVolume, error) {
 	// Create the url.
 	path := "/file/volume"
 	uri := resolveRelative(s.client.server, path)
 
-	b := strings.NewReader(body)
+	b := bytes.NewReader(body)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)

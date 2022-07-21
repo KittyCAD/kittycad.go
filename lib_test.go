@@ -52,12 +52,12 @@ func TestFileConversion(t *testing.T) {
 		t.Fatalf("reading the test file %q failed: %v", file, err)
 	}
 
-	fc, output, err := client.File.CreateConversionWithBase64Helper(FileSourceFormatStl, FileOutputFormatObj, body)
+	fc, err := client.File.CreateConversion(FileOutputFormatObj, FileSourceFormatStl, body)
 	if err != nil {
 		t.Fatalf("getting the file conversion failed: %v", err)
 	}
 
-	if fc.ID == "" {
+	if fc.ID.String() == "" {
 		t.Fatalf("the file conversion ID is empty")
 	}
 
@@ -74,7 +74,7 @@ func TestFileConversion(t *testing.T) {
 		t.Fatalf("the file conversion completed at time is zero")
 	}
 
-	if len(output) == 0 {
+	if len(fc.Output.Inner) == 0 {
 		t.Fatalf("the file conversion output is empty")
 	}
 }

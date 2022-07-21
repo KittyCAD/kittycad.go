@@ -2,12 +2,14 @@ package main
 
 import (
 	"bytes"
-	"net"
+	"strings"
+
+	"inet.af/netaddr"
 )
 
 // IP is a wrapper around ip.IP which marshals to and from empty strings.
 type IP struct {
-	*net.IP
+	*netaddr.IP
 }
 
 // MarshalJSON implements the json.Marshaler interface.
@@ -43,10 +45,10 @@ func (u *IP) UnmarshalJSON(data []byte) (err error) {
 		return nil
 	}
 
-	var ip *net.IP = nil
-	if err = ip.UnmarshalText(data); err != nil {
+	ip, err := netaddr.ParseIP(strings.Trim(string(data), `"`))
+	if err != nil {
 		return err
 	}
-	*u = IP{ip}
+	*u = IP{&ip}
 	return
 }

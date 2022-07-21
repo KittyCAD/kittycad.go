@@ -294,12 +294,16 @@ func formatStringType(t *openapi3.Schema) string {
 		return "string"
 	} else if t.Format == "ip" || t.Format == "ipv4" || t.Format == "ipv6" {
 		return "IP"
+	} else if t.Format == "byte" {
+		return "Base64"
 	} else if t.Format == "uri" || t.Format == "url" {
 		return "URL"
 	} else if t.Format == "uuid" {
 		return "UUID"
 	} else if t.Format == "uuid3" {
 		return "string"
+	} else if t.Format == "binary" {
+		return "[]byte"
 	}
 
 	return "string"

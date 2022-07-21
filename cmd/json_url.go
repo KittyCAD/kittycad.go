@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"net/url"
+	"strings"
 )
 
 // URL is a wrapper around url.URL which marshals to and from empty strings.
@@ -44,7 +45,7 @@ func (u *URL) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	// Fractional seconds are handled implicitly by Parse.
-	uu, err := url.Parse(string(data))
+	uu, err := url.Parse(strings.Trim(string(data), `"`))
 	if err != nil {
 		return err
 	}

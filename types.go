@@ -209,7 +209,7 @@ type AsyncAPICallOutput struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// Output: The converted file, if completed, base64 encoded.
-	Output string `json:"output" yaml:"output" schema:"output"`
+	Output Base64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
 	OutputFormat FileOutputFormat `json:"output_format" yaml:"output_format" schema:"output_format"`
 	// SrcFormat: The source format of the file conversion.
@@ -1061,7 +1061,7 @@ type FileConversion struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// Output: The converted file, if completed, base64 encoded.
-	Output string `json:"output" yaml:"output" schema:"output"`
+	Output Base64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
 	OutputFormat FileOutputFormat `json:"output_format" yaml:"output_format" schema:"output_format"`
 	// SrcFormat: The source format of the file conversion.

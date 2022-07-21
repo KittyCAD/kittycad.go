@@ -148,6 +148,8 @@ func generateExamplesFile(doc *openapi3.T, data Data) error {
 
 func generateSourceFiles(data Data) error {
 	sourceFiles := []string{
+		"json_base64.go",
+		"json_base64_test.go",
 		"json_ip.go",
 		"json_ip_test.go",
 		"json_time.go",

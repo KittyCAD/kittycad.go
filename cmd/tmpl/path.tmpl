@@ -20,6 +20,8 @@ func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -
 		        return {{if .Response}}nil,{{end}} fmt.Errorf("encoding form body request failed: %v", err)
             }
             b := strings.NewReader(form.Encode())
+        {{else if eq .RequestBody.Type "[]byte"}}
+            b := bytes.NewReader(body)
         {{else if eq .RequestBody.Type "string"}}
             b := strings.NewReader(body)
         {{else}}
