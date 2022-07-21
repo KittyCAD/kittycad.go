@@ -106,14 +106,15 @@ func (function Path) getDescription(operation *openapi3.Operation) string {
 	if operation.Description != "" {
 		description = fmt.Sprintf("%s\n%s\n", description, operation.Description)
 	}
-	if len(function.Args) > 0 {
-		description = fmt.Sprintf("%s\nParameters:\n", description)
-		for _, arg := range function.Args {
-			if arg.Description != "" {
-				description = fmt.Sprintf("%s\t- `%s`: %s\n", description, arg.Name, strings.ReplaceAll(arg.Description, "\n", "\n\t\t"))
-			} else {
-				description = fmt.Sprintf("%s\t- `%s`\n", description, arg.Name)
-			}
+	if len(function.Args) > 0 || function.RequestBody != nil {
+		description = fmt.Sprintf("%s\n\nParameters\n\n", description)
+	}
+
+	for _, arg := range function.Args {
+		if arg.Description != "" {
+			description = fmt.Sprintf("%s\t- `%s`: %s\n", description, arg.Name, strings.ReplaceAll(arg.Description, "\n", "\n\t\t"))
+		} else {
+			description = fmt.Sprintf("%s\t- `%s`\n", description, arg.Name)
 		}
 	}
 	if function.RequestBody != nil {
@@ -185,11 +186,16 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 			return err
 		}
 
+		description, err := getDescriptionForSchemaOrReference(p.Value.Schema, spec)
+		if err != nil {
+			return err
+		}
+
 		// Ready ourselves for adding our arg.
 		arg := Arg{
 			Name:        printPropertyLower(p.Value.Name),
 			Property:    p.Value.Name,
-			Description: p.Value.Description,
+			Description: description,
 			Type:        typeName,
 		}
 
@@ -227,8 +233,13 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 				MediaType: mt,
 			}
 
-			if operation.RequestBody.Value.Description != "" {
-				function.RequestBody.Description = operation.RequestBody.Value.Description
+			description, err := getDescriptionForSchemaOrReference(r.Schema, spec)
+			if err != nil {
+				return err
+			}
+
+			if description != "" {
+				function.RequestBody.Description = description
 			}
 
 			break
@@ -350,4 +361,18 @@ func cleanFnName(name string, tag string, path string) string {
 func cleanPath(path string) string {
 	path = strings.Replace(path, "{", "{{.", -1)
 	return strings.Replace(path, "}", "}}", -1)
+}
+
+func getDescriptionForSchemaOrReference(ref *openapi3.SchemaRef, spec *openapi3.T) (string, error) {
+	if ref.Ref != "" {
+		// Get the schema for the reference.
+		r := strings.TrimPrefix(ref.Ref, "#/components/schemas/")
+		reference, ok := spec.Components.Schemas[r]
+		if !ok {
+			return "", fmt.Errorf("reference %q not found in schemas", r)
+		}
+		return getDescriptionForSchemaOrReference(reference, spec)
+	}
+
+	return ref.Value.Description, nil
 }
