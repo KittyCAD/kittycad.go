@@ -336,7 +336,12 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool, spec *ope
 				}
 			}
 			if content.Schema.Ref != "" {
-				return getReferenceSchema(content.Schema), getAllPagesType, nil
+				t, err := printType("", content.Schema, spec)
+				if err != nil {
+					return "", "", err
+				}
+
+				return t, getAllPagesType, nil
 			}
 
 			if content.Schema.Value.Title == "Null" {

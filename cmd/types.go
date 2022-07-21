@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"sort"
 	"strings"
 
@@ -245,8 +246,48 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 }
 
 func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *openapi3.T) error {
-	logrus.Warnf("TODO: oneof type for %q", name)
-	return data.generateObjectType(name, s.OneOf[0].Value, spec)
+	// Check if they all have a type.
+	types := []string{}
+	typeName := ""
+	for _, v := range s.OneOf {
+		if v.Value.Type == "object" {
+			// Check if all the objects have a enum of one type.
+			for name, value := range v.Value.Properties {
+				if value.Value.Type == "string" && value.Value.Enum != nil && len(value.Value.Enum) == 1 {
+					if typeName == "" {
+						typeName = name
+					} else if typeName != name {
+						return fmt.Errorf("one of %q has a different type than the others: %q", name, value.Value.Enum[0].(string))
+					}
+					types = append(types, value.Value.Enum[0].(string))
+				}
+			}
+		}
+	}
+
+	for index, oneOf := range s.OneOf {
+		// Check if we already have a schema for this one of.
+		reference, ok := spec.Components.Schemas[types[index]]
+		if !ok {
+			if err := data.generateSchemaType(types[index], oneOf.Value, spec); err != nil {
+				return err
+			}
+		}
+
+		// Remove the type from the properties.
+		properties := oneOf.Value.Properties
+		delete(properties, typeName)
+
+		// Make sure they are equal.
+		if reflect.DeepEqual(reference.Value.Properties, properties) {
+			// We need to generate the one of type.
+			if err := data.generateSchemaType(fmt.Sprintf("%s %s", name, types[index]), oneOf.Value, spec); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 func getReferenceSchema(v *openapi3.SchemaRef) string {
@@ -322,7 +363,10 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 		}
 
 		// If the reference is an object or an enum, return the reference.
-		if reference.Value.Type == "object" || reference.Value.Type == "string" && len(reference.Value.Enum) > 0 {
+		// If we have a oneOf we are going to use a generic for it.
+		if reference.Value.OneOf != nil {
+			return "any", nil
+		} else if reference.Value.Type == "object" || reference.Value.Type == "string" && len(reference.Value.Enum) > 0 {
 			return getReferenceSchema(r), nil
 		}
 

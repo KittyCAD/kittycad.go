@@ -417,7 +417,7 @@ func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy
 //
 // 	- `id`
 //
-func (s *APICallService) GetAsyncOperation(id string) (*AsyncAPICallOutput, error) {
+func (s *APICallService) GetAsyncOperation(id string) (*any, error) {
 	// Create the url.
 	path := "/async/operations/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -451,7 +451,7 @@ func (s *APICallService) GetAsyncOperation(id string) (*AsyncAPICallOutput, erro
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded AsyncAPICallOutput
+	var decoded any
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -635,7 +635,7 @@ func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat 
 //
 // 	- `id`
 //
-func (s *FileService) GetConversion(id string) (*AsyncAPICallOutput, error) {
+func (s *FileService) GetConversion(id string) (*any, error) {
 	// Create the url.
 	path := "/file/conversions/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -669,7 +669,7 @@ func (s *FileService) GetConversion(id string) (*AsyncAPICallOutput, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded AsyncAPICallOutput
+	var decoded any
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -1831,7 +1831,7 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 //
 // 	- `id`
 //
-func (s *FileService) GetConversionForUser(id string) (*AsyncAPICallOutput, error) {
+func (s *FileService) GetConversionForUser(id string) (*any, error) {
 	// Create the url.
 	path := "/user/file/conversions/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1865,7 +1865,7 @@ func (s *FileService) GetConversionForUser(id string) (*AsyncAPICallOutput, erro
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded AsyncAPICallOutput
+	var decoded any
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
