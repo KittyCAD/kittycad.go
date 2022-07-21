@@ -136,6 +136,7 @@ type Arg struct {
 	Property    string
 	Type        string
 	ToString    string
+	Required    bool
 }
 
 // RequestBody is a request body for a path function.
@@ -199,6 +200,7 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 			Property:    p.Value.Name,
 			Description: description,
 			Type:        typeName,
+			Required:    p.Value.Required,
 		}
 
 		if typeName == "string" {
