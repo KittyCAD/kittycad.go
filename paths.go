@@ -264,7 +264,7 @@ func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 //
 // 	- `body`
 //
-func (s *AppService) GithubCallback(body interface{}) error {
+func (s *AppService) GithubCallback(body any) error {
 	// Create the url.
 	path := "/apps/github/callback"
 	uri := resolveRelative(s.client.server, path)

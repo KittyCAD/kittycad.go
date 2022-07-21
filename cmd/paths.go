@@ -239,7 +239,7 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 				return err
 			}
 
-			example, err := generateExampleValue("", r.Schema, spec)
+			example, err := generateExampleValue(typeName, r.Schema, spec)
 			if err != nil {
 				return err
 			}
@@ -267,7 +267,11 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 	// Now we can get the description since we have filled in everything else.
 	function.Description = function.getDescription(operation)
 
-	// TODO: Build the example function.
+	// Build the example function.
+	example, err := templateToString("function-example.tmpl", function)
+	if err != nil {
+		return err
+	}
 
 	// Print the template for the function.
 	f, err := templateToString("path.tmpl", function)
@@ -277,6 +281,23 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 
 	// Add the function to our list of functions.
 	data.Paths = append(data.Paths, f)
+
+	// Add it to our docs.
+	docInfo := map[string]string{
+		"example":     fmt.Sprintf("// %s\n%s", function.getDescription(operation), example),
+		"libDocsLink": fmt.Sprintf("https://pkg.go.dev/github.com/kittycad/kittycad.go/#%sService.%s", function.Tag, function.Name),
+	}
+	if method == http.MethodGet {
+		doc.Paths[pathName].Get.Extensions["x-go"] = docInfo
+	} else if method == http.MethodPost {
+		doc.Paths[pathName].Post.Extensions["x-go"] = docInfo
+	} else if method == http.MethodPut {
+		doc.Paths[pathName].Put.Extensions["x-go"] = docInfo
+	} else if method == http.MethodDelete {
+		doc.Paths[pathName].Delete.Extensions["x-go"] = docInfo
+	} else if method == http.MethodPatch {
+		doc.Paths[pathName].Patch.Extensions["x-go"] = docInfo
+	}
 
 	return nil
 }
@@ -336,7 +357,7 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool, spec *ope
 			}
 
 			// If it's an interface then it was an empty schema and therefore there is no response.
-			if t == "interface{}" {
+			if t == "any" {
 				return "", getAllPagesType, nil
 			}
 

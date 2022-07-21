@@ -179,9 +179,9 @@ type AsyncAPICall struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Input: The JSON input for the API call. These are determined by the endpoint that is run.
-	Input *interface{} `json:"input" yaml:"input" schema:"input"`
+	Input *any `json:"input" yaml:"input" schema:"input"`
 	// Output: The JSON output for the API call. These are determined by the endpoint that is run.
-	Output *interface{} `json:"output" yaml:"output" schema:"output"`
+	Output *any `json:"output" yaml:"output" schema:"output"`
 	// StartedAt: The time and date the async API call was started.
 	StartedAt *Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the async API call.

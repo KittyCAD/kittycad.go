@@ -6,14 +6,14 @@ func Example{{.Tag}}{{.Name}}() {
     }
 
     {{if .Response}}
-        result, err := client.{{.Tag}}.{{.Name}}()
+        result, err := client.{{.Tag}}.{{.Name}}({{range .Args -}}{{.Example}},{{end -}}{{if .RequestBody}}{{.RequestBody.Example}}{{end -}})
         if err != nil {
             panic(err)
         }
 
         fmt.Printf("%#v", result)
     {{else}}
-    if err := client.{{.Tag}}.{{.Name}}(); err != nil {
+    if err := client.{{.Tag}}.{{.Name}}({{range .Args -}}{{.Example}},{{end -}}{{if .RequestBody}}{{.RequestBody.Example}}{{end -}}); err != nil {
         panic(err)
     }
     {{end}}

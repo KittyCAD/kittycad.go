@@ -120,9 +120,6 @@ func (t userAgentTransport) RoundTrip(req *http.Request) (*http.Response, error)
 	return t.base.RoundTrip(&newReq)
 }
 
-// ResponseGetSchema is the response from the GetSchema method.
-type ResponseGetSchema interface{}
-
 // HTTPError is an error returned by a failed API call.
 type HTTPError struct {
 	// URL is the URL that was being accessed when the error occurred.

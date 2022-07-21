@@ -374,7 +374,7 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 		return strcase.ToCamel(property), nil
 	}
 
-	return "interface{}", nil
+	return "any", nil
 }
 
 func printTagName(tag string) string {
@@ -552,5 +552,5 @@ func generateExampleValue(name string, s *openapi3.SchemaRef, spec *openapi3.T) 
 		return object, nil
 	}
 
-	return "interface{}", nil
+	return "any{}", nil
 }
