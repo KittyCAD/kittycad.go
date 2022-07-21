@@ -87,4 +87,5 @@ func TestAsyncOperationStatus(t *testing.T) {
 		t.Fatalf("getting the async operation failed: %v", err)
 	}
 
+	t.Logf("%#v", result)
 }
