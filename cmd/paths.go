@@ -161,7 +161,7 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 	tag := printTagName(operation.Tags[0])
 	function := Path{
 		Name:        cleanFnName(operation.OperationID, tag, pathName),
-		Tag:         tag,
+		Tag:         printProperty(tag),
 		Path:        cleanPath(pathName),
 		Method:      method,
 		Args:        []Arg{},
@@ -196,7 +196,7 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 			return err
 		}
 
-		example, err := generateExampleValue(p.Value.Name, p.Value.Schema, spec)
+		example, err := data.generateExampleValue(p.Value.Name, p.Value.Schema, spec, true)
 		if err != nil {
 			return err
 		}
@@ -239,7 +239,7 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 				return err
 			}
 
-			example, err := generateExampleValue(typeName, r.Schema, spec)
+			example, err := data.generateExampleValue(typeName, r.Schema, spec, true)
 			if err != nil {
 				return err
 			}
@@ -272,6 +272,7 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 	if err != nil {
 		return err
 	}
+	data.Examples = append(data.Examples, example)
 
 	// Print the template for the function.
 	f, err := templateToString("path.tmpl", function)

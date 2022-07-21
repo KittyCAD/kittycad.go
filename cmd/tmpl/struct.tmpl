@@ -2,6 +2,6 @@
 type {{.Name}} struct {
     {{range .Values -}}
         // {{.Name}}: {{.Description}}
-        {{.Name}} {{if not .Required}}*{{end}}{{.Type}} `json:"{{.Property}}" yaml:"{{.Property}}" schema:"{{.Property}}{{if .Required}},required{{end}}"`
+        {{.Name}} {{if not .Required}}{{end}}{{.Type}} `json:"{{.Property}}" yaml:"{{.Property}}" schema:"{{.Property}}{{if .Required}},required{{end}}"`
     {{end -}}
 }

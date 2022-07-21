@@ -27,6 +27,12 @@ func (t Time) String() string {
 	return t.Format(`"` + time.RFC3339 + `"`)
 }
 
+// TimeNow returns the current time.
+func TimeNow() Time {
+	now := time.Now()
+	return Time{&now}
+}
+
 // UnmarshalJSON implements the json.Unmarshaler interface.
 // The time is expected to be a quoted string in RFC 3339 format.
 func (t *Time) UnmarshalJSON(data []byte) (err error) {

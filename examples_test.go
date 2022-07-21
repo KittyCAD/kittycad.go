@@ -4,6 +4,7 @@ package kittycad_test
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/kittycad/kittycad.go"
 )
@@ -41,4 +42,797 @@ func ExampleNewClientFromEnv() {
 	}
 
 	fmt.Printf("%#v", result)
+}
+
+// Create a client with your token.
+func ExampleMetaService_GetSchema() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Meta.GetSchema(); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleMetaService_Getdata() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Meta.Getdata()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPICallService_GetMetrics() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APICall.GetMetrics(kittycad.APICallQueryGroupByEmail)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPICallService_List() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APICall.List(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPICallService_Get() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APICall.Get("some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAppService_GithubCallback() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.App.GithubCallback(""); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleAppService_GithubConsent() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.App.GithubConsent()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPICallService_ListAsyncOperations() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APICall.ListAsyncOperations(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending, kittycad.APICallStatusQueued)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPICallService_GetAsyncOperation() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APICall.GetAsyncOperation("some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleHiddenService_AuthEmail() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Hidden.AuthEmail(kittycad.EmailAuthenticationForm{CallbackUrl: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, Email: "example@example.com"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleHiddenService_AuthEmailCallback() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Hidden.AuthEmailCallback(kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, "example@example.com", "some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleFileService_CreateConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.CreateConversion(kittycad.FileOutputFormatStl, kittycad.FileSourceFormatStl, []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleFileService_GetConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.GetConversion("some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleFileService_CreateDensity() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.CreateDensity(123.45, kittycad.FileSourceFormatStl, []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleFileService_CreateExecution() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.CreateExecution(kittycad.CodeLanguageGo, "some-string", []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleFileService_CreateMass() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.CreateMass(123.45, kittycad.FileSourceFormatStl, []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleFileService_CreateVolume() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.CreateVolume(kittycad.FileSourceFormatStl, []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleHiddenService_Logout() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Hidden.Logout(); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleOauth2Service_DeviceAuthRequest() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.DeviceAuthRequest(kittycad.DeviceAuthRequestForm{ClientID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")}); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleOauth2Service_DeviceAuthConfirm() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.DeviceAuthConfirm(kittycad.DeviceAuthVerifyParams{UserCode: "some-string"}); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleOauth2Service_DeviceAccessToken() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.DeviceAccessToken(kittycad.DeviceAccessTokenRequestForm{ClientID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), DeviceCode: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), GrantType: kittycad.OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode}); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleOauth2Service_DeviceAuthVerify() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.DeviceAuthVerify("some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleOauth2Service_ProviderCallback() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.ProviderCallback(kittycad.AccountProviderGoogle, "some-string", "some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleOauth2Service_ProviderConsent() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.ProviderConsent(kittycad.AccountProviderGoogle, "some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleMetaService_Ping() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Meta.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_CreateConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.CreateConversion(kittycad.UnitMetricFormatAtto, kittycad.UnitMetricFormatAtto, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUserService_GetSelf() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.GetSelf()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUserService_UpdateSelf() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: "some-string", Discord: "some-string", FirstName: "some-string", Github: "some-string", LastName: "some-string", Phone: "+1-555-555-555"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUserService_DeleteSelf() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.DeleteSelf(); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleAPICallService_UserList() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APICall.UserList(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPICallService_GetForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APICall.GetForUser("some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPITokenService_ListForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APIToken.ListForUser(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPITokenService_CreateForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APIToken.CreateForUser()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPITokenService_GetForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APIToken.GetForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPITokenService_DeleteForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.APIToken.DeleteForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleUserService_GetSelfExtended() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.GetSelfExtended()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleFileService_GetConversionForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.GetConversionForUser("some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExamplePaymentService_GetInformationForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.GetInformationForUser()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExamplePaymentService_CreateInformationForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Name: "some-string", Phone: "+1-555-555-555", Address: kittycad.Address{ID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), Street2: "some-string", Zip: "some-string", Country: "some-string", CreatedAt: kittycad.TimeNow(), Street1: "some-string", UpdatedAt: kittycad.TimeNow(), UserID: "some-string", City: "some-string", State: "some-string"}})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExamplePaymentService_UpdateInformationForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.Address{UserID: "some-string", City: "some-string", State: "some-string", Street1: "some-string", UpdatedAt: kittycad.TimeNow(), Zip: "some-string", Country: "some-string", CreatedAt: kittycad.TimeNow(), ID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), Street2: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExamplePaymentService_DeleteInformationForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Payment.DeleteInformationForUser(); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExamplePaymentService_GetBalanceForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.GetBalanceForUser()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExamplePaymentService_CreateIntentForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.CreateIntentForUser()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExamplePaymentService_ListInvoicesForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.ListInvoicesForUser()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExamplePaymentService_ListMethodsForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.ListMethodsForUser()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExamplePaymentService_DeleteMethodForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Payment.DeleteMethodForUser("some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleSessionService_GetForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Session.GetForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUserService_List() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.List(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUserService_ListExtended() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.ListExtended(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUserService_GetExtended() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.GetExtended("some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUserService_Get() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.Get("some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAPICallService_ListForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APICall.ListForUser("some-string", 123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
 }

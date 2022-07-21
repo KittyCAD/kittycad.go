@@ -434,7 +434,7 @@ func contains(s []string, e string) bool {
 }
 
 // Generate a random value based on a schema.
-func generateExampleValue(name string, s *openapi3.SchemaRef, spec *openapi3.T) (string, error) {
+func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *openapi3.T, required bool) (string, error) {
 	schema := s.Value
 	typet := s.Value.Type
 
@@ -449,45 +449,79 @@ func generateExampleValue(name string, s *openapi3.SchemaRef, spec *openapi3.T) 
 
 		// If the reference is an object or an enum, return the reference.
 		// Otherwise, we need to recurse.
-		return generateExampleValue(printProperty(name), reference, spec)
+		return data.generateExampleValue(printProperty(ref), reference, spec, true)
 	}
 
 	if typet == "string" {
 		// Check if we have an enum.
 		if len(schema.Enum) > 0 {
-			// Get the type name for the enum.
-			typeName, err := printType(name, s, spec)
-			if err != nil {
-				return "", err
-			}
-
 			// Get the first enum value.
 			firstValue := printProperty(schema.Enum[0].(string))
-			return fmt.Sprintf("%s%s", typeName, firstValue), nil
+			t := fmt.Sprintf("%s.%s%s", data.PackageName, name, firstValue)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		}
 
 		if schema.Format == "date-time" {
-			return "Time{time.Now()}", nil
+			t := fmt.Sprintf(`%s.TimeNow()`, data.PackageName)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		} else if schema.Format == "partial-date-time" {
-			return "Time{time.Now()}", nil
+			t := fmt.Sprintf(`%s.TimeNow()`, data.PackageName)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		} else if schema.Format == "date" {
-			return "Time{time.Now()}", nil
+			t := fmt.Sprintf(`%s.TimeNow()`, data.PackageName)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		} else if schema.Format == "time" {
-			return "Time{time.Now()}", nil
+			t := fmt.Sprintf(`%s.TimeNow()`, data.PackageName)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		} else if schema.Format == "email" {
 			return `"example@example.com"`, nil
 		} else if schema.Format == "hostname" {
 			return `"localhost"`, nil
 		} else if schema.Format == "ip" || schema.Format == "ipv4" || schema.Format == "ipv6" {
-			return `netaddr.MustParseIP("192.158.1.38")`, nil
+			t := fmt.Sprintf(`%s.IP{netaddr.MustParseIP("192.158.1.38")}`, data.PackageName)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		} else if schema.Format == "byte" {
-			return `Base64{Inner: []byte("aGVsbG8gd29ybGQK")}`, nil
+			t := fmt.Sprintf(`%s.Base64{Inner: []byte("aGVsbG8gd29ybGQK")}`, data.PackageName)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		} else if schema.Format == "uri" || schema.Format == "url" {
-			return "URL{url.URL{Scheme: \"https\", Host: \"example.com\"}}", nil
+			t := fmt.Sprintf(`%s.URL{&url.URL{Scheme: "https", Host: "example.com"}}`, data.PackageName)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		} else if schema.Format == "uuid" {
-			return "UUID{uuid.MustParse(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")}", nil
+			t := fmt.Sprintf(`%s.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")`, data.PackageName)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		} else if schema.Format == "binary" {
-			return `[]byte("some-binary")`, nil
+			t := `[]byte("some-binary")`
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		} else if schema.Format == "phone" {
 			return `"+1-555-555-555"`, nil
 		}
@@ -507,12 +541,16 @@ func generateExampleValue(name string, s *openapi3.SchemaRef, spec *openapi3.T) 
 		}
 
 		// Get an example for the items.
-		items, err := generateExampleValue(name, schema.Items, spec)
+		items, err := data.generateExampleValue(name, schema.Items, spec, true)
 		if err != nil {
 			return "", err
 		}
 
-		return fmt.Sprintf("[]%s{%s}", typeName, items), nil
+		t := fmt.Sprintf("[]%s{%s}", typeName, items)
+		if required {
+			return t, nil
+		}
+		return fmt.Sprintf("&%s", t), nil
 	} else if typet == "object" {
 		if schema.AdditionalProperties != nil && (schema.Properties == nil || len(schema.Properties) == 0) {
 			// get the inner type.
@@ -522,13 +560,17 @@ func generateExampleValue(name string, s *openapi3.SchemaRef, spec *openapi3.T) 
 			}
 
 			// Get an example for the inner type.
-			innerExample, err := generateExampleValue(name, schema.AdditionalProperties, spec)
+			innerExample, err := data.generateExampleValue(name, schema.AdditionalProperties, spec, true)
 			if err != nil {
 				return "", err
 			}
 
 			// Now make it a map.
-			return fmt.Sprintf("map[string]%s{\"example\": %s}", innerType, innerExample), nil
+			t := fmt.Sprintf("map[string]%s{\"example\": %s}", innerType, innerExample)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
 		}
 
 		// Get the type name.
@@ -537,10 +579,10 @@ func generateExampleValue(name string, s *openapi3.SchemaRef, spec *openapi3.T) 
 			return "", err
 		}
 
-		object := fmt.Sprintf("%s{", typeName)
+		object := fmt.Sprintf("%s.%s{", data.PackageName, typeName)
 		for k, p := range schema.Properties {
 			// Get an example for the property.
-			example, err := generateExampleValue(name, p, spec)
+			example, err := data.generateExampleValue(printProperty(k), p, spec, required)
 			if err != nil {
 				return "", err
 			}
@@ -549,8 +591,15 @@ func generateExampleValue(name string, s *openapi3.SchemaRef, spec *openapi3.T) 
 		// Close the object.
 		object += "}"
 
-		return object, nil
+		if required {
+			return object, nil
+		}
+		return fmt.Sprintf("&%s", object), nil
 	}
 
-	return "any{}", nil
+	if schema.AllOf != nil {
+		return data.generateExampleValue(name, schema.AllOf[0], spec, required)
+	}
+
+	return `""`, nil
 }

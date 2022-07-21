@@ -28,6 +28,12 @@ func (u UUID) String() string {
 	return u.UUID.String()
 }
 
+// ParseUUID parses a UUID from a string.
+func ParseUUID(s string) UUID {
+	u, _ := uuid.Parse(s)
+	return UUID{&u}
+}
+
 // UnmarshalJSON implements the json.Unmarshaler interface.
 // The time is expected to be a quoted string in RFC 3339 format.
 func (u *UUID) UnmarshalJSON(data []byte) (err error) {
