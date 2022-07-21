@@ -185,6 +185,7 @@ type ObjectValue struct {
 	Description string
 	Type        string
 	Property    string
+	Required    bool
 }
 
 func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *openapi3.T) error {
@@ -212,6 +213,7 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 			Name:     printProperty(k),
 			Type:     typeName,
 			Property: k,
+			Required: contains(s.Required, k),
 		}
 
 		if v.Value.Description != "" {
@@ -419,4 +421,14 @@ func makeSingular(s string) string {
 		return s
 	}
 	return strings.TrimSuffix(s, "s")
+}
+
+// Check if a slice of strings contains a value.
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }

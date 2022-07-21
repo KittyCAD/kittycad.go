@@ -21,7 +21,7 @@ func TestGetSession(t *testing.T) {
 	if err != nil {
 		t.Fatalf("getting the session failed: %v", err)
 	}
-	if session.ID == "" {
+	if session.ID == nil {
 		t.Fatalf("the session ID is empty")
 	}
 }
