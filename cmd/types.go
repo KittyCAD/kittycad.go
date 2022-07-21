@@ -624,7 +624,14 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 		}
 
 		object := fmt.Sprintf("%s.%s{", data.PackageName, typeName)
-		for k, p := range schema.Properties {
+		// We want to ensure we keep the order so the diffs don't look like shit.
+		keys := make([]string, 0)
+		for k := range schema.Properties {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		for _, k := range keys {
+			p := schema.Properties[k]
 			// Get an example for the property.
 			example, err := data.generateExampleValue(printProperty(k), p, spec, required)
 			if err != nil {
