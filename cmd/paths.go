@@ -137,6 +137,7 @@ type Arg struct {
 	Type        string
 	ToString    string
 	Required    bool
+	Example     string
 }
 
 // RequestBody is a request body for a path function.
@@ -144,6 +145,7 @@ type RequestBody struct {
 	Type        string
 	Description string
 	MediaType   string
+	Example     string
 }
 
 // Response is a response for a path function.
@@ -194,6 +196,11 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 			return err
 		}
 
+		example, err := generateExampleValue(p.Value.Name, p.Value.Schema, spec)
+		if err != nil {
+			return err
+		}
+
 		// Ready ourselves for adding our arg.
 		arg := Arg{
 			Name:        printPropertyLower(p.Value.Name),
@@ -201,6 +208,7 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 			Description: description,
 			Type:        typeName,
 			Required:    p.Value.Required,
+			Example:     example,
 		}
 
 		if typeName == "string" {
@@ -231,10 +239,16 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 				return err
 			}
 
+			example, err := generateExampleValue("", r.Schema, spec)
+			if err != nil {
+				return err
+			}
+
 			// Add our request body to the function.
 			function.RequestBody = &RequestBody{
 				Type:      typeName,
 				MediaType: mt,
+				Example:   example,
 			}
 
 			description, err := getDescriptionForSchemaOrReference(r.Schema, spec)

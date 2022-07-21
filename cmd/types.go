@@ -432,3 +432,125 @@ func contains(s []string, e string) bool {
 	}
 	return false
 }
+
+// Generate a random value based on a schema.
+func generateExampleValue(name string, s *openapi3.SchemaRef, spec *openapi3.T) (string, error) {
+	schema := s.Value
+	typet := s.Value.Type
+
+	// If we have a reference, we can usually just use that.
+	if s.Ref != "" {
+		// Get the schema for the reference.
+		ref := strings.TrimPrefix(s.Ref, "#/components/schemas/")
+		reference, ok := spec.Components.Schemas[ref]
+		if !ok {
+			return "", fmt.Errorf("reference %q not found in schemas", ref)
+		}
+
+		// If the reference is an object or an enum, return the reference.
+		// Otherwise, we need to recurse.
+		return generateExampleValue(printProperty(name), reference, spec)
+	}
+
+	if typet == "string" {
+		// Check if we have an enum.
+		if len(schema.Enum) > 0 {
+			// Get the type name for the enum.
+			typeName, err := printType(name, s, spec)
+			if err != nil {
+				return "", err
+			}
+
+			// Get the first enum value.
+			firstValue := printProperty(schema.Enum[0].(string))
+			return fmt.Sprintf("%s%s", typeName, firstValue), nil
+		}
+
+		if schema.Format == "date-time" {
+			return "Time{time.Now()}", nil
+		} else if schema.Format == "partial-date-time" {
+			return "Time{time.Now()}", nil
+		} else if schema.Format == "date" {
+			return "Time{time.Now()}", nil
+		} else if schema.Format == "time" {
+			return "Time{time.Now()}", nil
+		} else if schema.Format == "email" {
+			return `"example@example.com"`, nil
+		} else if schema.Format == "hostname" {
+			return `"localhost"`, nil
+		} else if schema.Format == "ip" || schema.Format == "ipv4" || schema.Format == "ipv6" {
+			return `netaddr.MustParseIP("192.158.1.38")`, nil
+		} else if schema.Format == "byte" {
+			return `Base64{Inner: []byte("aGVsbG8gd29ybGQK")}`, nil
+		} else if schema.Format == "uri" || schema.Format == "url" {
+			return "URL{url.URL{Scheme: \"https\", Host: \"example.com\"}}", nil
+		} else if schema.Format == "uuid" {
+			return "UUID{uuid.MustParse(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")}", nil
+		} else if schema.Format == "binary" {
+			return `[]byte("some-binary")`, nil
+		} else if schema.Format == "phone" {
+			return `"+1-555-555-555"`, nil
+		}
+
+		return `"some-string"`, nil
+	} else if typet == "integer" {
+		return "123", nil
+	} else if typet == "number" {
+		return "123.45", nil
+	} else if typet == "boolean" {
+		return "true", nil
+	} else if typet == "array" {
+		// Get the type name.
+		typeName, err := printType(name, schema.Items, spec)
+		if err != nil {
+			return "", err
+		}
+
+		// Get an example for the items.
+		items, err := generateExampleValue(name, schema.Items, spec)
+		if err != nil {
+			return "", err
+		}
+
+		return fmt.Sprintf("[]%s{%s}", typeName, items), nil
+	} else if typet == "object" {
+		if schema.AdditionalProperties != nil && (schema.Properties == nil || len(schema.Properties) == 0) {
+			// get the inner type.
+			innerType, err := printType(name, schema.AdditionalProperties, spec)
+			if err != nil {
+				return "", err
+			}
+
+			// Get an example for the inner type.
+			innerExample, err := generateExampleValue(name, schema.AdditionalProperties, spec)
+			if err != nil {
+				return "", err
+			}
+
+			// Now make it a map.
+			return fmt.Sprintf("map[string]%s{\"example\": %s}", innerType, innerExample), nil
+		}
+
+		// Get the type name.
+		typeName, err := printType(name, s, spec)
+		if err != nil {
+			return "", err
+		}
+
+		object := fmt.Sprintf("%s{", typeName)
+		for k, p := range schema.Properties {
+			// Get an example for the property.
+			example, err := generateExampleValue(name, p, spec)
+			if err != nil {
+				return "", err
+			}
+			object += fmt.Sprintf("%s: %s, ", printProperty(k), example)
+		}
+		// Close the object.
+		object += "}"
+
+		return object, nil
+	}
+
+	return "interface{}", nil
+}
