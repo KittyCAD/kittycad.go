@@ -216,6 +216,15 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 
 		if v.Value.Description != "" {
 			objectValue.Description = strings.ReplaceAll(v.Value.Description, "\n", "\n// ")
+		} else {
+			// Try another way.
+			description, err := getDescriptionForSchemaOrReference(v, spec)
+			if err != nil {
+				return err
+			}
+			if description != "" {
+				objectValue.Description = strings.ReplaceAll(description, "\n", "\n// ")
+			}
 		}
 
 		object.Values[k] = objectValue
