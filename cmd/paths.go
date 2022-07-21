@@ -107,7 +107,7 @@ func (function Path) getDescription(operation *openapi3.Operation) string {
 		description = fmt.Sprintf("%s\n%s\n", description, operation.Description)
 	}
 	if len(function.Args) > 0 {
-		description = fmt.Sprintf("\nParameters:\n")
+		description = fmt.Sprintf("%s\nParameters:\n", description)
 		for _, arg := range function.Args {
 			if arg.Description != "" {
 				description = fmt.Sprintf("%s\t- `%s`: %s\n", description, arg.Name, strings.ReplaceAll(arg.Description, "\n", "\n\t\t"))
@@ -157,7 +157,7 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 	function := Path{
 		Name:   cleanFnName(operation.OperationID, tag, pathName),
 		Tag:    tag,
-		Path:   pathName,
+		Path:   cleanPath(pathName),
 		Method: method,
 		Args:   []Arg{},
 	}
@@ -322,10 +322,6 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool, spec *ope
 func cleanFnName(name string, tag string, path string) string {
 	name = printProperty(name)
 
-	if strings.HasSuffix(tag, "s") {
-		tag = strings.TrimSuffix(tag, "s")
-	}
-
 	snake := strcase.ToSnake(name)
 	snake = strings.ReplaceAll(snake, "_"+strings.ToLower(tag)+"_", "_")
 
@@ -342,10 +338,6 @@ func cleanFnName(name string, tag string, path string) string {
 		name = fmt.Sprintf("%sCreate", strings.TrimSuffix(name, "Post"))
 	}
 
-	if strings.HasPrefix(name, "s") {
-		name = strings.TrimPrefix(name, "s")
-	}
-
 	if strings.Contains(name, printTagName(tag)) {
 		name = strings.ReplaceAll(name, printTagName(tag)+"s", "")
 		name = strings.ReplaceAll(name, printTagName(tag), "")
@@ -358,8 +350,4 @@ func cleanFnName(name string, tag string, path string) string {
 func cleanPath(path string) string {
 	path = strings.Replace(path, "{", "{{.", -1)
 	return strings.Replace(path, "}", "}}", -1)
-}
-
-func isPageParam(s string) bool {
-	return s == "nextPage" || s == "pageToken" || s == "limit"
 }

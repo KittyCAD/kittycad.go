@@ -75,17 +75,7 @@ func (data *Data) generateSchemaType(name string, s *openapi3.Schema, spec *open
 			if err := data.generateEnumType(name, s); err != nil {
 				return err
 			}
-		} else {
-			// TODO: fmt.Fprintf(f, "type %s string\n", name)
 		}
-	} else if otype == "integer" {
-		//TODO	fmt.Fprintf(f, "type %s int\n", name)
-	} else if otype == "number" {
-		//TODO	fmt.Fprintf(f, "type %s float64\n", name)
-	} else if otype == "boolean" {
-		//TODO	fmt.Fprintf(f, "type %s bool\n", name)
-	} else if otype == "array" {
-		// TODO	fmt.Fprintf(f, "type %s []%s\n", name, s.Items.Value.Type)
 	} else if otype == "object" {
 		if err := data.generateObjectType(name, s, spec); err != nil {
 			return err
@@ -270,14 +260,6 @@ func getTypeDescription(name string, s *openapi3.Schema) string {
 	return fmt.Sprintf("%s is the type definition for a %s.", name, name)
 }
 
-func isLocalEnum(v *openapi3.SchemaRef) bool {
-	return v.Ref == "" && v.Value.Type == "string" && len(v.Value.Enum) > 0
-}
-
-func isLocalObject(v *openapi3.SchemaRef) bool {
-	return v.Ref == "" && v.Value.Type == "object" && len(v.Value.Properties) > 0
-}
-
 // formatStringType converts a string schema to a valid Go type.
 func formatStringType(t *openapi3.Schema) string {
 	if t.Format == "date-time" {
@@ -376,4 +358,50 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 	}
 
 	return "interface{}", nil
+}
+
+func printTagName(tag string) string {
+	return printProperty(makeSingular(tag))
+}
+
+// printProperty converts an object's property name to a valid Go identifier.
+func printProperty(p string) string {
+	c := strcase.ToCamel(p)
+	if c == "Id" {
+		c = "ID"
+	} else if c == "IpAddress" {
+		c = "IPAddress"
+	} else if c == "UserId" {
+		c = "UserID"
+	} else if strings.HasPrefix(c, "Gpu") {
+		c = strings.Replace(c, "Gpu", "GPU", 1)
+	} else if strings.HasSuffix(c, "Id") {
+		c = strings.TrimSuffix(c, "Id") + "ID"
+	}
+
+	c = strings.ReplaceAll(c, "Api", "API")
+
+	return c
+}
+
+func printPropertyLower(p string) string {
+	s := strcase.ToLowerCamel(printProperty(p))
+
+	if s == "iD" {
+		s = "id"
+	} else if s == "iPAddress" {
+		s = "ipAddress"
+	} else if s == "iDSortMode" {
+		s = "idSortMode"
+	}
+
+	return s
+}
+
+// makeSingular returns the given string but singular.
+func makeSingular(s string) string {
+	if strings.HasSuffix(s, "Status") {
+		return s
+	}
+	return strings.TrimSuffix(s, "s")
 }

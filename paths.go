@@ -87,6 +87,9 @@ func (s *MetaService) Getdata() (*Metadata, error) {
 
 }
 
+// GetMetrics: Get API call metrics.
+//
+// This endpoint requires authentication by a KittyCAD employee. The API calls are grouped by the parameter passed.
 //
 // Parameters:
 // 	- `groupBy`: What field to group the metrics by.
@@ -135,6 +138,9 @@ func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQuer
 
 }
 
+// List: List API calls.
+//
+// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters:
 // 	- `limit`: Maximum number of items returned by a single call
@@ -187,13 +193,18 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 
 }
 
+// Get: Get details of an API call.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
+// If the user is not authenticated to view the specified API call, then it is not returned.
+// Only KittyCAD employees can view API calls for other users.
 //
 // Parameters:
 // 	- `id`: The ID of the API call.
 //
 func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 	// Create the url.
-	path := "/api-calls/{id}"
+	path := "/api-calls/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -320,6 +331,10 @@ func (s *AppService) GithubConsent() (*AppClientInfo, error) {
 
 }
 
+// ListAsyncOperations: List async operations.
+//
+// For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
+// This endpoint requires authentication by a KittyCAD employee.
 //
 // Parameters:
 // 	- `limit`: Maximum number of items returned by a single call
@@ -374,13 +389,19 @@ func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy
 
 }
 
+// GetAsyncOperation: Get an async operation.
+//
+// Get the status and output of an async operation.
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested async operation for the user.
+// If the user is not authenticated to view the specified async operation, then it is not returned.
+// Only KittyCAD employees with the proper access can view async operations for other users.
 //
 // Parameters:
 // 	- `id`: The ID of the async operation.
 //
 func (s *APICallService) GetAsyncOperation(id string) (*AsyncAPICallOutput, error) {
 	// Create the url.
-	path := "/async/operations/{id}"
+	path := "/async/operations/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -471,6 +492,7 @@ func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTo
 
 }
 
+// AuthEmailCallback: Listen for callbacks for email verification for users.
 //
 // Parameters:
 // 	- `callbackUrl`: The URL to redirect back to after we have authenticated.
@@ -514,6 +536,11 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 
 }
 
+// CreateConversion: Convert CAD file.
+//
+// Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
+// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters:
 // 	- `outputFormat`: The format the file should be converted to.
@@ -522,7 +549,7 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 //
 func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat FileSourceFormat, body []byte) (*FileConversion, error) {
 	// Create the url.
-	path := "/file/conversion/{src_format}/{output_format}"
+	path := "/file/conversion/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
@@ -570,13 +597,19 @@ func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat 
 
 }
 
+// GetConversion: Get a file conversion.
+//
+// Get the status and output of an async file conversion.
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.
+// If the user is not authenticated to view the specified file conversion, then it is not returned.
+// Only KittyCAD employees with the proper access can view file conversions for other users.
 //
 // Parameters:
 // 	- `id`: The ID of the async operation.
 //
 func (s *FileService) GetConversion(id string) (*AsyncAPICallOutput, error) {
 	// Create the url.
-	path := "/file/conversions/{id}"
+	path := "/file/conversions/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -618,6 +651,10 @@ func (s *FileService) GetConversion(id string) (*AsyncAPICallOutput, error) {
 
 }
 
+// CreateDensity: Get CAD file density.
+//
+// Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters:
 // 	- `materialMass`: The material mass.
@@ -674,6 +711,7 @@ func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFo
 
 }
 
+// CreateExecution: Execute a KittyCAD program in a specific language.
 //
 // Parameters:
 // 	- `lang`: The language of the code.
@@ -682,7 +720,7 @@ func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFo
 //
 func (s *FileService) CreateExecution(lang CodeLanguage, output string, body []byte) (*CodeOutput, error) {
 	// Create the url.
-	path := "/file/execute/{lang}"
+	path := "/file/execute/{{.lang}}"
 	uri := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
@@ -730,6 +768,10 @@ func (s *FileService) CreateExecution(lang CodeLanguage, output string, body []b
 
 }
 
+// CreateMass: Get CAD file mass.
+//
+// Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters:
 // 	- `materialDensity`: The material density.
@@ -786,6 +828,10 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFo
 
 }
 
+// CreateVolume: Get CAD file volume.
+//
+// Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters:
 // 	- `srcFormat`: The format of the file.
@@ -1004,6 +1050,9 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) err
 
 }
 
+// DeviceAuthVerify: Verify an OAuth 2.0 Device Authorization Grant.
+//
+// This endpoint should be accessed in a full user agent (e.g., a browser). If the user is not logged in, we redirect them to the login page and use the `callback_url` parameter to get them to the UI verification form upon logging in. If they are logged in, we redirect them to the UI verification form on the website.
 //
 // Parameters:
 // 	- `userCode`: The user code.
@@ -1043,6 +1092,7 @@ func (s *Oauth2Service) DeviceAuthVerify(userCode string) error {
 
 }
 
+// ProviderCallback: Listen for callbacks for the OAuth 2.0 provider.
 //
 // Parameters:
 // 	- `provider`: The provider.
@@ -1051,7 +1101,7 @@ func (s *Oauth2Service) DeviceAuthVerify(userCode string) error {
 //
 func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, state string) error {
 	// Create the url.
-	path := "/oauth2/provider/{provider}/callback"
+	path := "/oauth2/provider/{{.provider}}/callback"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -1086,6 +1136,7 @@ func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, 
 
 }
 
+// ProviderConsent: Get the consent URL and other information for the OAuth 2.0 provider.
 //
 // Parameters:
 // 	- `provider`: The provider.
@@ -1093,7 +1144,7 @@ func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, 
 //
 func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl string) (*OAuth2ClientInfo, error) {
 	// Create the url.
-	path := "/oauth2/provider/{provider}/consent"
+	path := "/oauth2/provider/{{.provider}}/consent"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -1175,6 +1226,9 @@ func (s *MetaService) Ping() (*Pong, error) {
 
 }
 
+// CreateConversion: Convert units.
+//
+// Convert a metric unit value to another metric unit value. This is a nice endpoint to use for helper functions.
 //
 // Parameters:
 // 	- `outputFormat`: The output format of the unit.
@@ -1183,7 +1237,7 @@ func (s *MetaService) Ping() (*Pong, error) {
 //
 func (s *UnitService) CreateConversion(outputFormat UnitMetricFormat, srcFormat UnitMetricFormat, value float64) (*UnitConversion, error) {
 	// Create the url.
-	path := "/unit/conversion/{src_format}/{output_format}"
+	path := "/unit/conversion/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -1353,6 +1407,10 @@ func (s *UserService) DeleteSelf() error {
 
 }
 
+// UserList: List API calls for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.
+// The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters:
 // 	- `limit`: Maximum number of items returned by a single call
@@ -1405,13 +1463,16 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 
 }
 
+// GetForUser: Get an API call for a user.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
 //
 // Parameters:
 // 	- `id`: The ID of the API call.
 //
 func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 	// Create the url.
-	path := "/user/api-calls/{id}"
+	path := "/user/api-calls/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -1453,6 +1514,10 @@ func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 
 }
 
+// ListForUser: List API tokens for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
+// The API tokens are returned in order of creation, with the most recently created API tokens first.
 //
 // Parameters:
 // 	- `limit`: Maximum number of items returned by a single call
@@ -1546,13 +1611,16 @@ func (s *APITokenService) CreateForUser() (*APIToken, error) {
 
 }
 
+// GetForUser: Get an API token for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
 //
 // Parameters:
 // 	- `token`: The API token.
 //
 func (s *APITokenService) GetForUser(token UUID) (*APIToken, error) {
 	// Create the url.
-	path := "/user/api-tokens/{token}"
+	path := "/user/api-tokens/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -1594,13 +1662,17 @@ func (s *APITokenService) GetForUser(token UUID) (*APIToken, error) {
 
 }
 
+// DeleteForUser: Delete an API token for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It deletes the requested API token for the user.
+// This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.
 //
 // Parameters:
 // 	- `token`: The API token.
 //
 func (s *APITokenService) DeleteForUser(token UUID) error {
 	// Create the url.
-	path := "/user/api-tokens/{token}"
+	path := "/user/api-tokens/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -1675,13 +1747,17 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 
 }
 
+// GetConversionForUser: Get a file conversion for your user.
+//
+// Get the status and output of an async file conversion. If completed, the contents of the converted file (`output`) will be returned as a base64 encoded string.
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.
 //
 // Parameters:
 // 	- `id`: The ID of the async operation.
 //
 func (s *FileService) GetConversionForUser(id string) (*AsyncAPICallOutput, error) {
 	// Create the url.
-	path := "/user/file/conversions/{id}"
+	path := "/user/file/conversions/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -2066,13 +2142,16 @@ func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
 
 }
 
+// DeleteMethodForUser: Delete a payment method for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It deletes the specified payment method for the authenticated user.
 //
 // Parameters:
 // 	- `id`: The ID of the payment method.
 //
 func (s *PaymentService) DeleteMethodForUser(id string) error {
 	// Create the url.
-	path := "/user/payment/methods/{id}"
+	path := "/user/payment/methods/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -2105,13 +2184,16 @@ func (s *PaymentService) DeleteMethodForUser(id string) error {
 
 }
 
+// GetForUser: Get a session for your user.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
 //
 // Parameters:
 // 	- `token`: The API token.
 //
 func (s *SessionService) GetForUser(token UUID) (*Session, error) {
 	// Create the url.
-	path := "/user/session/{token}"
+	path := "/user/session/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -2153,6 +2235,9 @@ func (s *SessionService) GetForUser(token UUID) (*Session, error) {
 
 }
 
+// List: List users.
+//
+// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
 //
 // Parameters:
 // 	- `limit`: Maximum number of items returned by a single call
@@ -2205,6 +2290,9 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 
 }
 
+// ListExtended: List users with extended information.
+//
+// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
 //
 // Parameters:
 // 	- `limit`: Maximum number of items returned by a single call
@@ -2257,13 +2345,18 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 
 }
 
+// GetExtended: Get extended information about a user.
+//
+// To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
+// Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
+// To get information about any KittyCAD user, you must be a KittyCAD employee.
 //
 // Parameters:
 // 	- `id`: The user ID.
 //
 func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 	// Create the url.
-	path := "/users-extended/{id}"
+	path := "/users-extended/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -2305,13 +2398,18 @@ func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 
 }
 
+// Get: Get a user.
+//
+// To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.
+// Alternatively, to get information about the authenticated user, use `/user` endpoint.
+// To get information about any KittyCAD user, you must be a KittyCAD employee.
 //
 // Parameters:
 // 	- `id`: The user ID.
 //
 func (s *UserService) Get(id string) (*User, error) {
 	// Create the url.
-	path := "/users/{id}"
+	path := "/users/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -2353,6 +2451,12 @@ func (s *UserService) Get(id string) (*User, error) {
 
 }
 
+// ListForUser: List API calls for a user.
+//
+// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if "me" is passed as the user id.
+// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.
+// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.
+// The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters:
 // 	- `id`: The user ID.
@@ -2362,7 +2466,7 @@ func (s *UserService) Get(id string) (*User, error) {
 //
 func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
-	path := "/users/{id}/api-calls"
+	path := "/users/{{.id}}/api-calls"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
