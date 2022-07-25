@@ -151,6 +151,19 @@ func ExampleAppService_GithubConsent() {
 }
 
 // Create a client with your token.
+func ExampleAppService_GithubWebhook() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.App.GithubWebhook([]byte("some-binary")); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
 func ExampleAPICallService_ListAsyncOperations() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -418,13 +431,413 @@ func ExampleMetaService_Ping() {
 }
 
 // Create a client with your token.
-func ExampleUnitService_CreateConversion() {
+func ExampleUnitService_GetAccelerationConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Unit.CreateConversion(kittycad.UnitMetricFormatAtto, kittycad.UnitMetricFormatAtto, 123.45)
+	result, err := client.Unit.GetAccelerationConversion(kittycad.UnitAccelerationFormatMetersPerSecondSquared, kittycad.UnitAccelerationFormatMetersPerSecondSquared, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetAngleConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetAngleConversion(kittycad.UnitAngleFormatRadian, kittycad.UnitAngleFormatRadian, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetAngularVelocityConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetAngularVelocityConversion(kittycad.UnitAngularVelocityFormatRadiansPerSecond, kittycad.UnitAngularVelocityFormatRadiansPerSecond, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetAreaConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetAreaConversion(kittycad.UnitAreaFormatSquareMeter, kittycad.UnitAreaFormatSquareMeter, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetChargeConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetChargeConversion(kittycad.UnitChargeFormatCoulomb, kittycad.UnitChargeFormatCoulomb, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetConcentrationConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetConcentrationConversion(kittycad.UnitConcentrationFormatPartsPerMillion, kittycad.UnitConcentrationFormatPartsPerMillion, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetDataTransferRateConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetDataTransferRateConversion(kittycad.UnitDataTransferRateFormatBytesPerSecond, kittycad.UnitDataTransferRateFormatBytesPerSecond, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetDataConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetDataConversion(kittycad.UnitDataFormatByte, kittycad.UnitDataFormatByte, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetDensityConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetDensityConversion(kittycad.UnitDensityFormatKilogramsPerCubicMeter, kittycad.UnitDensityFormatKilogramsPerCubicMeter, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetEnergyConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetEnergyConversion(kittycad.UnitEnergyFormatJoule, kittycad.UnitEnergyFormatJoule, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetForceConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetForceConversion(kittycad.UnitForceFormatNewton, kittycad.UnitForceFormatNewton, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetIlluminanceConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetIlluminanceConversion(kittycad.UnitIlluminanceFormatLux, kittycad.UnitIlluminanceFormatLux, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetLengthConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetLengthConversion(kittycad.UnitLengthFormatMeter, kittycad.UnitLengthFormatMeter, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetMagneticFieldStrengthConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetMagneticFieldStrengthConversion(kittycad.UnitMagneticFieldStrengthFormatTesla, kittycad.UnitMagneticFieldStrengthFormatTesla, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetMagneticFluxConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetMagneticFluxConversion(kittycad.UnitMagneticFluxFormatWeber, kittycad.UnitMagneticFluxFormatWeber, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetMassConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetMassConversion(kittycad.UnitMassFormatGram, kittycad.UnitMassFormatGram, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetMetricConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetMetricConversion(kittycad.UnitMetricFormatAtto, kittycad.UnitMetricFormatAtto, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetPowerConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetPowerConversion(kittycad.UnitPowerFormatWatt, kittycad.UnitPowerFormatWatt, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetPressureConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetPressureConversion(kittycad.UnitPressureFormatPascal, kittycad.UnitPressureFormatPascal, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetRadiationConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetRadiationConversion(kittycad.UnitRadiationFormatGray, kittycad.UnitRadiationFormatGray, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetSolidAngleConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetSolidAngleConversion(kittycad.UnitSolidAngleFormatSteradian, kittycad.UnitSolidAngleFormatSteradian, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetTemperatureConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetTemperatureConversion(kittycad.UnitTemperatureFormatKelvin, kittycad.UnitTemperatureFormatKelvin, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetTimeConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetTimeConversion(kittycad.UnitTimeFormatSecond, kittycad.UnitTimeFormatSecond, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetVelocityConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetVelocityConversion(kittycad.UnitVelocityFormatMetersPerSecond, kittycad.UnitVelocityFormatMetersPerSecond, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetVoltageConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetVoltageConversion(kittycad.UnitVoltageFormatVolt, kittycad.UnitVoltageFormatVolt, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetVolumeConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetVolumeConversion(kittycad.UnitVolumeFormatCubicMeter, kittycad.UnitVolumeFormatCubicMeter, 123.45)
 	if err != nil {
 		panic(err)
 	}
