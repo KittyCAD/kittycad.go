@@ -343,6 +343,48 @@ func (s *AppService) GithubConsent() (*AppClientInfo, error) {
 
 }
 
+// GithubWebhook: Listen for GitHub webhooks.
+//
+// These come from the GitHub app.
+//
+//
+// Parameters
+//
+// 	- `body`
+//
+func (s *AppService) GithubWebhook(body []byte) error {
+	// Create the url.
+	path := "/apps/github/webhook"
+	uri := resolveRelative(s.client.server, path)
+
+	b := bytes.NewReader(body)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/octet-stream")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // ListAsyncOperations: List async operations.
 //
 // For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
@@ -1280,9 +1322,9 @@ func (s *MetaService) Ping() (*Pong, error) {
 
 }
 
-// CreateConversion: Convert units.
+// GetAccelerationConversion: Convert units.
 //
-// Convert a metric unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1291,13 +1333,13 @@ func (s *MetaService) Ping() (*Pong, error) {
 // 	- `srcFormat`: The valid types of metric unit formats.
 // 	- `value`
 //
-func (s *UnitService) CreateConversion(outputFormat UnitMetricFormat, srcFormat UnitMetricFormat, value float64) (*UnitConversion, error) {
+func (s *UnitService) GetAccelerationConversion(outputFormat UnitAccelerationFormat, srcFormat UnitAccelerationFormat, value float64) (*UnitAccelerationConversion, error) {
 	// Create the url.
-	path := "/unit/conversion/{{.src_format}}/{{.output_format}}"
+	path := "/unit/conversion/acceleration/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
+	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1327,7 +1369,1432 @@ func (s *UnitService) CreateConversion(outputFormat UnitMetricFormat, srcFormat 
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded UnitConversion
+	var decoded UnitAccelerationConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetAngleConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of angle formats.
+// 	- `srcFormat`: The valid types of angle formats.
+// 	- `value`
+//
+func (s *UnitService) GetAngleConversion(outputFormat UnitAngleFormat, srcFormat UnitAngleFormat, value float64) (*UnitAngleConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/angle/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitAngleConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetAngularVelocityConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of angular velocity unit formats.
+// 	- `srcFormat`: The valid types of angular velocity unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetAngularVelocityConversion(outputFormat UnitAngularVelocityFormat, srcFormat UnitAngularVelocityFormat, value float64) (*UnitAngularVelocityConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/angular-velocity/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitAngularVelocityConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetAreaConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of area unit formats.
+// 	- `srcFormat`: The valid types of area unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetAreaConversion(outputFormat UnitAreaFormat, srcFormat UnitAreaFormat, value float64) (*UnitAreaConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/area/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitAreaConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetChargeConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of charge unit formats.
+// 	- `srcFormat`: The valid types of charge unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetChargeConversion(outputFormat UnitChargeFormat, srcFormat UnitChargeFormat, value float64) (*UnitChargeConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/charge/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitChargeConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetConcentrationConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of concentration unit formats.
+// 	- `srcFormat`: The valid types of concentration unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetConcentrationConversion(outputFormat UnitConcentrationFormat, srcFormat UnitConcentrationFormat, value float64) (*UnitConcentrationConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/concentration/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitConcentrationConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetDataTransferRateConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of data transfer unit formats.
+// 	- `srcFormat`: The valid types of data transfer unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetDataTransferRateConversion(outputFormat UnitDataTransferRateFormat, srcFormat UnitDataTransferRateFormat, value float64) (*UnitDataTransferRateConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/data-transfer-rate/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitDataTransferRateConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetDataConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of data unit formats.
+// 	- `srcFormat`: The valid types of data unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetDataConversion(outputFormat UnitDataFormat, srcFormat UnitDataFormat, value float64) (*UnitDataConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/data/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitDataConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetDensityConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of density unit formats.
+// 	- `srcFormat`: The valid types of density unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetDensityConversion(outputFormat UnitDensityFormat, srcFormat UnitDensityFormat, value float64) (*UnitDensityConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/density/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitDensityConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetEnergyConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of energy unit formats.
+// 	- `srcFormat`: The valid types of energy unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetEnergyConversion(outputFormat UnitEnergyFormat, srcFormat UnitEnergyFormat, value float64) (*UnitEnergyConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/energy/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitEnergyConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetForceConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of force unit formats.
+// 	- `srcFormat`: The valid types of force unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetForceConversion(outputFormat UnitForceFormat, srcFormat UnitForceFormat, value float64) (*UnitForceConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/force/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitForceConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetIlluminanceConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of illuminance unit formats.
+// 	- `srcFormat`: The valid types of illuminance unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetIlluminanceConversion(outputFormat UnitIlluminanceFormat, srcFormat UnitIlluminanceFormat, value float64) (*UnitIlluminanceConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/illuminance/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitIlluminanceConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetLengthConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of length unit formats.
+// 	- `srcFormat`: The valid types of length unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetLengthConversion(outputFormat UnitLengthFormat, srcFormat UnitLengthFormat, value float64) (*UnitLengthConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/length/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitLengthConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetMagneticFieldStrengthConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of magnetic field strength unit formats.
+// 	- `srcFormat`: The valid types of magnetic field strength unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetMagneticFieldStrengthConversion(outputFormat UnitMagneticFieldStrengthFormat, srcFormat UnitMagneticFieldStrengthFormat, value float64) (*UnitMagneticFieldStrengthConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/magnetic-field-strength/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitMagneticFieldStrengthConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetMagneticFluxConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of magnetic flux unit formats.
+// 	- `srcFormat`: The valid types of magnetic flux unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetMagneticFluxConversion(outputFormat UnitMagneticFluxFormat, srcFormat UnitMagneticFluxFormat, value float64) (*UnitMagneticFluxConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/magnetic-flux/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitMagneticFluxConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetMassConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of mass unit formats.
+// 	- `srcFormat`: The valid types of mass unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetMassConversion(outputFormat UnitMassFormat, srcFormat UnitMassFormat, value float64) (*UnitMassConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/mass/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitMassConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetMetricConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of metric unit formats.
+// 	- `srcFormat`: The valid types of metric unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetMetricConversion(outputFormat UnitMetricFormat, srcFormat UnitMetricFormat, value float64) (*UnitMetricConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/metric/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitMetricConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetPowerConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of power unit formats.
+// 	- `srcFormat`: The valid types of power unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetPowerConversion(outputFormat UnitPowerFormat, srcFormat UnitPowerFormat, value float64) (*UnitPowerConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/power/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitPowerConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetPressureConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of pressure unit formats.
+// 	- `srcFormat`: The valid types of pressure unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetPressureConversion(outputFormat UnitPressureFormat, srcFormat UnitPressureFormat, value float64) (*UnitPressureConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/pressure/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitPressureConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetRadiationConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of radiation unit formats.
+// 	- `srcFormat`: The valid types of radiation unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetRadiationConversion(outputFormat UnitRadiationFormat, srcFormat UnitRadiationFormat, value float64) (*UnitRadiationConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/radiation/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitRadiationConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetSolidAngleConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of solid angle unit formats.
+// 	- `srcFormat`: The valid types of solid angle unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetSolidAngleConversion(outputFormat UnitSolidAngleFormat, srcFormat UnitSolidAngleFormat, value float64) (*UnitSolidAngleConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/solid-angle/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitSolidAngleConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetTemperatureConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of temperature unit formats.
+// 	- `srcFormat`: The valid types of temperature unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetTemperatureConversion(outputFormat UnitTemperatureFormat, srcFormat UnitTemperatureFormat, value float64) (*UnitTemperatureConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/temperature/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitTemperatureConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetTimeConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of time unit formats.
+// 	- `srcFormat`: The valid types of time unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetTimeConversion(outputFormat UnitTimeFormat, srcFormat UnitTimeFormat, value float64) (*UnitTimeConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/time/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitTimeConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetVelocityConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of velocity unit formats.
+// 	- `srcFormat`: The valid types of velocity unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetVelocityConversion(outputFormat UnitVelocityFormat, srcFormat UnitVelocityFormat, value float64) (*UnitVelocityConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/velocity/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitVelocityConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetVoltageConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of voltage unit formats.
+// 	- `srcFormat`: The valid types of voltage unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetVoltageConversion(outputFormat UnitVoltageFormat, srcFormat UnitVoltageFormat, value float64) (*UnitVoltageConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/voltage/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitVoltageConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetVolumeConversion: Convert units.
+//
+// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of volume unit formats.
+// 	- `srcFormat`: The valid types of volume unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetVolumeConversion(outputFormat UnitVolumeFormat, srcFormat UnitVolumeFormat, value float64) (*UnitVolumeConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/volume/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitVolumeConversion
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

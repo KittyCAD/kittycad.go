@@ -1714,8 +1714,758 @@ const (
 	SystemInfoIsolationEnumProcess SystemInfoIsolationEnum = "process"
 )
 
-// UnitConversion: A unit conversion.
-type UnitConversion struct {
+// UnitAccelerationConversion: A unit conversion.
+type UnitAccelerationConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitAccelerationFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitAccelerationFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitAccelerationFormat: The valid types of metric unit formats.
+type UnitAccelerationFormat string
+
+const (
+	// UnitAccelerationFormatMetersPerSecondSquared represents the UnitAccelerationFormat `"meters_per_second_squared"`.
+	UnitAccelerationFormatMetersPerSecondSquared UnitAccelerationFormat = "meters_per_second_squared"
+	// UnitAccelerationFormatFeetPerSecondSquared represents the UnitAccelerationFormat `"feet_per_second_squared"`.
+	UnitAccelerationFormatFeetPerSecondSquared UnitAccelerationFormat = "feet_per_second_squared"
+	// UnitAccelerationFormatStandardGravity represents the UnitAccelerationFormat `"standard_gravity"`.
+	UnitAccelerationFormatStandardGravity UnitAccelerationFormat = "standard_gravity"
+)
+
+// UnitAngleConversion: A unit conversion.
+type UnitAngleConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitAngleFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitAngleFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitAngleFormat: The valid types of angle formats.
+type UnitAngleFormat string
+
+const (
+	// UnitAngleFormatRadian represents the UnitAngleFormat `"radian"`.
+	UnitAngleFormatRadian UnitAngleFormat = "radian"
+	// UnitAngleFormatDegree represents the UnitAngleFormat `"degree"`.
+	UnitAngleFormatDegree UnitAngleFormat = "degree"
+	// UnitAngleFormatArcminute represents the UnitAngleFormat `"arcminute"`.
+	UnitAngleFormatArcminute UnitAngleFormat = "arcminute"
+	// UnitAngleFormatArcsecond represents the UnitAngleFormat `"arcsecond"`.
+	UnitAngleFormatArcsecond UnitAngleFormat = "arcsecond"
+	// UnitAngleFormatMilliarcsecond represents the UnitAngleFormat `"milliarcsecond"`.
+	UnitAngleFormatMilliarcsecond UnitAngleFormat = "milliarcsecond"
+	// UnitAngleFormatTurn represents the UnitAngleFormat `"turn"`.
+	UnitAngleFormatTurn UnitAngleFormat = "turn"
+	// UnitAngleFormatGradian represents the UnitAngleFormat `"gradian"`.
+	UnitAngleFormatGradian UnitAngleFormat = "gradian"
+)
+
+// UnitAngularVelocityConversion: A unit conversion.
+type UnitAngularVelocityConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitAngularVelocityFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitAngularVelocityFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitAngularVelocityFormat: The valid types of angular velocity unit formats.
+type UnitAngularVelocityFormat string
+
+const (
+	// UnitAngularVelocityFormatRadiansPerSecond represents the UnitAngularVelocityFormat `"radians_per_second"`.
+	UnitAngularVelocityFormatRadiansPerSecond UnitAngularVelocityFormat = "radians_per_second"
+	// UnitAngularVelocityFormatDegreesPerSecond represents the UnitAngularVelocityFormat `"degrees_per_second"`.
+	UnitAngularVelocityFormatDegreesPerSecond UnitAngularVelocityFormat = "degrees_per_second"
+	// UnitAngularVelocityFormatRevolutionsPerMinute represents the UnitAngularVelocityFormat `"revolutions_per_minute"`.
+	UnitAngularVelocityFormatRevolutionsPerMinute UnitAngularVelocityFormat = "revolutions_per_minute"
+	// UnitAngularVelocityFormatMilliarcsecondsPerYear represents the UnitAngularVelocityFormat `"milliarcseconds_per_year"`.
+	UnitAngularVelocityFormatMilliarcsecondsPerYear UnitAngularVelocityFormat = "milliarcseconds_per_year"
+)
+
+// UnitAreaConversion: A unit conversion.
+type UnitAreaConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitAreaFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitAreaFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitAreaFormat: The valid types of area unit formats.
+type UnitAreaFormat string
+
+const (
+	// UnitAreaFormatSquareMeter represents the UnitAreaFormat `"square_meter"`.
+	UnitAreaFormatSquareMeter UnitAreaFormat = "square_meter"
+	// UnitAreaFormatSquareFoot represents the UnitAreaFormat `"square_foot"`.
+	UnitAreaFormatSquareFoot UnitAreaFormat = "square_foot"
+	// UnitAreaFormatSquareInch represents the UnitAreaFormat `"square_inch"`.
+	UnitAreaFormatSquareInch UnitAreaFormat = "square_inch"
+	// UnitAreaFormatSquareMile represents the UnitAreaFormat `"square_mile"`.
+	UnitAreaFormatSquareMile UnitAreaFormat = "square_mile"
+	// UnitAreaFormatSquareKilometer represents the UnitAreaFormat `"square_kilometer"`.
+	UnitAreaFormatSquareKilometer UnitAreaFormat = "square_kilometer"
+	// UnitAreaFormatHectare represents the UnitAreaFormat `"hectare"`.
+	UnitAreaFormatHectare UnitAreaFormat = "hectare"
+	// UnitAreaFormatAcre represents the UnitAreaFormat `"acre"`.
+	UnitAreaFormatAcre UnitAreaFormat = "acre"
+)
+
+// UnitChargeConversion: A unit conversion.
+type UnitChargeConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitChargeFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitChargeFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitChargeFormat: The valid types of charge unit formats.
+type UnitChargeFormat string
+
+const (
+	// UnitChargeFormatCoulomb represents the UnitChargeFormat `"coulomb"`.
+	UnitChargeFormatCoulomb UnitChargeFormat = "coulomb"
+	// UnitChargeFormatAmpereHour represents the UnitChargeFormat `"ampere_hour"`.
+	UnitChargeFormatAmpereHour UnitChargeFormat = "ampere_hour"
+)
+
+// UnitConcentrationConversion: A unit conversion.
+type UnitConcentrationConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitConcentrationFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitConcentrationFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitConcentrationFormat: The valid types of concentration unit formats.
+type UnitConcentrationFormat string
+
+const (
+	// UnitConcentrationFormatPartsPerMillion represents the UnitConcentrationFormat `"parts_per_million"`.
+	UnitConcentrationFormatPartsPerMillion UnitConcentrationFormat = "parts_per_million"
+	// UnitConcentrationFormatPartsPerBillion represents the UnitConcentrationFormat `"parts_per_billion"`.
+	UnitConcentrationFormatPartsPerBillion UnitConcentrationFormat = "parts_per_billion"
+	// UnitConcentrationFormatPartsPerTrillion represents the UnitConcentrationFormat `"parts_per_trillion"`.
+	UnitConcentrationFormatPartsPerTrillion UnitConcentrationFormat = "parts_per_trillion"
+	// UnitConcentrationFormatPercent represents the UnitConcentrationFormat `"percent"`.
+	UnitConcentrationFormatPercent UnitConcentrationFormat = "percent"
+)
+
+// UnitDataConversion: A unit conversion.
+type UnitDataConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitDataFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitDataFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitDataFormat: The valid types of data unit formats.
+type UnitDataFormat string
+
+const (
+	// UnitDataFormatByte represents the UnitDataFormat `"byte"`.
+	UnitDataFormatByte UnitDataFormat = "byte"
+	// UnitDataFormatExabyte represents the UnitDataFormat `"exabyte"`.
+	UnitDataFormatExabyte UnitDataFormat = "exabyte"
+	// UnitDataFormatBit represents the UnitDataFormat `"bit"`.
+	UnitDataFormatBit UnitDataFormat = "bit"
+	// UnitDataFormatExabit represents the UnitDataFormat `"exabit"`.
+	UnitDataFormatExabit UnitDataFormat = "exabit"
+)
+
+// UnitDataTransferRateConversion: A unit conversion.
+type UnitDataTransferRateConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitDataTransferRateFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitDataTransferRateFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitDataTransferRateFormat: The valid types of data transfer unit formats.
+type UnitDataTransferRateFormat string
+
+const (
+	// UnitDataTransferRateFormatBytesPerSecond represents the UnitDataTransferRateFormat `"bytes_per_second"`.
+	UnitDataTransferRateFormatBytesPerSecond UnitDataTransferRateFormat = "bytes_per_second"
+	// UnitDataTransferRateFormatExabytesPerSecond represents the UnitDataTransferRateFormat `"exabytes_per_second"`.
+	UnitDataTransferRateFormatExabytesPerSecond UnitDataTransferRateFormat = "exabytes_per_second"
+	// UnitDataTransferRateFormatBitsPerSecond represents the UnitDataTransferRateFormat `"bits_per_second"`.
+	UnitDataTransferRateFormatBitsPerSecond UnitDataTransferRateFormat = "bits_per_second"
+	// UnitDataTransferRateFormatExabitsPerSecond represents the UnitDataTransferRateFormat `"exabits_per_second"`.
+	UnitDataTransferRateFormatExabitsPerSecond UnitDataTransferRateFormat = "exabits_per_second"
+)
+
+// UnitDensityConversion: A unit conversion.
+type UnitDensityConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitDensityFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitDensityFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitDensityFormat: The valid types of density unit formats.
+type UnitDensityFormat string
+
+const (
+	// UnitDensityFormatKilogramsPerCubicMeter represents the UnitDensityFormat `"kilograms_per_cubic_meter"`.
+	UnitDensityFormatKilogramsPerCubicMeter UnitDensityFormat = "kilograms_per_cubic_meter"
+	// UnitDensityFormatGramsPerMilliliter represents the UnitDensityFormat `"grams_per_milliliter"`.
+	UnitDensityFormatGramsPerMilliliter UnitDensityFormat = "grams_per_milliliter"
+	// UnitDensityFormatKilogramsPerLiter represents the UnitDensityFormat `"kilograms_per_liter"`.
+	UnitDensityFormatKilogramsPerLiter UnitDensityFormat = "kilograms_per_liter"
+	// UnitDensityFormatOuncesPerCubicFoot represents the UnitDensityFormat `"ounces_per_cubic_foot"`.
+	UnitDensityFormatOuncesPerCubicFoot UnitDensityFormat = "ounces_per_cubic_foot"
+	// UnitDensityFormatOuncesPerCubicInch represents the UnitDensityFormat `"ounces_per_cubic_inch"`.
+	UnitDensityFormatOuncesPerCubicInch UnitDensityFormat = "ounces_per_cubic_inch"
+	// UnitDensityFormatOuncesPerGallon represents the UnitDensityFormat `"ounces_per_gallon"`.
+	UnitDensityFormatOuncesPerGallon UnitDensityFormat = "ounces_per_gallon"
+	// UnitDensityFormatPoundsPerCubicFoot represents the UnitDensityFormat `"pounds_per_cubic_foot"`.
+	UnitDensityFormatPoundsPerCubicFoot UnitDensityFormat = "pounds_per_cubic_foot"
+	// UnitDensityFormatPoundsPerCubicInch represents the UnitDensityFormat `"pounds_per_cubic_inch"`.
+	UnitDensityFormatPoundsPerCubicInch UnitDensityFormat = "pounds_per_cubic_inch"
+	// UnitDensityFormatPoundsPerGallon represents the UnitDensityFormat `"pounds_per_gallon"`.
+	UnitDensityFormatPoundsPerGallon UnitDensityFormat = "pounds_per_gallon"
+	// UnitDensityFormatSlugsPerCubicFoot represents the UnitDensityFormat `"slugs_per_cubic_foot"`.
+	UnitDensityFormatSlugsPerCubicFoot UnitDensityFormat = "slugs_per_cubic_foot"
+)
+
+// UnitEnergyConversion: A unit conversion.
+type UnitEnergyConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitEnergyFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitEnergyFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitEnergyFormat: The valid types of energy unit formats.
+type UnitEnergyFormat string
+
+const (
+	// UnitEnergyFormatJoule represents the UnitEnergyFormat `"joule"`.
+	UnitEnergyFormatJoule UnitEnergyFormat = "joule"
+	// UnitEnergyFormatCalorie represents the UnitEnergyFormat `"calorie"`.
+	UnitEnergyFormatCalorie UnitEnergyFormat = "calorie"
+	// UnitEnergyFormatBritishThermalUnit represents the UnitEnergyFormat `"british_thermal_unit"`.
+	UnitEnergyFormatBritishThermalUnit UnitEnergyFormat = "british_thermal_unit"
+	// UnitEnergyFormatBritishThermalUnitIso represents the UnitEnergyFormat `"british_thermal_unit_iso"`.
+	UnitEnergyFormatBritishThermalUnitIso UnitEnergyFormat = "british_thermal_unit_iso"
+	// UnitEnergyFormatBritishThermalUnit59 represents the UnitEnergyFormat `"british_thermal_unit59"`.
+	UnitEnergyFormatBritishThermalUnit59 UnitEnergyFormat = "british_thermal_unit59"
+	// UnitEnergyFormatFootPound represents the UnitEnergyFormat `"foot_pound"`.
+	UnitEnergyFormatFootPound UnitEnergyFormat = "foot_pound"
+)
+
+// UnitForceConversion: A unit conversion.
+type UnitForceConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitForceFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitForceFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitForceFormat: The valid types of force unit formats.
+type UnitForceFormat string
+
+const (
+	// UnitForceFormatNewton represents the UnitForceFormat `"newton"`.
+	UnitForceFormatNewton UnitForceFormat = "newton"
+	// UnitForceFormatPound represents the UnitForceFormat `"pound"`.
+	UnitForceFormatPound UnitForceFormat = "pound"
+	// UnitForceFormatDyne represents the UnitForceFormat `"dyne"`.
+	UnitForceFormatDyne UnitForceFormat = "dyne"
+	// UnitForceFormatKilopound represents the UnitForceFormat `"kilopound"`.
+	UnitForceFormatKilopound UnitForceFormat = "kilopound"
+	// UnitForceFormatPoundal represents the UnitForceFormat `"poundal"`.
+	UnitForceFormatPoundal UnitForceFormat = "poundal"
+)
+
+// UnitIlluminanceConversion: A unit conversion.
+type UnitIlluminanceConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitIlluminanceFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitIlluminanceFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitIlluminanceFormat: The valid types of illuminance unit formats.
+type UnitIlluminanceFormat string
+
+const (
+	// UnitIlluminanceFormatLux represents the UnitIlluminanceFormat `"lux"`.
+	UnitIlluminanceFormatLux UnitIlluminanceFormat = "lux"
+	// UnitIlluminanceFormatFootcandle represents the UnitIlluminanceFormat `"footcandle"`.
+	UnitIlluminanceFormatFootcandle UnitIlluminanceFormat = "footcandle"
+	// UnitIlluminanceFormatLumensPerSquareInch represents the UnitIlluminanceFormat `"lumens_per_square_inch"`.
+	UnitIlluminanceFormatLumensPerSquareInch UnitIlluminanceFormat = "lumens_per_square_inch"
+	// UnitIlluminanceFormatPhot represents the UnitIlluminanceFormat `"phot"`.
+	UnitIlluminanceFormatPhot UnitIlluminanceFormat = "phot"
+)
+
+// UnitLengthConversion: A unit conversion.
+type UnitLengthConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitLengthFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitLengthFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitLengthFormat: The valid types of length unit formats.
+type UnitLengthFormat string
+
+const (
+	// UnitLengthFormatMeter represents the UnitLengthFormat `"meter"`.
+	UnitLengthFormatMeter UnitLengthFormat = "meter"
+	// UnitLengthFormatFoot represents the UnitLengthFormat `"foot"`.
+	UnitLengthFormatFoot UnitLengthFormat = "foot"
+	// UnitLengthFormatInch represents the UnitLengthFormat `"inch"`.
+	UnitLengthFormatInch UnitLengthFormat = "inch"
+	// UnitLengthFormatMile represents the UnitLengthFormat `"mile"`.
+	UnitLengthFormatMile UnitLengthFormat = "mile"
+	// UnitLengthFormatNauticalMile represents the UnitLengthFormat `"nautical_mile"`.
+	UnitLengthFormatNauticalMile UnitLengthFormat = "nautical_mile"
+	// UnitLengthFormatAstronomicalUnit represents the UnitLengthFormat `"astronomical_unit"`.
+	UnitLengthFormatAstronomicalUnit UnitLengthFormat = "astronomical_unit"
+	// UnitLengthFormatCubit represents the UnitLengthFormat `"cubit"`.
+	UnitLengthFormatCubit UnitLengthFormat = "cubit"
+	// UnitLengthFormatFathom represents the UnitLengthFormat `"fathom"`.
+	UnitLengthFormatFathom UnitLengthFormat = "fathom"
+	// UnitLengthFormatChain represents the UnitLengthFormat `"chain"`.
+	UnitLengthFormatChain UnitLengthFormat = "chain"
+	// UnitLengthFormatFurlong represents the UnitLengthFormat `"furlong"`.
+	UnitLengthFormatFurlong UnitLengthFormat = "furlong"
+	// UnitLengthFormatHand represents the UnitLengthFormat `"hand"`.
+	UnitLengthFormatHand UnitLengthFormat = "hand"
+	// UnitLengthFormatLeague represents the UnitLengthFormat `"league"`.
+	UnitLengthFormatLeague UnitLengthFormat = "league"
+	// UnitLengthFormatNauticalLeague represents the UnitLengthFormat `"nautical_league"`.
+	UnitLengthFormatNauticalLeague UnitLengthFormat = "nautical_league"
+	// UnitLengthFormatYard represents the UnitLengthFormat `"yard"`.
+	UnitLengthFormatYard UnitLengthFormat = "yard"
+)
+
+// UnitMagneticFieldStrengthConversion: A unit conversion.
+type UnitMagneticFieldStrengthConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitMagneticFieldStrengthFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitMagneticFieldStrengthFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitMagneticFieldStrengthFormat: The valid types of magnetic field strength unit formats.
+type UnitMagneticFieldStrengthFormat string
+
+const (
+	// UnitMagneticFieldStrengthFormatTesla represents the UnitMagneticFieldStrengthFormat `"tesla"`.
+	UnitMagneticFieldStrengthFormatTesla UnitMagneticFieldStrengthFormat = "tesla"
+	// UnitMagneticFieldStrengthFormatGauss represents the UnitMagneticFieldStrengthFormat `"gauss"`.
+	UnitMagneticFieldStrengthFormatGauss UnitMagneticFieldStrengthFormat = "gauss"
+)
+
+// UnitMagneticFluxConversion: A unit conversion.
+type UnitMagneticFluxConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitMagneticFluxFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitMagneticFluxFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitMagneticFluxFormat: The valid types of magnetic flux unit formats.
+type UnitMagneticFluxFormat string
+
+const (
+	// UnitMagneticFluxFormatWeber represents the UnitMagneticFluxFormat `"weber"`.
+	UnitMagneticFluxFormatWeber UnitMagneticFluxFormat = "weber"
+	// UnitMagneticFluxFormatMaxwell represents the UnitMagneticFluxFormat `"maxwell"`.
+	UnitMagneticFluxFormatMaxwell UnitMagneticFluxFormat = "maxwell"
+)
+
+// UnitMassConversion: A unit conversion.
+type UnitMassConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitMassFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitMassFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitMassFormat: The valid types of mass unit formats.
+type UnitMassFormat string
+
+const (
+	// UnitMassFormatGram represents the UnitMassFormat `"gram"`.
+	UnitMassFormatGram UnitMassFormat = "gram"
+	// UnitMassFormatMetricTon represents the UnitMassFormat `"metric_ton"`.
+	UnitMassFormatMetricTon UnitMassFormat = "metric_ton"
+	// UnitMassFormatPound represents the UnitMassFormat `"pound"`.
+	UnitMassFormatPound UnitMassFormat = "pound"
+	// UnitMassFormatLongTon represents the UnitMassFormat `"long_ton"`.
+	UnitMassFormatLongTon UnitMassFormat = "long_ton"
+	// UnitMassFormatShortTon represents the UnitMassFormat `"short_ton"`.
+	UnitMassFormatShortTon UnitMassFormat = "short_ton"
+	// UnitMassFormatStone represents the UnitMassFormat `"stone"`.
+	UnitMassFormatStone UnitMassFormat = "stone"
+	// UnitMassFormatOunce represents the UnitMassFormat `"ounce"`.
+	UnitMassFormatOunce UnitMassFormat = "ounce"
+	// UnitMassFormatCarat represents the UnitMassFormat `"carat"`.
+	UnitMassFormatCarat UnitMassFormat = "carat"
+	// UnitMassFormatSlug represents the UnitMassFormat `"slug"`.
+	UnitMassFormatSlug UnitMassFormat = "slug"
+)
+
+// UnitMetricConversion: A unit conversion.
+type UnitMetricConversion struct {
 	// CompletedAt: The time and date the unit conversion was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the unit conversion was created.
@@ -1782,6 +2532,414 @@ const (
 	UnitMetricFormatPeta UnitMetricFormat = "peta"
 	// UnitMetricFormatExa represents the UnitMetricFormat `"exa"`.
 	UnitMetricFormatExa UnitMetricFormat = "exa"
+)
+
+// UnitPowerConversion: A unit conversion.
+type UnitPowerConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitPowerFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitPowerFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitPowerFormat: The valid types of power unit formats.
+type UnitPowerFormat string
+
+const (
+	// UnitPowerFormatWatt represents the UnitPowerFormat `"watt"`.
+	UnitPowerFormatWatt UnitPowerFormat = "watt"
+	// UnitPowerFormatHorsepower represents the UnitPowerFormat `"horsepower"`.
+	UnitPowerFormatHorsepower UnitPowerFormat = "horsepower"
+	// UnitPowerFormatMilliwatt represents the UnitPowerFormat `"milliwatt"`.
+	UnitPowerFormatMilliwatt UnitPowerFormat = "milliwatt"
+)
+
+// UnitPressureConversion: A unit conversion.
+type UnitPressureConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitPressureFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitPressureFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitPressureFormat: The valid types of pressure unit formats.
+type UnitPressureFormat string
+
+const (
+	// UnitPressureFormatPascal represents the UnitPressureFormat `"pascal"`.
+	UnitPressureFormatPascal UnitPressureFormat = "pascal"
+	// UnitPressureFormatBar represents the UnitPressureFormat `"bar"`.
+	UnitPressureFormatBar UnitPressureFormat = "bar"
+	// UnitPressureFormatMbar represents the UnitPressureFormat `"mbar"`.
+	UnitPressureFormatMbar UnitPressureFormat = "mbar"
+	// UnitPressureFormatAtmosphere represents the UnitPressureFormat `"atmosphere"`.
+	UnitPressureFormatAtmosphere UnitPressureFormat = "atmosphere"
+	// UnitPressureFormatPoundsPerSquareInch represents the UnitPressureFormat `"pounds_per_square_inch"`.
+	UnitPressureFormatPoundsPerSquareInch UnitPressureFormat = "pounds_per_square_inch"
+)
+
+// UnitRadiationConversion: A unit conversion.
+type UnitRadiationConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitRadiationFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitRadiationFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitRadiationFormat: The valid types of radiation unit formats.
+type UnitRadiationFormat string
+
+const (
+	// UnitRadiationFormatGray represents the UnitRadiationFormat `"gray"`.
+	UnitRadiationFormatGray UnitRadiationFormat = "gray"
+	// UnitRadiationFormatSievert represents the UnitRadiationFormat `"sievert"`.
+	UnitRadiationFormatSievert UnitRadiationFormat = "sievert"
+	// UnitRadiationFormatRad represents the UnitRadiationFormat `"rad"`.
+	UnitRadiationFormatRad UnitRadiationFormat = "rad"
+)
+
+// UnitSolidAngleConversion: A unit conversion.
+type UnitSolidAngleConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitSolidAngleFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitSolidAngleFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitSolidAngleFormat: The valid types of solid angle unit formats.
+type UnitSolidAngleFormat string
+
+const (
+	// UnitSolidAngleFormatSteradian represents the UnitSolidAngleFormat `"steradian"`.
+	UnitSolidAngleFormatSteradian UnitSolidAngleFormat = "steradian"
+	// UnitSolidAngleFormatDegreeSquared represents the UnitSolidAngleFormat `"degree_squared"`.
+	UnitSolidAngleFormatDegreeSquared UnitSolidAngleFormat = "degree_squared"
+	// UnitSolidAngleFormatSpat represents the UnitSolidAngleFormat `"spat"`.
+	UnitSolidAngleFormatSpat UnitSolidAngleFormat = "spat"
+)
+
+// UnitTemperatureConversion: A unit conversion.
+type UnitTemperatureConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitTemperatureFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitTemperatureFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitTemperatureFormat: The valid types of temperature unit formats.
+type UnitTemperatureFormat string
+
+const (
+	// UnitTemperatureFormatKelvin represents the UnitTemperatureFormat `"kelvin"`.
+	UnitTemperatureFormatKelvin UnitTemperatureFormat = "kelvin"
+	// UnitTemperatureFormatCelsius represents the UnitTemperatureFormat `"celsius"`.
+	UnitTemperatureFormatCelsius UnitTemperatureFormat = "celsius"
+	// UnitTemperatureFormatFahrenheit represents the UnitTemperatureFormat `"fahrenheit"`.
+	UnitTemperatureFormatFahrenheit UnitTemperatureFormat = "fahrenheit"
+	// UnitTemperatureFormatReaumur represents the UnitTemperatureFormat `"reaumur"`.
+	UnitTemperatureFormatReaumur UnitTemperatureFormat = "reaumur"
+	// UnitTemperatureFormatRankine represents the UnitTemperatureFormat `"rankine"`.
+	UnitTemperatureFormatRankine UnitTemperatureFormat = "rankine"
+)
+
+// UnitTimeConversion: A unit conversion.
+type UnitTimeConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitTimeFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitTimeFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitTimeFormat: The valid types of time unit formats.
+type UnitTimeFormat string
+
+const (
+	// UnitTimeFormatSecond represents the UnitTimeFormat `"second"`.
+	UnitTimeFormatSecond UnitTimeFormat = "second"
+	// UnitTimeFormatMinute represents the UnitTimeFormat `"minute"`.
+	UnitTimeFormatMinute UnitTimeFormat = "minute"
+	// UnitTimeFormatHour represents the UnitTimeFormat `"hour"`.
+	UnitTimeFormatHour UnitTimeFormat = "hour"
+	// UnitTimeFormatDay represents the UnitTimeFormat `"day"`.
+	UnitTimeFormatDay UnitTimeFormat = "day"
+	// UnitTimeFormatWeek represents the UnitTimeFormat `"week"`.
+	UnitTimeFormatWeek UnitTimeFormat = "week"
+	// UnitTimeFormatYear represents the UnitTimeFormat `"year"`.
+	UnitTimeFormatYear UnitTimeFormat = "year"
+	// UnitTimeFormatJulianYear represents the UnitTimeFormat `"julian_year"`.
+	UnitTimeFormatJulianYear UnitTimeFormat = "julian_year"
+	// UnitTimeFormatGregorianYear represents the UnitTimeFormat `"gregorian_year"`.
+	UnitTimeFormatGregorianYear UnitTimeFormat = "gregorian_year"
+)
+
+// UnitVelocityConversion: A unit conversion.
+type UnitVelocityConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitVelocityFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitVelocityFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitVelocityFormat: The valid types of velocity unit formats.
+type UnitVelocityFormat string
+
+const (
+	// UnitVelocityFormatMetersPerSecond represents the UnitVelocityFormat `"meters_per_second"`.
+	UnitVelocityFormatMetersPerSecond UnitVelocityFormat = "meters_per_second"
+	// UnitVelocityFormatFeetPerSecond represents the UnitVelocityFormat `"feet_per_second"`.
+	UnitVelocityFormatFeetPerSecond UnitVelocityFormat = "feet_per_second"
+	// UnitVelocityFormatMilesPerHour represents the UnitVelocityFormat `"miles_per_hour"`.
+	UnitVelocityFormatMilesPerHour UnitVelocityFormat = "miles_per_hour"
+	// UnitVelocityFormatKilometersPerHour represents the UnitVelocityFormat `"kilometers_per_hour"`.
+	UnitVelocityFormatKilometersPerHour UnitVelocityFormat = "kilometers_per_hour"
+	// UnitVelocityFormatKnot represents the UnitVelocityFormat `"knot"`.
+	UnitVelocityFormatKnot UnitVelocityFormat = "knot"
+)
+
+// UnitVoltageConversion: A unit conversion.
+type UnitVoltageConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitVoltageFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitVoltageFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitVoltageFormat: The valid types of voltage unit formats.
+type UnitVoltageFormat string
+
+const (
+	// UnitVoltageFormatVolt represents the UnitVoltageFormat `"volt"`.
+	UnitVoltageFormatVolt UnitVoltageFormat = "volt"
+	// UnitVoltageFormatStatvolt represents the UnitVoltageFormat `"statvolt"`.
+	UnitVoltageFormatStatvolt UnitVoltageFormat = "statvolt"
+	// UnitVoltageFormatAbvolt represents the UnitVoltageFormat `"abvolt"`.
+	UnitVoltageFormatAbvolt UnitVoltageFormat = "abvolt"
+)
+
+// UnitVolumeConversion: A unit conversion.
+type UnitVolumeConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitVolumeFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitVolumeFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitVolumeFormat: The valid types of volume unit formats.
+type UnitVolumeFormat string
+
+const (
+	// UnitVolumeFormatCubicMeter represents the UnitVolumeFormat `"cubic_meter"`.
+	UnitVolumeFormatCubicMeter UnitVolumeFormat = "cubic_meter"
+	// UnitVolumeFormatCubicMillimeter represents the UnitVolumeFormat `"cubic_millimeter"`.
+	UnitVolumeFormatCubicMillimeter UnitVolumeFormat = "cubic_millimeter"
+	// UnitVolumeFormatCubicKilometer represents the UnitVolumeFormat `"cubic_kilometer"`.
+	UnitVolumeFormatCubicKilometer UnitVolumeFormat = "cubic_kilometer"
+	// UnitVolumeFormatLiter represents the UnitVolumeFormat `"liter"`.
+	UnitVolumeFormatLiter UnitVolumeFormat = "liter"
+	// UnitVolumeFormatCubicFoot represents the UnitVolumeFormat `"cubic_foot"`.
+	UnitVolumeFormatCubicFoot UnitVolumeFormat = "cubic_foot"
+	// UnitVolumeFormatCubicYard represents the UnitVolumeFormat `"cubic_yard"`.
+	UnitVolumeFormatCubicYard UnitVolumeFormat = "cubic_yard"
+	// UnitVolumeFormatCubicMile represents the UnitVolumeFormat `"cubic_mile"`.
+	UnitVolumeFormatCubicMile UnitVolumeFormat = "cubic_mile"
 )
 
 // UpdateUser: The user-modifiable parts of a User.

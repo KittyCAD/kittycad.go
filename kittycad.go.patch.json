@@ -81,6 +81,14 @@
  },
  {
   "op": "add",
+  "path": "/paths/~1apps~1github~1webhook/post/x-go",
+  "value": {
+   "example": "// GithubWebhook: Listen for GitHub webhooks.\n// \n// These come from the GitHub app.\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleAppService_GithubWebhook() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.App.GithubWebhook([]byte(\"some-binary\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AppService.GithubWebhook"
+  }
+ },
+ {
+  "op": "add",
   "path": "/paths/~1async~1operations/get/x-go",
   "value": {
    "example": "// ListAsyncOperations: List async operations.\n// \n// For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.\n// This endpoint requires authentication by a KittyCAD employee.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \t- `status`: The status of an async API call.\n// \n// Create a client with your token.\nfunc ExampleAPICallService_ListAsyncOperations() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.ListAsyncOperations(123, \"some-string\", kittycad.CreatedAtSortModeCreatedAtAscending, kittycad.APICallStatusQueued)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
@@ -225,10 +233,210 @@
  },
  {
   "op": "add",
-  "path": "/paths/~1unit~1conversion~1{src_format}~1{output_format}/post/x-go",
+  "path": "/paths/~1unit~1conversion~1acceleration~1{src_format}~1{output_format}/get/x-go",
   "value": {
-   "example": "// CreateConversion: Convert units.\n// \n// Convert a metric unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of metric unit formats.\n// \t- `srcFormat`: The valid types of metric unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_CreateConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.CreateConversion(kittycad.UnitMetricFormatAtto, kittycad.UnitMetricFormatAtto, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.CreateConversion"
+   "example": "// GetAccelerationConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of metric unit formats.\n// \t- `srcFormat`: The valid types of metric unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetAccelerationConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetAccelerationConversion(kittycad.UnitAccelerationFormatMetersPerSecondSquared, kittycad.UnitAccelerationFormatMetersPerSecondSquared, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetAccelerationConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1angle~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetAngleConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of angle formats.\n// \t- `srcFormat`: The valid types of angle formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetAngleConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetAngleConversion(kittycad.UnitAngleFormatRadian, kittycad.UnitAngleFormatRadian, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetAngleConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1angular-velocity~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetAngularVelocityConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of angular velocity unit formats.\n// \t- `srcFormat`: The valid types of angular velocity unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetAngularVelocityConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetAngularVelocityConversion(kittycad.UnitAngularVelocityFormatRadiansPerSecond, kittycad.UnitAngularVelocityFormatRadiansPerSecond, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetAngularVelocityConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1area~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetAreaConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of area unit formats.\n// \t- `srcFormat`: The valid types of area unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetAreaConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetAreaConversion(kittycad.UnitAreaFormatSquareMeter, kittycad.UnitAreaFormatSquareMeter, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetAreaConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1charge~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetChargeConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of charge unit formats.\n// \t- `srcFormat`: The valid types of charge unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetChargeConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetChargeConversion(kittycad.UnitChargeFormatCoulomb, kittycad.UnitChargeFormatCoulomb, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetChargeConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1concentration~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetConcentrationConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of concentration unit formats.\n// \t- `srcFormat`: The valid types of concentration unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetConcentrationConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetConcentrationConversion(kittycad.UnitConcentrationFormatPartsPerMillion, kittycad.UnitConcentrationFormatPartsPerMillion, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetConcentrationConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1data-transfer-rate~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetDataTransferRateConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of data transfer unit formats.\n// \t- `srcFormat`: The valid types of data transfer unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetDataTransferRateConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetDataTransferRateConversion(kittycad.UnitDataTransferRateFormatBytesPerSecond, kittycad.UnitDataTransferRateFormatBytesPerSecond, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetDataTransferRateConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1data~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetDataConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of data unit formats.\n// \t- `srcFormat`: The valid types of data unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetDataConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetDataConversion(kittycad.UnitDataFormatByte, kittycad.UnitDataFormatByte, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetDataConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1density~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetDensityConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of density unit formats.\n// \t- `srcFormat`: The valid types of density unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetDensityConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetDensityConversion(kittycad.UnitDensityFormatKilogramsPerCubicMeter, kittycad.UnitDensityFormatKilogramsPerCubicMeter, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetDensityConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1energy~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetEnergyConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of energy unit formats.\n// \t- `srcFormat`: The valid types of energy unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetEnergyConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetEnergyConversion(kittycad.UnitEnergyFormatJoule, kittycad.UnitEnergyFormatJoule, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetEnergyConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1force~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetForceConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of force unit formats.\n// \t- `srcFormat`: The valid types of force unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetForceConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetForceConversion(kittycad.UnitForceFormatNewton, kittycad.UnitForceFormatNewton, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetForceConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1illuminance~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetIlluminanceConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of illuminance unit formats.\n// \t- `srcFormat`: The valid types of illuminance unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetIlluminanceConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetIlluminanceConversion(kittycad.UnitIlluminanceFormatLux, kittycad.UnitIlluminanceFormatLux, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetIlluminanceConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1length~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetLengthConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of length unit formats.\n// \t- `srcFormat`: The valid types of length unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetLengthConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetLengthConversion(kittycad.UnitLengthFormatMeter, kittycad.UnitLengthFormatMeter, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetLengthConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1magnetic-field-strength~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetMagneticFieldStrengthConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of magnetic field strength unit formats.\n// \t- `srcFormat`: The valid types of magnetic field strength unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetMagneticFieldStrengthConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetMagneticFieldStrengthConversion(kittycad.UnitMagneticFieldStrengthFormatTesla, kittycad.UnitMagneticFieldStrengthFormatTesla, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetMagneticFieldStrengthConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1magnetic-flux~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetMagneticFluxConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of magnetic flux unit formats.\n// \t- `srcFormat`: The valid types of magnetic flux unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetMagneticFluxConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetMagneticFluxConversion(kittycad.UnitMagneticFluxFormatWeber, kittycad.UnitMagneticFluxFormatWeber, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetMagneticFluxConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1mass~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetMassConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of mass unit formats.\n// \t- `srcFormat`: The valid types of mass unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetMassConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetMassConversion(kittycad.UnitMassFormatGram, kittycad.UnitMassFormatGram, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetMassConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1metric~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetMetricConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of metric unit formats.\n// \t- `srcFormat`: The valid types of metric unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetMetricConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetMetricConversion(kittycad.UnitMetricFormatAtto, kittycad.UnitMetricFormatAtto, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetMetricConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1power~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetPowerConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of power unit formats.\n// \t- `srcFormat`: The valid types of power unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetPowerConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetPowerConversion(kittycad.UnitPowerFormatWatt, kittycad.UnitPowerFormatWatt, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetPowerConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1pressure~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetPressureConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of pressure unit formats.\n// \t- `srcFormat`: The valid types of pressure unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetPressureConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetPressureConversion(kittycad.UnitPressureFormatPascal, kittycad.UnitPressureFormatPascal, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetPressureConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1radiation~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetRadiationConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of radiation unit formats.\n// \t- `srcFormat`: The valid types of radiation unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetRadiationConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetRadiationConversion(kittycad.UnitRadiationFormatGray, kittycad.UnitRadiationFormatGray, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetRadiationConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1solid-angle~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetSolidAngleConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of solid angle unit formats.\n// \t- `srcFormat`: The valid types of solid angle unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetSolidAngleConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetSolidAngleConversion(kittycad.UnitSolidAngleFormatSteradian, kittycad.UnitSolidAngleFormatSteradian, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetSolidAngleConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1temperature~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetTemperatureConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of temperature unit formats.\n// \t- `srcFormat`: The valid types of temperature unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetTemperatureConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetTemperatureConversion(kittycad.UnitTemperatureFormatKelvin, kittycad.UnitTemperatureFormatKelvin, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetTemperatureConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1time~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetTimeConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of time unit formats.\n// \t- `srcFormat`: The valid types of time unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetTimeConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetTimeConversion(kittycad.UnitTimeFormatSecond, kittycad.UnitTimeFormatSecond, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetTimeConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1velocity~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetVelocityConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of velocity unit formats.\n// \t- `srcFormat`: The valid types of velocity unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetVelocityConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetVelocityConversion(kittycad.UnitVelocityFormatMetersPerSecond, kittycad.UnitVelocityFormatMetersPerSecond, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetVelocityConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1voltage~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetVoltageConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of voltage unit formats.\n// \t- `srcFormat`: The valid types of voltage unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetVoltageConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetVoltageConversion(kittycad.UnitVoltageFormatVolt, kittycad.UnitVoltageFormatVolt, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetVoltageConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1volume~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetVolumeConversion: Convert units.\n// \n// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of volume unit formats.\n// \t- `srcFormat`: The valid types of volume unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetVolumeConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetVolumeConversion(kittycad.UnitVolumeFormatCubicMeter, kittycad.UnitVolumeFormatCubicMeter, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetVolumeConversion"
   }
  },
  {
