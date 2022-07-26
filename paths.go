@@ -1373,9 +1373,9 @@ func (s *MetaService) Ping() (*Pong, error) {
 
 }
 
-// GetAccelerationConversion: Convert units.
+// GetAccelerationConversion: Convert acceleration units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert an acceleration unit value to another acceleration unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1430,9 +1430,9 @@ func (s *UnitService) GetAccelerationConversion(outputFormat UnitAccelerationFor
 
 }
 
-// GetAngleConversion: Convert units.
+// GetAngleConversion: Convert angle units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert an angle unit value to another angle unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1487,9 +1487,9 @@ func (s *UnitService) GetAngleConversion(outputFormat UnitAngleFormat, srcFormat
 
 }
 
-// GetAngularVelocityConversion: Convert units.
+// GetAngularVelocityConversion: Convert angular velocity units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert an angular velocity unit value to another angular velocity unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1544,9 +1544,9 @@ func (s *UnitService) GetAngularVelocityConversion(outputFormat UnitAngularVeloc
 
 }
 
-// GetAreaConversion: Convert units.
+// GetAreaConversion: Convert area units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert an area unit value to another area unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1601,9 +1601,9 @@ func (s *UnitService) GetAreaConversion(outputFormat UnitAreaFormat, srcFormat U
 
 }
 
-// GetChargeConversion: Convert units.
+// GetChargeConversion: Convert charge units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a charge unit value to another charge unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1658,9 +1658,9 @@ func (s *UnitService) GetChargeConversion(outputFormat UnitChargeFormat, srcForm
 
 }
 
-// GetConcentrationConversion: Convert units.
+// GetConcentrationConversion: Convert concentration units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a concentration unit value to another concentration unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1715,9 +1715,9 @@ func (s *UnitService) GetConcentrationConversion(outputFormat UnitConcentrationF
 
 }
 
-// GetDataTransferRateConversion: Convert units.
+// GetDataTransferRateConversion: Convert data transfer rate units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a data transfer rate unit value to another data transfer rate unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1772,9 +1772,9 @@ func (s *UnitService) GetDataTransferRateConversion(outputFormat UnitDataTransfe
 
 }
 
-// GetDataConversion: Convert units.
+// GetDataConversion: Convert data units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a data unit value to another data unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1829,9 +1829,9 @@ func (s *UnitService) GetDataConversion(outputFormat UnitDataFormat, srcFormat U
 
 }
 
-// GetDensityConversion: Convert units.
+// GetDensityConversion: Convert density units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a density unit value to another density unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1886,9 +1886,9 @@ func (s *UnitService) GetDensityConversion(outputFormat UnitDensityFormat, srcFo
 
 }
 
-// GetEnergyConversion: Convert units.
+// GetEnergyConversion: Convert energy units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a energy unit value to another energy unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -1943,9 +1943,9 @@ func (s *UnitService) GetEnergyConversion(outputFormat UnitEnergyFormat, srcForm
 
 }
 
-// GetForceConversion: Convert units.
+// GetForceConversion: Convert force units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a force unit value to another force unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2000,9 +2000,9 @@ func (s *UnitService) GetForceConversion(outputFormat UnitForceFormat, srcFormat
 
 }
 
-// GetIlluminanceConversion: Convert units.
+// GetIlluminanceConversion: Convert illuminance units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a illuminance unit value to another illuminance unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2057,9 +2057,9 @@ func (s *UnitService) GetIlluminanceConversion(outputFormat UnitIlluminanceForma
 
 }
 
-// GetLengthConversion: Convert units.
+// GetLengthConversion: Convert length units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a length unit value to another length unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2114,9 +2114,9 @@ func (s *UnitService) GetLengthConversion(outputFormat UnitLengthFormat, srcForm
 
 }
 
-// GetMagneticFieldStrengthConversion: Convert units.
+// GetMagneticFieldStrengthConversion: Convert magnetic field strength units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a magnetic field strength unit value to another magnetic field strength unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2171,9 +2171,9 @@ func (s *UnitService) GetMagneticFieldStrengthConversion(outputFormat UnitMagnet
 
 }
 
-// GetMagneticFluxConversion: Convert units.
+// GetMagneticFluxConversion: Convert magnetic flux units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a magnetic flux unit value to another magnetic flux unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2228,9 +2228,9 @@ func (s *UnitService) GetMagneticFluxConversion(outputFormat UnitMagneticFluxFor
 
 }
 
-// GetMassConversion: Convert units.
+// GetMassConversion: Convert mass units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a mass unit value to another mass unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2285,9 +2285,9 @@ func (s *UnitService) GetMassConversion(outputFormat UnitMassFormat, srcFormat U
 
 }
 
-// GetMetricConversion: Convert units.
+// GetMetricConversion: Convert metric units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a metric unit value to another metric unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2342,9 +2342,9 @@ func (s *UnitService) GetMetricConversion(outputFormat UnitMetricFormat, srcForm
 
 }
 
-// GetPowerConversion: Convert units.
+// GetPowerConversion: Convert power units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a power unit value to another power unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2399,9 +2399,9 @@ func (s *UnitService) GetPowerConversion(outputFormat UnitPowerFormat, srcFormat
 
 }
 
-// GetPressureConversion: Convert units.
+// GetPressureConversion: Convert pressure units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a pressure unit value to another pressure unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2456,9 +2456,9 @@ func (s *UnitService) GetPressureConversion(outputFormat UnitPressureFormat, src
 
 }
 
-// GetRadiationConversion: Convert units.
+// GetRadiationConversion: Convert radiation units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a radiation unit value to another radiation unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2513,9 +2513,9 @@ func (s *UnitService) GetRadiationConversion(outputFormat UnitRadiationFormat, s
 
 }
 
-// GetSolidAngleConversion: Convert units.
+// GetSolidAngleConversion: Convert solid angle units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a solid angle unit value to another solid angle unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2570,9 +2570,9 @@ func (s *UnitService) GetSolidAngleConversion(outputFormat UnitSolidAngleFormat,
 
 }
 
-// GetTemperatureConversion: Convert units.
+// GetTemperatureConversion: Convert temperature units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a temperature unit value to another temperature unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2627,9 +2627,9 @@ func (s *UnitService) GetTemperatureConversion(outputFormat UnitTemperatureForma
 
 }
 
-// GetTimeConversion: Convert units.
+// GetTimeConversion: Convert time units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a time unit value to another time unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2684,9 +2684,9 @@ func (s *UnitService) GetTimeConversion(outputFormat UnitTimeFormat, srcFormat U
 
 }
 
-// GetVelocityConversion: Convert units.
+// GetVelocityConversion: Convert velocity units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a velocity unit value to another velocity unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2741,9 +2741,9 @@ func (s *UnitService) GetVelocityConversion(outputFormat UnitVelocityFormat, src
 
 }
 
-// GetVoltageConversion: Convert units.
+// GetVoltageConversion: Convert voltage units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a voltage unit value to another voltage unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
@@ -2798,9 +2798,9 @@ func (s *UnitService) GetVoltageConversion(outputFormat UnitVoltageFormat, srcFo
 
 }
 
-// GetVolumeConversion: Convert units.
+// GetVolumeConversion: Convert volume units.
 //
-// Convert a unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+// Convert a volume unit value to another volume unit value. This is a nice endpoint to use for helper functions.
 //
 //
 // Parameters
