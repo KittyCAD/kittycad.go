@@ -24,6 +24,8 @@ type Client struct {
 	App *AppService
 	// Beta: Beta API endpoints. We will not charge for these endpoints while they are in beta.
 	Beta *BetaService
+	// Constant: Constants. These are helpful as helpers.
+	Constant *ConstantService
 	// File: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 	File *FileService
 	// Hidden: Hidden API endpoints that should not show up in the docs.
@@ -53,6 +55,9 @@ type AppService service
 
 // BetaService: Beta API endpoints. We will not charge for these endpoints while they are in beta.
 type BetaService service
+
+// ConstantService: Constants. These are helpful as helpers.
+type ConstantService service
 
 // FileService: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 type FileService service

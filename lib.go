@@ -56,6 +56,7 @@ func NewClient(token, userAgent string) (*Client, error) {
 	client.APIToken = &APITokenService{client: client}
 	client.App = &AppService{client: client}
 	client.Beta = &BetaService{client: client}
+	client.Constant = &ConstantService{client: client}
 	client.File = &FileService{client: client}
 	client.Hidden = &HiddenService{client: client}
 	client.Meta = &MetaService{client: client}

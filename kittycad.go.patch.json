@@ -121,6 +121,14 @@
  },
  {
   "op": "add",
+  "path": "/paths/~1constant~1physics~1{constant}/get/x-go",
+  "value": {
+   "example": "// GetPhysics: Get a physics constant.\n// \n// \n// Parameters\n// \n// \t- `constant`: The valid types of phys constant names.\n// \n// Create a client with your token.\nfunc ExampleConstantService_GetPhysics() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Constant.GetPhysics(kittycad.PhysicsConstantNamePi)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ConstantService.GetPhysics"
+  }
+ },
+ {
+  "op": "add",
   "path": "/paths/~1file~1conversion~1{src_format}~1{output_format}/post/x-go",
   "value": {
    "example": "// CreateConversion: Convert CAD file.\n// \n// Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.\n// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateConversion(kittycad.FileOutputFormatStl, kittycad.FileSourceFormatStl, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",

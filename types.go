@@ -1600,6 +1600,104 @@ const (
 	PaymentMethodTypeCard PaymentMethodType = "card"
 )
 
+// PhysicsConstant: A physics constant.
+type PhysicsConstant struct {
+	// CompletedAt: The time and date the constant was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// Constant: The constant we are returning.
+	Constant PhysicsConstantName `json:"constant" yaml:"constant" schema:"constant,required"`
+	// CreatedAt: The time and date the constant was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the constant request.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// StartedAt: The time and date the constant was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the constant.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the constant was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the constant.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	// Value: The resulting value of the constant.
+	Value float64 `json:"value" yaml:"value" schema:"value"`
+}
+
+// PhysicsConstantName: The valid types of phys constant names.
+type PhysicsConstantName string
+
+const (
+	// PhysicsConstantNamePi represents the PhysicsConstantName `"pi"`.
+	PhysicsConstantNamePi PhysicsConstantName = "pi"
+	// PhysicsConstantNameC represents the PhysicsConstantName `"c"`.
+	PhysicsConstantNameC PhysicsConstantName = "c"
+	// PhysicsConstantNameSpeedOfLight represents the PhysicsConstantName `"speed_of_light"`.
+	PhysicsConstantNameSpeedOfLight PhysicsConstantName = "speed_of_light"
+	// PhysicsConstantNameG represents the PhysicsConstantName `"G"`.
+	PhysicsConstantNameG PhysicsConstantName = "G"
+	// PhysicsConstantNameNewtonianGraviation represents the PhysicsConstantName `"newtonian_graviation"`.
+	PhysicsConstantNameNewtonianGraviation PhysicsConstantName = "newtonian_graviation"
+	// PhysicsConstantNameH represents the PhysicsConstantName `"h"`.
+	PhysicsConstantNameH PhysicsConstantName = "h"
+	// PhysicsConstantNamePlankConst represents the PhysicsConstantName `"plank_const"`.
+	PhysicsConstantNamePlankConst PhysicsConstantName = "plank_const"
+	// PhysicsConstantNameMu0 represents the PhysicsConstantName `"mu_0"`.
+	PhysicsConstantNameMu0 PhysicsConstantName = "mu_0"
+	// PhysicsConstantNameVacuumPermeability represents the PhysicsConstantName `"vacuum_permeability"`.
+	PhysicsConstantNameVacuumPermeability PhysicsConstantName = "vacuum_permeability"
+	// PhysicsConstantNameE0 represents the PhysicsConstantName `"E_0"`.
+	PhysicsConstantNameE0 PhysicsConstantName = "E_0"
+	// PhysicsConstantNameVacuumPermitivity represents the PhysicsConstantName `"vacuum_permitivity"`.
+	PhysicsConstantNameVacuumPermitivity PhysicsConstantName = "vacuum_permitivity"
+	// PhysicsConstantNameZ0 represents the PhysicsConstantName `"Z_0"`.
+	PhysicsConstantNameZ0 PhysicsConstantName = "Z_0"
+	// PhysicsConstantNameVacuumImpedance represents the PhysicsConstantName `"vacuum_impedance"`.
+	PhysicsConstantNameVacuumImpedance PhysicsConstantName = "vacuum_impedance"
+	// PhysicsConstantNameKE represents the PhysicsConstantName `"k_e"`.
+	PhysicsConstantNameKE PhysicsConstantName = "k_e"
+	// PhysicsConstantNameCoulombConst represents the PhysicsConstantName `"coulomb_const"`.
+	PhysicsConstantNameCoulombConst PhysicsConstantName = "coulomb_const"
+	// PhysicsConstantNameE represents the PhysicsConstantName `"e"`.
+	PhysicsConstantNameE PhysicsConstantName = "e"
+	// PhysicsConstantNameElementaryCharge represents the PhysicsConstantName `"elementary_charge"`.
+	PhysicsConstantNameElementaryCharge PhysicsConstantName = "elementary_charge"
+	// PhysicsConstantNameME represents the PhysicsConstantName `"m_e"`.
+	PhysicsConstantNameME PhysicsConstantName = "m_e"
+	// PhysicsConstantNameElectronMass represents the PhysicsConstantName `"electron_mass"`.
+	PhysicsConstantNameElectronMass PhysicsConstantName = "electron_mass"
+	// PhysicsConstantNameMP represents the PhysicsConstantName `"m_p"`.
+	PhysicsConstantNameMP PhysicsConstantName = "m_p"
+	// PhysicsConstantNameProtonMass represents the PhysicsConstantName `"proton_mass"`.
+	PhysicsConstantNameProtonMass PhysicsConstantName = "proton_mass"
+	// PhysicsConstantNameMuB represents the PhysicsConstantName `"mu_B"`.
+	PhysicsConstantNameMuB PhysicsConstantName = "mu_B"
+	// PhysicsConstantNameBohrMagneton represents the PhysicsConstantName `"bohr_magneton"`.
+	PhysicsConstantNameBohrMagneton PhysicsConstantName = "bohr_magneton"
+	// PhysicsConstantNameNA represents the PhysicsConstantName `"NA"`.
+	PhysicsConstantNameNA PhysicsConstantName = "NA"
+	// PhysicsConstantNameAvogadroNum represents the PhysicsConstantName `"avogadro_num"`.
+	PhysicsConstantNameAvogadroNum PhysicsConstantName = "avogadro_num"
+	// PhysicsConstantNameR represents the PhysicsConstantName `"R"`.
+	PhysicsConstantNameR PhysicsConstantName = "R"
+	// PhysicsConstantNameMolarGasConst represents the PhysicsConstantName `"molar_gas_const"`.
+	PhysicsConstantNameMolarGasConst PhysicsConstantName = "molar_gas_const"
+	// PhysicsConstantNameKB represents the PhysicsConstantName `"K_B"`.
+	PhysicsConstantNameKB PhysicsConstantName = "K_B"
+	// PhysicsConstantNameBoltzmannConst represents the PhysicsConstantName `"boltzmann_const"`.
+	PhysicsConstantNameBoltzmannConst PhysicsConstantName = "boltzmann_const"
+	// PhysicsConstantNameF represents the PhysicsConstantName `"F"`.
+	PhysicsConstantNameF PhysicsConstantName = "F"
+	// PhysicsConstantNameFaradayConst represents the PhysicsConstantName `"faraday_const"`.
+	PhysicsConstantNameFaradayConst PhysicsConstantName = "faraday_const"
+	// PhysicsConstantNameSigma represents the PhysicsConstantName `"sigma"`.
+	PhysicsConstantNameSigma PhysicsConstantName = "sigma"
+	// PhysicsConstantNameStefanBoltzmannConst represents the PhysicsConstantName `"stefan_boltzmann_const"`.
+	PhysicsConstantNameStefanBoltzmannConst PhysicsConstantName = "stefan_boltzmann_const"
+)
+
 // PluginsInfo: Available plugins per type.
 //
 // **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
