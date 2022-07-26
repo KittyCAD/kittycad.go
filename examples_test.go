@@ -225,6 +225,22 @@ func ExampleHiddenService_AuthEmailCallback() {
 }
 
 // Create a client with your token.
+func ExampleConstantService_GetPhysics() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Constant.GetPhysics(kittycad.PhysicsConstantNamePi)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
 func ExampleFileService_CreateConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {

@@ -602,6 +602,57 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 
 }
 
+// GetPhysics: Get a physics constant.
+//
+//
+// Parameters
+//
+// 	- `constant`: The valid types of phys constant names.
+//
+func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsConstant, error) {
+	// Create the url.
+	path := "/constant/physics/{{.constant}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"constant": string(constant),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded PhysicsConstant
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateConversion: Convert CAD file.
 //
 // Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
