@@ -12,30 +12,6 @@ const (
 	AccountProviderGithub AccountProvider = "github"
 )
 
-// Address: An address.
-type Address struct {
-	// City: The city component.
-	City string `json:"city" yaml:"city" schema:"city"`
-	// Country: The country component.
-	Country string `json:"country" yaml:"country" schema:"country"`
-	// CreatedAt: The time and date the address was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// ID: The unique identifier of the address.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// State: The state component.
-	State string `json:"state" yaml:"state" schema:"state"`
-	// Street1: The first street component.
-	Street1 string `json:"street1" yaml:"street1" schema:"street1"`
-	// Street2: The second street component.
-	Street2 string `json:"street2" yaml:"street2" schema:"street2"`
-	// UpdatedAt: The time and date the address was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// UserID: The user ID that this address belongs to.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
-	// Zip: The zip component.
-	Zip string `json:"zip" yaml:"zip" schema:"zip"`
-}
-
 // APICallQueryGroup: A response for a query on the API call table that is grouped by something.
 type APICallQueryGroup struct {
 	// Count:
@@ -331,7 +307,7 @@ const (
 // BillingInfo: The billing information for payments.
 type BillingInfo struct {
 	// Address: The address of the customer.
-	Address Address `json:"address" yaml:"address" schema:"address"`
+	Address NewAddress `json:"address" yaml:"address" schema:"address"`
 	// Name: The name of the customer.
 	Name string `json:"name" yaml:"name" schema:"name"`
 	// Phone: The phone for the customer.
@@ -815,7 +791,7 @@ const (
 // Customer: The resource representing a payment "Customer".
 type Customer struct {
 	// Address: The customer's address.
-	Address Address `json:"address" yaml:"address" schema:"address"`
+	Address NewAddress `json:"address" yaml:"address" schema:"address"`
 	// Balance: Current balance, if any, being stored on the customer in the payments service.
 	//
 	// If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.
@@ -1533,6 +1509,24 @@ const (
 	// MethodEXTENSION represents the Method `"EXTENSION"`.
 	MethodEXTENSION Method = "EXTENSION"
 )
+
+// NewAddress: The struct that is used to create a new record. This is automatically generated and has all the same fields as the main struct only it is missing the `id`.
+type NewAddress struct {
+	// City: The city component.
+	City string `json:"city" yaml:"city" schema:"city"`
+	// Country: The country component.
+	Country string `json:"country" yaml:"country" schema:"country"`
+	// State: The state component.
+	State string `json:"state" yaml:"state" schema:"state"`
+	// Street1: The first street component.
+	Street1 string `json:"street1" yaml:"street1" schema:"street1"`
+	// Street2: The second street component.
+	Street2 string `json:"street2" yaml:"street2" schema:"street2"`
+	// UserID: The user ID that this address belongs to.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	// Zip: The zip component.
+	Zip string `json:"zip" yaml:"zip" schema:"zip"`
+}
 
 // OAuth2ClientInfo: Information about an OAuth 2.0 client.
 type OAuth2ClientInfo struct {

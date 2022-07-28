@@ -1055,7 +1055,7 @@ func ExamplePaymentService_CreateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.Address{City: "some-string", Country: "some-string", CreatedAt: kittycad.TimeNow(), ID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), State: "some-string", Street1: "some-string", Street2: "some-string", UpdatedAt: kittycad.TimeNow(), UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1071,7 +1071,7 @@ func ExamplePaymentService_UpdateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.Address{City: "some-string", Country: "some-string", CreatedAt: kittycad.TimeNow(), ID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), State: "some-string", Street1: "some-string", Street2: "some-string", UpdatedAt: kittycad.TimeNow(), UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
