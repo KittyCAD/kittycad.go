@@ -339,7 +339,7 @@
   "op": "add",
   "path": "/paths/~1unit~1conversion~1length~1{src_format}~1{output_format}/get/x-go",
   "value": {
-   "example": "// GetLengthConversion: Convert length units.\n// \n// Convert a length unit value to another length unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of length unit formats.\n// \t- `srcFormat`: The valid types of length unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetLengthConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetLengthConversion(kittycad.UnitLengthFormatMeter, kittycad.UnitLengthFormatMeter, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetLengthConversion: Convert length units.\n// \n// Convert a length unit value to another length unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of length unit formats.\n// \t- `srcFormat`: The valid types of length unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetLengthConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetLengthConversion(kittycad.UnitLengthFormatMillimeter, kittycad.UnitLengthFormatMillimeter, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetLengthConversion"
   }
  },
@@ -369,10 +369,26 @@
  },
  {
   "op": "add",
-  "path": "/paths/~1unit~1conversion~1metric~1{src_format}~1{output_format}/get/x-go",
+  "path": "/paths/~1unit~1conversion~1metric~1cubed~1{src_format}~1{output_format}/get/x-go",
   "value": {
-   "example": "// GetMetricConversion: Convert metric units.\n// \n// Convert a metric unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of metric unit formats.\n// \t- `srcFormat`: The valid types of metric unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetMetricConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetMetricConversion(kittycad.UnitMetricFormatAtto, kittycad.UnitMetricFormatAtto, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetMetricConversion"
+   "example": "// GetMetricPowerCubedConversion: Convert metric cubed units.\n// \n// Convert a metric cubed unit value to another metric cubed unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of metric unit formats.\n// \t- `srcFormat`: The valid types of metric unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetMetricPowerCubedConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetMetricPowerCubedConversion(kittycad.UnitMetricPowerAtto, kittycad.UnitMetricPowerAtto, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetMetricPowerCubedConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1metric~1power~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetMetricPowerConversion: Convert metric units.\n// \n// Convert a metric unit value to another metric unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of metric unit formats.\n// \t- `srcFormat`: The valid types of metric unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetMetricPowerConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetMetricPowerConversion(kittycad.UnitMetricPowerAtto, kittycad.UnitMetricPowerAtto, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetMetricPowerConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1metric~1squared~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetMetricPowerSquaredConversion: Convert metric squared units.\n// \n// Convert a metric squared unit value to another metric squared unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of metric unit formats.\n// \t- `srcFormat`: The valid types of metric unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetMetricPowerSquaredConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetMetricPowerSquaredConversion(kittycad.UnitMetricPowerAtto, kittycad.UnitMetricPowerAtto, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetMetricPowerSquaredConversion"
   }
  },
  {
@@ -443,7 +459,7 @@
   "op": "add",
   "path": "/paths/~1unit~1conversion~1volume~1{src_format}~1{output_format}/get/x-go",
   "value": {
-   "example": "// GetVolumeConversion: Convert volume units.\n// \n// Convert a volume unit value to another volume unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of volume unit formats.\n// \t- `srcFormat`: The valid types of volume unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetVolumeConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetVolumeConversion(kittycad.UnitVolumeFormatCubicMeter, kittycad.UnitVolumeFormatCubicMeter, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetVolumeConversion: Convert volume units.\n// \n// Convert a volume unit value to another volume unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of volume unit formats.\n// \t- `srcFormat`: The valid types of volume unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetVolumeConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetVolumeConversion(kittycad.UnitVolumeFormatCubicMillimeter, kittycad.UnitVolumeFormatCubicMillimeter, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetVolumeConversion"
   }
  },
