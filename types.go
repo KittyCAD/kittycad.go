@@ -55,7 +55,6 @@ const (
 )
 
 // APICallWithPrice: An API call with the price.
-//
 // This is a join of the `ApiCall` and `ApiCallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt: The date and time the API call completed billing.
@@ -72,6 +71,8 @@ type APICallWithPrice struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// IPAddress: The ip address of the origin.
 	IPAddress IP `json:"ip_address" yaml:"ip_address" schema:"ip_address"`
+	// Litterbox: If the API call was spawned from the litterbox or not.
+	Litterbox bool `json:"litterbox" yaml:"litterbox" schema:"litterbox"`
 	// Method: The HTTP method requsted by the API call.
 	Method Method `json:"method" yaml:"method" schema:"method,required"`
 	// Minutes: The number of minutes the API call was billed for.
@@ -111,7 +112,6 @@ type APICallWithPriceResultsPage struct {
 }
 
 // APIToken: An API token.
-//
 // These are used to authenticate users with Bearer authentication.
 type APIToken struct {
 	// CreatedAt: The date and time the API token was created.
@@ -315,7 +315,6 @@ type BillingInfo struct {
 }
 
 // CacheMetadata: Metadata about our cache.
-//
 // This is mostly used for internal purposes and debugging.
 type CacheMetadata struct {
 	// Ok: If the cache returned an ok response from ping.
@@ -393,7 +392,6 @@ type Commit struct {
 }
 
 // Connection: Metadata about a pub-sub connection.
-//
 // This is mostly used for internal purposes and debugging.
 type Connection struct {
 	// AuthTimeout: The auth timeout of the server.
@@ -491,7 +489,6 @@ type Connection struct {
 }
 
 // CreatedAtSortMode: Supported set of sort modes for scanning by created_at only.
-//
 // Currently, we only support scanning in ascending order.
 type CreatedAtSortMode string
 
@@ -503,7 +500,6 @@ const (
 )
 
 // Currency: Currency is the list of supported currencies.
-//
 // For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
 type Currency string
 
@@ -817,7 +813,6 @@ type Customer struct {
 }
 
 // CustomerBalance: A balance for a user.
-//
 // This holds information about the financial balance for the user.
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
@@ -1007,7 +1002,6 @@ type EmailAuthenticationForm struct {
 }
 
 // EngineMetadata: Metadata about our currently running server.
-//
 // This is mostly used for internal purposes and debugging.
 type EngineMetadata struct {
 	// AsyncJobsRunning: If any async job is currently running.
@@ -1047,7 +1041,6 @@ type Error struct {
 }
 
 // ExecutorMetadata: Metadata about our currently running server.
-//
 // This is mostly used for internal purposes and debugging.
 type ExecutorMetadata struct {
 	// DockerInfo: Information about the docker daemon.
@@ -1059,7 +1052,6 @@ type ExecutorMetadata struct {
 }
 
 // ExtendedUser: Extended user information.
-//
 // This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Zendesk.
 type ExtendedUser struct {
 	// Company: The user's company.
@@ -1223,7 +1215,6 @@ const (
 )
 
 // FileSystemMetadata: Metadata about our file system.
-//
 // This is mostly used for internal purposes and debugging.
 type FileSystemMetadata struct {
 	// Ok: If the file system passed a sanity check.
@@ -1461,7 +1452,6 @@ type MetaClusterInfo struct {
 }
 
 // Metadata: Metadata about our currently running server.
-//
 // This is mostly used for internal purposes and debugging.
 type Metadata struct {
 	// Cache: Metadata about our cache.
@@ -1481,7 +1471,6 @@ type Metadata struct {
 }
 
 // Method: The Request Method (VERB)
-//
 // This type also contains constants for a number of common HTTP methods such as GET, POST, etc.
 //
 // Currently includes 8 variants representing the 8 methods defined in [RFC 7230](https://tools.ietf.org/html/rfc7231#section-4.1), plus PATCH, and an Extension variant for all extensions.
@@ -1693,7 +1682,6 @@ const (
 )
 
 // PluginsInfo: Available plugins per type.
-//
 // **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
 type PluginsInfo struct {
 	// Authorization: Names of available authorization plugins.
@@ -1741,7 +1729,6 @@ type Runtime struct {
 }
 
 // Session: An authentication session.
-//
 // For our UIs, these are automatically created by Next.js.
 type Session struct {
 	// CreatedAt: The date and time the session was created.
@@ -2392,8 +2379,14 @@ type UnitLengthConversion struct {
 type UnitLengthFormat string
 
 const (
+	// UnitLengthFormatMillimeter represents the UnitLengthFormat `"millimeter"`.
+	UnitLengthFormatMillimeter UnitLengthFormat = "millimeter"
+	// UnitLengthFormatCentimeter represents the UnitLengthFormat `"centimeter"`.
+	UnitLengthFormatCentimeter UnitLengthFormat = "centimeter"
 	// UnitLengthFormatMeter represents the UnitLengthFormat `"meter"`.
 	UnitLengthFormatMeter UnitLengthFormat = "meter"
+	// UnitLengthFormatKilomter represents the UnitLengthFormat `"kilomter"`.
+	UnitLengthFormatKilomter UnitLengthFormat = "kilomter"
 	// UnitLengthFormatFoot represents the UnitLengthFormat `"foot"`.
 	UnitLengthFormatFoot UnitLengthFormat = "foot"
 	// UnitLengthFormatInch represents the UnitLengthFormat `"inch"`.
@@ -2538,6 +2531,8 @@ type UnitMassFormat string
 const (
 	// UnitMassFormatGram represents the UnitMassFormat `"gram"`.
 	UnitMassFormatGram UnitMassFormat = "gram"
+	// UnitMassFormatKilogram represents the UnitMassFormat `"kilogram"`.
+	UnitMassFormatKilogram UnitMassFormat = "kilogram"
 	// UnitMassFormatMetricTon represents the UnitMassFormat `"metric_ton"`.
 	UnitMassFormatMetricTon UnitMassFormat = "metric_ton"
 	// UnitMassFormatPound represents the UnitMassFormat `"pound"`.
@@ -2556,8 +2551,48 @@ const (
 	UnitMassFormatSlug UnitMassFormat = "slug"
 )
 
-// UnitMetricConversion: A unit conversion.
-type UnitMetricConversion struct {
+// UnitMetricPower: The valid types of metric unit formats.
+type UnitMetricPower string
+
+const (
+	// UnitMetricPowerAtto represents the UnitMetricPower `"atto"`.
+	UnitMetricPowerAtto UnitMetricPower = "atto"
+	// UnitMetricPowerFemto represents the UnitMetricPower `"femto"`.
+	UnitMetricPowerFemto UnitMetricPower = "femto"
+	// UnitMetricPowerPico represents the UnitMetricPower `"pico"`.
+	UnitMetricPowerPico UnitMetricPower = "pico"
+	// UnitMetricPowerNano represents the UnitMetricPower `"nano"`.
+	UnitMetricPowerNano UnitMetricPower = "nano"
+	// UnitMetricPowerMicro represents the UnitMetricPower `"micro"`.
+	UnitMetricPowerMicro UnitMetricPower = "micro"
+	// UnitMetricPowerMilli represents the UnitMetricPower `"milli"`.
+	UnitMetricPowerMilli UnitMetricPower = "milli"
+	// UnitMetricPowerCenti represents the UnitMetricPower `"centi"`.
+	UnitMetricPowerCenti UnitMetricPower = "centi"
+	// UnitMetricPowerDeci represents the UnitMetricPower `"deci"`.
+	UnitMetricPowerDeci UnitMetricPower = "deci"
+	// UnitMetricPowerMetricUnit represents the UnitMetricPower `"metric_unit"`.
+	UnitMetricPowerMetricUnit UnitMetricPower = "metric_unit"
+	// UnitMetricPowerDeca represents the UnitMetricPower `"deca"`.
+	UnitMetricPowerDeca UnitMetricPower = "deca"
+	// UnitMetricPowerHecto represents the UnitMetricPower `"hecto"`.
+	UnitMetricPowerHecto UnitMetricPower = "hecto"
+	// UnitMetricPowerKilo represents the UnitMetricPower `"kilo"`.
+	UnitMetricPowerKilo UnitMetricPower = "kilo"
+	// UnitMetricPowerMega represents the UnitMetricPower `"mega"`.
+	UnitMetricPowerMega UnitMetricPower = "mega"
+	// UnitMetricPowerGiga represents the UnitMetricPower `"giga"`.
+	UnitMetricPowerGiga UnitMetricPower = "giga"
+	// UnitMetricPowerTera represents the UnitMetricPower `"tera"`.
+	UnitMetricPowerTera UnitMetricPower = "tera"
+	// UnitMetricPowerPeta represents the UnitMetricPower `"peta"`.
+	UnitMetricPowerPeta UnitMetricPower = "peta"
+	// UnitMetricPowerExa represents the UnitMetricPower `"exa"`.
+	UnitMetricPowerExa UnitMetricPower = "exa"
+)
+
+// UnitMetricPowerConversion: A unit conversion.
+type UnitMetricPowerConversion struct {
 	// CompletedAt: The time and date the unit conversion was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the unit conversion was created.
@@ -2573,9 +2608,9 @@ type UnitMetricConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat UnitMetricFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitMetricPower `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat UnitMetricFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitMetricPower `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the unit conversion was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the unit conversion.
@@ -2586,45 +2621,65 @@ type UnitMetricConversion struct {
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// UnitMetricFormat: The valid types of metric unit formats.
-type UnitMetricFormat string
+// UnitMetricPowerCubedConversion: A unit conversion.
+type UnitMetricPowerCubedConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitMetricPower `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitMetricPower `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
 
-const (
-	// UnitMetricFormatAtto represents the UnitMetricFormat `"atto"`.
-	UnitMetricFormatAtto UnitMetricFormat = "atto"
-	// UnitMetricFormatFemto represents the UnitMetricFormat `"femto"`.
-	UnitMetricFormatFemto UnitMetricFormat = "femto"
-	// UnitMetricFormatPico represents the UnitMetricFormat `"pico"`.
-	UnitMetricFormatPico UnitMetricFormat = "pico"
-	// UnitMetricFormatNano represents the UnitMetricFormat `"nano"`.
-	UnitMetricFormatNano UnitMetricFormat = "nano"
-	// UnitMetricFormatMicro represents the UnitMetricFormat `"micro"`.
-	UnitMetricFormatMicro UnitMetricFormat = "micro"
-	// UnitMetricFormatMilli represents the UnitMetricFormat `"milli"`.
-	UnitMetricFormatMilli UnitMetricFormat = "milli"
-	// UnitMetricFormatCenti represents the UnitMetricFormat `"centi"`.
-	UnitMetricFormatCenti UnitMetricFormat = "centi"
-	// UnitMetricFormatDeci represents the UnitMetricFormat `"deci"`.
-	UnitMetricFormatDeci UnitMetricFormat = "deci"
-	// UnitMetricFormatMetricUnit represents the UnitMetricFormat `"metric_unit"`.
-	UnitMetricFormatMetricUnit UnitMetricFormat = "metric_unit"
-	// UnitMetricFormatDeca represents the UnitMetricFormat `"deca"`.
-	UnitMetricFormatDeca UnitMetricFormat = "deca"
-	// UnitMetricFormatHecto represents the UnitMetricFormat `"hecto"`.
-	UnitMetricFormatHecto UnitMetricFormat = "hecto"
-	// UnitMetricFormatKilo represents the UnitMetricFormat `"kilo"`.
-	UnitMetricFormatKilo UnitMetricFormat = "kilo"
-	// UnitMetricFormatMega represents the UnitMetricFormat `"mega"`.
-	UnitMetricFormatMega UnitMetricFormat = "mega"
-	// UnitMetricFormatGiga represents the UnitMetricFormat `"giga"`.
-	UnitMetricFormatGiga UnitMetricFormat = "giga"
-	// UnitMetricFormatTera represents the UnitMetricFormat `"tera"`.
-	UnitMetricFormatTera UnitMetricFormat = "tera"
-	// UnitMetricFormatPeta represents the UnitMetricFormat `"peta"`.
-	UnitMetricFormatPeta UnitMetricFormat = "peta"
-	// UnitMetricFormatExa represents the UnitMetricFormat `"exa"`.
-	UnitMetricFormatExa UnitMetricFormat = "exa"
-)
+// UnitMetricPowerSquaredConversion: A unit conversion.
+type UnitMetricPowerSquaredConversion struct {
+	// CompletedAt: The time and date the unit conversion was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the unit conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the unit conversion.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitMetricPower `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitMetricPower `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the unit conversion was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the unit conversion.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the unit conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the unit conversion.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
 
 // UnitPowerConversion: A unit conversion.
 type UnitPowerConversion struct {
@@ -3018,10 +3073,12 @@ type UnitVolumeConversion struct {
 type UnitVolumeFormat string
 
 const (
-	// UnitVolumeFormatCubicMeter represents the UnitVolumeFormat `"cubic_meter"`.
-	UnitVolumeFormatCubicMeter UnitVolumeFormat = "cubic_meter"
 	// UnitVolumeFormatCubicMillimeter represents the UnitVolumeFormat `"cubic_millimeter"`.
 	UnitVolumeFormatCubicMillimeter UnitVolumeFormat = "cubic_millimeter"
+	// UnitVolumeFormatCubicCentimeter represents the UnitVolumeFormat `"cubic_centimeter"`.
+	UnitVolumeFormatCubicCentimeter UnitVolumeFormat = "cubic_centimeter"
+	// UnitVolumeFormatCubicMeter represents the UnitVolumeFormat `"cubic_meter"`.
+	UnitVolumeFormatCubicMeter UnitVolumeFormat = "cubic_meter"
 	// UnitVolumeFormatCubicKilometer represents the UnitVolumeFormat `"cubic_kilometer"`.
 	UnitVolumeFormatCubicKilometer UnitVolumeFormat = "cubic_kilometer"
 	// UnitVolumeFormatLiter represents the UnitVolumeFormat `"liter"`.
@@ -3089,7 +3146,6 @@ type UserResultsPage struct {
 }
 
 // VerificationToken: A verification token for a user.
-//
 // This is typically used to verify a user's email address.
 type VerificationToken struct {
 	// CreatedAt: The date and time the verification token was created.

@@ -645,7 +645,7 @@ func ExampleUnitService_GetLengthConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetLengthConversion(kittycad.UnitLengthFormatMeter, kittycad.UnitLengthFormatMeter, 123.45)
+	result, err := client.Unit.GetLengthConversion(kittycad.UnitLengthFormatMillimeter, kittycad.UnitLengthFormatMillimeter, 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -703,13 +703,45 @@ func ExampleUnitService_GetMassConversion() {
 }
 
 // Create a client with your token.
-func ExampleUnitService_GetMetricConversion() {
+func ExampleUnitService_GetMetricPowerCubedConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetMetricConversion(kittycad.UnitMetricFormatAtto, kittycad.UnitMetricFormatAtto, 123.45)
+	result, err := client.Unit.GetMetricPowerCubedConversion(kittycad.UnitMetricPowerAtto, kittycad.UnitMetricPowerAtto, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetMetricPowerConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetMetricPowerConversion(kittycad.UnitMetricPowerAtto, kittycad.UnitMetricPowerAtto, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUnitService_GetMetricPowerSquaredConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetMetricPowerSquaredConversion(kittycad.UnitMetricPowerAtto, kittycad.UnitMetricPowerAtto, 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -853,7 +885,7 @@ func ExampleUnitService_GetVolumeConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetVolumeConversion(kittycad.UnitVolumeFormatCubicMeter, kittycad.UnitVolumeFormatCubicMeter, 123.45)
+	result, err := client.Unit.GetVolumeConversion(kittycad.UnitVolumeFormatCubicMillimeter, kittycad.UnitVolumeFormatCubicMillimeter, 123.45)
 	if err != nil {
 		panic(err)
 	}
