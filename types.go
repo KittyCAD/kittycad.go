@@ -200,6 +200,34 @@ type AsyncAPICallOutputFileConversion struct {
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
+// AsyncAPICallOutputFileCenterOfMass: File center of mass.
+type AsyncAPICallOutputFileCenterOfMass struct {
+	// CenterOfMass: The resulting center of mass.
+	CenterOfMass []string `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
+	// CompletedAt: The time and date the mass was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the mass was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the center of mass request.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// MaterialDensity: The material density as denoted by the user.
+	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
+	// SrcFormat: The source format of the file.
+	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the mass was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the mass.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the mass was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the mass.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
 // AsyncAPICallOutputFileMass: A file mass.
 type AsyncAPICallOutputFileMass struct {
 	// CompletedAt: The time and date the mass was completed.
@@ -282,6 +310,32 @@ type AsyncAPICallOutputFileDensity struct {
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
+// AsyncAPICallOutputFileSurfaceArea: A file surface area.
+type AsyncAPICallOutputFileSurfaceArea struct {
+	// CompletedAt: The time and date the density was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the density was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the density request.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// SrcFormat: The source format of the file.
+	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the density was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the density.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// SurfaceArea: The resulting surface area.
+	SurfaceArea float64 `json:"surface_area" yaml:"surface_area" schema:"surface_area"`
+	// UpdatedAt: The time and date the density was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the density.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
 // AsyncAPICallResultsPage: A single page of results
 type AsyncAPICallResultsPage struct {
 	// Items: list of items on this page of results
@@ -298,10 +352,14 @@ const (
 	AsyncAPICallTypeFileConversion AsyncAPICallType = "FileConversion"
 	// AsyncAPICallTypeFileVolume represents the AsyncAPICallType `"FileVolume"`.
 	AsyncAPICallTypeFileVolume AsyncAPICallType = "FileVolume"
+	// AsyncAPICallTypeFileCenterOfMass represents the AsyncAPICallType `"FileCenterOfMass"`.
+	AsyncAPICallTypeFileCenterOfMass AsyncAPICallType = "FileCenterOfMass"
 	// AsyncAPICallTypeFileMass represents the AsyncAPICallType `"FileMass"`.
 	AsyncAPICallTypeFileMass AsyncAPICallType = "FileMass"
 	// AsyncAPICallTypeFileDensity represents the AsyncAPICallType `"FileDensity"`.
 	AsyncAPICallTypeFileDensity AsyncAPICallType = "FileDensity"
+	// AsyncAPICallTypeFileSurfaceArea represents the AsyncAPICallType `"FileSurfaceArea"`.
+	AsyncAPICallTypeFileSurfaceArea AsyncAPICallType = "FileSurfaceArea"
 )
 
 // BillingInfo: The billing information for payments.
@@ -1096,6 +1154,34 @@ type ExtendedUserResultsPage struct {
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
+// FileCenterOfMass: A file center of mass result.
+type FileCenterOfMass struct {
+	// CenterOfMass: The resulting center of mass.
+	CenterOfMass []string `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
+	// CompletedAt: The time and date the mass was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the mass was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the center of mass request.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// MaterialDensity: The material density as denoted by the user.
+	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
+	// SrcFormat: The source format of the file.
+	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the mass was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the mass.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the mass was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the mass.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
 // FileConversion: A file conversion.
 type FileConversion struct {
 	// CompletedAt: The time and date the file conversion was completed.
@@ -1213,6 +1299,32 @@ const (
 	// FileSourceFormatFbx represents the FileSourceFormat `"fbx"`.
 	FileSourceFormatFbx FileSourceFormat = "fbx"
 )
+
+// FileSurfaceArea: A file surface area result.
+type FileSurfaceArea struct {
+	// CompletedAt: The time and date the density was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the density was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the density request.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// SrcFormat: The source format of the file.
+	SrcFormat FileSourceFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the density was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the density.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// SurfaceArea: The resulting surface area.
+	SurfaceArea float64 `json:"surface_area" yaml:"surface_area" schema:"surface_area"`
+	// UpdatedAt: The time and date the density was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the density.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
 
 // FileSystemMetadata: Metadata about our file system.
 // This is mostly used for internal purposes and debugging.

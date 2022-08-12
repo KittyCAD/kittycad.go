@@ -16,6 +16,14 @@
   "path": "/components/schemas/AsyncApiCallOutput/oneOf/3/properties/type"
  },
  {
+  "op": "remove",
+  "path": "/components/schemas/AsyncApiCallOutput/oneOf/4/properties/type"
+ },
+ {
+  "op": "remove",
+  "path": "/components/schemas/AsyncApiCallOutput/oneOf/5/properties/type"
+ },
+ {
   "op": "add",
   "path": "/info/x-go",
   "value": {
@@ -129,6 +137,14 @@
  },
  {
   "op": "add",
+  "path": "/paths/~1file~1center-of-mass/post/x-go",
+  "value": {
+   "example": "// CreateCenterOfMass: Get CAD file center of mass.\n// \n// Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialDensity`\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateCenterOfMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateCenterOfMass(123.45, kittycad.FileSourceFormatStl, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateCenterOfMass"
+  }
+ },
+ {
+  "op": "add",
   "path": "/paths/~1file~1conversion~1{src_format}~1{output_format}/post/x-go",
   "value": {
    "example": "// CreateConversion: Convert CAD file.\n// \n// Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.\n// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateConversion(kittycad.FileOutputFormatStl, kittycad.FileSourceFormatStl, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
@@ -165,6 +181,14 @@
   "value": {
    "example": "// CreateMass: Get CAD file mass.\n// \n// Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialDensity`\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateMass(123.45, kittycad.FileSourceFormatStl, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateMass"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1file~1surface-area/post/x-go",
+  "value": {
+   "example": "// CreateSurfaceArea: Get CAD file surface area.\n// \n// Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateSurfaceArea() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateSurfaceArea(kittycad.FileSourceFormatStl, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateSurfaceArea"
   }
  },
  {

@@ -241,6 +241,22 @@ func ExampleConstantService_GetPhysics() {
 }
 
 // Create a client with your token.
+func ExampleFileService_CreateCenterOfMass() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.CreateCenterOfMass(123.45, kittycad.FileSourceFormatStl, []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
 func ExampleFileService_CreateConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -312,6 +328,22 @@ func ExampleFileService_CreateMass() {
 	}
 
 	result, err := client.File.CreateMass(123.45, kittycad.FileSourceFormatStl, []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleFileService_CreateSurfaceArea() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.CreateSurfaceArea(kittycad.FileSourceFormatStl, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
