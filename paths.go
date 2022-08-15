@@ -623,6 +623,65 @@ func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsCons
 
 }
 
+// CreateCenterOfMass: Get CAD file center of mass.
+// Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `materialDensity`
+//   - `srcFormat`: The valid types of source file formats.
+//   - `body`
+func (s *FileService) CreateCenterOfMass(materialDensity float64, srcFormat FileSourceFormat, body []byte) (*FileCenterOfMass, error) {
+	// Create the url.
+	path := "/file/center-of-mass"
+	uri := resolveRelative(s.client.server, path)
+
+	b := bytes.NewReader(body)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/octet-stream")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"material_density": fmt.Sprintf("%f", materialDensity),
+		"src_format":       string(srcFormat),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FileCenterOfMass
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateConversion: Convert CAD file.
 // Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
 // If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
@@ -901,6 +960,63 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFo
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded FileMass
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateSurfaceArea: Get CAD file surface area.
+// Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `srcFormat`: The valid types of source file formats.
+//   - `body`
+func (s *FileService) CreateSurfaceArea(srcFormat FileSourceFormat, body []byte) (*FileSurfaceArea, error) {
+	// Create the url.
+	path := "/file/surface-area"
+	uri := resolveRelative(s.client.server, path)
+
+	b := bytes.NewReader(body)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/octet-stream")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"src_format": string(srcFormat),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FileSurfaceArea
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
