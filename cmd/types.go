@@ -279,7 +279,7 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 		delete(properties, typeName)
 
 		// Make sure they are equal.
-		if reflect.DeepEqual(reference.Value.Properties, properties) {
+		if reference != nil && reference.Value != nil && reference.Value.Properties != nil && properties != nil && reflect.DeepEqual(reference.Value.Properties, properties) {
 			// We need to generate the one of type.
 			if err := data.generateSchemaType(fmt.Sprintf("%s %s", name, types[index]), oneOf.Value, spec); err != nil {
 				return err

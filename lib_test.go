@@ -52,7 +52,7 @@ func TestFileConversion(t *testing.T) {
 		t.Fatalf("reading the test file %q failed: %v", file, err)
 	}
 
-	fc, err := client.File.CreateConversion(FileOutputFormatObj, FileSourceFormatStl, body)
+	fc, err := client.File.CreateConversion(FileExportFormatObj, FileImportFormatStl, body)
 	if err != nil {
 		t.Fatalf("getting the file conversion failed: %v", err)
 	}

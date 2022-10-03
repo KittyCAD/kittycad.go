@@ -247,7 +247,7 @@ func ExampleFileService_CreateCenterOfMass() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateCenterOfMass(123.45, kittycad.FileSourceFormatStl, []byte("some-binary"))
+	result, err := client.File.CreateCenterOfMass(123.45, kittycad.File3DImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -263,7 +263,7 @@ func ExampleFileService_CreateConversion() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateConversion(kittycad.FileOutputFormatStl, kittycad.FileSourceFormatStl, []byte("some-binary"))
+	result, err := client.File.CreateConversion(kittycad.FileExportFormatDae, kittycad.FileImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -295,7 +295,7 @@ func ExampleFileService_CreateDensity() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateDensity(123.45, kittycad.FileSourceFormatStl, []byte("some-binary"))
+	result, err := client.File.CreateDensity(123.45, kittycad.File3DImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -327,7 +327,7 @@ func ExampleFileService_CreateMass() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateMass(123.45, kittycad.FileSourceFormatStl, []byte("some-binary"))
+	result, err := client.File.CreateMass(123.45, kittycad.File3DImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -343,7 +343,7 @@ func ExampleFileService_CreateSurfaceArea() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateSurfaceArea(kittycad.FileSourceFormatStl, []byte("some-binary"))
+	result, err := client.File.CreateSurfaceArea(kittycad.File3DImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -359,7 +359,7 @@ func ExampleFileService_CreateVolume() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateVolume(kittycad.FileSourceFormatStl, []byte("some-binary"))
+	result, err := client.File.CreateVolume(kittycad.File3DImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -677,7 +677,7 @@ func ExampleUnitService_GetLengthConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetLengthConversion(kittycad.UnitLengthFormatMillimeter, kittycad.UnitLengthFormatMillimeter, 123.45)
+	result, err := client.Unit.GetLengthConversion(kittycad.UnitLengthFormatMeter, kittycad.UnitLengthFormatMeter, 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -917,7 +917,7 @@ func ExampleUnitService_GetVolumeConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetVolumeConversion(kittycad.UnitVolumeFormatCubicMillimeter, kittycad.UnitVolumeFormatCubicMillimeter, 123.45)
+	result, err := client.Unit.GetVolumeConversion(kittycad.UnitVolumeFormatCubicMeter, kittycad.UnitVolumeFormatCubicMeter, 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -1088,6 +1088,38 @@ func ExampleFileService_GetConversionForUser() {
 	}
 
 	result, err := client.File.GetConversionForUser("some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUserService_GetFrontHashSelf() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.GetFrontHashSelf()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleUserService_GetOnboardingSelf() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.GetOnboardingSelf()
 	if err != nil {
 		panic(err)
 	}

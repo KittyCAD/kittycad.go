@@ -630,9 +630,9 @@ func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsCons
 // Parameters
 //
 //   - `materialDensity`
-//   - `srcFormat`: The valid types of source file formats.
+//   - `srcFormat`: The valid types of 3d source file formats.
 //   - `body`
-func (s *FileService) CreateCenterOfMass(materialDensity float64, srcFormat FileSourceFormat, body []byte) (*FileCenterOfMass, error) {
+func (s *FileService) CreateCenterOfMass(materialDensity float64, srcFormat File3DImportFormat, body []byte) (*FileCenterOfMass, error) {
 	// Create the url.
 	path := "/file/center-of-mass"
 	uri := resolveRelative(s.client.server, path)
@@ -692,7 +692,7 @@ func (s *FileService) CreateCenterOfMass(materialDensity float64, srcFormat File
 //   - `outputFormat`: The valid types of output file formats.
 //   - `srcFormat`: The valid types of source file formats.
 //   - `body`
-func (s *FileService) CreateConversion(outputFormat FileOutputFormat, srcFormat FileSourceFormat, body []byte) (*FileConversion, error) {
+func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat FileImportFormat, body []byte) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -802,9 +802,9 @@ func (s *FileService) GetConversion(id string) (*any, error) {
 // Parameters
 //
 //   - `materialMass`
-//   - `srcFormat`: The valid types of source file formats.
+//   - `srcFormat`: The valid types of 3d source file formats.
 //   - `body`
-func (s *FileService) CreateDensity(materialMass float64, srcFormat FileSourceFormat, body []byte) (*FileDensity, error) {
+func (s *FileService) CreateDensity(materialMass float64, srcFormat File3DImportFormat, body []byte) (*FileDensity, error) {
 	// Create the url.
 	path := "/file/density"
 	uri := resolveRelative(s.client.server, path)
@@ -917,9 +917,9 @@ func (s *FileService) CreateExecution(lang CodeLanguage, output string, body []b
 // Parameters
 //
 //   - `materialDensity`
-//   - `srcFormat`: The valid types of source file formats.
+//   - `srcFormat`: The valid types of 3d source file formats.
 //   - `body`
-func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFormat, body []byte) (*FileMass, error) {
+func (s *FileService) CreateMass(materialDensity float64, srcFormat File3DImportFormat, body []byte) (*FileMass, error) {
 	// Create the url.
 	path := "/file/mass"
 	uri := resolveRelative(s.client.server, path)
@@ -975,9 +975,9 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat FileSourceFo
 //
 // Parameters
 //
-//   - `srcFormat`: The valid types of source file formats.
+//   - `srcFormat`: The valid types of 3d source file formats.
 //   - `body`
-func (s *FileService) CreateSurfaceArea(srcFormat FileSourceFormat, body []byte) (*FileSurfaceArea, error) {
+func (s *FileService) CreateSurfaceArea(srcFormat File3DImportFormat, body []byte) (*FileSurfaceArea, error) {
 	// Create the url.
 	path := "/file/surface-area"
 	uri := resolveRelative(s.client.server, path)
@@ -1032,9 +1032,9 @@ func (s *FileService) CreateSurfaceArea(srcFormat FileSourceFormat, body []byte)
 //
 // Parameters
 //
-//   - `srcFormat`: The valid types of source file formats.
+//   - `srcFormat`: The valid types of 3d source file formats.
 //   - `body`
-func (s *FileService) CreateVolume(srcFormat FileSourceFormat, body []byte) (*FileVolume, error) {
+func (s *FileService) CreateVolume(srcFormat File3DImportFormat, body []byte) (*FileVolume, error) {
 	// Create the url.
 	path := "/file/volume"
 	uri := resolveRelative(s.client.server, path)
@@ -1425,8 +1425,8 @@ func (s *MetaService) Ping() (*Pong, error) {
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of metric unit formats.
-//   - `srcFormat`: The valid types of metric unit formats.
+//   - `outputFormat`: The valid types of acceleration unit formats.
+//   - `srcFormat`: The valid types of acceleration unit formats.
 //   - `value`
 func (s *UnitService) GetAccelerationConversion(outputFormat UnitAccelerationFormat, srcFormat UnitAccelerationFormat, value float64) (*UnitAccelerationConversion, error) {
 	// Create the url.
@@ -3436,6 +3436,84 @@ func (s *FileService) GetConversionForUser(id string) (*any, error) {
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded any
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetFrontHashSelf: Get your user's front verification hash.
+// This info is sent to front when initialing the front chat, it prevents impersonations using js hacks in the browser
+func (s *UserService) GetFrontHashSelf() (*string, error) {
+	// Create the url.
+	path := "/user/front-hash"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded string
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetOnboardingSelf: Get your user's onboarding status.
+// Checks key part of their api usage to determine their onboarding progress
+func (s *UserService) GetOnboardingSelf() (*Onboarding, error) {
+	// Create the url.
+	path := "/user/onboarding"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Onboarding
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
