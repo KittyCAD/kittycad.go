@@ -402,8 +402,13 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 			return fmt.Sprintf("[]%s", reference), nil
 		}
 
-		// TODO: handle if it is not a reference.
-		return "[]string", nil
+		// Get the type for the schema.
+		innerType, err := printType(property, s.Items, spec)
+		if err != nil {
+			return "", err
+		}
+
+		return fmt.Sprintf("[]%s", innerType), nil
 	} else if t == "object" {
 		if s.AdditionalProperties != nil && (s.Properties == nil || len(s.Properties) == 0) {
 			// get the inner type.
