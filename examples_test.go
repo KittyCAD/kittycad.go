@@ -58,6 +58,22 @@ func ExampleMetaService_GetSchema() {
 }
 
 // Create a client with your token.
+func ExampleMetaService_GetAiPluginManifest() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Meta.GetAiPluginManifest()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
 func ExampleMetaService_Getdata() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -65,6 +81,38 @@ func ExampleMetaService_Getdata() {
 	}
 
 	result, err := client.Meta.Getdata()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAiService_CreateImageTo3D() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ai.CreateImageTo3D(kittycad.ImageTypePng, kittycad.FileExportFormatDae, []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleAiService_CreateTextTo3D() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ai.CreateTextTo3D(kittycad.FileExportFormatDae, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -241,13 +289,45 @@ func ExampleConstantService_GetPhysics() {
 }
 
 // Create a client with your token.
+func ExampleFileService_Create2DVectorConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.Create2DVectorConversion(kittycad.File2DVectorExportFormatDxf, kittycad.File2DVectorImportFormatDxf, []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleFileService_Create3DConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.Create3DConversion(kittycad.File3DExportFormatDae, kittycad.File3DImportFormatDae, []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
 func ExampleFileService_CreateCenterOfMass() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.File.CreateCenterOfMass(123.45, kittycad.File3DImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateCenterOfMass(kittycad.File3DImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -831,6 +911,22 @@ func ExampleUnitService_GetRadiationConversion() {
 }
 
 // Create a client with your token.
+func ExampleUnitService_GetRadioactivityConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Unit.GetRadioactivityConversion(kittycad.UnitRadioactivityFormatBecquerel, kittycad.UnitRadioactivityFormatBecquerel, 123.45)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
 func ExampleUnitService_GetSolidAngleConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1151,7 +1247,7 @@ func ExamplePaymentService_CreateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: kittycad.CountryCodeAF, State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1167,7 +1263,7 @@ func ExamplePaymentService_UpdateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: kittycad.CountryCodeAF, State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1261,6 +1357,19 @@ func ExamplePaymentService_DeleteMethodForUser() {
 	}
 
 	if err := client.Payment.DeleteMethodForUser("some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExamplePaymentService_ValidateCustomerTaxInformationForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Payment.ValidateCustomerTaxInformationForUser(); err != nil {
 		panic(err)
 	}
 
