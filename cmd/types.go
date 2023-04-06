@@ -410,9 +410,9 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 
 		return fmt.Sprintf("[]%s", innerType), nil
 	} else if t == "object" {
-		if s.AdditionalProperties != nil && (s.Properties == nil || len(s.Properties) == 0) {
+		if s.AdditionalProperties.Schema != nil && (s.Properties == nil || len(s.Properties) == 0) {
 			// get the inner type.
-			innerType, err := printType(property, s.AdditionalProperties, spec)
+			innerType, err := printType(property, s.AdditionalProperties.Schema, spec)
 			if err != nil {
 				return "", err
 			}
@@ -601,15 +601,15 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 		}
 		return fmt.Sprintf("&%s", t), nil
 	} else if typet == "object" {
-		if schema.AdditionalProperties != nil && (schema.Properties == nil || len(schema.Properties) == 0) {
+		if schema.AdditionalProperties.Schema != nil && (schema.Properties == nil || len(schema.Properties) == 0) {
 			// get the inner type.
-			innerType, err := printType(name, schema.AdditionalProperties, spec)
+			innerType, err := printType(name, schema.AdditionalProperties.Schema, spec)
 			if err != nil {
 				return "", err
 			}
 
 			// Get an example for the inner type.
-			innerExample, err := data.generateExampleValue(name, schema.AdditionalProperties, spec, true)
+			innerExample, err := data.generateExampleValue(name, schema.AdditionalProperties.Schema, spec, true)
 			if err != nil {
 				return "", err
 			}
