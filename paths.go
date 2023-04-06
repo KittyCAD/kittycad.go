@@ -45,6 +45,45 @@ func (s *MetaService) GetSchema() error {
 
 }
 
+// GetAiPluginManifest: Get AI plugin manifest.
+//
+func (s *MetaService) GetAiPluginManifest() (*AiPluginManifest, error) {
+	// Create the url.
+	path := "/.well-known/ai-plugin.json"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AiPluginManifest
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // Getdata: Get the metadata about our currently running server.
 //
 // This includes information on any of our other distributed systems it is connected to.
@@ -78,6 +117,118 @@ func (s *MetaService) Getdata() (*Metadata, error) {
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded Metadata
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateImageTo3D: Generate a 3D model from an image.
+//
+//
+// Parameters
+//
+// 	- `inputFormat`: An enumeration.
+// 	- `outputFormat`: The valid types of output file formats.
+// 	- `body`
+//
+func (s *AiService) CreateImageTo3D(inputFormat ImageType, outputFormat FileExportFormat, body []byte) (*Mesh, error) {
+	// Create the url.
+	path := "/ai/image-to-3d/{{.input_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	b := bytes.NewReader(body)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/octet-stream")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"input_format":  string(inputFormat),
+		"output_format": string(outputFormat),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Mesh
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateTextTo3D: Generate a 3D model from text.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of output file formats.
+// 	- `prompt`
+//
+func (s *AiService) CreateTextTo3D(outputFormat FileExportFormat, prompt string) (*Mesh, error) {
+	// Create the url.
+	path := "/ai/text-to-3d/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"prompt":        prompt,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Mesh
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -653,6 +804,132 @@ func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsCons
 
 }
 
+// Create2DVectorConversion: Convert 2D Vector file.
+//
+// Convert a 2D Vector file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
+// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of Vector output file formats.
+// 	- `srcFormat`: The valid types of Vector source file formats.
+// 	- `body`
+//
+func (s *FileService) Create2DVectorConversion(outputFormat File2DVectorExportFormat, srcFormat File2DVectorImportFormat, body []byte) (*File2DVectorConversion, error) {
+	// Create the url.
+	path := "/file/2d/vector/conversion/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	b := bytes.NewReader(body)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/octet-stream")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded File2DVectorConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// Create3DConversion: Convert 3D file.
+//
+// Convert a 3D file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
+// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of 3d output file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
+// 	- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
+// 	- `body`
+//
+func (s *FileService) Create3DConversion(outputFormat File3DExportFormat, srcFormat File3DImportFormat, body []byte) (*File3DConversion, error) {
+	// Create the url.
+	path := "/file/3d/conversion/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	b := bytes.NewReader(body)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/octet-stream")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded File3DConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateCenterOfMass: Get CAD file center of mass.
 //
 // Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
@@ -661,11 +938,10 @@ func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsCons
 //
 // Parameters
 //
-// 	- `materialDensity`
-// 	- `srcFormat`: The valid types of 3d source file formats.
+// 	- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
 // 	- `body`
 //
-func (s *FileService) CreateCenterOfMass(materialDensity float64, srcFormat File3DImportFormat, body []byte) (*FileCenterOfMass, error) {
+func (s *FileService) CreateCenterOfMass(srcFormat File3DImportFormat, body []byte) (*FileCenterOfMass, error) {
 	// Create the url.
 	path := "/file/center-of-mass"
 	uri := resolveRelative(s.client.server, path)
@@ -683,8 +959,7 @@ func (s *FileService) CreateCenterOfMass(materialDensity float64, srcFormat File
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"material_density": fmt.Sprintf("%f", materialDensity),
-		"src_format":       string(srcFormat),
+		"src_format": string(srcFormat),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -843,7 +1118,7 @@ func (s *FileService) GetConversion(id string) (*any, error) {
 // Parameters
 //
 // 	- `materialMass`
-// 	- `srcFormat`: The valid types of 3d source file formats.
+// 	- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
 // 	- `body`
 //
 func (s *FileService) CreateDensity(materialMass float64, srcFormat File3DImportFormat, body []byte) (*FileDensity, error) {
@@ -964,7 +1239,7 @@ func (s *FileService) CreateExecution(lang CodeLanguage, output string, body []b
 // Parameters
 //
 // 	- `materialDensity`
-// 	- `srcFormat`: The valid types of 3d source file formats.
+// 	- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
 // 	- `body`
 //
 func (s *FileService) CreateMass(materialDensity float64, srcFormat File3DImportFormat, body []byte) (*FileMass, error) {
@@ -1025,7 +1300,7 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat File3DImport
 //
 // Parameters
 //
-// 	- `srcFormat`: The valid types of 3d source file formats.
+// 	- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
 // 	- `body`
 //
 func (s *FileService) CreateSurfaceArea(srcFormat File3DImportFormat, body []byte) (*FileSurfaceArea, error) {
@@ -1085,7 +1360,7 @@ func (s *FileService) CreateSurfaceArea(srcFormat File3DImportFormat, body []byt
 //
 // Parameters
 //
-// 	- `srcFormat`: The valid types of 3d source file formats.
+// 	- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
 // 	- `body`
 //
 func (s *FileService) CreateVolume(srcFormat File3DImportFormat, body []byte) (*FileVolume, error) {
@@ -2699,8 +2974,8 @@ func (s *UnitService) GetPressureConversion(outputFormat UnitPressureFormat, src
 //
 // Parameters
 //
-// 	- `outputFormat`: The valid types of radiation unit formats.
-// 	- `srcFormat`: The valid types of radiation unit formats.
+// 	- `outputFormat`: The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.
+// 	- `srcFormat`: The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.
 // 	- `value`
 //
 func (s *UnitService) GetRadiationConversion(outputFormat UnitRadiationFormat, srcFormat UnitRadiationFormat, value float64) (*UnitRadiationConversion, error) {
@@ -2740,6 +3015,63 @@ func (s *UnitService) GetRadiationConversion(outputFormat UnitRadiationFormat, s
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded UnitRadiationConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetRadioactivityConversion: Convert radioactivity units.
+//
+// Convert a radioactivity unit value to another radioactivity unit value. This is a nice endpoint to use for helper functions.
+//
+//
+// Parameters
+//
+// 	- `outputFormat`: The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.
+// 	- `srcFormat`: The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.
+// 	- `value`
+//
+func (s *UnitService) GetRadioactivityConversion(outputFormat UnitRadioactivityFormat, srcFormat UnitRadioactivityFormat, value float64) (*UnitRadioactivityConversion, error) {
+	// Create the url.
+	path := "/unit/conversion/radioactivity/{{.src_format}}/{{.output_format}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"output_format": string(outputFormat),
+		"src_format":    string(srcFormat),
+		"value":         fmt.Sprintf("%f", value),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UnitRadioactivityConversion
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -4087,6 +4419,38 @@ func (s *PaymentService) DeleteMethodForUser(id string) error {
 		"id": id,
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.
+//
+// This endpoint requires authentication by any KittyCAD user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
+//
+func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
+	// Create the url.
+	path := "/user/payment/tax"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Send the request.

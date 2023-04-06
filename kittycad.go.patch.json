@@ -49,10 +49,34 @@
  },
  {
   "op": "add",
+  "path": "/paths/~1.well-known~1ai-plugin.json/get/x-go",
+  "value": {
+   "example": "// GetAiPluginManifest: Get AI plugin manifest.\n// \n// Create a client with your token.\nfunc ExampleMetaService_GetAiPluginManifest() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Meta.GetAiPluginManifest()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.GetAiPluginManifest"
+  }
+ },
+ {
+  "op": "add",
   "path": "/paths/~1_meta~1info/get/x-go",
   "value": {
    "example": "// Getdata: Get the metadata about our currently running server.\n// \n// This includes information on any of our other distributed systems it is connected to.\n// You must be a KittyCAD employee to perform this request.\n// \n// Create a client with your token.\nfunc ExampleMetaService_Getdata() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Meta.Getdata()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.Getdata"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1ai~1image-to-3d~1{input_format}~1{output_format}/post/x-go",
+  "value": {
+   "example": "// CreateImageTo3D: Generate a 3D model from an image.\n// \n// \n// Parameters\n// \n// \t- `inputFormat`: An enumeration.\n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleAiService_CreateImageTo3D() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.CreateImageTo3D(kittycad.ImageTypePng, kittycad.FileExportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AiService.CreateImageTo3D"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1ai~1text-to-3d~1{output_format}/post/x-go",
+  "value": {
+   "example": "// CreateTextTo3D: Generate a 3D model from text.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `prompt`\n// \n// Create a client with your token.\nfunc ExampleAiService_CreateTextTo3D() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.CreateTextTo3D(kittycad.FileExportFormatDae, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AiService.CreateTextTo3D"
   }
  },
  {
@@ -145,9 +169,25 @@
  },
  {
   "op": "add",
+  "path": "/paths/~1file~12d~1vector~1conversion~1{src_format}~1{output_format}/post/x-go",
+  "value": {
+   "example": "// Create2DVectorConversion: Convert 2D Vector file.\n// \n// Convert a 2D Vector file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.\n// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of Vector output file formats.\n// \t- `srcFormat`: The valid types of Vector source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_Create2DVectorConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.Create2DVectorConversion(kittycad.File2DVectorExportFormatDxf, kittycad.File2DVectorImportFormatDxf, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.Create2DVectorConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1file~13d~1conversion~1{src_format}~1{output_format}/post/x-go",
+  "value": {
+   "example": "// Create3DConversion: Convert 3D file.\n// \n// Convert a 3D file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.\n// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of 3d output file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.\n// \t- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_Create3DConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.Create3DConversion(kittycad.File3DExportFormatDae, kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.Create3DConversion"
+  }
+ },
+ {
+  "op": "add",
   "path": "/paths/~1file~1center-of-mass/post/x-go",
   "value": {
-   "example": "// CreateCenterOfMass: Get CAD file center of mass.\n// \n// Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialDensity`\n// \t- `srcFormat`: The valid types of 3d source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateCenterOfMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateCenterOfMass(123.45, kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateCenterOfMass: Get CAD file center of mass.\n// \n// Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateCenterOfMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateCenterOfMass(kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateCenterOfMass"
   }
  },
@@ -171,7 +211,7 @@
   "op": "add",
   "path": "/paths/~1file~1density/post/x-go",
   "value": {
-   "example": "// CreateDensity: Get CAD file density.\n// \n// Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialMass`\n// \t- `srcFormat`: The valid types of 3d source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateDensity() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateDensity(123.45, kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateDensity: Get CAD file density.\n// \n// Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialMass`\n// \t- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateDensity() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateDensity(123.45, kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateDensity"
   }
  },
@@ -187,7 +227,7 @@
   "op": "add",
   "path": "/paths/~1file~1mass/post/x-go",
   "value": {
-   "example": "// CreateMass: Get CAD file mass.\n// \n// Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialDensity`\n// \t- `srcFormat`: The valid types of 3d source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateMass(123.45, kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateMass: Get CAD file mass.\n// \n// Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialDensity`\n// \t- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateMass(123.45, kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateMass"
   }
  },
@@ -195,7 +235,7 @@
   "op": "add",
   "path": "/paths/~1file~1surface-area/post/x-go",
   "value": {
-   "example": "// CreateSurfaceArea: Get CAD file surface area.\n// \n// Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of 3d source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateSurfaceArea() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateSurfaceArea(kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateSurfaceArea: Get CAD file surface area.\n// \n// Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateSurfaceArea() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateSurfaceArea(kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateSurfaceArea"
   }
  },
@@ -203,7 +243,7 @@
   "op": "add",
   "path": "/paths/~1file~1volume/post/x-go",
   "value": {
-   "example": "// CreateVolume: Get CAD file volume.\n// \n// Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of 3d source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateVolume() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateVolume(kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateVolume: Get CAD file volume.\n// \n// Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateVolume() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateVolume(kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateVolume"
   }
  },
@@ -443,8 +483,16 @@
   "op": "add",
   "path": "/paths/~1unit~1conversion~1radiation~1{src_format}~1{output_format}/get/x-go",
   "value": {
-   "example": "// GetRadiationConversion: Convert radiation units.\n// \n// Convert a radiation unit value to another radiation unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of radiation unit formats.\n// \t- `srcFormat`: The valid types of radiation unit formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetRadiationConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetRadiationConversion(kittycad.UnitRadiationFormatGray, kittycad.UnitRadiationFormatGray, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetRadiationConversion: Convert radiation units.\n// \n// Convert a radiation unit value to another radiation unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.\n// \t- `srcFormat`: The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetRadiationConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetRadiationConversion(kittycad.UnitRadiationFormatGray, kittycad.UnitRadiationFormatGray, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetRadiationConversion"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1radioactivity~1{src_format}~1{output_format}/get/x-go",
+  "value": {
+   "example": "// GetRadioactivityConversion: Convert radioactivity units.\n// \n// Convert a radioactivity unit value to another radioactivity unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.\n// \t- `srcFormat`: The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetRadioactivityConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetRadioactivityConversion(kittycad.UnitRadioactivityFormatBecquerel, kittycad.UnitRadioactivityFormatBecquerel, 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetRadioactivityConversion"
   }
  },
  {
@@ -619,7 +667,7 @@
   "op": "add",
   "path": "/paths/~1user~1payment/post/x-go",
   "value": {
-   "example": "// CreateInformationForUser: Create payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any KittyCAD user. It creates the payment information for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_CreateInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: \"some-string\", Country: \"some-string\", State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", UserID: \"some-string\", Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateInformationForUser: Create payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any KittyCAD user. It creates the payment information for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_CreateInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: \"some-string\", Country: kittycad.CountryCodeAF, State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", UserID: \"some-string\", Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.CreateInformationForUser"
   }
  },
@@ -627,7 +675,7 @@
   "op": "add",
   "path": "/paths/~1user~1payment/put/x-go",
   "value": {
-   "example": "// UpdateInformationForUser: Update payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any KittyCAD user. It updates the payment information for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_UpdateInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: \"some-string\", Country: \"some-string\", State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", UserID: \"some-string\", Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// UpdateInformationForUser: Update payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any KittyCAD user. It updates the payment information for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_UpdateInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: \"some-string\", Country: kittycad.CountryCodeAF, State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", UserID: \"some-string\", Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.UpdateInformationForUser"
   }
  },
@@ -669,6 +717,14 @@
   "value": {
    "example": "// DeleteMethodForUser: Delete a payment method for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It deletes the specified payment method for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// Create a client with your token.\nfunc ExamplePaymentService_DeleteMethodForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.DeleteMethodForUser(\"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.DeleteMethodForUser"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1user~1payment~1tax/get/x-go",
+  "value": {
+   "example": "// ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.\n// \n// This endpoint requires authentication by any KittyCAD user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_ValidateCustomerTaxInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.ValidateCustomerTaxInformationForUser(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ValidateCustomerTaxInformationForUser"
   }
  },
  {

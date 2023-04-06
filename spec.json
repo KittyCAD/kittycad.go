@@ -21,6 +21,146 @@
         ],
         "type": "string"
       },
+      "AiPluginApi": {
+        "description": "AI plugin api information.",
+        "properties": {
+          "is_user_authenticated": {
+            "default": false,
+            "description": "If the API is authenticated.",
+            "type": "boolean"
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AiPluginApiType"
+              }
+            ],
+            "default": "openapi",
+            "description": "The type of API."
+          },
+          "url": {
+            "description": "The url to the API's schema.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "type": "object"
+      },
+      "AiPluginApiType": {
+        "description": "AI plugin api type.",
+        "enum": [
+          "openapi"
+        ],
+        "type": "string"
+      },
+      "AiPluginAuth": {
+        "description": "AI plugin auth information.",
+        "properties": {
+          "authorization_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AiPluginHttpAuthType"
+              }
+            ],
+            "description": "The type of http authorization.",
+            "nullable": true
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AiPluginAuthType"
+              }
+            ],
+            "default": "none",
+            "description": "The type of authentication."
+          }
+        },
+        "type": "object"
+      },
+      "AiPluginAuthType": {
+        "description": "AI plugin auth type.",
+        "enum": [
+          "none",
+          "user_http",
+          "service_http",
+          "oauth"
+        ],
+        "type": "string"
+      },
+      "AiPluginHttpAuthType": {
+        "description": "AI plugin http auth type.",
+        "enum": [
+          "basic",
+          "bearer"
+        ],
+        "type": "string"
+      },
+      "AiPluginManifest": {
+        "description": "AI plugin manifest.\n\nThis is used for OpenAI's ChatGPT plugins. You can read more about them [here](https://platform.openai.com/docs/plugins/getting-started/plugin-manifest).",
+        "properties": {
+          "api": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AiPluginApi"
+              }
+            ],
+            "description": "API specification."
+          },
+          "auth": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AiPluginAuth"
+              }
+            ],
+            "description": "Authentication schema."
+          },
+          "contact_email": {
+            "description": "Email contact for safety/moderation reachout, support, and deactivation.",
+            "format": "email",
+            "type": "string"
+          },
+          "description_for_human": {
+            "description": "Human-readable description of the plugin.",
+            "type": "string"
+          },
+          "description_for_model": {
+            "description": "Description better tailored to the model, such as token context length considerations or keyword usage for improved plugin prompting.",
+            "type": "string"
+          },
+          "legal_info_url": {
+            "description": "Redirect URL for users to view plugin information.",
+            "format": "uri",
+            "type": "string"
+          },
+          "logo_url": {
+            "description": "URL used to fetch the plugin's logo.",
+            "format": "uri",
+            "type": "string"
+          },
+          "name_for_human": {
+            "description": "Human-readable name, such as the full company name.",
+            "type": "string"
+          },
+          "name_for_model": {
+            "description": "Name the model will used to target the plugin.",
+            "type": "string"
+          },
+          "schema_version": {
+            "description": "Manifest schema version.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "api",
+          "auth",
+          "legal_info_url",
+          "logo_url"
+        ],
+        "type": "object"
+      },
       "ApiCallQueryGroup": {
         "description": "A response for a query on the API call table that is grouped by something.",
         "properties": {
@@ -708,12 +848,6 @@
                   }
                 ],
                 "description": "The unique identifier of the API call.\n\nThis is the same as the API call ID."
-              },
-              "material_density": {
-                "default": 0.0,
-                "description": "The material density as denoted by the user.",
-                "format": "float",
-                "type": "number"
               },
               "src_format": {
                 "allOf": [
@@ -1658,6 +1792,261 @@
         ],
         "type": "object"
       },
+      "CountryCode": {
+        "description": "An enumeration of all ISO-3166 alpha-2 country codes.",
+        "enum": [
+          "AF",
+          "AX",
+          "AL",
+          "DZ",
+          "AS",
+          "AD",
+          "AO",
+          "AI",
+          "AQ",
+          "AG",
+          "AR",
+          "AM",
+          "AW",
+          "AU",
+          "AT",
+          "AZ",
+          "BS",
+          "BH",
+          "BD",
+          "BB",
+          "BY",
+          "BE",
+          "BZ",
+          "BJ",
+          "BM",
+          "BT",
+          "BO",
+          "BQ",
+          "BA",
+          "BW",
+          "BV",
+          "BR",
+          "IO",
+          "BN",
+          "BG",
+          "BF",
+          "BI",
+          "CV",
+          "KH",
+          "CM",
+          "CA",
+          "KY",
+          "CF",
+          "TD",
+          "CL",
+          "CN",
+          "CX",
+          "CC",
+          "CO",
+          "KM",
+          "CG",
+          "CD",
+          "CK",
+          "CR",
+          "CI",
+          "HR",
+          "CU",
+          "CW",
+          "CY",
+          "CZ",
+          "DK",
+          "DJ",
+          "DM",
+          "DO",
+          "EC",
+          "EG",
+          "SV",
+          "GQ",
+          "ER",
+          "EE",
+          "ET",
+          "FK",
+          "FO",
+          "FJ",
+          "FI",
+          "FR",
+          "GF",
+          "PF",
+          "TF",
+          "GA",
+          "GM",
+          "GE",
+          "DE",
+          "GH",
+          "GI",
+          "GR",
+          "GL",
+          "GD",
+          "GP",
+          "GU",
+          "GT",
+          "GG",
+          "GN",
+          "GW",
+          "GY",
+          "HT",
+          "HM",
+          "VA",
+          "HN",
+          "HK",
+          "HU",
+          "IS",
+          "IN",
+          "ID",
+          "IR",
+          "IQ",
+          "IE",
+          "IM",
+          "IL",
+          "IT",
+          "JM",
+          "JP",
+          "JE",
+          "JO",
+          "KZ",
+          "KE",
+          "KI",
+          "KP",
+          "KR",
+          "KW",
+          "KG",
+          "LA",
+          "LV",
+          "LB",
+          "LS",
+          "LR",
+          "LY",
+          "LI",
+          "LT",
+          "LU",
+          "MO",
+          "MK",
+          "MG",
+          "MW",
+          "MY",
+          "MV",
+          "ML",
+          "MT",
+          "MH",
+          "MQ",
+          "MR",
+          "MU",
+          "YT",
+          "MX",
+          "FM",
+          "MD",
+          "MC",
+          "MN",
+          "ME",
+          "MS",
+          "MA",
+          "MZ",
+          "MM",
+          "NA",
+          "NR",
+          "NP",
+          "NL",
+          "NC",
+          "NZ",
+          "NI",
+          "NE",
+          "NG",
+          "NU",
+          "NF",
+          "MP",
+          "NO",
+          "OM",
+          "PK",
+          "PW",
+          "PS",
+          "PA",
+          "PG",
+          "PY",
+          "PE",
+          "PH",
+          "PN",
+          "PL",
+          "PT",
+          "PR",
+          "QA",
+          "RE",
+          "RO",
+          "RU",
+          "RW",
+          "BL",
+          "SH",
+          "KN",
+          "LC",
+          "MF",
+          "PM",
+          "VC",
+          "WS",
+          "SM",
+          "ST",
+          "SA",
+          "SN",
+          "RS",
+          "SC",
+          "SL",
+          "SG",
+          "SX",
+          "SK",
+          "SI",
+          "SB",
+          "SO",
+          "ZA",
+          "GS",
+          "SS",
+          "ES",
+          "LK",
+          "SD",
+          "SR",
+          "SJ",
+          "SZ",
+          "SE",
+          "CH",
+          "SY",
+          "TW",
+          "TJ",
+          "TZ",
+          "TH",
+          "TL",
+          "TG",
+          "TK",
+          "TO",
+          "TT",
+          "TN",
+          "TR",
+          "TM",
+          "TC",
+          "TV",
+          "UG",
+          "UA",
+          "AE",
+          "GB",
+          "US",
+          "UM",
+          "UY",
+          "UZ",
+          "VU",
+          "VE",
+          "VN",
+          "VG",
+          "VI",
+          "WF",
+          "EH",
+          "YE",
+          "ZM",
+          "ZW"
+        ],
+        "type": "string"
+      },
       "CreatedAtSortMode": {
         "description": "Supported set of sort modes for scanning by created_at only.\n\nCurrently, we only support scanning in ascending order.",
         "enum": [
@@ -1667,7 +2056,7 @@
         "type": "string"
       },
       "Currency": {
-        "description": "Currency is the list of supported currencies.\n\nFor more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.",
+        "description": "Currency is the list of supported currencies.\n\nThis comes from the Stripe API docs: For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.",
         "enum": [
           "aed",
           "afn",
@@ -1841,6 +2230,7 @@
                 "$ref": "#/components/schemas/Currency"
               }
             ],
+            "default": "usd",
             "description": "Three-letter ISO code for the currency the customer can be charged in for recurring billing purposes."
           },
           "delinquent": {
@@ -1878,8 +2268,7 @@
           }
         },
         "required": [
-          "created_at",
-          "currency"
+          "created_at"
         ],
         "type": "object"
       },
@@ -2492,7 +2881,7 @@
         "type": "object"
       },
       "ExtendedUser": {
-        "description": "Extended user information.\n\nThis is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, Front, and Zendesk.",
+        "description": "Extended user information.\n\nThis is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Front",
         "properties": {
           "company": {
             "description": "The user's company.",
@@ -2573,11 +2962,6 @@
             "format": "date-time",
             "title": "DateTime",
             "type": "string"
-          },
-          "zendesk_id": {
-            "description": "The user's Zendesk ID. This is mostly used for internal mapping.",
-            "nullable": true,
-            "type": "string"
           }
         },
         "required": [
@@ -2608,11 +2992,101 @@
         ],
         "type": "object"
       },
+      "File2DVectorConversion": {
+        "description": "A 2D Vector file conversion.",
+        "properties": {
+          "completed_at": {
+            "description": "The time and date the API call was completed.",
+            "format": "date-time",
+            "nullable": true,
+            "title": "DateTime",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "The time and date the API call was created.",
+            "format": "date-time",
+            "title": "DateTime",
+            "type": "string"
+          },
+          "error": {
+            "description": "The error the function returned, if any.",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            ],
+            "description": "The unique identifier of the API call.\n\nThis is the same as the API call ID."
+          },
+          "output": {
+            "description": "The converted file, if completed, base64 encoded.",
+            "format": "byte",
+            "nullable": true,
+            "title": "String",
+            "type": "string"
+          },
+          "output_format": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/File2DVectorExportFormat"
+              }
+            ],
+            "description": "The output format of the file conversion."
+          },
+          "src_format": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/File2DVectorImportFormat"
+              }
+            ],
+            "description": "The source format of the file conversion."
+          },
+          "started_at": {
+            "description": "The time and date the API call was started.",
+            "format": "date-time",
+            "nullable": true,
+            "title": "DateTime",
+            "type": "string"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ApiCallStatus"
+              }
+            ],
+            "description": "The status of the API call."
+          },
+          "updated_at": {
+            "description": "The time and date the API call was last updated.",
+            "format": "date-time",
+            "title": "DateTime",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "The user ID of the user who created the API call.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "output_format",
+          "src_format",
+          "status",
+          "updated_at"
+        ],
+        "type": "object"
+      },
       "File2DVectorExportFormat": {
         "description": "The valid types of Vector output file formats.",
         "enum": [
           "dxf",
           "json",
+          "png",
+          "ps",
           "svg"
         ],
         "type": "string"
@@ -2625,26 +3099,118 @@
         ],
         "type": "string"
       },
+      "File3DConversion": {
+        "description": "A 3D file conversion.",
+        "properties": {
+          "completed_at": {
+            "description": "The time and date the API call was completed.",
+            "format": "date-time",
+            "nullable": true,
+            "title": "DateTime",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "The time and date the API call was created.",
+            "format": "date-time",
+            "title": "DateTime",
+            "type": "string"
+          },
+          "error": {
+            "description": "The error the function returned, if any.",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            ],
+            "description": "The unique identifier of the API call.\n\nThis is the same as the API call ID."
+          },
+          "output": {
+            "description": "The converted file, if completed, base64 encoded.",
+            "format": "byte",
+            "nullable": true,
+            "title": "String",
+            "type": "string"
+          },
+          "output_format": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/File3DExportFormat"
+              }
+            ],
+            "description": "The output format of the file conversion."
+          },
+          "src_format": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/File3DImportFormat"
+              }
+            ],
+            "description": "The source format of the file conversion."
+          },
+          "started_at": {
+            "description": "The time and date the API call was started.",
+            "format": "date-time",
+            "nullable": true,
+            "title": "DateTime",
+            "type": "string"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ApiCallStatus"
+              }
+            ],
+            "description": "The status of the API call."
+          },
+          "updated_at": {
+            "description": "The time and date the API call was last updated.",
+            "format": "date-time",
+            "title": "DateTime",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "The user ID of the user who created the API call.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "output_format",
+          "src_format",
+          "status",
+          "updated_at"
+        ],
+        "type": "object"
+      },
       "File3DExportFormat": {
-        "description": "The valid types of 3d output file formats.",
+        "description": "The valid types of 3d output file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.",
         "enum": [
           "dae",
           "fbx",
           "fbxb",
           "obj",
           "obj_nomtl",
+          "ply",
           "step",
           "stl"
         ],
         "type": "string"
       },
       "File3DImportFormat": {
-        "description": "The valid types of 3d source file formats.",
+        "description": "The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.",
         "enum": [
           "dae",
+          "dxf",
           "fbx",
+          "obj_zip",
           "obj",
           "obj_nomtl",
+          "ply",
           "step",
           "stl"
         ],
@@ -2687,12 +3253,6 @@
               }
             ],
             "description": "The unique identifier of the API call.\n\nThis is the same as the API call ID."
-          },
-          "material_density": {
-            "default": 0.0,
-            "description": "The material density as denoted by the user.",
-            "format": "float",
-            "type": "number"
           },
           "src_format": {
             "allOf": [
@@ -2919,6 +3479,7 @@
           "json",
           "obj",
           "obj_nomtl",
+          "ply",
           "step",
           "stl",
           "svg"
@@ -2931,8 +3492,10 @@
           "dae",
           "dxf",
           "fbx",
+          "obj_zip",
           "obj",
           "obj_nomtl",
+          "ply",
           "step",
           "stl",
           "svg"
@@ -3226,6 +3789,14 @@
         },
         "type": "object"
       },
+      "ImageType": {
+        "description": "An enumeration.",
+        "enum": [
+          "png",
+          "jpg"
+        ],
+        "type": "string"
+      },
       "IndexInfo": {
         "description": "IndexInfo contains information about a registry.",
         "properties": {
@@ -3301,6 +3872,7 @@
                 "$ref": "#/components/schemas/Currency"
               }
             ],
+            "default": "usd",
             "description": "Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase."
           },
           "customer_email": {
@@ -3400,8 +3972,7 @@
           }
         },
         "required": [
-          "created_at",
-          "currency"
+          "created_at"
         ],
         "type": "object"
       },
@@ -3421,6 +3992,7 @@
                 "$ref": "#/components/schemas/Currency"
               }
             ],
+            "default": "usd",
             "description": "Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase."
           },
           "description": {
@@ -3444,9 +4016,6 @@
             "type": "object"
           }
         },
-        "required": [
-          "currency"
-        ],
         "type": "object"
       },
       "InvoiceStatus": {
@@ -3651,6 +4220,17 @@
         },
         "type": "object"
       },
+      "Mesh": {
+        "properties": {
+          "mesh": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "mesh"
+        ],
+        "type": "object"
+      },
       "MetaClusterInfo": {
         "description": "Jetstream statistics.",
         "properties": {
@@ -3720,6 +4300,14 @@
             "description": "The git hash of the server.",
             "type": "string"
           },
+          "point_e": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PointEMetadata"
+              }
+            ],
+            "description": "Metadata about our point-e instance."
+          },
           "pubsub": {
             "allOf": [
               {
@@ -3736,6 +4324,7 @@
           "executor",
           "fs",
           "git_hash",
+          "point_e",
           "pubsub"
         ],
         "type": "object"
@@ -3764,8 +4353,12 @@
             "type": "string"
           },
           "country": {
-            "description": "The country component.",
-            "type": "string"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CountryCode"
+              }
+            ],
+            "description": "The country component. This is a two-letter ISO country code."
           },
           "state": {
             "description": "The state component.",
@@ -3788,6 +4381,9 @@
             "type": "string"
           }
         },
+        "required": [
+          "country"
+        ],
         "type": "object"
       },
       "OAuth2ClientInfo": {
@@ -4090,6 +4686,19 @@
             "type": "array"
           }
         },
+        "type": "object"
+      },
+      "PointEMetadata": {
+        "description": "Metadata about our point-e instance.\n\nThis is mostly used for internal purposes and debugging.",
+        "properties": {
+          "ok": {
+            "description": "If the point-e service returned an ok response from ping.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
         "type": "object"
       },
       "Pong": {
@@ -5285,9 +5894,12 @@
         "enum": [
           "joule",
           "calorie",
+          "kilowatt_hour",
+          "watt_hour",
           "british_thermal_unit",
           "british_thermal_unit_iso",
           "british_thermal_unit59",
+          "therm",
           "foot_pound"
         ],
         "type": "string"
@@ -5391,7 +6003,7 @@
           "newton",
           "pound",
           "dyne",
-          "kilopound",
+          "kilopond",
           "poundal"
         ],
         "type": "string"
@@ -5596,12 +6208,18 @@
         "description": "The valid types of length unit formats.",
         "enum": [
           "meter",
+          "millimeter",
+          "centimeter",
+          "kilometer",
           "foot",
           "mil",
           "inch",
           "mile",
           "nautical_mile",
           "astronomical_unit",
+          "lightyear",
+          "parsec",
+          "angstrom",
           "cubit",
           "fathom",
           "chain",
@@ -5609,10 +6227,7 @@
           "hand",
           "league",
           "nautical_league",
-          "yard",
-          "millimeter",
-          "centimeter",
-          "kilometer"
+          "yard"
         ],
         "type": "string"
       },
@@ -5915,6 +6530,7 @@
         "description": "The valid types of mass unit formats.",
         "enum": [
           "gram",
+          "kilogram",
           "metric_ton",
           "pound",
           "long_ton",
@@ -5922,8 +6538,7 @@
           "stone",
           "ounce",
           "carat",
-          "slug",
-          "kilogram"
+          "slug"
         ],
         "type": "string"
       },
@@ -6529,11 +7144,113 @@
         "type": "object"
       },
       "UnitRadiationFormat": {
-        "description": "The valid types of radiation unit formats.",
+        "description": "The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.",
         "enum": [
           "gray",
           "sievert",
           "rad"
+        ],
+        "type": "string"
+      },
+      "UnitRadioactivityConversion": {
+        "description": "A unit conversion.",
+        "properties": {
+          "completed_at": {
+            "description": "The time and date the API call was completed.",
+            "format": "date-time",
+            "nullable": true,
+            "title": "DateTime",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "The time and date the API call was created.",
+            "format": "date-time",
+            "title": "DateTime",
+            "type": "string"
+          },
+          "error": {
+            "description": "The error the function returned, if any.",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            ],
+            "description": "The unique identifier of the API call.\n\nThis is the same as the API call ID."
+          },
+          "input": {
+            "default": 0.0,
+            "description": "The input value.",
+            "format": "float",
+            "type": "number"
+          },
+          "output": {
+            "description": "The resulting value.",
+            "format": "double",
+            "nullable": true,
+            "type": "number"
+          },
+          "output_format": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UnitRadioactivityFormat"
+              }
+            ],
+            "description": "The output format of the unit conversion."
+          },
+          "src_format": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UnitRadioactivityFormat"
+              }
+            ],
+            "description": "The source format of the unit conversion."
+          },
+          "started_at": {
+            "description": "The time and date the API call was started.",
+            "format": "date-time",
+            "nullable": true,
+            "title": "DateTime",
+            "type": "string"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ApiCallStatus"
+              }
+            ],
+            "description": "The status of the API call."
+          },
+          "updated_at": {
+            "description": "The time and date the API call was last updated.",
+            "format": "date-time",
+            "title": "DateTime",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "The user ID of the user who created the API call.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "output_format",
+          "src_format",
+          "status",
+          "updated_at"
+        ],
+        "type": "object"
+      },
+      "UnitRadioactivityFormat": {
+        "description": "The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.",
+        "enum": [
+          "becquerel",
+          "curie",
+          "rutherford"
         ],
         "type": "string"
       },
@@ -7153,13 +7870,35 @@
         "description": "The valid types of volume unit formats.",
         "enum": [
           "cubic_meter",
+          "cubic_centimeter",
           "cubic_millimeter",
           "cubic_kilometer",
           "liter",
+          "cubic_inch",
           "cubic_foot",
           "cubic_yard",
           "cubic_mile",
-          "cubic_centimeter"
+          "gallon",
+          "quart",
+          "pint",
+          "cup",
+          "fluid_ounce",
+          "barrel",
+          "bushel",
+          "cord",
+          "cubic_fathom",
+          "tablespoon",
+          "teaspoon",
+          "pinch",
+          "dash",
+          "drop",
+          "fifth",
+          "dram",
+          "gill",
+          "peck",
+          "sack",
+          "shot",
+          "strike"
         ],
         "type": "string"
       },
@@ -7407,6 +8146,67 @@
         ]
       }
     },
+    "/.well-known/ai-plugin.json": {
+      "get": {
+        "operationId": "get_ai_plugin_manifest",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiPluginManifest"
+                }
+              }
+            },
+            "description": "successful operation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Get AI plugin manifest.",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
     "/_meta/info": {
       "get": {
         "description": "This includes information on any of our other distributed systems it is connected to.\nYou must be a KittyCAD employee to perform this request.",
@@ -7466,6 +8266,187 @@
         "summary": "Get the metadata about our currently running server.",
         "tags": [
           "meta",
+          "hidden"
+        ]
+      }
+    },
+    "/ai/image-to-3d/{input_format}/{output_format}": {
+      "post": {
+        "operationId": "create_image_to_3d",
+        "parameters": [
+          {
+            "description": "The format of the image being converted.",
+            "in": "path",
+            "name": "input_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ImageType"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The format the output file should be converted to.",
+            "in": "path",
+            "name": "output_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FileExportFormat"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mesh"
+                }
+              }
+            },
+            "description": "successful operation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Generate a 3D model from an image.",
+        "tags": [
+          "ai",
+          "beta",
+          "hidden"
+        ]
+      }
+    },
+    "/ai/text-to-3d/{output_format}": {
+      "post": {
+        "operationId": "create_text_to_3d",
+        "parameters": [
+          {
+            "description": "The format the output file should be converted to.",
+            "in": "path",
+            "name": "output_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FileExportFormat"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The prompt for the model.",
+            "in": "query",
+            "name": "prompt",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mesh"
+                }
+              }
+            },
+            "description": "successful operation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Generate a 3D model from text.",
+        "tags": [
+          "ai",
+          "beta",
           "hidden"
         ]
       }
@@ -8386,22 +9367,201 @@
         ]
       }
     },
+    "/file/2d/vector/conversion/{src_format}/{output_format}": {
+      "post": {
+        "description": "Convert a 2D Vector file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.\nIf the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\nIf the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.",
+        "operationId": "create_file_2d_vector_conversion",
+        "parameters": [
+          {
+            "description": "The format the file should be converted to.",
+            "in": "path",
+            "name": "output_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/File2DVectorExportFormat"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The format of the file to convert.",
+            "in": "path",
+            "name": "src_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/File2DVectorImportFormat"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File2DVectorConversion"
+                }
+              }
+            },
+            "description": "successful creation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Convert 2D Vector file.",
+        "tags": [
+          "file"
+        ]
+      }
+    },
+    "/file/3d/conversion/{src_format}/{output_format}": {
+      "post": {
+        "description": "Convert a 3D file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.\nIf the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\nIf the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.",
+        "operationId": "create_file_3d_conversion",
+        "parameters": [
+          {
+            "description": "The format the file should be converted to.",
+            "in": "path",
+            "name": "output_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/File3DExportFormat"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The format of the file to convert.",
+            "in": "path",
+            "name": "src_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/File3DImportFormat"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File3DConversion"
+                }
+              }
+            },
+            "description": "successful creation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Convert 3D file.",
+        "tags": [
+          "file"
+        ]
+      }
+    },
     "/file/center-of-mass": {
       "post": {
         "description": "Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\nIf the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.",
         "operationId": "create_file_center_of_mass",
         "parameters": [
-          {
-            "description": "The material density.",
-            "in": "query",
-            "name": "material_density",
-            "required": true,
-            "schema": {
-              "format": "float",
-              "type": "number"
-            },
-            "style": "form"
-          },
           {
             "description": "The format of the file.",
             "in": "query",
@@ -11775,6 +12935,102 @@
         ]
       }
     },
+    "/unit/conversion/radioactivity/{src_format}/{output_format}": {
+      "get": {
+        "description": "Convert a radioactivity unit value to another radioactivity unit value. This is a nice endpoint to use for helper functions.",
+        "operationId": "get_radioactivity_unit_conversion",
+        "parameters": [
+          {
+            "description": "The output format of the unit.",
+            "in": "path",
+            "name": "output_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UnitRadioactivityFormat"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The source format of the unit.",
+            "in": "path",
+            "name": "src_format",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UnitRadioactivityFormat"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The initial value.",
+            "in": "query",
+            "name": "value",
+            "required": true,
+            "schema": {
+              "format": "float",
+              "type": "number"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitRadioactivityConversion"
+                }
+              }
+            },
+            "description": "successful operation",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Convert radioactivity units.",
+        "tags": [
+          "unit",
+          "beta"
+        ]
+      }
+    },
     "/unit/conversion/solid-angle/{src_format}/{output_format}": {
       "get": {
         "description": "Convert a solid angle unit value to another solid angle unit value. This is a nice endpoint to use for helper functions.",
@@ -14081,6 +15337,61 @@
         ]
       }
     },
+    "/user/payment/tax": {
+      "get": {
+        "description": "This endpoint requires authentication by any KittyCAD user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.",
+        "operationId": "validate_customer_tax_information_for_user",
+        "responses": {
+          "204": {
+            "description": "successful operation, no content",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "summary": "Validate a customer's information is correct and valid for automatic tax.",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
     "/user/session/{token}": {
       "get": {
         "description": "This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.",
@@ -14606,6 +15917,13 @@
     }
   },
   "tags": [
+    {
+      "description": "AI uses machine learning to generate 3D meshes.",
+      "externalDocs": {
+        "url": "https://docs.kittycad.io/api/ai"
+      },
+      "name": "ai"
+    },
     {
       "description": "API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.",
       "externalDocs": {

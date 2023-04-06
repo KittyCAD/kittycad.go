@@ -12,6 +12,82 @@ const (
 	AccountProviderGithub AccountProvider = "github"
 )
 
+// AiPluginAPI: AI plugin api information.
+type AiPluginAPI struct {
+	// IsUserAuthenticated: If the API is authenticated.
+	IsUserAuthenticated bool `json:"is_user_authenticated" yaml:"is_user_authenticated" schema:"is_user_authenticated"`
+	// Type: The type of API.
+	Type AiPluginAPIType `json:"type" yaml:"type" schema:"type"`
+	// Url: The url to the API's schema.
+	Url URL `json:"url" yaml:"url" schema:"url,required"`
+}
+
+// AiPluginAPIType: AI plugin api type.
+type AiPluginAPIType string
+
+const (
+	// AiPluginAPITypeOpenapi represents the AiPluginAPIType `"openapi"`.
+	AiPluginAPITypeOpenapi AiPluginAPIType = "openapi"
+)
+
+// AiPluginAuth: AI plugin auth information.
+type AiPluginAuth struct {
+	// AuthorizationType: The type of http authorization.
+	AuthorizationType AiPluginHttpAuthType `json:"authorization_type" yaml:"authorization_type" schema:"authorization_type"`
+	// Type: The type of authentication.
+	Type AiPluginAuthType `json:"type" yaml:"type" schema:"type"`
+}
+
+// AiPluginAuthType: AI plugin auth type.
+type AiPluginAuthType string
+
+const (
+	// AiPluginAuthTypeNone represents the AiPluginAuthType `"none"`.
+	AiPluginAuthTypeNone AiPluginAuthType = "none"
+	// AiPluginAuthTypeUserHttp represents the AiPluginAuthType `"user_http"`.
+	AiPluginAuthTypeUserHttp AiPluginAuthType = "user_http"
+	// AiPluginAuthTypeServiceHttp represents the AiPluginAuthType `"service_http"`.
+	AiPluginAuthTypeServiceHttp AiPluginAuthType = "service_http"
+	// AiPluginAuthTypeOauth represents the AiPluginAuthType `"oauth"`.
+	AiPluginAuthTypeOauth AiPluginAuthType = "oauth"
+)
+
+// AiPluginHttpAuthType: AI plugin http auth type.
+type AiPluginHttpAuthType string
+
+const (
+	// AiPluginHttpAuthTypeBasic represents the AiPluginHttpAuthType `"basic"`.
+	AiPluginHttpAuthTypeBasic AiPluginHttpAuthType = "basic"
+	// AiPluginHttpAuthTypeBearer represents the AiPluginHttpAuthType `"bearer"`.
+	AiPluginHttpAuthTypeBearer AiPluginHttpAuthType = "bearer"
+)
+
+// AiPluginManifest: AI plugin manifest.
+//
+// This is used for OpenAI's ChatGPT plugins. You can read more about them [here](https://platform.openai.com/docs/plugins/getting-started/plugin-manifest).
+type AiPluginManifest struct {
+	// API: API specification.
+	API AiPluginAPI `json:"api" yaml:"api" schema:"api,required"`
+	// Auth: Authentication schema.
+	Auth AiPluginAuth `json:"auth" yaml:"auth" schema:"auth,required"`
+	// ContactEmail: Email contact for safety/moderation reachout, support, and deactivation.
+	ContactEmail string `json:"contact_email" yaml:"contact_email" schema:"contact_email"`
+	// DescriptionForHuman: Human-readable description of the plugin.
+	DescriptionForHuman string `json:"description_for_human" yaml:"description_for_human" schema:"description_for_human"`
+	// DescriptionForModel: Description better tailored to the model, such as token context length considerations or keyword usage for improved plugin prompting.
+	DescriptionForModel string `json:"description_for_model" yaml:"description_for_model" schema:"description_for_model"`
+	// LegalInfoUrl: Redirect URL for users to view plugin information.
+	LegalInfoUrl URL `json:"legal_info_url" yaml:"legal_info_url" schema:"legal_info_url,required"`
+	// LogoUrl: URL used to fetch the plugin's logo.
+	LogoUrl URL `json:"logo_url" yaml:"logo_url" schema:"logo_url,required"`
+	// NameForHuman: Human-readable name, such as the full company name.
+	NameForHuman string `json:"name_for_human" yaml:"name_for_human" schema:"name_for_human"`
+	// NameForModel: Name the model will used to target the plugin.
+	NameForModel string `json:"name_for_model" yaml:"name_for_model" schema:"name_for_model"`
+	// SchemaVersion: Manifest schema version.
+	SchemaVersion string `json:"schema_version" yaml:"schema_version" schema:"schema_version"`
+}
+
 // APICallQueryGroup: A response for a query on the API call table that is grouped by something.
 type APICallQueryGroup struct {
 	// Count:
@@ -202,8 +278,8 @@ type AsyncAPICallOutputFileConversion struct {
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// File2DVectorConversion: A 2DVectorfile conversion.
-type File2DVectorConversion struct {
+// AsyncAPICallOutputFile2DVectorConversion: A 2DVectorfile conversion.
+type AsyncAPICallOutputFile2DVectorConversion struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -224,16 +300,14 @@ type File2DVectorConversion struct {
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// File3DConversion: A 3D file conversion.
-type File3DConversion struct {
+// AsyncAPICallOutputFile3DConversion: A 3D file conversion.
+type AsyncAPICallOutputFile3DConversion struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -254,8 +328,6 @@ type File3DConversion struct {
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -276,8 +348,6 @@ type AsyncAPICallOutputFileCenterOfMass struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// MaterialDensity: The material density as denoted by the user.
-	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
 	// SrcFormat: The source format of the file.
 	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
@@ -614,6 +684,510 @@ type Connection struct {
 	WriteDeadline int `json:"write_deadline" yaml:"write_deadline" schema:"write_deadline"`
 }
 
+// CountryCode: An enumeration of all ISO-3166 alpha-2 country codes.
+type CountryCode string
+
+const (
+	// CountryCodeAF represents the CountryCode `"AF"`.
+	CountryCodeAF CountryCode = "AF"
+	// CountryCodeAX represents the CountryCode `"AX"`.
+	CountryCodeAX CountryCode = "AX"
+	// CountryCodeAL represents the CountryCode `"AL"`.
+	CountryCodeAL CountryCode = "AL"
+	// CountryCodeDZ represents the CountryCode `"DZ"`.
+	CountryCodeDZ CountryCode = "DZ"
+	// CountryCodeAS represents the CountryCode `"AS"`.
+	CountryCodeAS CountryCode = "AS"
+	// CountryCodeAD represents the CountryCode `"AD"`.
+	CountryCodeAD CountryCode = "AD"
+	// CountryCodeAO represents the CountryCode `"AO"`.
+	CountryCodeAO CountryCode = "AO"
+	// CountryCodeAI represents the CountryCode `"AI"`.
+	CountryCodeAI CountryCode = "AI"
+	// CountryCodeAQ represents the CountryCode `"AQ"`.
+	CountryCodeAQ CountryCode = "AQ"
+	// CountryCodeAG represents the CountryCode `"AG"`.
+	CountryCodeAG CountryCode = "AG"
+	// CountryCodeAR represents the CountryCode `"AR"`.
+	CountryCodeAR CountryCode = "AR"
+	// CountryCodeAM represents the CountryCode `"AM"`.
+	CountryCodeAM CountryCode = "AM"
+	// CountryCodeAW represents the CountryCode `"AW"`.
+	CountryCodeAW CountryCode = "AW"
+	// CountryCodeAU represents the CountryCode `"AU"`.
+	CountryCodeAU CountryCode = "AU"
+	// CountryCodeAT represents the CountryCode `"AT"`.
+	CountryCodeAT CountryCode = "AT"
+	// CountryCodeAZ represents the CountryCode `"AZ"`.
+	CountryCodeAZ CountryCode = "AZ"
+	// CountryCodeBS represents the CountryCode `"BS"`.
+	CountryCodeBS CountryCode = "BS"
+	// CountryCodeBH represents the CountryCode `"BH"`.
+	CountryCodeBH CountryCode = "BH"
+	// CountryCodeBD represents the CountryCode `"BD"`.
+	CountryCodeBD CountryCode = "BD"
+	// CountryCodeBB represents the CountryCode `"BB"`.
+	CountryCodeBB CountryCode = "BB"
+	// CountryCodeBY represents the CountryCode `"BY"`.
+	CountryCodeBY CountryCode = "BY"
+	// CountryCodeBE represents the CountryCode `"BE"`.
+	CountryCodeBE CountryCode = "BE"
+	// CountryCodeBZ represents the CountryCode `"BZ"`.
+	CountryCodeBZ CountryCode = "BZ"
+	// CountryCodeBJ represents the CountryCode `"BJ"`.
+	CountryCodeBJ CountryCode = "BJ"
+	// CountryCodeBM represents the CountryCode `"BM"`.
+	CountryCodeBM CountryCode = "BM"
+	// CountryCodeBT represents the CountryCode `"BT"`.
+	CountryCodeBT CountryCode = "BT"
+	// CountryCodeBO represents the CountryCode `"BO"`.
+	CountryCodeBO CountryCode = "BO"
+	// CountryCodeBQ represents the CountryCode `"BQ"`.
+	CountryCodeBQ CountryCode = "BQ"
+	// CountryCodeBA represents the CountryCode `"BA"`.
+	CountryCodeBA CountryCode = "BA"
+	// CountryCodeBW represents the CountryCode `"BW"`.
+	CountryCodeBW CountryCode = "BW"
+	// CountryCodeBV represents the CountryCode `"BV"`.
+	CountryCodeBV CountryCode = "BV"
+	// CountryCodeBR represents the CountryCode `"BR"`.
+	CountryCodeBR CountryCode = "BR"
+	// CountryCodeIO represents the CountryCode `"IO"`.
+	CountryCodeIO CountryCode = "IO"
+	// CountryCodeBN represents the CountryCode `"BN"`.
+	CountryCodeBN CountryCode = "BN"
+	// CountryCodeBG represents the CountryCode `"BG"`.
+	CountryCodeBG CountryCode = "BG"
+	// CountryCodeBF represents the CountryCode `"BF"`.
+	CountryCodeBF CountryCode = "BF"
+	// CountryCodeBI represents the CountryCode `"BI"`.
+	CountryCodeBI CountryCode = "BI"
+	// CountryCodeCV represents the CountryCode `"CV"`.
+	CountryCodeCV CountryCode = "CV"
+	// CountryCodeKH represents the CountryCode `"KH"`.
+	CountryCodeKH CountryCode = "KH"
+	// CountryCodeCM represents the CountryCode `"CM"`.
+	CountryCodeCM CountryCode = "CM"
+	// CountryCodeCA represents the CountryCode `"CA"`.
+	CountryCodeCA CountryCode = "CA"
+	// CountryCodeKY represents the CountryCode `"KY"`.
+	CountryCodeKY CountryCode = "KY"
+	// CountryCodeCF represents the CountryCode `"CF"`.
+	CountryCodeCF CountryCode = "CF"
+	// CountryCodeTD represents the CountryCode `"TD"`.
+	CountryCodeTD CountryCode = "TD"
+	// CountryCodeCL represents the CountryCode `"CL"`.
+	CountryCodeCL CountryCode = "CL"
+	// CountryCodeCN represents the CountryCode `"CN"`.
+	CountryCodeCN CountryCode = "CN"
+	// CountryCodeCX represents the CountryCode `"CX"`.
+	CountryCodeCX CountryCode = "CX"
+	// CountryCodeCC represents the CountryCode `"CC"`.
+	CountryCodeCC CountryCode = "CC"
+	// CountryCodeCO represents the CountryCode `"CO"`.
+	CountryCodeCO CountryCode = "CO"
+	// CountryCodeKM represents the CountryCode `"KM"`.
+	CountryCodeKM CountryCode = "KM"
+	// CountryCodeCG represents the CountryCode `"CG"`.
+	CountryCodeCG CountryCode = "CG"
+	// CountryCodeCD represents the CountryCode `"CD"`.
+	CountryCodeCD CountryCode = "CD"
+	// CountryCodeCK represents the CountryCode `"CK"`.
+	CountryCodeCK CountryCode = "CK"
+	// CountryCodeCR represents the CountryCode `"CR"`.
+	CountryCodeCR CountryCode = "CR"
+	// CountryCodeCI represents the CountryCode `"CI"`.
+	CountryCodeCI CountryCode = "CI"
+	// CountryCodeHR represents the CountryCode `"HR"`.
+	CountryCodeHR CountryCode = "HR"
+	// CountryCodeCU represents the CountryCode `"CU"`.
+	CountryCodeCU CountryCode = "CU"
+	// CountryCodeCW represents the CountryCode `"CW"`.
+	CountryCodeCW CountryCode = "CW"
+	// CountryCodeCY represents the CountryCode `"CY"`.
+	CountryCodeCY CountryCode = "CY"
+	// CountryCodeCZ represents the CountryCode `"CZ"`.
+	CountryCodeCZ CountryCode = "CZ"
+	// CountryCodeDK represents the CountryCode `"DK"`.
+	CountryCodeDK CountryCode = "DK"
+	// CountryCodeDJ represents the CountryCode `"DJ"`.
+	CountryCodeDJ CountryCode = "DJ"
+	// CountryCodeDM represents the CountryCode `"DM"`.
+	CountryCodeDM CountryCode = "DM"
+	// CountryCodeDO represents the CountryCode `"DO"`.
+	CountryCodeDO CountryCode = "DO"
+	// CountryCodeEC represents the CountryCode `"EC"`.
+	CountryCodeEC CountryCode = "EC"
+	// CountryCodeEG represents the CountryCode `"EG"`.
+	CountryCodeEG CountryCode = "EG"
+	// CountryCodeSV represents the CountryCode `"SV"`.
+	CountryCodeSV CountryCode = "SV"
+	// CountryCodeGQ represents the CountryCode `"GQ"`.
+	CountryCodeGQ CountryCode = "GQ"
+	// CountryCodeER represents the CountryCode `"ER"`.
+	CountryCodeER CountryCode = "ER"
+	// CountryCodeEE represents the CountryCode `"EE"`.
+	CountryCodeEE CountryCode = "EE"
+	// CountryCodeET represents the CountryCode `"ET"`.
+	CountryCodeET CountryCode = "ET"
+	// CountryCodeFK represents the CountryCode `"FK"`.
+	CountryCodeFK CountryCode = "FK"
+	// CountryCodeFO represents the CountryCode `"FO"`.
+	CountryCodeFO CountryCode = "FO"
+	// CountryCodeFJ represents the CountryCode `"FJ"`.
+	CountryCodeFJ CountryCode = "FJ"
+	// CountryCodeFI represents the CountryCode `"FI"`.
+	CountryCodeFI CountryCode = "FI"
+	// CountryCodeFR represents the CountryCode `"FR"`.
+	CountryCodeFR CountryCode = "FR"
+	// CountryCodeGF represents the CountryCode `"GF"`.
+	CountryCodeGF CountryCode = "GF"
+	// CountryCodePF represents the CountryCode `"PF"`.
+	CountryCodePF CountryCode = "PF"
+	// CountryCodeTF represents the CountryCode `"TF"`.
+	CountryCodeTF CountryCode = "TF"
+	// CountryCodeGA represents the CountryCode `"GA"`.
+	CountryCodeGA CountryCode = "GA"
+	// CountryCodeGM represents the CountryCode `"GM"`.
+	CountryCodeGM CountryCode = "GM"
+	// CountryCodeGE represents the CountryCode `"GE"`.
+	CountryCodeGE CountryCode = "GE"
+	// CountryCodeDE represents the CountryCode `"DE"`.
+	CountryCodeDE CountryCode = "DE"
+	// CountryCodeGH represents the CountryCode `"GH"`.
+	CountryCodeGH CountryCode = "GH"
+	// CountryCodeGI represents the CountryCode `"GI"`.
+	CountryCodeGI CountryCode = "GI"
+	// CountryCodeGR represents the CountryCode `"GR"`.
+	CountryCodeGR CountryCode = "GR"
+	// CountryCodeGL represents the CountryCode `"GL"`.
+	CountryCodeGL CountryCode = "GL"
+	// CountryCodeGD represents the CountryCode `"GD"`.
+	CountryCodeGD CountryCode = "GD"
+	// CountryCodeGP represents the CountryCode `"GP"`.
+	CountryCodeGP CountryCode = "GP"
+	// CountryCodeGU represents the CountryCode `"GU"`.
+	CountryCodeGU CountryCode = "GU"
+	// CountryCodeGT represents the CountryCode `"GT"`.
+	CountryCodeGT CountryCode = "GT"
+	// CountryCodeGG represents the CountryCode `"GG"`.
+	CountryCodeGG CountryCode = "GG"
+	// CountryCodeGN represents the CountryCode `"GN"`.
+	CountryCodeGN CountryCode = "GN"
+	// CountryCodeGW represents the CountryCode `"GW"`.
+	CountryCodeGW CountryCode = "GW"
+	// CountryCodeGY represents the CountryCode `"GY"`.
+	CountryCodeGY CountryCode = "GY"
+	// CountryCodeHT represents the CountryCode `"HT"`.
+	CountryCodeHT CountryCode = "HT"
+	// CountryCodeHM represents the CountryCode `"HM"`.
+	CountryCodeHM CountryCode = "HM"
+	// CountryCodeVA represents the CountryCode `"VA"`.
+	CountryCodeVA CountryCode = "VA"
+	// CountryCodeHN represents the CountryCode `"HN"`.
+	CountryCodeHN CountryCode = "HN"
+	// CountryCodeHK represents the CountryCode `"HK"`.
+	CountryCodeHK CountryCode = "HK"
+	// CountryCodeHU represents the CountryCode `"HU"`.
+	CountryCodeHU CountryCode = "HU"
+	// CountryCodeIS represents the CountryCode `"IS"`.
+	CountryCodeIS CountryCode = "IS"
+	// CountryCodeIN represents the CountryCode `"IN"`.
+	CountryCodeIN CountryCode = "IN"
+	// CountryCodeID represents the CountryCode `"ID"`.
+	CountryCodeID CountryCode = "ID"
+	// CountryCodeIR represents the CountryCode `"IR"`.
+	CountryCodeIR CountryCode = "IR"
+	// CountryCodeIQ represents the CountryCode `"IQ"`.
+	CountryCodeIQ CountryCode = "IQ"
+	// CountryCodeIE represents the CountryCode `"IE"`.
+	CountryCodeIE CountryCode = "IE"
+	// CountryCodeIM represents the CountryCode `"IM"`.
+	CountryCodeIM CountryCode = "IM"
+	// CountryCodeIL represents the CountryCode `"IL"`.
+	CountryCodeIL CountryCode = "IL"
+	// CountryCodeIT represents the CountryCode `"IT"`.
+	CountryCodeIT CountryCode = "IT"
+	// CountryCodeJM represents the CountryCode `"JM"`.
+	CountryCodeJM CountryCode = "JM"
+	// CountryCodeJP represents the CountryCode `"JP"`.
+	CountryCodeJP CountryCode = "JP"
+	// CountryCodeJE represents the CountryCode `"JE"`.
+	CountryCodeJE CountryCode = "JE"
+	// CountryCodeJO represents the CountryCode `"JO"`.
+	CountryCodeJO CountryCode = "JO"
+	// CountryCodeKZ represents the CountryCode `"KZ"`.
+	CountryCodeKZ CountryCode = "KZ"
+	// CountryCodeKE represents the CountryCode `"KE"`.
+	CountryCodeKE CountryCode = "KE"
+	// CountryCodeKI represents the CountryCode `"KI"`.
+	CountryCodeKI CountryCode = "KI"
+	// CountryCodeKP represents the CountryCode `"KP"`.
+	CountryCodeKP CountryCode = "KP"
+	// CountryCodeKR represents the CountryCode `"KR"`.
+	CountryCodeKR CountryCode = "KR"
+	// CountryCodeKW represents the CountryCode `"KW"`.
+	CountryCodeKW CountryCode = "KW"
+	// CountryCodeKG represents the CountryCode `"KG"`.
+	CountryCodeKG CountryCode = "KG"
+	// CountryCodeLA represents the CountryCode `"LA"`.
+	CountryCodeLA CountryCode = "LA"
+	// CountryCodeLV represents the CountryCode `"LV"`.
+	CountryCodeLV CountryCode = "LV"
+	// CountryCodeLB represents the CountryCode `"LB"`.
+	CountryCodeLB CountryCode = "LB"
+	// CountryCodeLS represents the CountryCode `"LS"`.
+	CountryCodeLS CountryCode = "LS"
+	// CountryCodeLR represents the CountryCode `"LR"`.
+	CountryCodeLR CountryCode = "LR"
+	// CountryCodeLY represents the CountryCode `"LY"`.
+	CountryCodeLY CountryCode = "LY"
+	// CountryCodeLI represents the CountryCode `"LI"`.
+	CountryCodeLI CountryCode = "LI"
+	// CountryCodeLT represents the CountryCode `"LT"`.
+	CountryCodeLT CountryCode = "LT"
+	// CountryCodeLU represents the CountryCode `"LU"`.
+	CountryCodeLU CountryCode = "LU"
+	// CountryCodeMO represents the CountryCode `"MO"`.
+	CountryCodeMO CountryCode = "MO"
+	// CountryCodeMK represents the CountryCode `"MK"`.
+	CountryCodeMK CountryCode = "MK"
+	// CountryCodeMG represents the CountryCode `"MG"`.
+	CountryCodeMG CountryCode = "MG"
+	// CountryCodeMW represents the CountryCode `"MW"`.
+	CountryCodeMW CountryCode = "MW"
+	// CountryCodeMY represents the CountryCode `"MY"`.
+	CountryCodeMY CountryCode = "MY"
+	// CountryCodeMV represents the CountryCode `"MV"`.
+	CountryCodeMV CountryCode = "MV"
+	// CountryCodeML represents the CountryCode `"ML"`.
+	CountryCodeML CountryCode = "ML"
+	// CountryCodeMT represents the CountryCode `"MT"`.
+	CountryCodeMT CountryCode = "MT"
+	// CountryCodeMH represents the CountryCode `"MH"`.
+	CountryCodeMH CountryCode = "MH"
+	// CountryCodeMQ represents the CountryCode `"MQ"`.
+	CountryCodeMQ CountryCode = "MQ"
+	// CountryCodeMR represents the CountryCode `"MR"`.
+	CountryCodeMR CountryCode = "MR"
+	// CountryCodeMU represents the CountryCode `"MU"`.
+	CountryCodeMU CountryCode = "MU"
+	// CountryCodeYT represents the CountryCode `"YT"`.
+	CountryCodeYT CountryCode = "YT"
+	// CountryCodeMX represents the CountryCode `"MX"`.
+	CountryCodeMX CountryCode = "MX"
+	// CountryCodeFM represents the CountryCode `"FM"`.
+	CountryCodeFM CountryCode = "FM"
+	// CountryCodeMD represents the CountryCode `"MD"`.
+	CountryCodeMD CountryCode = "MD"
+	// CountryCodeMC represents the CountryCode `"MC"`.
+	CountryCodeMC CountryCode = "MC"
+	// CountryCodeMN represents the CountryCode `"MN"`.
+	CountryCodeMN CountryCode = "MN"
+	// CountryCodeME represents the CountryCode `"ME"`.
+	CountryCodeME CountryCode = "ME"
+	// CountryCodeMS represents the CountryCode `"MS"`.
+	CountryCodeMS CountryCode = "MS"
+	// CountryCodeMA represents the CountryCode `"MA"`.
+	CountryCodeMA CountryCode = "MA"
+	// CountryCodeMZ represents the CountryCode `"MZ"`.
+	CountryCodeMZ CountryCode = "MZ"
+	// CountryCodeMM represents the CountryCode `"MM"`.
+	CountryCodeMM CountryCode = "MM"
+	// CountryCodeNA represents the CountryCode `"NA"`.
+	CountryCodeNA CountryCode = "NA"
+	// CountryCodeNR represents the CountryCode `"NR"`.
+	CountryCodeNR CountryCode = "NR"
+	// CountryCodeNP represents the CountryCode `"NP"`.
+	CountryCodeNP CountryCode = "NP"
+	// CountryCodeNL represents the CountryCode `"NL"`.
+	CountryCodeNL CountryCode = "NL"
+	// CountryCodeNC represents the CountryCode `"NC"`.
+	CountryCodeNC CountryCode = "NC"
+	// CountryCodeNZ represents the CountryCode `"NZ"`.
+	CountryCodeNZ CountryCode = "NZ"
+	// CountryCodeNI represents the CountryCode `"NI"`.
+	CountryCodeNI CountryCode = "NI"
+	// CountryCodeNE represents the CountryCode `"NE"`.
+	CountryCodeNE CountryCode = "NE"
+	// CountryCodeNG represents the CountryCode `"NG"`.
+	CountryCodeNG CountryCode = "NG"
+	// CountryCodeNU represents the CountryCode `"NU"`.
+	CountryCodeNU CountryCode = "NU"
+	// CountryCodeNF represents the CountryCode `"NF"`.
+	CountryCodeNF CountryCode = "NF"
+	// CountryCodeMP represents the CountryCode `"MP"`.
+	CountryCodeMP CountryCode = "MP"
+	// CountryCodeNO represents the CountryCode `"NO"`.
+	CountryCodeNO CountryCode = "NO"
+	// CountryCodeOM represents the CountryCode `"OM"`.
+	CountryCodeOM CountryCode = "OM"
+	// CountryCodePK represents the CountryCode `"PK"`.
+	CountryCodePK CountryCode = "PK"
+	// CountryCodePW represents the CountryCode `"PW"`.
+	CountryCodePW CountryCode = "PW"
+	// CountryCodePS represents the CountryCode `"PS"`.
+	CountryCodePS CountryCode = "PS"
+	// CountryCodePA represents the CountryCode `"PA"`.
+	CountryCodePA CountryCode = "PA"
+	// CountryCodePG represents the CountryCode `"PG"`.
+	CountryCodePG CountryCode = "PG"
+	// CountryCodePY represents the CountryCode `"PY"`.
+	CountryCodePY CountryCode = "PY"
+	// CountryCodePE represents the CountryCode `"PE"`.
+	CountryCodePE CountryCode = "PE"
+	// CountryCodePH represents the CountryCode `"PH"`.
+	CountryCodePH CountryCode = "PH"
+	// CountryCodePN represents the CountryCode `"PN"`.
+	CountryCodePN CountryCode = "PN"
+	// CountryCodePL represents the CountryCode `"PL"`.
+	CountryCodePL CountryCode = "PL"
+	// CountryCodePT represents the CountryCode `"PT"`.
+	CountryCodePT CountryCode = "PT"
+	// CountryCodePR represents the CountryCode `"PR"`.
+	CountryCodePR CountryCode = "PR"
+	// CountryCodeQA represents the CountryCode `"QA"`.
+	CountryCodeQA CountryCode = "QA"
+	// CountryCodeRE represents the CountryCode `"RE"`.
+	CountryCodeRE CountryCode = "RE"
+	// CountryCodeRO represents the CountryCode `"RO"`.
+	CountryCodeRO CountryCode = "RO"
+	// CountryCodeRU represents the CountryCode `"RU"`.
+	CountryCodeRU CountryCode = "RU"
+	// CountryCodeRW represents the CountryCode `"RW"`.
+	CountryCodeRW CountryCode = "RW"
+	// CountryCodeBL represents the CountryCode `"BL"`.
+	CountryCodeBL CountryCode = "BL"
+	// CountryCodeSH represents the CountryCode `"SH"`.
+	CountryCodeSH CountryCode = "SH"
+	// CountryCodeKN represents the CountryCode `"KN"`.
+	CountryCodeKN CountryCode = "KN"
+	// CountryCodeLC represents the CountryCode `"LC"`.
+	CountryCodeLC CountryCode = "LC"
+	// CountryCodeMF represents the CountryCode `"MF"`.
+	CountryCodeMF CountryCode = "MF"
+	// CountryCodePM represents the CountryCode `"PM"`.
+	CountryCodePM CountryCode = "PM"
+	// CountryCodeVC represents the CountryCode `"VC"`.
+	CountryCodeVC CountryCode = "VC"
+	// CountryCodeWS represents the CountryCode `"WS"`.
+	CountryCodeWS CountryCode = "WS"
+	// CountryCodeSM represents the CountryCode `"SM"`.
+	CountryCodeSM CountryCode = "SM"
+	// CountryCodeST represents the CountryCode `"ST"`.
+	CountryCodeST CountryCode = "ST"
+	// CountryCodeSA represents the CountryCode `"SA"`.
+	CountryCodeSA CountryCode = "SA"
+	// CountryCodeSN represents the CountryCode `"SN"`.
+	CountryCodeSN CountryCode = "SN"
+	// CountryCodeRS represents the CountryCode `"RS"`.
+	CountryCodeRS CountryCode = "RS"
+	// CountryCodeSC represents the CountryCode `"SC"`.
+	CountryCodeSC CountryCode = "SC"
+	// CountryCodeSL represents the CountryCode `"SL"`.
+	CountryCodeSL CountryCode = "SL"
+	// CountryCodeSG represents the CountryCode `"SG"`.
+	CountryCodeSG CountryCode = "SG"
+	// CountryCodeSX represents the CountryCode `"SX"`.
+	CountryCodeSX CountryCode = "SX"
+	// CountryCodeSK represents the CountryCode `"SK"`.
+	CountryCodeSK CountryCode = "SK"
+	// CountryCodeSI represents the CountryCode `"SI"`.
+	CountryCodeSI CountryCode = "SI"
+	// CountryCodeSB represents the CountryCode `"SB"`.
+	CountryCodeSB CountryCode = "SB"
+	// CountryCodeSO represents the CountryCode `"SO"`.
+	CountryCodeSO CountryCode = "SO"
+	// CountryCodeZA represents the CountryCode `"ZA"`.
+	CountryCodeZA CountryCode = "ZA"
+	// CountryCodeGS represents the CountryCode `"GS"`.
+	CountryCodeGS CountryCode = "GS"
+	// CountryCodeSS represents the CountryCode `"SS"`.
+	CountryCodeSS CountryCode = "SS"
+	// CountryCodeES represents the CountryCode `"ES"`.
+	CountryCodeES CountryCode = "ES"
+	// CountryCodeLK represents the CountryCode `"LK"`.
+	CountryCodeLK CountryCode = "LK"
+	// CountryCodeSD represents the CountryCode `"SD"`.
+	CountryCodeSD CountryCode = "SD"
+	// CountryCodeSR represents the CountryCode `"SR"`.
+	CountryCodeSR CountryCode = "SR"
+	// CountryCodeSJ represents the CountryCode `"SJ"`.
+	CountryCodeSJ CountryCode = "SJ"
+	// CountryCodeSZ represents the CountryCode `"SZ"`.
+	CountryCodeSZ CountryCode = "SZ"
+	// CountryCodeSE represents the CountryCode `"SE"`.
+	CountryCodeSE CountryCode = "SE"
+	// CountryCodeCH represents the CountryCode `"CH"`.
+	CountryCodeCH CountryCode = "CH"
+	// CountryCodeSY represents the CountryCode `"SY"`.
+	CountryCodeSY CountryCode = "SY"
+	// CountryCodeTW represents the CountryCode `"TW"`.
+	CountryCodeTW CountryCode = "TW"
+	// CountryCodeTJ represents the CountryCode `"TJ"`.
+	CountryCodeTJ CountryCode = "TJ"
+	// CountryCodeTZ represents the CountryCode `"TZ"`.
+	CountryCodeTZ CountryCode = "TZ"
+	// CountryCodeTH represents the CountryCode `"TH"`.
+	CountryCodeTH CountryCode = "TH"
+	// CountryCodeTL represents the CountryCode `"TL"`.
+	CountryCodeTL CountryCode = "TL"
+	// CountryCodeTG represents the CountryCode `"TG"`.
+	CountryCodeTG CountryCode = "TG"
+	// CountryCodeTK represents the CountryCode `"TK"`.
+	CountryCodeTK CountryCode = "TK"
+	// CountryCodeTO represents the CountryCode `"TO"`.
+	CountryCodeTO CountryCode = "TO"
+	// CountryCodeTT represents the CountryCode `"TT"`.
+	CountryCodeTT CountryCode = "TT"
+	// CountryCodeTN represents the CountryCode `"TN"`.
+	CountryCodeTN CountryCode = "TN"
+	// CountryCodeTR represents the CountryCode `"TR"`.
+	CountryCodeTR CountryCode = "TR"
+	// CountryCodeTM represents the CountryCode `"TM"`.
+	CountryCodeTM CountryCode = "TM"
+	// CountryCodeTC represents the CountryCode `"TC"`.
+	CountryCodeTC CountryCode = "TC"
+	// CountryCodeTV represents the CountryCode `"TV"`.
+	CountryCodeTV CountryCode = "TV"
+	// CountryCodeUG represents the CountryCode `"UG"`.
+	CountryCodeUG CountryCode = "UG"
+	// CountryCodeUA represents the CountryCode `"UA"`.
+	CountryCodeUA CountryCode = "UA"
+	// CountryCodeAE represents the CountryCode `"AE"`.
+	CountryCodeAE CountryCode = "AE"
+	// CountryCodeGB represents the CountryCode `"GB"`.
+	CountryCodeGB CountryCode = "GB"
+	// CountryCodeUS represents the CountryCode `"US"`.
+	CountryCodeUS CountryCode = "US"
+	// CountryCodeUM represents the CountryCode `"UM"`.
+	CountryCodeUM CountryCode = "UM"
+	// CountryCodeUY represents the CountryCode `"UY"`.
+	CountryCodeUY CountryCode = "UY"
+	// CountryCodeUZ represents the CountryCode `"UZ"`.
+	CountryCodeUZ CountryCode = "UZ"
+	// CountryCodeVU represents the CountryCode `"VU"`.
+	CountryCodeVU CountryCode = "VU"
+	// CountryCodeVE represents the CountryCode `"VE"`.
+	CountryCodeVE CountryCode = "VE"
+	// CountryCodeVN represents the CountryCode `"VN"`.
+	CountryCodeVN CountryCode = "VN"
+	// CountryCodeVG represents the CountryCode `"VG"`.
+	CountryCodeVG CountryCode = "VG"
+	// CountryCodeVI represents the CountryCode `"VI"`.
+	CountryCodeVI CountryCode = "VI"
+	// CountryCodeWF represents the CountryCode `"WF"`.
+	CountryCodeWF CountryCode = "WF"
+	// CountryCodeEH represents the CountryCode `"EH"`.
+	CountryCodeEH CountryCode = "EH"
+	// CountryCodeYE represents the CountryCode `"YE"`.
+	CountryCodeYE CountryCode = "YE"
+	// CountryCodeZM represents the CountryCode `"ZM"`.
+	CountryCodeZM CountryCode = "ZM"
+	// CountryCodeZW represents the CountryCode `"ZW"`.
+	CountryCodeZW CountryCode = "ZW"
+)
+
 // CreatedAtSortMode: Supported set of sort modes for scanning by created_at only.
 //
 // Currently, we only support scanning in ascending order.
@@ -628,7 +1202,7 @@ const (
 
 // Currency: Currency is the list of supported currencies.
 //
-// For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
+// This comes from the Stripe API docs: For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
 type Currency string
 
 const (
@@ -923,7 +1497,7 @@ type Customer struct {
 	// CreatedAt: Time at which the object was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Currency: Three-letter ISO code for the currency the customer can be charged in for recurring billing purposes.
-	Currency Currency `json:"currency" yaml:"currency" schema:"currency,required"`
+	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
 	// Delinquent: When the customer's latest invoice is billed by charging automatically, `delinquent` is `true` if the invoice's latest charge failed.
 	//
 	// When the customer's latest invoice is billed by sending an invoice, `delinquent` is `true` if the invoice isn't paid by its due date.  If an invoice is marked uncollectible by dunning, `delinquent` doesn't get reset to `false`.
@@ -1184,7 +1758,7 @@ type ExecutorMetadata struct {
 
 // ExtendedUser: Extended user information.
 //
-// This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, Front, and Zendesk.
+// This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Front
 type ExtendedUser struct {
 	// Company: The user's company.
 	Company string `json:"company" yaml:"company" schema:"company"`
@@ -1218,8 +1792,6 @@ type ExtendedUser struct {
 	StripeID string `json:"stripe_id" yaml:"stripe_id" schema:"stripe_id"`
 	// UpdatedAt: The date and time the user was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// ZendeskID: The user's Zendesk ID. This is mostly used for internal mapping.
-	ZendeskID string `json:"zendesk_id" yaml:"zendesk_id" schema:"zendesk_id"`
 }
 
 // ExtendedUserResultsPage: A single page of results
@@ -1230,6 +1802,34 @@ type ExtendedUserResultsPage struct {
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
+// File2DVectorConversion: A 2D Vector file conversion.
+type File2DVectorConversion struct {
+	// CompletedAt: The time and date the API call was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the API call was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the API call.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Output: The converted file, if completed, base64 encoded.
+	Output Base64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the file conversion.
+	OutputFormat File2DVectorExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the file conversion.
+	SrcFormat File2DVectorImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the API call was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the API call.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the API call was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the API call.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
 // File2DVectorExportFormat: The valid types of Vector output file formats.
 type File2DVectorExportFormat string
 
@@ -1238,6 +1838,10 @@ const (
 	File2DVectorExportFormatDxf File2DVectorExportFormat = "dxf"
 	// File2DVectorExportFormatJson represents the File2DVectorExportFormat `"json"`.
 	File2DVectorExportFormatJson File2DVectorExportFormat = "json"
+	// File2DVectorExportFormatPng represents the File2DVectorExportFormat `"png"`.
+	File2DVectorExportFormatPng File2DVectorExportFormat = "png"
+	// File2DVectorExportFormatPs represents the File2DVectorExportFormat `"ps"`.
+	File2DVectorExportFormatPs File2DVectorExportFormat = "ps"
 	// File2DVectorExportFormatSvg represents the File2DVectorExportFormat `"svg"`.
 	File2DVectorExportFormatSvg File2DVectorExportFormat = "svg"
 )
@@ -1252,7 +1856,35 @@ const (
 	File2DVectorImportFormatSvg File2DVectorImportFormat = "svg"
 )
 
-// File3DExportFormat: The valid types of 3d output file formats.
+// File3DConversion: A 3D file conversion.
+type File3DConversion struct {
+	// CompletedAt: The time and date the API call was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the API call was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the API call.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Output: The converted file, if completed, base64 encoded.
+	Output Base64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the file conversion.
+	OutputFormat File3DExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the file conversion.
+	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the API call was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the API call.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the API call was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the API call.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// File3DExportFormat: The valid types of 3d output file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
 type File3DExportFormat string
 
 const (
@@ -1266,24 +1898,32 @@ const (
 	File3DExportFormatObj File3DExportFormat = "obj"
 	// File3DExportFormatObjNomtl represents the File3DExportFormat `"obj_nomtl"`.
 	File3DExportFormatObjNomtl File3DExportFormat = "obj_nomtl"
+	// File3DExportFormatPly represents the File3DExportFormat `"ply"`.
+	File3DExportFormatPly File3DExportFormat = "ply"
 	// File3DExportFormatStep represents the File3DExportFormat `"step"`.
 	File3DExportFormatStep File3DExportFormat = "step"
 	// File3DExportFormatStl represents the File3DExportFormat `"stl"`.
 	File3DExportFormatStl File3DExportFormat = "stl"
 )
 
-// File3DImportFormat: The valid types of 3d source file formats.
+// File3DImportFormat: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
 type File3DImportFormat string
 
 const (
 	// File3DImportFormatDae represents the File3DImportFormat `"dae"`.
 	File3DImportFormatDae File3DImportFormat = "dae"
+	// File3DImportFormatDxf represents the File3DImportFormat `"dxf"`.
+	File3DImportFormatDxf File3DImportFormat = "dxf"
 	// File3DImportFormatFbx represents the File3DImportFormat `"fbx"`.
 	File3DImportFormatFbx File3DImportFormat = "fbx"
+	// File3DImportFormatObjZip represents the File3DImportFormat `"obj_zip"`.
+	File3DImportFormatObjZip File3DImportFormat = "obj_zip"
 	// File3DImportFormatObj represents the File3DImportFormat `"obj"`.
 	File3DImportFormatObj File3DImportFormat = "obj"
 	// File3DImportFormatObjNomtl represents the File3DImportFormat `"obj_nomtl"`.
 	File3DImportFormatObjNomtl File3DImportFormat = "obj_nomtl"
+	// File3DImportFormatPly represents the File3DImportFormat `"ply"`.
+	File3DImportFormatPly File3DImportFormat = "ply"
 	// File3DImportFormatStep represents the File3DImportFormat `"step"`.
 	File3DImportFormatStep File3DImportFormat = "step"
 	// File3DImportFormatStl represents the File3DImportFormat `"stl"`.
@@ -1304,8 +1944,6 @@ type FileCenterOfMass struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// MaterialDensity: The material density as denoted by the user.
-	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
 	// SrcFormat: The source format of the file.
 	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
@@ -1392,6 +2030,8 @@ const (
 	FileExportFormatObj FileExportFormat = "obj"
 	// FileExportFormatObjNomtl represents the FileExportFormat `"obj_nomtl"`.
 	FileExportFormatObjNomtl FileExportFormat = "obj_nomtl"
+	// FileExportFormatPly represents the FileExportFormat `"ply"`.
+	FileExportFormatPly FileExportFormat = "ply"
 	// FileExportFormatStep represents the FileExportFormat `"step"`.
 	FileExportFormatStep FileExportFormat = "step"
 	// FileExportFormatStl represents the FileExportFormat `"stl"`.
@@ -1410,10 +2050,14 @@ const (
 	FileImportFormatDxf FileImportFormat = "dxf"
 	// FileImportFormatFbx represents the FileImportFormat `"fbx"`.
 	FileImportFormatFbx FileImportFormat = "fbx"
+	// FileImportFormatObjZip represents the FileImportFormat `"obj_zip"`.
+	FileImportFormatObjZip FileImportFormat = "obj_zip"
 	// FileImportFormatObj represents the FileImportFormat `"obj"`.
 	FileImportFormatObj FileImportFormat = "obj"
 	// FileImportFormatObjNomtl represents the FileImportFormat `"obj_nomtl"`.
 	FileImportFormatObjNomtl FileImportFormat = "obj_nomtl"
+	// FileImportFormatPly represents the FileImportFormat `"ply"`.
+	FileImportFormatPly FileImportFormat = "ply"
 	// FileImportFormatStep represents the FileImportFormat `"step"`.
 	FileImportFormatStep FileImportFormat = "step"
 	// FileImportFormatStl represents the FileImportFormat `"stl"`.
@@ -1524,6 +2168,16 @@ type Gateway struct {
 	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
 }
 
+// ImageType: An enumeration.
+type ImageType string
+
+const (
+	// ImageTypePng represents the ImageType `"png"`.
+	ImageTypePng ImageType = "png"
+	// ImageTypeJpg represents the ImageType `"jpg"`.
+	ImageTypeJpg ImageType = "jpg"
+)
+
 // IndexInfo: IndexInfo contains information about a registry.
 type IndexInfo struct {
 	// Mirrors: List of mirrors, expressed as URIs.
@@ -1559,7 +2213,7 @@ type Invoice struct {
 	// CreatedAt: Time at which the object was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-	Currency Currency `json:"currency" yaml:"currency" schema:"currency,required"`
+	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
 	// CustomerEmail: The email address for the customer. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated.
 	CustomerEmail string `json:"customer_email" yaml:"customer_email" schema:"customer_email"`
 	// CustomerID: Customer ID. The unique identifier for the customer this invoice belongs to. This is the customer ID in the payments service, not our database customer ID.
@@ -1611,7 +2265,7 @@ type InvoiceLineItem struct {
 	// Amount: The amount, in USD.
 	Amount float64 `json:"amount" yaml:"amount" schema:"amount"`
 	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-	Currency Currency `json:"currency" yaml:"currency" schema:"currency,required"`
+	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
 	// Description: The description.
 	Description string `json:"description" yaml:"description" schema:"description"`
 	// ID: Unique identifier for the object.
@@ -1704,6 +2358,12 @@ type LeafNode struct {
 	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
 }
 
+// Mesh is the type definition for a Mesh.
+type Mesh struct {
+	// Mesh:
+	Mesh string `json:"mesh" yaml:"mesh" schema:"mesh,required"`
+}
+
 // MetaClusterInfo: Jetstream statistics.
 type MetaClusterInfo struct {
 	// ClusterSize: The size of the cluster.
@@ -1730,6 +2390,8 @@ type Metadata struct {
 	Fs FileSystemMetadata `json:"fs" yaml:"fs" schema:"fs,required"`
 	// GitHash: The git hash of the server.
 	GitHash string `json:"git_hash" yaml:"git_hash" schema:"git_hash,required"`
+	// PointE: Metadata about our point-e instance.
+	PointE PointEMetadata `json:"point_e" yaml:"point_e" schema:"point_e,required"`
 	// Pubsub: Metadata about our pub-sub connection.
 	Pubsub Connection `json:"pubsub" yaml:"pubsub" schema:"pubsub,required"`
 }
@@ -1768,8 +2430,8 @@ const (
 type NewAddress struct {
 	// City: The city component.
 	City string `json:"city" yaml:"city" schema:"city"`
-	// Country: The country component.
-	Country string `json:"country" yaml:"country" schema:"country"`
+	// Country: The country component. This is a two-letter ISO country code.
+	Country CountryCode `json:"country" yaml:"country" schema:"country,required"`
 	// State: The state component.
 	State string `json:"state" yaml:"state" schema:"state"`
 	// Street1: The first street component.
@@ -1968,6 +2630,14 @@ type PluginsInfo struct {
 	Network []string `json:"network" yaml:"network" schema:"network"`
 	// Volume: Names of available volume-drivers, and network-driver plugins.
 	Volume []string `json:"volume" yaml:"volume" schema:"volume"`
+}
+
+// PointEMetadata: Metadata about our point-e instance.
+//
+// This is mostly used for internal purposes and debugging.
+type PointEMetadata struct {
+	// Ok: If the point-e service returned an ok response from ping.
+	Ok bool `json:"ok" yaml:"ok" schema:"ok,required"`
 }
 
 // Pong: The response from the `/ping` endpoint.
@@ -2522,12 +3192,18 @@ const (
 	UnitEnergyFormatJoule UnitEnergyFormat = "joule"
 	// UnitEnergyFormatCalorie represents the UnitEnergyFormat `"calorie"`.
 	UnitEnergyFormatCalorie UnitEnergyFormat = "calorie"
+	// UnitEnergyFormatKilowattHour represents the UnitEnergyFormat `"kilowatt_hour"`.
+	UnitEnergyFormatKilowattHour UnitEnergyFormat = "kilowatt_hour"
+	// UnitEnergyFormatWattHour represents the UnitEnergyFormat `"watt_hour"`.
+	UnitEnergyFormatWattHour UnitEnergyFormat = "watt_hour"
 	// UnitEnergyFormatBritishThermalUnit represents the UnitEnergyFormat `"british_thermal_unit"`.
 	UnitEnergyFormatBritishThermalUnit UnitEnergyFormat = "british_thermal_unit"
 	// UnitEnergyFormatBritishThermalUnitIso represents the UnitEnergyFormat `"british_thermal_unit_iso"`.
 	UnitEnergyFormatBritishThermalUnitIso UnitEnergyFormat = "british_thermal_unit_iso"
 	// UnitEnergyFormatBritishThermalUnit59 represents the UnitEnergyFormat `"british_thermal_unit59"`.
 	UnitEnergyFormatBritishThermalUnit59 UnitEnergyFormat = "british_thermal_unit59"
+	// UnitEnergyFormatTherm represents the UnitEnergyFormat `"therm"`.
+	UnitEnergyFormatTherm UnitEnergyFormat = "therm"
 	// UnitEnergyFormatFootPound represents the UnitEnergyFormat `"foot_pound"`.
 	UnitEnergyFormatFootPound UnitEnergyFormat = "foot_pound"
 )
@@ -2572,8 +3248,8 @@ const (
 	UnitForceFormatPound UnitForceFormat = "pound"
 	// UnitForceFormatDyne represents the UnitForceFormat `"dyne"`.
 	UnitForceFormatDyne UnitForceFormat = "dyne"
-	// UnitForceFormatKilopound represents the UnitForceFormat `"kilopound"`.
-	UnitForceFormatKilopound UnitForceFormat = "kilopound"
+	// UnitForceFormatKilopond represents the UnitForceFormat `"kilopond"`.
+	UnitForceFormatKilopond UnitForceFormat = "kilopond"
 	// UnitForceFormatPoundal represents the UnitForceFormat `"poundal"`.
 	UnitForceFormatPoundal UnitForceFormat = "poundal"
 )
@@ -2658,6 +3334,12 @@ type UnitLengthFormat string
 const (
 	// UnitLengthFormatMeter represents the UnitLengthFormat `"meter"`.
 	UnitLengthFormatMeter UnitLengthFormat = "meter"
+	// UnitLengthFormatMillimeter represents the UnitLengthFormat `"millimeter"`.
+	UnitLengthFormatMillimeter UnitLengthFormat = "millimeter"
+	// UnitLengthFormatCentimeter represents the UnitLengthFormat `"centimeter"`.
+	UnitLengthFormatCentimeter UnitLengthFormat = "centimeter"
+	// UnitLengthFormatKilometer represents the UnitLengthFormat `"kilometer"`.
+	UnitLengthFormatKilometer UnitLengthFormat = "kilometer"
 	// UnitLengthFormatFoot represents the UnitLengthFormat `"foot"`.
 	UnitLengthFormatFoot UnitLengthFormat = "foot"
 	// UnitLengthFormatMil represents the UnitLengthFormat `"mil"`.
@@ -2670,6 +3352,12 @@ const (
 	UnitLengthFormatNauticalMile UnitLengthFormat = "nautical_mile"
 	// UnitLengthFormatAstronomicalUnit represents the UnitLengthFormat `"astronomical_unit"`.
 	UnitLengthFormatAstronomicalUnit UnitLengthFormat = "astronomical_unit"
+	// UnitLengthFormatLightyear represents the UnitLengthFormat `"lightyear"`.
+	UnitLengthFormatLightyear UnitLengthFormat = "lightyear"
+	// UnitLengthFormatParsec represents the UnitLengthFormat `"parsec"`.
+	UnitLengthFormatParsec UnitLengthFormat = "parsec"
+	// UnitLengthFormatAngstrom represents the UnitLengthFormat `"angstrom"`.
+	UnitLengthFormatAngstrom UnitLengthFormat = "angstrom"
 	// UnitLengthFormatCubit represents the UnitLengthFormat `"cubit"`.
 	UnitLengthFormatCubit UnitLengthFormat = "cubit"
 	// UnitLengthFormatFathom represents the UnitLengthFormat `"fathom"`.
@@ -2686,12 +3374,6 @@ const (
 	UnitLengthFormatNauticalLeague UnitLengthFormat = "nautical_league"
 	// UnitLengthFormatYard represents the UnitLengthFormat `"yard"`.
 	UnitLengthFormatYard UnitLengthFormat = "yard"
-	// UnitLengthFormatMillimeter represents the UnitLengthFormat `"millimeter"`.
-	UnitLengthFormatMillimeter UnitLengthFormat = "millimeter"
-	// UnitLengthFormatCentimeter represents the UnitLengthFormat `"centimeter"`.
-	UnitLengthFormatCentimeter UnitLengthFormat = "centimeter"
-	// UnitLengthFormatKilometer represents the UnitLengthFormat `"kilometer"`.
-	UnitLengthFormatKilometer UnitLengthFormat = "kilometer"
 )
 
 // UnitMagneticFieldStrengthConversion: A unit conversion.
@@ -2810,6 +3492,8 @@ type UnitMassFormat string
 const (
 	// UnitMassFormatGram represents the UnitMassFormat `"gram"`.
 	UnitMassFormatGram UnitMassFormat = "gram"
+	// UnitMassFormatKilogram represents the UnitMassFormat `"kilogram"`.
+	UnitMassFormatKilogram UnitMassFormat = "kilogram"
 	// UnitMassFormatMetricTon represents the UnitMassFormat `"metric_ton"`.
 	UnitMassFormatMetricTon UnitMassFormat = "metric_ton"
 	// UnitMassFormatPound represents the UnitMassFormat `"pound"`.
@@ -2826,8 +3510,6 @@ const (
 	UnitMassFormatCarat UnitMassFormat = "carat"
 	// UnitMassFormatSlug represents the UnitMassFormat `"slug"`.
 	UnitMassFormatSlug UnitMassFormat = "slug"
-	// UnitMassFormatKilogram represents the UnitMassFormat `"kilogram"`.
-	UnitMassFormatKilogram UnitMassFormat = "kilogram"
 )
 
 // UnitMetricPower: The valid types of metric unit formats.
@@ -3078,7 +3760,7 @@ type UnitRadiationConversion struct {
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// UnitRadiationFormat: The valid types of radiation unit formats.
+// UnitRadiationFormat: The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.
 type UnitRadiationFormat string
 
 const (
@@ -3088,6 +3770,48 @@ const (
 	UnitRadiationFormatSievert UnitRadiationFormat = "sievert"
 	// UnitRadiationFormatRad represents the UnitRadiationFormat `"rad"`.
 	UnitRadiationFormatRad UnitRadiationFormat = "rad"
+)
+
+// UnitRadioactivityConversion: A unit conversion.
+type UnitRadioactivityConversion struct {
+	// CompletedAt: The time and date the API call was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the API call was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the API call.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Input: The input value.
+	Input float64 `json:"input" yaml:"input" schema:"input"`
+	// Output: The resulting value.
+	Output float64 `json:"output" yaml:"output" schema:"output"`
+	// OutputFormat: The output format of the unit conversion.
+	OutputFormat UnitRadioactivityFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: The source format of the unit conversion.
+	SrcFormat UnitRadioactivityFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the API call was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the API call.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the API call was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the API call.
+	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// UnitRadioactivityFormat: The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.
+type UnitRadioactivityFormat string
+
+const (
+	// UnitRadioactivityFormatBecquerel represents the UnitRadioactivityFormat `"becquerel"`.
+	UnitRadioactivityFormatBecquerel UnitRadioactivityFormat = "becquerel"
+	// UnitRadioactivityFormatCurie represents the UnitRadioactivityFormat `"curie"`.
+	UnitRadioactivityFormatCurie UnitRadioactivityFormat = "curie"
+	// UnitRadioactivityFormatRutherford represents the UnitRadioactivityFormat `"rutherford"`.
+	UnitRadioactivityFormatRutherford UnitRadioactivityFormat = "rutherford"
 )
 
 // UnitSolidAngleConversion: A unit conversion.
@@ -3354,20 +4078,64 @@ type UnitVolumeFormat string
 const (
 	// UnitVolumeFormatCubicMeter represents the UnitVolumeFormat `"cubic_meter"`.
 	UnitVolumeFormatCubicMeter UnitVolumeFormat = "cubic_meter"
+	// UnitVolumeFormatCubicCentimeter represents the UnitVolumeFormat `"cubic_centimeter"`.
+	UnitVolumeFormatCubicCentimeter UnitVolumeFormat = "cubic_centimeter"
 	// UnitVolumeFormatCubicMillimeter represents the UnitVolumeFormat `"cubic_millimeter"`.
 	UnitVolumeFormatCubicMillimeter UnitVolumeFormat = "cubic_millimeter"
 	// UnitVolumeFormatCubicKilometer represents the UnitVolumeFormat `"cubic_kilometer"`.
 	UnitVolumeFormatCubicKilometer UnitVolumeFormat = "cubic_kilometer"
 	// UnitVolumeFormatLiter represents the UnitVolumeFormat `"liter"`.
 	UnitVolumeFormatLiter UnitVolumeFormat = "liter"
+	// UnitVolumeFormatCubicInch represents the UnitVolumeFormat `"cubic_inch"`.
+	UnitVolumeFormatCubicInch UnitVolumeFormat = "cubic_inch"
 	// UnitVolumeFormatCubicFoot represents the UnitVolumeFormat `"cubic_foot"`.
 	UnitVolumeFormatCubicFoot UnitVolumeFormat = "cubic_foot"
 	// UnitVolumeFormatCubicYard represents the UnitVolumeFormat `"cubic_yard"`.
 	UnitVolumeFormatCubicYard UnitVolumeFormat = "cubic_yard"
 	// UnitVolumeFormatCubicMile represents the UnitVolumeFormat `"cubic_mile"`.
 	UnitVolumeFormatCubicMile UnitVolumeFormat = "cubic_mile"
-	// UnitVolumeFormatCubicCentimeter represents the UnitVolumeFormat `"cubic_centimeter"`.
-	UnitVolumeFormatCubicCentimeter UnitVolumeFormat = "cubic_centimeter"
+	// UnitVolumeFormatGallon represents the UnitVolumeFormat `"gallon"`.
+	UnitVolumeFormatGallon UnitVolumeFormat = "gallon"
+	// UnitVolumeFormatQuart represents the UnitVolumeFormat `"quart"`.
+	UnitVolumeFormatQuart UnitVolumeFormat = "quart"
+	// UnitVolumeFormatPint represents the UnitVolumeFormat `"pint"`.
+	UnitVolumeFormatPint UnitVolumeFormat = "pint"
+	// UnitVolumeFormatCup represents the UnitVolumeFormat `"cup"`.
+	UnitVolumeFormatCup UnitVolumeFormat = "cup"
+	// UnitVolumeFormatFluidOunce represents the UnitVolumeFormat `"fluid_ounce"`.
+	UnitVolumeFormatFluidOunce UnitVolumeFormat = "fluid_ounce"
+	// UnitVolumeFormatBarrel represents the UnitVolumeFormat `"barrel"`.
+	UnitVolumeFormatBarrel UnitVolumeFormat = "barrel"
+	// UnitVolumeFormatBushel represents the UnitVolumeFormat `"bushel"`.
+	UnitVolumeFormatBushel UnitVolumeFormat = "bushel"
+	// UnitVolumeFormatCord represents the UnitVolumeFormat `"cord"`.
+	UnitVolumeFormatCord UnitVolumeFormat = "cord"
+	// UnitVolumeFormatCubicFathom represents the UnitVolumeFormat `"cubic_fathom"`.
+	UnitVolumeFormatCubicFathom UnitVolumeFormat = "cubic_fathom"
+	// UnitVolumeFormatTablespoon represents the UnitVolumeFormat `"tablespoon"`.
+	UnitVolumeFormatTablespoon UnitVolumeFormat = "tablespoon"
+	// UnitVolumeFormatTeaspoon represents the UnitVolumeFormat `"teaspoon"`.
+	UnitVolumeFormatTeaspoon UnitVolumeFormat = "teaspoon"
+	// UnitVolumeFormatPinch represents the UnitVolumeFormat `"pinch"`.
+	UnitVolumeFormatPinch UnitVolumeFormat = "pinch"
+	// UnitVolumeFormatDash represents the UnitVolumeFormat `"dash"`.
+	UnitVolumeFormatDash UnitVolumeFormat = "dash"
+	// UnitVolumeFormatDrop represents the UnitVolumeFormat `"drop"`.
+	UnitVolumeFormatDrop UnitVolumeFormat = "drop"
+	// UnitVolumeFormatFifth represents the UnitVolumeFormat `"fifth"`.
+	UnitVolumeFormatFifth UnitVolumeFormat = "fifth"
+	// UnitVolumeFormatDram represents the UnitVolumeFormat `"dram"`.
+	UnitVolumeFormatDram UnitVolumeFormat = "dram"
+	// UnitVolumeFormatGill represents the UnitVolumeFormat `"gill"`.
+	UnitVolumeFormatGill UnitVolumeFormat = "gill"
+	// UnitVolumeFormatPeck represents the UnitVolumeFormat `"peck"`.
+	UnitVolumeFormatPeck UnitVolumeFormat = "peck"
+	// UnitVolumeFormatSack represents the UnitVolumeFormat `"sack"`.
+	UnitVolumeFormatSack UnitVolumeFormat = "sack"
+	// UnitVolumeFormatShot represents the UnitVolumeFormat `"shot"`.
+	UnitVolumeFormatShot UnitVolumeFormat = "shot"
+	// UnitVolumeFormatStrike represents the UnitVolumeFormat `"strike"`.
+	UnitVolumeFormatStrike UnitVolumeFormat = "strike"
 )
 
 // UpdateUser: The user-modifiable parts of a User.
