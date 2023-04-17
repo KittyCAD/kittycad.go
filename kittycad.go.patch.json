@@ -28,10 +28,6 @@
   "path": "/components/schemas/AsyncApiCallOutput/oneOf/6/properties/type"
  },
  {
-  "op": "remove",
-  "path": "/components/schemas/AsyncApiCallOutput/oneOf/7/properties/type"
- },
- {
   "op": "add",
   "path": "/info/x-go",
   "value": {
@@ -67,7 +63,7 @@
   "op": "add",
   "path": "/paths/~1ai~1image-to-3d~1{input_format}~1{output_format}/post/x-go",
   "value": {
-   "example": "// CreateImageTo3D: Generate a 3D model from an image.\n// \n// \n// Parameters\n// \n// \t- `inputFormat`: An enumeration.\n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleAiService_CreateImageTo3D() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.CreateImageTo3D(kittycad.ImageTypePng, kittycad.FileExportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateImageTo3D: Generate a 3D model from an image.\n// \n// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.\n// \n// \n// Parameters\n// \n// \t- `inputFormat`: An enumeration.\n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleAiService_CreateImageTo3D() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.CreateImageTo3D(kittycad.ImageTypePng, kittycad.FileExportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AiService.CreateImageTo3D"
   }
  },
@@ -75,7 +71,7 @@
   "op": "add",
   "path": "/paths/~1ai~1text-to-3d~1{output_format}/post/x-go",
   "value": {
-   "example": "// CreateTextTo3D: Generate a 3D model from text.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `prompt`\n// \n// Create a client with your token.\nfunc ExampleAiService_CreateTextTo3D() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.CreateTextTo3D(kittycad.FileExportFormatDae, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateTextTo3D: Generate a 3D model from text.\n// \n// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `prompt`\n// \n// Create a client with your token.\nfunc ExampleAiService_CreateTextTo3D() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.CreateTextTo3D(kittycad.FileExportFormatDae, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AiService.CreateTextTo3D"
   }
  },
@@ -177,14 +173,6 @@
  },
  {
   "op": "add",
-  "path": "/paths/~1file~13d~1conversion~1{src_format}~1{output_format}/post/x-go",
-  "value": {
-   "example": "// Create3DConversion: Convert 3D file.\n// \n// Convert a 3D file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.\n// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of 3d output file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.\n// \t- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_Create3DConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.Create3DConversion(kittycad.File3DExportFormatDae, kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.Create3DConversion"
-  }
- },
- {
-  "op": "add",
   "path": "/paths/~1file~1center-of-mass/post/x-go",
   "value": {
    "example": "// CreateCenterOfMass: Get CAD file center of mass.\n// \n// Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateCenterOfMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateCenterOfMass(kittycad.File3DImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
@@ -197,14 +185,6 @@
   "value": {
    "example": "// CreateConversion: Convert CAD file.\n// \n// Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.\n// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateConversion(kittycad.FileExportFormatDae, kittycad.FileImportFormatDae, []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateConversion"
-  }
- },
- {
-  "op": "add",
-  "path": "/paths/~1file~1conversions~1{id}/get/x-go",
-  "value": {
-   "example": "// GetConversion: Get a file conversion.\n// \n// Get the status and output of an async file conversion.\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.\n// If the user is not authenticated to view the specified file conversion, then it is not returned.\n// Only KittyCAD employees with the proper access can view file conversions for other users.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// Create a client with your token.\nfunc ExampleFileService_GetConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.GetConversion(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.GetConversion"
   }
  },
  {
@@ -301,6 +281,14 @@
   "value": {
    "example": "// ProviderConsent: Get the consent URL and other information for the OAuth 2.0 provider.\n// \n// \n// Parameters\n// \n// \t- `provider`: An account provider.\n// \t- `callbackUrl`\n// \n// Create a client with your token.\nfunc ExampleOauth2Service_ProviderConsent() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.ProviderConsent(kittycad.AccountProviderGoogle, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.ProviderConsent"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1openai~1openapi.json/get/x-go",
+  "value": {
+   "example": "// GetOpenaiSchema: Get AI plugin OpenAPI schema.\n// \n// This is the same as the OpenAPI schema, BUT it has some modifications to make it compatible with OpenAI. For example, descriptions must be \u003c 300 chars.\n// \n// Create a client with your token.\nfunc ExampleMetaService_GetOpenaiSchema() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Meta.GetOpenaiSchema(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.GetOpenaiSchema"
   }
  },
  {
@@ -621,14 +609,6 @@
   "value": {
    "example": "// GetSelfExtended: Get extended information about your user.\n// \n// Get the user information for the authenticated user.\n// Alternatively, you can also use the `/users-extended/me` endpoint.\n// \n// Create a client with your token.\nfunc ExampleUserService_GetSelfExtended() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetSelfExtended()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetSelfExtended"
-  }
- },
- {
-  "op": "add",
-  "path": "/paths/~1user~1file~1conversions~1{id}/get/x-go",
-  "value": {
-   "example": "// GetConversionForUser: Get a file conversion for your user.\n// \n// Get the status and output of an async file conversion. If completed, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested file conversion for the user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// Create a client with your token.\nfunc ExampleFileService_GetConversionForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.GetConversionForUser(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.GetConversionForUser"
   }
  },
  {

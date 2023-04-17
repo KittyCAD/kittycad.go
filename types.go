@@ -63,6 +63,7 @@ const (
 )
 
 // AiPluginManifest: AI plugin manifest.
+//
 // This is used for OpenAI's ChatGPT plugins. You can read more about them [here](https://platform.openai.com/docs/plugins/getting-started/plugin-manifest).
 type AiPluginManifest struct {
 	// API: API specification.
@@ -130,6 +131,7 @@ const (
 )
 
 // APICallWithPrice: An API call with the price.
+//
 // This is a join of the `ApiCall` and `ApiCallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt: The date and time the API call completed billing.
@@ -187,6 +189,7 @@ type APICallWithPriceResultsPage struct {
 }
 
 // APIToken: An API token.
+//
 // These are used to authenticate users with Bearer authentication.
 type APIToken struct {
 	// CreatedAt: The date and time the API token was created.
@@ -293,34 +296,6 @@ type AsyncAPICallOutputFile2DVectorConversion struct {
 	OutputFormat File2DVectorExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the file conversion.
 	SrcFormat File2DVectorImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
-	// StartedAt: The time and date the API call was started.
-	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
-	// Status: The status of the API call.
-	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// UpdatedAt: The time and date the API call was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
-}
-
-// AsyncAPICallOutputFile3DConversion: A 3D file conversion.
-type AsyncAPICallOutputFile3DConversion struct {
-	// CompletedAt: The time and date the API call was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
-	// CreatedAt: The time and date the API call was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error" schema:"error"`
-	// ID: The unique identifier of the API call.
-	//
-	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Output: The converted file, if completed, base64 encoded.
-	Output Base64 `json:"output" yaml:"output" schema:"output"`
-	// OutputFormat: The output format of the file conversion.
-	OutputFormat File3DExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
-	// SrcFormat: The source format of the file conversion.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
@@ -481,8 +456,6 @@ const (
 	AsyncAPICallTypeFileConversion AsyncAPICallType = "FileConversion"
 	// AsyncAPICallTypeFile2DVectorConversion represents the AsyncAPICallType `"File2DVectorConversion"`.
 	AsyncAPICallTypeFile2DVectorConversion AsyncAPICallType = "File2DVectorConversion"
-	// AsyncAPICallTypeFile3DConversion represents the AsyncAPICallType `"File3DConversion"`.
-	AsyncAPICallTypeFile3DConversion AsyncAPICallType = "File3DConversion"
 	// AsyncAPICallTypeFileVolume represents the AsyncAPICallType `"FileVolume"`.
 	AsyncAPICallTypeFileVolume AsyncAPICallType = "FileVolume"
 	// AsyncAPICallTypeFileCenterOfMass represents the AsyncAPICallType `"FileCenterOfMass"`.
@@ -506,6 +479,7 @@ type BillingInfo struct {
 }
 
 // CacheMetadata: Metadata about our cache.
+//
 // This is mostly used for internal purposes and debugging.
 type CacheMetadata struct {
 	// Ok: If the cache returned an ok response from ping.
@@ -583,6 +557,7 @@ type Commit struct {
 }
 
 // Connection: Metadata about a pub-sub connection.
+//
 // This is mostly used for internal purposes and debugging.
 type Connection struct {
 	// AuthTimeout: The auth timeout of the server.
@@ -1184,6 +1159,7 @@ const (
 )
 
 // CreatedAtSortMode: Supported set of sort modes for scanning by created_at only.
+//
 // Currently, we only support scanning in ascending order.
 type CreatedAtSortMode string
 
@@ -1195,6 +1171,7 @@ const (
 )
 
 // Currency: Currency is the list of supported currencies.
+//
 // This comes from the Stripe API docs: For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
 type Currency string
 
@@ -1508,6 +1485,7 @@ type Customer struct {
 }
 
 // CustomerBalance: A balance for a user.
+//
 // This holds information about the financial balance for the user.
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
@@ -1697,6 +1675,7 @@ type EmailAuthenticationForm struct {
 }
 
 // EngineMetadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type EngineMetadata struct {
 	// AsyncJobsRunning: If any async job is currently running.
@@ -1736,6 +1715,7 @@ type Error struct {
 }
 
 // ExecutorMetadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type ExecutorMetadata struct {
 	// DockerInfo: Information about the docker daemon.
@@ -1747,6 +1727,7 @@ type ExecutorMetadata struct {
 }
 
 // ExtendedUser: Extended user information.
+//
 // This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Front
 type ExtendedUser struct {
 	// Company: The user's company.
@@ -1843,56 +1824,6 @@ const (
 	File2DVectorImportFormatDxf File2DVectorImportFormat = "dxf"
 	// File2DVectorImportFormatSvg represents the File2DVectorImportFormat `"svg"`.
 	File2DVectorImportFormatSvg File2DVectorImportFormat = "svg"
-)
-
-// File3DConversion: A 3D file conversion.
-type File3DConversion struct {
-	// CompletedAt: The time and date the API call was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
-	// CreatedAt: The time and date the API call was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error" schema:"error"`
-	// ID: The unique identifier of the API call.
-	//
-	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Output: The converted file, if completed, base64 encoded.
-	Output Base64 `json:"output" yaml:"output" schema:"output"`
-	// OutputFormat: The output format of the file conversion.
-	OutputFormat File3DExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
-	// SrcFormat: The source format of the file conversion.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
-	// StartedAt: The time and date the API call was started.
-	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
-	// Status: The status of the API call.
-	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// UpdatedAt: The time and date the API call was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
-}
-
-// File3DExportFormat: The valid types of 3d output file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
-type File3DExportFormat string
-
-const (
-	// File3DExportFormatDae represents the File3DExportFormat `"dae"`.
-	File3DExportFormatDae File3DExportFormat = "dae"
-	// File3DExportFormatFbx represents the File3DExportFormat `"fbx"`.
-	File3DExportFormatFbx File3DExportFormat = "fbx"
-	// File3DExportFormatFbxb represents the File3DExportFormat `"fbxb"`.
-	File3DExportFormatFbxb File3DExportFormat = "fbxb"
-	// File3DExportFormatObj represents the File3DExportFormat `"obj"`.
-	File3DExportFormatObj File3DExportFormat = "obj"
-	// File3DExportFormatObjNomtl represents the File3DExportFormat `"obj_nomtl"`.
-	File3DExportFormatObjNomtl File3DExportFormat = "obj_nomtl"
-	// File3DExportFormatPly represents the File3DExportFormat `"ply"`.
-	File3DExportFormatPly File3DExportFormat = "ply"
-	// File3DExportFormatStep represents the File3DExportFormat `"step"`.
-	File3DExportFormatStep File3DExportFormat = "step"
-	// File3DExportFormatStl represents the File3DExportFormat `"stl"`.
-	File3DExportFormatStl File3DExportFormat = "stl"
 )
 
 // File3DImportFormat: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
@@ -2110,6 +2041,7 @@ type FileSurfaceArea struct {
 }
 
 // FileSystemMetadata: Metadata about our file system.
+//
 // This is mostly used for internal purposes and debugging.
 type FileSystemMetadata struct {
 	// Ok: If the file system passed a sanity check.
@@ -2363,6 +2295,7 @@ type MetaClusterInfo struct {
 }
 
 // Metadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type Metadata struct {
 	// Cache: Metadata about our cache.
@@ -2384,6 +2317,7 @@ type Metadata struct {
 }
 
 // Method: The Request Method (VERB)
+//
 // This type also contains constants for a number of common HTTP methods such as GET, POST, etc.
 //
 // Currently includes 8 variants representing the 8 methods defined in [RFC 7230](https://tools.ietf.org/html/rfc7231#section-4.1), plus PATCH, and an Extension variant for all extensions.
@@ -2605,6 +2539,7 @@ const (
 )
 
 // PluginsInfo: Available plugins per type.
+//
 // **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
 type PluginsInfo struct {
 	// Authorization: Names of available authorization plugins.
@@ -2618,6 +2553,7 @@ type PluginsInfo struct {
 }
 
 // PointEMetadata: Metadata about our point-e instance.
+//
 // This is mostly used for internal purposes and debugging.
 type PointEMetadata struct {
 	// Ok: If the point-e service returned an ok response from ping.
@@ -2659,6 +2595,7 @@ type Runtime struct {
 }
 
 // Session: An authentication session.
+//
 // For our UIs, these are automatically created by Next.js.
 type Session struct {
 	// CreatedAt: The date and time the session was created.
@@ -4176,6 +4113,7 @@ type UserResultsPage struct {
 }
 
 // VerificationToken: A verification token for a user.
+//
 // This is typically used to verify a user's email address.
 type VerificationToken struct {
 	// CreatedAt: The date and time the verification token was created.
