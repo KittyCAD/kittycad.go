@@ -1795,8 +1795,6 @@ type File2DVectorExportFormat string
 const (
 	// File2DVectorExportFormatDxf represents the File2DVectorExportFormat `"dxf"`.
 	File2DVectorExportFormatDxf File2DVectorExportFormat = "dxf"
-	// File2DVectorExportFormatJson represents the File2DVectorExportFormat `"json"`.
-	File2DVectorExportFormatJson File2DVectorExportFormat = "json"
 	// File2DVectorExportFormatPng represents the File2DVectorExportFormat `"png"`.
 	File2DVectorExportFormatPng File2DVectorExportFormat = "png"
 	// File2DVectorExportFormatPs represents the File2DVectorExportFormat `"ps"`.
@@ -1829,8 +1827,6 @@ const (
 	File3DImportFormatObjZip File3DImportFormat = "obj_zip"
 	// File3DImportFormatObj represents the File3DImportFormat `"obj"`.
 	File3DImportFormatObj File3DImportFormat = "obj"
-	// File3DImportFormatObjNomtl represents the File3DImportFormat `"obj_nomtl"`.
-	File3DImportFormatObjNomtl File3DImportFormat = "obj_nomtl"
 	// File3DImportFormatPly represents the File3DImportFormat `"ply"`.
 	File3DImportFormatPly File3DImportFormat = "ply"
 	// File3DImportFormatStep represents the File3DImportFormat `"step"`.
@@ -1933,12 +1929,8 @@ const (
 	FileExportFormatFbx FileExportFormat = "fbx"
 	// FileExportFormatFbxb represents the FileExportFormat `"fbxb"`.
 	FileExportFormatFbxb FileExportFormat = "fbxb"
-	// FileExportFormatJson represents the FileExportFormat `"json"`.
-	FileExportFormatJson FileExportFormat = "json"
 	// FileExportFormatObj represents the FileExportFormat `"obj"`.
 	FileExportFormatObj FileExportFormat = "obj"
-	// FileExportFormatObjNomtl represents the FileExportFormat `"obj_nomtl"`.
-	FileExportFormatObjNomtl FileExportFormat = "obj_nomtl"
 	// FileExportFormatPly represents the FileExportFormat `"ply"`.
 	FileExportFormatPly FileExportFormat = "ply"
 	// FileExportFormatStep represents the FileExportFormat `"step"`.
@@ -1963,8 +1955,6 @@ const (
 	FileImportFormatObjZip FileImportFormat = "obj_zip"
 	// FileImportFormatObj represents the FileImportFormat `"obj"`.
 	FileImportFormatObj FileImportFormat = "obj"
-	// FileImportFormatObjNomtl represents the FileImportFormat `"obj_nomtl"`.
-	FileImportFormatObjNomtl FileImportFormat = "obj_nomtl"
 	// FileImportFormatPly represents the FileImportFormat `"ply"`.
 	FileImportFormatPly FileImportFormat = "ply"
 	// FileImportFormatStep represents the FileImportFormat `"step"`.
