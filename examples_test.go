@@ -305,22 +305,6 @@ func ExampleFileService_Create2DVectorConversion() {
 }
 
 // Create a client with your token.
-func ExampleFileService_Create3DConversion() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.File.Create3DConversion(kittycad.File3DExportFormatDae, kittycad.File3DImportFormatDae, []byte("some-binary"))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// Create a client with your token.
 func ExampleFileService_CreateCenterOfMass() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -344,22 +328,6 @@ func ExampleFileService_CreateConversion() {
 	}
 
 	result, err := client.File.CreateConversion(kittycad.FileExportFormatDae, kittycad.FileImportFormatDae, []byte("some-binary"))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// Create a client with your token.
-func ExampleFileService_GetConversion() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.File.GetConversion("some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -539,6 +507,19 @@ func ExampleOauth2Service_ProviderConsent() {
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleMetaService_GetOpenaiSchema() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Meta.GetOpenaiSchema(); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -1168,22 +1149,6 @@ func ExampleUserService_GetSelfExtended() {
 	}
 
 	result, err := client.User.GetSelfExtended()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// Create a client with your token.
-func ExampleFileService_GetConversionForUser() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.File.GetConversionForUser("some-string")
 	if err != nil {
 		panic(err)
 	}
