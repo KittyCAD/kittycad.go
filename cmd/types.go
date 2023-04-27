@@ -231,6 +231,16 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 		}
 
 		object.Values[k] = objectValue
+
+		// If this property is an object, we need to generate it as well.
+		if v.Value.Type == "object" && v.Value.Properties != nil && len(v.Value.Properties) > 0 {
+			// Check if we already have a schema for this one of.
+			if _, ok := spec.Components.Schemas[k]; !ok {
+				if err := data.generateObjectType(k, v.Value, spec); err != nil {
+					return err
+				}
+			}
+		}
 	}
 
 	// Print the template for the struct.
@@ -252,14 +262,16 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 	for _, v := range s.OneOf {
 		if v.Value.Type == "object" {
 			// Check if all the objects have a enum of one type.
-			for name, value := range v.Value.Properties {
+			for propName, value := range v.Value.Properties {
 				if value.Value.Type == "string" && value.Value.Enum != nil && len(value.Value.Enum) == 1 {
 					if typeName == "" {
-						typeName = name
-					} else if typeName != name {
+						typeName = propName
+					} else if typeName != propName {
 						return fmt.Errorf("one of %q has a different type than the others: %q", name, value.Value.Enum[0].(string))
 					}
 					types = append(types, value.Value.Enum[0].(string))
+				} else {
+					types = append(types, name+" "+propName)
 				}
 			}
 		}
@@ -606,6 +618,10 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 			innerType, err := printType(name, schema.AdditionalProperties.Schema, spec)
 			if err != nil {
 				return "", err
+			}
+
+			if schema.AdditionalProperties.Schema.Value.Type == "object" {
+				innerType = fmt.Sprintf("%s.%s", "kittycad", innerType)
 			}
 
 			// Get an example for the inner type.

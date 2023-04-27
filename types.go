@@ -63,6 +63,7 @@ const (
 )
 
 // AiPluginManifest: AI plugin manifest.
+//
 // This is used for OpenAI's ChatGPT plugins. You can read more about them [here](https://platform.openai.com/docs/plugins/getting-started/plugin-manifest).
 type AiPluginManifest struct {
 	// API: API specification.
@@ -130,6 +131,7 @@ const (
 )
 
 // APICallWithPrice: An API call with the price.
+//
 // This is a join of the `ApiCall` and `ApiCallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt: The date and time the API call completed billing.
@@ -187,6 +189,7 @@ type APICallWithPriceResultsPage struct {
 }
 
 // APIToken: An API token.
+//
 // These are used to authenticate users with Bearer authentication.
 type APIToken struct {
 	// CreatedAt: The date and time the API token was created.
@@ -247,8 +250,8 @@ type AsyncAPICall struct {
 	Worker string `json:"worker" yaml:"worker" schema:"worker"`
 }
 
-// AsyncAPICallOutputFileConversion: A file conversion.
-type AsyncAPICallOutputFileConversion struct {
+// AsyncAPICallOutputOutput: A file conversion.
+type AsyncAPICallOutputOutput struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -269,42 +272,16 @@ type AsyncAPICallOutputFileConversion struct {
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// AsyncAPICallOutputFile2DVectorConversion: A 2DVectorfile conversion.
-type AsyncAPICallOutputFile2DVectorConversion struct {
-	// CompletedAt: The time and date the API call was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
-	// CreatedAt: The time and date the API call was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error" schema:"error"`
-	// ID: The unique identifier of the API call.
-	//
-	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Output: The converted file, if completed, base64 encoded.
-	Output Base64 `json:"output" yaml:"output" schema:"output"`
-	// OutputFormat: The output format of the file conversion.
-	OutputFormat File2DVectorExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
-	// SrcFormat: The source format of the file conversion.
-	SrcFormat File2DVectorImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
-	// StartedAt: The time and date the API call was started.
-	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
-	// Status: The status of the API call.
-	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// UpdatedAt: The time and date the API call was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
-}
-
-// AsyncAPICallOutputFileCenterOfMass: File center of mass.
-type AsyncAPICallOutputFileCenterOfMass struct {
+// AsyncAPICallOutputOutputFormat: File center of mass.
+type AsyncAPICallOutputOutputFormat struct {
 	// CenterOfMass: The resulting center of mass.
 	CenterOfMass []float64 `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
 	// CompletedAt: The time and date the API call was completed.
@@ -318,19 +295,21 @@ type AsyncAPICallOutputFileCenterOfMass struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// AsyncAPICallOutputFileMass: A file mass.
-type AsyncAPICallOutputFileMass struct {
+// AsyncAPICallOutputStartedAt: A file mass.
+type AsyncAPICallOutputStartedAt struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -346,19 +325,21 @@ type AsyncAPICallOutputFileMass struct {
 	// MaterialDensity: The material density as denoted by the user.
 	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
 	// SrcFormat: The source format of the file.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// AsyncAPICallOutputFileVolume: A file volume.
-type AsyncAPICallOutputFileVolume struct {
+// AsyncAPICallOutputUserID: A file volume.
+type AsyncAPICallOutputUserID struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -370,11 +351,13 @@ type AsyncAPICallOutputFileVolume struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -383,8 +366,8 @@ type AsyncAPICallOutputFileVolume struct {
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
 }
 
-// AsyncAPICallOutputFileDensity: A file density.
-type AsyncAPICallOutputFileDensity struct {
+// AsyncAPICallOutputCompletedAt: A file density.
+type AsyncAPICallOutputCompletedAt struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -400,19 +383,21 @@ type AsyncAPICallOutputFileDensity struct {
 	// MaterialMass: The material mass as denoted by the user.
 	MaterialMass float64 `json:"material_mass" yaml:"material_mass" schema:"material_mass"`
 	// SrcFormat: The source format of the file.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// AsyncAPICallOutputFileSurfaceArea: A file surface area.
-type AsyncAPICallOutputFileSurfaceArea struct {
+// AsyncAPICallOutputCreatedAt: A file surface area.
+type AsyncAPICallOutputCreatedAt struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -424,13 +409,15 @@ type AsyncAPICallOutputFileSurfaceArea struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// SurfaceArea: The resulting surface area.
 	SurfaceArea float64 `json:"surface_area" yaml:"surface_area" schema:"surface_area"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -451,8 +438,6 @@ type AsyncAPICallType string
 const (
 	// AsyncAPICallTypeFileConversion represents the AsyncAPICallType `"FileConversion"`.
 	AsyncAPICallTypeFileConversion AsyncAPICallType = "FileConversion"
-	// AsyncAPICallTypeFile2DVectorConversion represents the AsyncAPICallType `"File2DVectorConversion"`.
-	AsyncAPICallTypeFile2DVectorConversion AsyncAPICallType = "File2DVectorConversion"
 	// AsyncAPICallTypeFileVolume represents the AsyncAPICallType `"FileVolume"`.
 	AsyncAPICallTypeFileVolume AsyncAPICallType = "FileVolume"
 	// AsyncAPICallTypeFileCenterOfMass represents the AsyncAPICallType `"FileCenterOfMass"`.
@@ -476,6 +461,7 @@ type BillingInfo struct {
 }
 
 // CacheMetadata: Metadata about our cache.
+//
 // This is mostly used for internal purposes and debugging.
 type CacheMetadata struct {
 	// Ok: If the cache returned an ok response from ping.
@@ -553,6 +539,7 @@ type Commit struct {
 }
 
 // Connection: Metadata about a pub-sub connection.
+//
 // This is mostly used for internal purposes and debugging.
 type Connection struct {
 	// AuthTimeout: The auth timeout of the server.
@@ -1154,6 +1141,7 @@ const (
 )
 
 // CreatedAtSortMode: Supported set of sort modes for scanning by created_at only.
+//
 // Currently, we only support scanning in ascending order.
 type CreatedAtSortMode string
 
@@ -1165,6 +1153,7 @@ const (
 )
 
 // Currency: Currency is the list of supported currencies.
+//
 // This comes from the Stripe API docs: For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
 type Currency string
 
@@ -1478,6 +1467,7 @@ type Customer struct {
 }
 
 // CustomerBalance: A balance for a user.
+//
 // This holds information about the financial balance for the user.
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
@@ -1658,6 +1648,94 @@ type DockerSystemInfo struct {
 	Warnings []string `json:"warnings" yaml:"warnings" schema:"warnings"`
 }
 
+// DrawCircle is the type definition for a DrawCircle.
+type DrawCircle struct {
+	// Center: The center of the circle.
+	Center []float64 `json:"center" yaml:"center" schema:"center,required"`
+	// Radius: The radius of the circle.
+	Radius float64 `json:"radius" yaml:"radius" schema:"radius,required"`
+}
+
+// DrawingCmdDrawCircle: Draw a circle.
+type DrawingCmdDrawCircle struct {
+	// DrawCircle:
+	DrawCircle DrawCircle `json:"DrawCircle" yaml:"DrawCircle" schema:"DrawCircle,required"`
+}
+
+// Extrude is the type definition for a Extrude.
+type Extrude struct {
+	// Distance: How far to extrude.
+	Distance float64 `json:"distance" yaml:"distance" schema:"distance,required"`
+	// Sketch: Which sketch to extrude.
+	Sketch UUID `json:"sketch" yaml:"sketch" schema:"sketch,required"`
+}
+
+// DrawingCmdExtrude: Extrude a sketch.
+type DrawingCmdExtrude struct {
+	// Extrude:
+	Extrude Extrude `json:"Extrude" yaml:"Extrude" schema:"Extrude,required"`
+}
+
+// DrawingCmdReq: A graphics command submitted to the KittyCAD engine via the Drawing API.
+type DrawingCmdReq struct {
+	// Cmd: Commands that the KittyCAD engine can execute.
+	Cmd any `json:"cmd" yaml:"cmd" schema:"cmd,required"`
+	// CmdID: All commands have unique IDs. These should be randomly generated.
+	CmdID UUID `json:"cmd_id" yaml:"cmd_id" schema:"cmd_id,required"`
+	// FileID:
+	FileID string `json:"file_id" yaml:"file_id" schema:"file_id,required"`
+}
+
+// DrawingCmdReqBatch: A batch set of graphics commands submitted to the KittyCAD engine via the Drawing API.
+type DrawingCmdReqBatch struct {
+	// Cmds: A set of commands to submit to the KittyCAD engine in a batch.
+	Cmds map[string]DrawingCmdReq `json:"cmds" yaml:"cmds" schema:"cmds,required"`
+	// FileID: Which file is being drawn in.
+	FileID string `json:"file_id" yaml:"file_id" schema:"file_id,required"`
+}
+
+// DrawingError: Why a command submitted to the Drawing API failed.
+type DrawingError struct {
+	// ErrorCode: A string error code which refers to a family of errors. E.g. "InvalidInput".
+	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code,required"`
+	// ExternalMessage: Describe the specific error which occurred. Will be shown to users, not logged.
+	ExternalMessage string `json:"external_message" yaml:"external_message" schema:"external_message,required"`
+	// InternalMessage: Describe the specific error which occurred. Will be logged, not shown to users.
+	InternalMessage string `json:"internal_message" yaml:"internal_message" schema:"internal_message,required"`
+	// StatusCode: A HTTP status code.
+	StatusCode int `json:"status_code" yaml:"status_code" schema:"status_code,required"`
+}
+
+// DrawingOutcomeSuccess: Each successful command has some result. Unfortunately this isn't strongly typed, because the result depends on the command. This means the OpenAPI schema for this won't be very useful.
+type DrawingOutcomeSuccess struct {
+	// Success:
+	Success any `json:"Success" yaml:"Success" schema:"Success,required"`
+}
+
+// DrawingOutcomeError: It failed. Why? See 'struct Error' above.
+type DrawingOutcomeError struct {
+	// Error: Why a command submitted to the Drawing API failed.
+	Error DrawingError `json:"Error" yaml:"Error" schema:"Error,required"`
+}
+
+// Cancelled is the type definition for a Cancelled.
+type Cancelled struct {
+	// WhatFailed: The ID of the command that failed, cancelling this command.
+	WhatFailed UUID `json:"what_failed" yaml:"what_failed" schema:"what_failed,required"`
+}
+
+// DrawingOutcomeCancelled: Cancelled because it required the output of a previous command, which failed.
+type DrawingOutcomeCancelled struct {
+	// Cancelled:
+	Cancelled Cancelled `json:"Cancelled" yaml:"Cancelled" schema:"Cancelled,required"`
+}
+
+// DrawingOutcomes: The result from a batch of drawing commands.
+type DrawingOutcomes struct {
+	// Outcomes: The results from each command in the batch.
+	Outcomes map[string]any `json:"outcomes" yaml:"outcomes" schema:"outcomes,required"`
+}
+
 // EmailAuthenticationForm: The body of the form for email authentication.
 type EmailAuthenticationForm struct {
 	// CallbackUrl: The URL to redirect back to after we have authenticated.
@@ -1667,6 +1745,7 @@ type EmailAuthenticationForm struct {
 }
 
 // EngineMetadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type EngineMetadata struct {
 	// AsyncJobsRunning: If any async job is currently running.
@@ -1706,6 +1785,7 @@ type Error struct {
 }
 
 // ExecutorMetadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type ExecutorMetadata struct {
 	// DockerInfo: Information about the docker daemon.
@@ -1717,6 +1797,7 @@ type ExecutorMetadata struct {
 }
 
 // ExtendedUser: Extended user information.
+//
 // This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Front
 type ExtendedUser struct {
 	// Company: The user's company.
@@ -1761,80 +1842,6 @@ type ExtendedUserResultsPage struct {
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
-// File2DVectorConversion: A 2D Vector file conversion.
-type File2DVectorConversion struct {
-	// CompletedAt: The time and date the API call was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
-	// CreatedAt: The time and date the API call was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error" schema:"error"`
-	// ID: The unique identifier of the API call.
-	//
-	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Output: The converted file, if completed, base64 encoded.
-	Output Base64 `json:"output" yaml:"output" schema:"output"`
-	// OutputFormat: The output format of the file conversion.
-	OutputFormat File2DVectorExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
-	// SrcFormat: The source format of the file conversion.
-	SrcFormat File2DVectorImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
-	// StartedAt: The time and date the API call was started.
-	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
-	// Status: The status of the API call.
-	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// UpdatedAt: The time and date the API call was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
-}
-
-// File2DVectorExportFormat: The valid types of Vector output file formats.
-type File2DVectorExportFormat string
-
-const (
-	// File2DVectorExportFormatDxf represents the File2DVectorExportFormat `"dxf"`.
-	File2DVectorExportFormatDxf File2DVectorExportFormat = "dxf"
-	// File2DVectorExportFormatPng represents the File2DVectorExportFormat `"png"`.
-	File2DVectorExportFormatPng File2DVectorExportFormat = "png"
-	// File2DVectorExportFormatPs represents the File2DVectorExportFormat `"ps"`.
-	File2DVectorExportFormatPs File2DVectorExportFormat = "ps"
-	// File2DVectorExportFormatSvg represents the File2DVectorExportFormat `"svg"`.
-	File2DVectorExportFormatSvg File2DVectorExportFormat = "svg"
-)
-
-// File2DVectorImportFormat: The valid types of Vector source file formats.
-type File2DVectorImportFormat string
-
-const (
-	// File2DVectorImportFormatDxf represents the File2DVectorImportFormat `"dxf"`.
-	File2DVectorImportFormatDxf File2DVectorImportFormat = "dxf"
-	// File2DVectorImportFormatSvg represents the File2DVectorImportFormat `"svg"`.
-	File2DVectorImportFormatSvg File2DVectorImportFormat = "svg"
-)
-
-// File3DImportFormat: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
-type File3DImportFormat string
-
-const (
-	// File3DImportFormatDae represents the File3DImportFormat `"dae"`.
-	File3DImportFormatDae File3DImportFormat = "dae"
-	// File3DImportFormatDxf represents the File3DImportFormat `"dxf"`.
-	File3DImportFormatDxf File3DImportFormat = "dxf"
-	// File3DImportFormatFbx represents the File3DImportFormat `"fbx"`.
-	File3DImportFormatFbx File3DImportFormat = "fbx"
-	// File3DImportFormatObjZip represents the File3DImportFormat `"obj_zip"`.
-	File3DImportFormatObjZip File3DImportFormat = "obj_zip"
-	// File3DImportFormatObj represents the File3DImportFormat `"obj"`.
-	File3DImportFormatObj File3DImportFormat = "obj"
-	// File3DImportFormatPly represents the File3DImportFormat `"ply"`.
-	File3DImportFormatPly File3DImportFormat = "ply"
-	// File3DImportFormatStep represents the File3DImportFormat `"step"`.
-	File3DImportFormatStep File3DImportFormat = "step"
-	// File3DImportFormatStl represents the File3DImportFormat `"stl"`.
-	File3DImportFormatStl File3DImportFormat = "stl"
-)
-
 // FileCenterOfMass: A file center of mass result.
 type FileCenterOfMass struct {
 	// CenterOfMass: The resulting center of mass.
@@ -1850,7 +1857,7 @@ type FileCenterOfMass struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
@@ -1906,7 +1913,7 @@ type FileDensity struct {
 	// MaterialMass: The material mass as denoted by the user.
 	MaterialMass float64 `json:"material_mass" yaml:"material_mass" schema:"material_mass"`
 	// SrcFormat: The source format of the file.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
@@ -1937,8 +1944,6 @@ const (
 	FileExportFormatStep FileExportFormat = "step"
 	// FileExportFormatStl represents the FileExportFormat `"stl"`.
 	FileExportFormatStl FileExportFormat = "stl"
-	// FileExportFormatSvg represents the FileExportFormat `"svg"`.
-	FileExportFormatSvg FileExportFormat = "svg"
 )
 
 // FileImportFormat: The valid types of source file formats.
@@ -1961,8 +1966,6 @@ const (
 	FileImportFormatStep FileImportFormat = "step"
 	// FileImportFormatStl represents the FileImportFormat `"stl"`.
 	FileImportFormatStl FileImportFormat = "stl"
-	// FileImportFormatSvg represents the FileImportFormat `"svg"`.
-	FileImportFormatSvg FileImportFormat = "svg"
 )
 
 // FileMass: A file mass result.
@@ -1982,7 +1985,7 @@ type FileMass struct {
 	// MaterialDensity: The material density as denoted by the user.
 	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
 	// SrcFormat: The source format of the file.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
@@ -2006,7 +2009,7 @@ type FileSurfaceArea struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
@@ -2020,6 +2023,7 @@ type FileSurfaceArea struct {
 }
 
 // FileSystemMetadata: Metadata about our file system.
+//
 // This is mostly used for internal purposes and debugging.
 type FileSystemMetadata struct {
 	// Ok: If the file system passed a sanity check.
@@ -2039,7 +2043,7 @@ type FileVolume struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat File3DImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
@@ -2273,6 +2277,7 @@ type MetaClusterInfo struct {
 }
 
 // Metadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type Metadata struct {
 	// Cache: Metadata about our cache.
@@ -2294,6 +2299,7 @@ type Metadata struct {
 }
 
 // Method: The Request Method (VERB)
+//
 // This type also contains constants for a number of common HTTP methods such as GET, POST, etc.
 //
 // Currently includes 8 variants representing the 8 methods defined in [RFC 7230](https://tools.ietf.org/html/rfc7231#section-4.1), plus PATCH, and an Extension variant for all extensions.
@@ -2515,6 +2521,7 @@ const (
 )
 
 // PluginsInfo: Available plugins per type.
+//
 // **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
 type PluginsInfo struct {
 	// Authorization: Names of available authorization plugins.
@@ -2528,6 +2535,7 @@ type PluginsInfo struct {
 }
 
 // PointEMetadata: Metadata about our point-e instance.
+//
 // This is mostly used for internal purposes and debugging.
 type PointEMetadata struct {
 	// Ok: If the point-e service returned an ok response from ping.
@@ -2569,6 +2577,7 @@ type Runtime struct {
 }
 
 // Session: An authentication session.
+//
 // For our UIs, these are automatically created by Next.js.
 type Session struct {
 	// CreatedAt: The date and time the session was created.
@@ -4086,6 +4095,7 @@ type UserResultsPage struct {
 }
 
 // VerificationToken: A verification token for a user.
+//
 // This is typically used to verify a user's email address.
 type VerificationToken struct {
 	// CreatedAt: The date and time the verification token was created.
