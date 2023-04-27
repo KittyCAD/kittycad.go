@@ -771,22 +771,63 @@ func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsCons
 
 }
 
-// Create2DVectorConversion: Convert 2D Vector file.
-// Convert a 2D Vector file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
-// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
-// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+// Cmd: Submit one drawing operation.
+// Response depends on which command was submitted, so unfortunately the OpenAPI schema can't generate the right response type.
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of Vector output file formats.
-//   - `srcFormat`: The valid types of Vector source file formats.
-//   - `body`
-func (s *FileService) Create2DVectorConversion(outputFormat File2DVectorExportFormat, srcFormat File2DVectorImportFormat, body []byte) (*File2DVectorConversion, error) {
+//   - `body`: A graphics command submitted to the KittyCAD engine via the Drawing API.
+func (s *DrawingService) Cmd(body DrawingCmdReq) error {
 	// Create the url.
-	path := "/file/2d/vector/conversion/{{.src_format}}/{{.output_format}}"
+	path := "/drawing/cmd"
 	uri := resolveRelative(s.client.server, path)
 
-	b := bytes.NewReader(body)
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// CmdBatch: Submit many drawing operations.
+// Parameters
+//
+//   - `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Drawing API.
+func (s *DrawingService) CmdBatch(body DrawingCmdReqBatch) (*DrawingOutcomes, error) {
+	// Create the url.
+	path := "/drawing/cmd_batch"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -795,15 +836,7 @@ func (s *FileService) Create2DVectorConversion(outputFormat File2DVectorExportFo
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "application/octet-stream")
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"output_format": string(outputFormat),
-		"src_format":    string(srcFormat),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
+	req.Header.Add("Content-Type", "application/json")
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -821,7 +854,7 @@ func (s *FileService) Create2DVectorConversion(outputFormat File2DVectorExportFo
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded File2DVectorConversion
+	var decoded DrawingOutcomes
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -837,9 +870,9 @@ func (s *FileService) Create2DVectorConversion(outputFormat File2DVectorExportFo
 //
 // Parameters
 //
-//   - `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
+//   - `srcFormat`: The valid types of source file formats.
 //   - `body`
-func (s *FileService) CreateCenterOfMass(srcFormat File3DImportFormat, body []byte) (*FileCenterOfMass, error) {
+func (s *FileService) CreateCenterOfMass(srcFormat FileImportFormat, body []byte) (*FileCenterOfMass, error) {
 	// Create the url.
 	path := "/file/center-of-mass"
 	uri := resolveRelative(s.client.server, path)
@@ -955,9 +988,9 @@ func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat 
 // Parameters
 //
 //   - `materialMass`
-//   - `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
+//   - `srcFormat`: The valid types of source file formats.
 //   - `body`
-func (s *FileService) CreateDensity(materialMass float64, srcFormat File3DImportFormat, body []byte) (*FileDensity, error) {
+func (s *FileService) CreateDensity(materialMass float64, srcFormat FileImportFormat, body []byte) (*FileDensity, error) {
 	// Create the url.
 	path := "/file/density"
 	uri := resolveRelative(s.client.server, path)
@@ -1070,9 +1103,9 @@ func (s *FileService) CreateExecution(lang CodeLanguage, output string, body []b
 // Parameters
 //
 //   - `materialDensity`
-//   - `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
+//   - `srcFormat`: The valid types of source file formats.
 //   - `body`
-func (s *FileService) CreateMass(materialDensity float64, srcFormat File3DImportFormat, body []byte) (*FileMass, error) {
+func (s *FileService) CreateMass(materialDensity float64, srcFormat FileImportFormat, body []byte) (*FileMass, error) {
 	// Create the url.
 	path := "/file/mass"
 	uri := resolveRelative(s.client.server, path)
@@ -1128,9 +1161,9 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat File3DImport
 //
 // Parameters
 //
-//   - `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
+//   - `srcFormat`: The valid types of source file formats.
 //   - `body`
-func (s *FileService) CreateSurfaceArea(srcFormat File3DImportFormat, body []byte) (*FileSurfaceArea, error) {
+func (s *FileService) CreateSurfaceArea(srcFormat FileImportFormat, body []byte) (*FileSurfaceArea, error) {
 	// Create the url.
 	path := "/file/surface-area"
 	uri := resolveRelative(s.client.server, path)
@@ -1185,9 +1218,9 @@ func (s *FileService) CreateSurfaceArea(srcFormat File3DImportFormat, body []byt
 //
 // Parameters
 //
-//   - `srcFormat`: The valid types of 3d source file formats, can include formats that use suplimentary files. For example, the OBJ format can use a MTL file.
+//   - `srcFormat`: The valid types of source file formats.
 //   - `body`
-func (s *FileService) CreateVolume(srcFormat File3DImportFormat, body []byte) (*FileVolume, error) {
+func (s *FileService) CreateVolume(srcFormat FileImportFormat, body []byte) (*FileVolume, error) {
 	// Create the url.
 	path := "/file/volume"
 	uri := resolveRelative(s.client.server, path)

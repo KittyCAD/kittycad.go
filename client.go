@@ -28,6 +28,8 @@ type Client struct {
 	Beta *BetaService
 	// Constant: Constants. These are helpful as helpers.
 	Constant *ConstantService
+	// Drawing: Drawing API for updating your 3D files using the KittyCAD engine.
+	Drawing *DrawingService
 	// File: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 	File *FileService
 	// Hidden: Hidden API endpoints that should not show up in the docs.
@@ -63,6 +65,9 @@ type BetaService service
 
 // ConstantService: Constants. These are helpful as helpers.
 type ConstantService service
+
+// DrawingService: Drawing API for updating your 3D files using the KittyCAD engine.
+type DrawingService service
 
 // FileService: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 type FileService service

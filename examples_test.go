@@ -289,13 +289,26 @@ func ExampleConstantService_GetPhysics() {
 }
 
 // Create a client with your token.
-func ExampleFileService_Create2DVectorConversion() {
+func ExampleDrawingService_Cmd() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.File.Create2DVectorConversion(kittycad.File2DVectorExportFormatDxf, kittycad.File2DVectorImportFormatDxf, []byte("some-binary"))
+	if err := client.Drawing.Cmd(kittycad.DrawingCmdReq{Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), FileID: "some-string"}); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleDrawingService_CmdBatch() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Drawing.CmdBatch(kittycad.DrawingCmdReqBatch{Cmds: map[string]kittycad.DrawingCmdReq{"example": {Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), FileID: "some-string"}}, FileID: "some-string"})
 	if err != nil {
 		panic(err)
 	}
@@ -311,7 +324,7 @@ func ExampleFileService_CreateCenterOfMass() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateCenterOfMass(kittycad.File3DImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateCenterOfMass(kittycad.FileImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -343,7 +356,7 @@ func ExampleFileService_CreateDensity() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateDensity(123.45, kittycad.File3DImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateDensity(123.45, kittycad.FileImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -375,7 +388,7 @@ func ExampleFileService_CreateMass() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateMass(123.45, kittycad.File3DImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateMass(123.45, kittycad.FileImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -391,7 +404,7 @@ func ExampleFileService_CreateSurfaceArea() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateSurfaceArea(kittycad.File3DImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateSurfaceArea(kittycad.FileImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -407,7 +420,7 @@ func ExampleFileService_CreateVolume() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateVolume(kittycad.File3DImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateVolume(kittycad.FileImportFormatDae, []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
