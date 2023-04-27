@@ -261,8 +261,14 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 	typeName := ""
 	for _, v := range s.OneOf {
 		if v.Value.Type == "object" {
-			// Check if all the objects have a enum of one type.
-			for propName, value := range v.Value.Properties {
+			keys := make([]string, len(v.Value.Properties))
+			for k := range v.Value.Properties {
+				keys = append(keys, k)
+			}
+			sort.Strings(keys)
+			for _, propName := range keys {
+				value := v.Value.Properties[propName]
+				// Check if all the objects have a enum of one type.
 				if value.Value.Type == "string" && value.Value.Enum != nil && len(value.Value.Enum) == 1 {
 					if typeName == "" {
 						typeName = propName
