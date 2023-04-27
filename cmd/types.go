@@ -261,7 +261,7 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 	typeName := ""
 	for _, v := range s.OneOf {
 		if v.Value.Type == "object" {
-			keys := make([]string, len(v.Value.Properties))
+			keys := []string{}
 			for k := range v.Value.Properties {
 				keys = append(keys, k)
 			}
