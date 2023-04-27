@@ -247,8 +247,8 @@ type AsyncAPICall struct {
 	Worker string `json:"worker" yaml:"worker" schema:"worker"`
 }
 
-// AsyncAPICallOutputStatus: A file conversion.
-type AsyncAPICallOutputStatus struct {
+// AsyncAPICallOutputCompletedAt: A file conversion.
+type AsyncAPICallOutputCompletedAt struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -277,8 +277,8 @@ type AsyncAPICallOutputStatus struct {
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// AsyncAPICallOutputError: File center of mass.
-type AsyncAPICallOutputError struct {
+// AsyncAPICallOutputCreatedAt: File center of mass.
+type AsyncAPICallOutputCreatedAt struct {
 	// CenterOfMass: The resulting center of mass.
 	CenterOfMass []float64 `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
 	// CompletedAt: The time and date the API call was completed.
@@ -305,8 +305,8 @@ type AsyncAPICallOutputError struct {
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// AsyncAPICallOutputID: A file mass.
-type AsyncAPICallOutputID struct {
+// AsyncAPICallOutputError: A file mass.
+type AsyncAPICallOutputError struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -335,8 +335,8 @@ type AsyncAPICallOutputID struct {
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// AsyncAPICallOutputOutput: A file volume.
-type AsyncAPICallOutputOutput struct {
+// AsyncAPICallOutputID: A file volume.
+type AsyncAPICallOutputID struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -363,8 +363,8 @@ type AsyncAPICallOutputOutput struct {
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
 }
 
-// AsyncAPICallOutputOutputFormat: A file density.
-type AsyncAPICallOutputOutputFormat struct {
+// AsyncAPICallOutputOutput: A file density.
+type AsyncAPICallOutputOutput struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -393,8 +393,8 @@ type AsyncAPICallOutputOutputFormat struct {
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// AsyncAPICallOutputStartedAt: A file surface area.
-type AsyncAPICallOutputStartedAt struct {
+// AsyncAPICallOutputOutputFormat: A file surface area.
+type AsyncAPICallOutputOutputFormat struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
