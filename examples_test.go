@@ -90,13 +90,26 @@ func ExampleMetaService_Getdata() {
 }
 
 // Create a client with your token.
+func ExampleMetaService_GetMetrics() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Meta.GetMetrics(); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
 func ExampleAiService_CreateImageTo3D() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ai.CreateImageTo3D(kittycad.ImageTypePng, kittycad.FileExportFormatDae, []byte("some-binary"))
+	result, err := client.Ai.CreateImageTo3D(kittycad.ImageTypePng, "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -112,7 +125,7 @@ func ExampleAiService_CreateTextTo3D() {
 		panic(err)
 	}
 
-	result, err := client.Ai.CreateTextTo3D(kittycad.FileExportFormatDae, "some-string")
+	result, err := client.Ai.CreateTextTo3D("", "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -128,7 +141,7 @@ func ExampleAPICallService_GetMetrics() {
 		panic(err)
 	}
 
-	result, err := client.APICall.GetMetrics(kittycad.APICallQueryGroupByEmail)
+	result, err := client.APICall.GetMetrics("")
 	if err != nil {
 		panic(err)
 	}
@@ -144,7 +157,7 @@ func ExampleAPICallService_List() {
 		panic(err)
 	}
 
-	result, err := client.APICall.List(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	result, err := client.APICall.List(123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}
@@ -218,7 +231,7 @@ func ExampleAPICallService_ListAsyncOperations() {
 		panic(err)
 	}
 
-	result, err := client.APICall.ListAsyncOperations(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending, kittycad.APICallStatusQueued)
+	result, err := client.APICall.ListAsyncOperations(123, "some-string", "", "")
 	if err != nil {
 		panic(err)
 	}
@@ -279,7 +292,7 @@ func ExampleConstantService_GetPhysics() {
 		panic(err)
 	}
 
-	result, err := client.Constant.GetPhysics(kittycad.PhysicsConstantNamePi)
+	result, err := client.Constant.GetPhysics("")
 	if err != nil {
 		panic(err)
 	}
@@ -324,7 +337,7 @@ func ExampleFileService_CreateCenterOfMass() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateCenterOfMass(kittycad.FileImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateCenterOfMass("", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -340,7 +353,7 @@ func ExampleFileService_CreateConversion() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateConversion(kittycad.FileExportFormatDae, kittycad.FileImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateConversion("", "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -356,7 +369,7 @@ func ExampleFileService_CreateDensity() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateDensity(123.45, kittycad.FileImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateDensity(123.45, "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -366,13 +379,13 @@ func ExampleFileService_CreateDensity() {
 }
 
 // Create a client with your token.
-func ExampleFileService_CreateExecution() {
+func ExampleExecutorService_CreateFileExecution() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.File.CreateExecution(kittycad.CodeLanguageGo, "some-string", []byte("some-binary"))
+	result, err := client.Executor.CreateFileExecution(kittycad.CodeLanguageGo, "some-string", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -388,7 +401,7 @@ func ExampleFileService_CreateMass() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateMass(123.45, kittycad.FileImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateMass(123.45, "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -404,7 +417,7 @@ func ExampleFileService_CreateSurfaceArea() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateSurfaceArea(kittycad.FileImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateSurfaceArea("", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -420,7 +433,7 @@ func ExampleFileService_CreateVolume() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateVolume(kittycad.FileImportFormatDae, []byte("some-binary"))
+	result, err := client.File.CreateVolume("", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -475,7 +488,7 @@ func ExampleOauth2Service_DeviceAccessToken() {
 		panic(err)
 	}
 
-	if err := client.Oauth2.DeviceAccessToken(kittycad.DeviceAccessTokenRequestForm{ClientID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), DeviceCode: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), GrantType: kittycad.OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode}); err != nil {
+	if err := client.Oauth2.DeviceAccessToken(kittycad.DeviceAccessTokenRequestForm{ClientID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), DeviceCode: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), GrantType: ""}); err != nil {
 		panic(err)
 	}
 
@@ -501,7 +514,7 @@ func ExampleOauth2Service_ProviderCallback() {
 		panic(err)
 	}
 
-	if err := client.Oauth2.ProviderCallback(kittycad.AccountProviderGoogle, "some-string", "some-string"); err != nil {
+	if err := client.Oauth2.ProviderCallback("", "some-string", "some-string"); err != nil {
 		panic(err)
 	}
 
@@ -514,7 +527,7 @@ func ExampleOauth2Service_ProviderConsent() {
 		panic(err)
 	}
 
-	result, err := client.Oauth2.ProviderConsent(kittycad.AccountProviderGoogle, "some-string")
+	result, err := client.Oauth2.ProviderConsent("", "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -559,7 +572,7 @@ func ExampleUnitService_GetAccelerationConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetAccelerationConversion(kittycad.UnitAccelerationFormatMetersPerSecondSquared, kittycad.UnitAccelerationFormatMetersPerSecondSquared, 123.45)
+	result, err := client.Unit.GetAccelerationConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -575,7 +588,7 @@ func ExampleUnitService_GetAngleConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetAngleConversion(kittycad.UnitAngleFormatRadian, kittycad.UnitAngleFormatRadian, 123.45)
+	result, err := client.Unit.GetAngleConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -591,7 +604,7 @@ func ExampleUnitService_GetAngularVelocityConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetAngularVelocityConversion(kittycad.UnitAngularVelocityFormatRadiansPerSecond, kittycad.UnitAngularVelocityFormatRadiansPerSecond, 123.45)
+	result, err := client.Unit.GetAngularVelocityConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -607,7 +620,7 @@ func ExampleUnitService_GetAreaConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetAreaConversion(kittycad.UnitAreaFormatSquareMeter, kittycad.UnitAreaFormatSquareMeter, 123.45)
+	result, err := client.Unit.GetAreaConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -623,7 +636,7 @@ func ExampleUnitService_GetChargeConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetChargeConversion(kittycad.UnitChargeFormatCoulomb, kittycad.UnitChargeFormatCoulomb, 123.45)
+	result, err := client.Unit.GetChargeConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -639,7 +652,7 @@ func ExampleUnitService_GetConcentrationConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetConcentrationConversion(kittycad.UnitConcentrationFormatPartsPerMillion, kittycad.UnitConcentrationFormatPartsPerMillion, 123.45)
+	result, err := client.Unit.GetConcentrationConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -655,7 +668,7 @@ func ExampleUnitService_GetDataTransferRateConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetDataTransferRateConversion(kittycad.UnitDataTransferRateFormatBytesPerSecond, kittycad.UnitDataTransferRateFormatBytesPerSecond, 123.45)
+	result, err := client.Unit.GetDataTransferRateConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -671,7 +684,7 @@ func ExampleUnitService_GetDataConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetDataConversion(kittycad.UnitDataFormatByte, kittycad.UnitDataFormatByte, 123.45)
+	result, err := client.Unit.GetDataConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -687,7 +700,7 @@ func ExampleUnitService_GetDensityConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetDensityConversion(kittycad.UnitDensityFormatKilogramsPerCubicMeter, kittycad.UnitDensityFormatKilogramsPerCubicMeter, 123.45)
+	result, err := client.Unit.GetDensityConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -703,7 +716,7 @@ func ExampleUnitService_GetEnergyConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetEnergyConversion(kittycad.UnitEnergyFormatJoule, kittycad.UnitEnergyFormatJoule, 123.45)
+	result, err := client.Unit.GetEnergyConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -719,7 +732,7 @@ func ExampleUnitService_GetForceConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetForceConversion(kittycad.UnitForceFormatNewton, kittycad.UnitForceFormatNewton, 123.45)
+	result, err := client.Unit.GetForceConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -735,7 +748,7 @@ func ExampleUnitService_GetIlluminanceConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetIlluminanceConversion(kittycad.UnitIlluminanceFormatLux, kittycad.UnitIlluminanceFormatLux, 123.45)
+	result, err := client.Unit.GetIlluminanceConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -751,7 +764,7 @@ func ExampleUnitService_GetLengthConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetLengthConversion(kittycad.UnitLengthFormatMeter, kittycad.UnitLengthFormatMeter, 123.45)
+	result, err := client.Unit.GetLengthConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -767,7 +780,7 @@ func ExampleUnitService_GetMagneticFieldStrengthConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetMagneticFieldStrengthConversion(kittycad.UnitMagneticFieldStrengthFormatTesla, kittycad.UnitMagneticFieldStrengthFormatTesla, 123.45)
+	result, err := client.Unit.GetMagneticFieldStrengthConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -783,7 +796,7 @@ func ExampleUnitService_GetMagneticFluxConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetMagneticFluxConversion(kittycad.UnitMagneticFluxFormatWeber, kittycad.UnitMagneticFluxFormatWeber, 123.45)
+	result, err := client.Unit.GetMagneticFluxConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -799,7 +812,7 @@ func ExampleUnitService_GetMassConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetMassConversion(kittycad.UnitMassFormatGram, kittycad.UnitMassFormatGram, 123.45)
+	result, err := client.Unit.GetMassConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -815,7 +828,7 @@ func ExampleUnitService_GetMetricPowerCubedConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetMetricPowerCubedConversion(kittycad.UnitMetricPowerAtto, kittycad.UnitMetricPowerAtto, 123.45)
+	result, err := client.Unit.GetMetricPowerCubedConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -831,7 +844,7 @@ func ExampleUnitService_GetMetricPowerConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetMetricPowerConversion(kittycad.UnitMetricPowerAtto, kittycad.UnitMetricPowerAtto, 123.45)
+	result, err := client.Unit.GetMetricPowerConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -847,7 +860,7 @@ func ExampleUnitService_GetMetricPowerSquaredConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetMetricPowerSquaredConversion(kittycad.UnitMetricPowerAtto, kittycad.UnitMetricPowerAtto, 123.45)
+	result, err := client.Unit.GetMetricPowerSquaredConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -863,7 +876,7 @@ func ExampleUnitService_GetPowerConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetPowerConversion(kittycad.UnitPowerFormatWatt, kittycad.UnitPowerFormatWatt, 123.45)
+	result, err := client.Unit.GetPowerConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -879,7 +892,7 @@ func ExampleUnitService_GetPressureConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetPressureConversion(kittycad.UnitPressureFormatPascal, kittycad.UnitPressureFormatPascal, 123.45)
+	result, err := client.Unit.GetPressureConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -895,7 +908,7 @@ func ExampleUnitService_GetRadiationConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetRadiationConversion(kittycad.UnitRadiationFormatGray, kittycad.UnitRadiationFormatGray, 123.45)
+	result, err := client.Unit.GetRadiationConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -911,7 +924,7 @@ func ExampleUnitService_GetRadioactivityConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetRadioactivityConversion(kittycad.UnitRadioactivityFormatBecquerel, kittycad.UnitRadioactivityFormatBecquerel, 123.45)
+	result, err := client.Unit.GetRadioactivityConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -927,7 +940,7 @@ func ExampleUnitService_GetSolidAngleConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetSolidAngleConversion(kittycad.UnitSolidAngleFormatSteradian, kittycad.UnitSolidAngleFormatSteradian, 123.45)
+	result, err := client.Unit.GetSolidAngleConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -943,7 +956,7 @@ func ExampleUnitService_GetTemperatureConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetTemperatureConversion(kittycad.UnitTemperatureFormatKelvin, kittycad.UnitTemperatureFormatKelvin, 123.45)
+	result, err := client.Unit.GetTemperatureConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -959,7 +972,7 @@ func ExampleUnitService_GetTimeConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetTimeConversion(kittycad.UnitTimeFormatSecond, kittycad.UnitTimeFormatSecond, 123.45)
+	result, err := client.Unit.GetTimeConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -975,7 +988,7 @@ func ExampleUnitService_GetVelocityConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetVelocityConversion(kittycad.UnitVelocityFormatMetersPerSecond, kittycad.UnitVelocityFormatMetersPerSecond, 123.45)
+	result, err := client.Unit.GetVelocityConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -991,7 +1004,7 @@ func ExampleUnitService_GetVoltageConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetVoltageConversion(kittycad.UnitVoltageFormatVolt, kittycad.UnitVoltageFormatVolt, 123.45)
+	result, err := client.Unit.GetVoltageConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -1007,7 +1020,7 @@ func ExampleUnitService_GetVolumeConversion() {
 		panic(err)
 	}
 
-	result, err := client.Unit.GetVolumeConversion(kittycad.UnitVolumeFormatCubicMeter, kittycad.UnitVolumeFormatCubicMeter, 123.45)
+	result, err := client.Unit.GetVolumeConversion("", "", 123.45)
 	if err != nil {
 		panic(err)
 	}
@@ -1068,7 +1081,7 @@ func ExampleAPICallService_UserList() {
 		panic(err)
 	}
 
-	result, err := client.APICall.UserList(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	result, err := client.APICall.UserList(123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}
@@ -1100,7 +1113,7 @@ func ExampleAPITokenService_ListForUser() {
 		panic(err)
 	}
 
-	result, err := client.APIToken.ListForUser(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	result, err := client.APIToken.ListForUser(123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}
@@ -1225,7 +1238,7 @@ func ExamplePaymentService_CreateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: kittycad.CountryCodeAF, State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1241,7 +1254,7 @@ func ExamplePaymentService_UpdateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: kittycad.CountryCodeAF, State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1354,13 +1367,13 @@ func ExamplePaymentService_ValidateCustomerTaxInformationForUser() {
 }
 
 // Create a client with your token.
-func ExampleSessionService_GetForUser() {
+func ExampleUserService_GetSessionFor() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Session.GetForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.User.GetSessionFor(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -1376,7 +1389,7 @@ func ExampleUserService_List() {
 		panic(err)
 	}
 
-	result, err := client.User.List(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	result, err := client.User.List(123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}
@@ -1392,7 +1405,7 @@ func ExampleUserService_ListExtended() {
 		panic(err)
 	}
 
-	result, err := client.User.ListExtended(123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	result, err := client.User.ListExtended(123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}
@@ -1440,11 +1453,24 @@ func ExampleAPICallService_ListForUser() {
 		panic(err)
 	}
 
-	result, err := client.APICall.ListForUser("some-string", 123, "some-string", kittycad.CreatedAtSortModeCreatedAtAscending)
+	result, err := client.APICall.ListForUser("some-string", 123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// Create a client with your token.
+func ExampleExecutorService_CreateTerm() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Executor.CreateTerm(); err != nil {
+		panic(err)
+	}
 
 }

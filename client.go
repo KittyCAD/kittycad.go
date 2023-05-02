@@ -30,6 +30,8 @@ type Client struct {
 	Constant *ConstantService
 	// Drawing: Drawing API for updating your 3D files using the KittyCAD engine.
 	Drawing *DrawingService
+	// Executor: Endpoints that allow for code execution or creation of code execution environments.
+	Executor *ExecutorService
 	// File: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 	File *FileService
 	// Hidden: Hidden API endpoints that should not show up in the docs.
@@ -40,8 +42,6 @@ type Client struct {
 	Oauth2 *Oauth2Service
 	// Payment: Operations around payments and billing.
 	Payment *PaymentService
-	// Session: Sessions allow users to call the API from their session cookie in the browser.
-	Session *SessionService
 	// Unit: Unit conversion operations.
 	Unit *UnitService
 	// User: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
@@ -69,6 +69,9 @@ type ConstantService service
 // DrawingService: Drawing API for updating your 3D files using the KittyCAD engine.
 type DrawingService service
 
+// ExecutorService: Endpoints that allow for code execution or creation of code execution environments.
+type ExecutorService service
+
 // FileService: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 type FileService service
 
@@ -83,9 +86,6 @@ type Oauth2Service service
 
 // PaymentService: Operations around payments and billing.
 type PaymentService service
-
-// SessionService: Sessions allow users to call the API from their session cookie in the browser.
-type SessionService service
 
 // UnitService: Unit conversion operations.
 type UnitService service

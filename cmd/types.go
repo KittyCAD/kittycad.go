@@ -73,7 +73,7 @@ func (data *Data) generateSchemaType(name string, s *openapi3.Schema, spec *open
 	if otype == "string" {
 		// If this is an enum, write the enum type.
 		if len(s.Enum) > 0 {
-			if err := data.generateEnumType(name, s); err != nil {
+			if err := data.generateEnumType(name, s, map[string]string{}); err != nil {
 				return err
 			}
 		}
@@ -128,11 +128,12 @@ type Enum struct {
 
 // EnumValue holds the information for an enum value.
 type EnumValue struct {
-	Name  string
-	Value string
+	Name        string
+	Description string
+	Value       string
 }
 
-func (data *Data) generateEnumType(name string, s *openapi3.Schema) error {
+func (data *Data) generateEnumType(name string, s *openapi3.Schema, additionalDocs map[string]string) error {
 	enumName := makeSingular(name)
 	enum := Enum{
 		Name:        enumName,
@@ -155,10 +156,18 @@ func (data *Data) generateEnumType(name string, s *openapi3.Schema) error {
 			enumValueName = fmt.Sprintf("%sEmpty", enumValueName)
 		}
 
-		enum.Values = append(enum.Values, EnumValue{
+		enumValueStruct := EnumValue{
 			Name:  enumValueName,
 			Value: enumValue,
-		})
+		}
+
+		if docs, ok := additionalDocs[enumValue]; ok {
+			if docs != "" {
+				enumValueStruct.Description = fmt.Sprintf("%s: %s", enumValueName, strings.ReplaceAll(docs, "\n", "\n// "))
+			}
+		}
+
+		enum.Values = append(enum.Values, enumValueStruct)
 	}
 
 	// Print the template for the enum.
@@ -256,6 +265,30 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 }
 
 func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *openapi3.T) error {
+	// Check if this is an enum with descriptions.
+	isEnumWithDocs := false
+	enumDocs := map[string]string{}
+	enumeration := []interface{}{}
+	for _, oneOf := range s.OneOf {
+		if oneOf.Value.Type == "string" && oneOf.Value.Enum != nil && len(oneOf.Value.Enum) == 1 {
+			// Get the description for this enum.
+			isEnumWithDocs = true
+			enumDocs[oneOf.Value.Enum[0].(string)] = oneOf.Value.Description
+			enumeration = append(enumeration, oneOf.Value.Enum[0])
+		} else {
+			isEnumWithDocs = false
+			break
+		}
+	}
+
+	if isEnumWithDocs {
+		return data.generateEnumType(name, &openapi3.Schema{
+			Type:        "string",
+			Description: s.Description,
+			Enum:        enumeration,
+		}, enumDocs)
+	}
+
 	// Check if they all have a type.
 	types := []string{}
 	typeName := ""
@@ -366,6 +399,41 @@ func isTypeToString(s string) bool {
 	return s == "URL" || s == "UUID" || s == "IP" || s == "Time"
 }
 
+func printOneOf(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string, error) {
+	s := r.Value
+
+	// Check if this is an enum with descriptions.
+	isEnumWithDocs := false
+	enumeration := []interface{}{}
+	for _, oneOf := range s.OneOf {
+		if oneOf.Value.Type == "string" && oneOf.Value.Enum != nil && len(oneOf.Value.Enum) == 1 {
+			// Get the description for this enum.
+			isEnumWithDocs = true
+			enumeration = append(enumeration, oneOf.Value.Enum[0])
+		} else {
+			isEnumWithDocs = false
+			break
+		}
+	}
+
+	if isEnumWithDocs {
+		newSchema := &openapi3.SchemaRef{
+			Ref: r.Ref,
+			Value: &openapi3.Schema{
+				Type:        "string",
+				Description: s.Description,
+				Enum:        enumeration,
+			}}
+
+		if r.Ref != "" {
+			return getReferenceSchema(newSchema), nil
+		}
+		return printType(property, newSchema, spec)
+	}
+
+	return "any", nil
+}
+
 // printType converts a schema type to a valid Go type.
 func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string, error) {
 	s := r.Value
@@ -383,7 +451,7 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 		// If the reference is an object or an enum, return the reference.
 		// If we have a oneOf we are going to use a generic for it.
 		if reference.Value.OneOf != nil {
-			return "any", nil
+			return printOneOf(property, r, spec)
 		} else if reference.Value.Type == "object" || reference.Value.Type == "string" && len(reference.Value.Enum) > 0 {
 			return getReferenceSchema(r), nil
 		}
@@ -399,6 +467,10 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 		}
 
 		return printType(property, s.AllOf[0], spec)
+	}
+
+	if s.OneOf != nil {
+		return printOneOf(property, r, spec)
 	}
 
 	if t == "string" {

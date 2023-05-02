@@ -122,6 +122,36 @@ func (s *MetaService) Getdata() (*Metadata, error) {
 
 }
 
+// GetMetrics: Get prometheus metrics
+// You must be a KittyCAD employee to perform this request.
+func (s *MetaService) GetMetrics() error {
+	// Create the url.
+	path := "/_meta/metrics"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // CreateImageTo3D: Generate a 3D model from an image.
 // This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
 //
@@ -1040,13 +1070,13 @@ func (s *FileService) CreateDensity(materialMass float64, srcFormat FileImportFo
 
 }
 
-// CreateExecution: Execute a KittyCAD program in a specific language.
+// CreateFileExecution: Execute a KittyCAD program in a specific language.
 // Parameters
 //
 //   - `lang`: The language code is written in.
 //   - `output`
 //   - `body`
-func (s *FileService) CreateExecution(lang CodeLanguage, output string, body []byte) (*CodeOutput, error) {
+func (s *ExecutorService) CreateFileExecution(lang CodeLanguage, output string, body []byte) (*CodeOutput, error) {
 	// Create the url.
 	path := "/file/execute/{{.lang}}"
 	uri := resolveRelative(s.client.server, path)
@@ -4146,13 +4176,13 @@ func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
 
 }
 
-// GetForUser: Get a session for your user.
+// GetSessionFor: Get a session for your user.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
 //
 // Parameters
 //
 //   - `token`
-func (s *SessionService) GetForUser(token UUID) (*Session, error) {
+func (s *UserService) GetSessionFor(token UUID) (*Session, error) {
 	// Create the url.
 	path := "/user/session/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -4477,5 +4507,35 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// CreateTerm: Create a terminal.
+// Attach to a docker container to create an interactive terminal.
+func (s *ExecutorService) CreateTerm() error {
+	// Create the url.
+	path := "/ws/executor/term"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }

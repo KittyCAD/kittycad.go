@@ -6,9 +6,9 @@ package kittycad
 type AccountProvider string
 
 const (
-	// AccountProviderGoogle represents the AccountProvider `"google"`.
+	// AccountProviderGoogle: The Google account provider.
 	AccountProviderGoogle AccountProvider = "google"
-	// AccountProviderGithub represents the AccountProvider `"github"`.
+	// AccountProviderGithub: The GitHub account provider.
 	AccountProviderGithub AccountProvider = "github"
 )
 
@@ -26,7 +26,7 @@ type AiPluginAPI struct {
 type AiPluginAPIType string
 
 const (
-	// AiPluginAPITypeOpenapi represents the AiPluginAPIType `"openapi"`.
+	// AiPluginAPITypeOpenapi: An OpenAPI specification.
 	AiPluginAPITypeOpenapi AiPluginAPIType = "openapi"
 )
 
@@ -42,13 +42,13 @@ type AiPluginAuth struct {
 type AiPluginAuthType string
 
 const (
-	// AiPluginAuthTypeNone represents the AiPluginAuthType `"none"`.
+	// AiPluginAuthTypeNone: None.
 	AiPluginAuthTypeNone AiPluginAuthType = "none"
-	// AiPluginAuthTypeUserHttp represents the AiPluginAuthType `"user_http"`.
+	// AiPluginAuthTypeUserHttp: User http.
 	AiPluginAuthTypeUserHttp AiPluginAuthType = "user_http"
-	// AiPluginAuthTypeServiceHttp represents the AiPluginAuthType `"service_http"`.
+	// AiPluginAuthTypeServiceHttp: Service http.
 	AiPluginAuthTypeServiceHttp AiPluginAuthType = "service_http"
-	// AiPluginAuthTypeOauth represents the AiPluginAuthType `"oauth"`.
+	// AiPluginAuthTypeOauth: OAuth.
 	AiPluginAuthTypeOauth AiPluginAuthType = "oauth"
 )
 
@@ -56,9 +56,9 @@ const (
 type AiPluginHttpAuthType string
 
 const (
-	// AiPluginHttpAuthTypeBasic represents the AiPluginHttpAuthType `"basic"`.
+	// AiPluginHttpAuthTypeBasic: Basic.
 	AiPluginHttpAuthTypeBasic AiPluginHttpAuthType = "basic"
-	// AiPluginHttpAuthTypeBearer represents the AiPluginHttpAuthType `"bearer"`.
+	// AiPluginHttpAuthTypeBearer: Bearer.
 	AiPluginHttpAuthTypeBearer AiPluginHttpAuthType = "bearer"
 )
 
@@ -99,17 +99,17 @@ type APICallQueryGroup struct {
 type APICallQueryGroupBy string
 
 const (
-	// APICallQueryGroupByEmail represents the APICallQueryGroupBy `"email"`.
+	// APICallQueryGroupByEmail: The email of the user that requested the API call.
 	APICallQueryGroupByEmail APICallQueryGroupBy = "email"
-	// APICallQueryGroupByMethod represents the APICallQueryGroupBy `"method"`.
+	// APICallQueryGroupByMethod: The HTTP method of the API call.
 	APICallQueryGroupByMethod APICallQueryGroupBy = "method"
-	// APICallQueryGroupByEndpoint represents the APICallQueryGroupBy `"endpoint"`.
+	// APICallQueryGroupByEndpoint: The endpoint of the API call.
 	APICallQueryGroupByEndpoint APICallQueryGroupBy = "endpoint"
-	// APICallQueryGroupByUserID represents the APICallQueryGroupBy `"user_id"`.
+	// APICallQueryGroupByUserID: The user ID of the user that requested the API call.
 	APICallQueryGroupByUserID APICallQueryGroupBy = "user_id"
-	// APICallQueryGroupByOrigin represents the APICallQueryGroupBy `"origin"`.
+	// APICallQueryGroupByOrigin: The origin of the API call. This is parsed from the `Origin` header.
 	APICallQueryGroupByOrigin APICallQueryGroupBy = "origin"
-	// APICallQueryGroupByIpAddress represents the APICallQueryGroupBy `"ip_address"`.
+	// APICallQueryGroupByIpAddress: The IP address of the user making the API call.
 	APICallQueryGroupByIpAddress APICallQueryGroupBy = "ip_address"
 )
 
@@ -117,15 +117,15 @@ const (
 type APICallStatus string
 
 const (
-	// APICallStatusQueued represents the APICallStatus `"Queued"`.
+	// APICallStatusQueued: The async API call is queued.
 	APICallStatusQueued APICallStatus = "Queued"
-	// APICallStatusUploaded represents the APICallStatus `"Uploaded"`.
+	// APICallStatusUploaded: The async API call was uploaded to be converted.
 	APICallStatusUploaded APICallStatus = "Uploaded"
-	// APICallStatusInProgress represents the APICallStatus `"In Progress"`.
+	// APICallStatusInProgress: The async API call is in progress.
 	APICallStatusInProgress APICallStatus = "In Progress"
-	// APICallStatusCompleted represents the APICallStatus `"Completed"`.
+	// APICallStatusCompleted: The async API call has completed.
 	APICallStatusCompleted APICallStatus = "Completed"
-	// APICallStatusFailed represents the APICallStatus `"Failed"`.
+	// APICallStatusFailed: The async API call has failed.
 	APICallStatusFailed APICallStatus = "Failed"
 )
 
@@ -433,17 +433,17 @@ type AsyncAPICallResultsPage struct {
 type AsyncAPICallType string
 
 const (
-	// AsyncAPICallTypeFileConversion represents the AsyncAPICallType `"FileConversion"`.
+	// AsyncAPICallTypeFileConversion: File conversion.
 	AsyncAPICallTypeFileConversion AsyncAPICallType = "FileConversion"
-	// AsyncAPICallTypeFileVolume represents the AsyncAPICallType `"FileVolume"`.
+	// AsyncAPICallTypeFileVolume: File volume.
 	AsyncAPICallTypeFileVolume AsyncAPICallType = "FileVolume"
-	// AsyncAPICallTypeFileCenterOfMass represents the AsyncAPICallType `"FileCenterOfMass"`.
+	// AsyncAPICallTypeFileCenterOfMass: File center of mass.
 	AsyncAPICallTypeFileCenterOfMass AsyncAPICallType = "FileCenterOfMass"
-	// AsyncAPICallTypeFileMass represents the AsyncAPICallType `"FileMass"`.
+	// AsyncAPICallTypeFileMass: File mass.
 	AsyncAPICallTypeFileMass AsyncAPICallType = "FileMass"
-	// AsyncAPICallTypeFileDensity represents the AsyncAPICallType `"FileDensity"`.
+	// AsyncAPICallTypeFileDensity: File density.
 	AsyncAPICallTypeFileDensity AsyncAPICallType = "FileDensity"
-	// AsyncAPICallTypeFileSurfaceArea represents the AsyncAPICallType `"FileSurfaceArea"`.
+	// AsyncAPICallTypeFileSurfaceArea: File surface area.
 	AsyncAPICallTypeFileSurfaceArea AsyncAPICallType = "FileSurfaceArea"
 )
 
@@ -635,503 +635,503 @@ type Connection struct {
 type CountryCode string
 
 const (
-	// CountryCodeAF represents the CountryCode `"AF"`.
+	// CountryCodeAF: Afghanistan
 	CountryCodeAF CountryCode = "AF"
-	// CountryCodeAX represents the CountryCode `"AX"`.
+	// CountryCodeAX: Åland Islands
 	CountryCodeAX CountryCode = "AX"
-	// CountryCodeAL represents the CountryCode `"AL"`.
+	// CountryCodeAL: Albania
 	CountryCodeAL CountryCode = "AL"
-	// CountryCodeDZ represents the CountryCode `"DZ"`.
+	// CountryCodeDZ: Algeria
 	CountryCodeDZ CountryCode = "DZ"
-	// CountryCodeAS represents the CountryCode `"AS"`.
+	// CountryCodeAS: American Samoa
 	CountryCodeAS CountryCode = "AS"
-	// CountryCodeAD represents the CountryCode `"AD"`.
+	// CountryCodeAD: Andorra
 	CountryCodeAD CountryCode = "AD"
-	// CountryCodeAO represents the CountryCode `"AO"`.
+	// CountryCodeAO: Angola
 	CountryCodeAO CountryCode = "AO"
-	// CountryCodeAI represents the CountryCode `"AI"`.
+	// CountryCodeAI: Anguilla
 	CountryCodeAI CountryCode = "AI"
-	// CountryCodeAQ represents the CountryCode `"AQ"`.
+	// CountryCodeAQ: Antarctica
 	CountryCodeAQ CountryCode = "AQ"
-	// CountryCodeAG represents the CountryCode `"AG"`.
+	// CountryCodeAG: Antigua and Barbuda
 	CountryCodeAG CountryCode = "AG"
-	// CountryCodeAR represents the CountryCode `"AR"`.
+	// CountryCodeAR: Argentina
 	CountryCodeAR CountryCode = "AR"
-	// CountryCodeAM represents the CountryCode `"AM"`.
+	// CountryCodeAM: Armenia
 	CountryCodeAM CountryCode = "AM"
-	// CountryCodeAW represents the CountryCode `"AW"`.
+	// CountryCodeAW: Aruba
 	CountryCodeAW CountryCode = "AW"
-	// CountryCodeAU represents the CountryCode `"AU"`.
+	// CountryCodeAU: Australia
 	CountryCodeAU CountryCode = "AU"
-	// CountryCodeAT represents the CountryCode `"AT"`.
+	// CountryCodeAT: Austria
 	CountryCodeAT CountryCode = "AT"
-	// CountryCodeAZ represents the CountryCode `"AZ"`.
+	// CountryCodeAZ: Azerbaijan
 	CountryCodeAZ CountryCode = "AZ"
-	// CountryCodeBS represents the CountryCode `"BS"`.
+	// CountryCodeBS: Bahamas
 	CountryCodeBS CountryCode = "BS"
-	// CountryCodeBH represents the CountryCode `"BH"`.
+	// CountryCodeBH: Bahrain
 	CountryCodeBH CountryCode = "BH"
-	// CountryCodeBD represents the CountryCode `"BD"`.
+	// CountryCodeBD: Bangladesh
 	CountryCodeBD CountryCode = "BD"
-	// CountryCodeBB represents the CountryCode `"BB"`.
+	// CountryCodeBB: Barbados
 	CountryCodeBB CountryCode = "BB"
-	// CountryCodeBY represents the CountryCode `"BY"`.
+	// CountryCodeBY: Belarus
 	CountryCodeBY CountryCode = "BY"
-	// CountryCodeBE represents the CountryCode `"BE"`.
+	// CountryCodeBE: Belgium
 	CountryCodeBE CountryCode = "BE"
-	// CountryCodeBZ represents the CountryCode `"BZ"`.
+	// CountryCodeBZ: Belize
 	CountryCodeBZ CountryCode = "BZ"
-	// CountryCodeBJ represents the CountryCode `"BJ"`.
+	// CountryCodeBJ: Benin
 	CountryCodeBJ CountryCode = "BJ"
-	// CountryCodeBM represents the CountryCode `"BM"`.
+	// CountryCodeBM: Bermuda
 	CountryCodeBM CountryCode = "BM"
-	// CountryCodeBT represents the CountryCode `"BT"`.
+	// CountryCodeBT: Bhutan
 	CountryCodeBT CountryCode = "BT"
-	// CountryCodeBO represents the CountryCode `"BO"`.
+	// CountryCodeBO: Bolivia (Plurinational State of)
 	CountryCodeBO CountryCode = "BO"
-	// CountryCodeBQ represents the CountryCode `"BQ"`.
+	// CountryCodeBQ: Bonaire, Sint Eustatius and Saba
 	CountryCodeBQ CountryCode = "BQ"
-	// CountryCodeBA represents the CountryCode `"BA"`.
+	// CountryCodeBA: Bosnia and Herzegovina
 	CountryCodeBA CountryCode = "BA"
-	// CountryCodeBW represents the CountryCode `"BW"`.
+	// CountryCodeBW: Botswana
 	CountryCodeBW CountryCode = "BW"
-	// CountryCodeBV represents the CountryCode `"BV"`.
+	// CountryCodeBV: Bouvet Island
 	CountryCodeBV CountryCode = "BV"
-	// CountryCodeBR represents the CountryCode `"BR"`.
+	// CountryCodeBR: Brazil
 	CountryCodeBR CountryCode = "BR"
-	// CountryCodeIO represents the CountryCode `"IO"`.
+	// CountryCodeIO: British Indian Ocean Territory
 	CountryCodeIO CountryCode = "IO"
-	// CountryCodeBN represents the CountryCode `"BN"`.
+	// CountryCodeBN: Brunei Darussalam
 	CountryCodeBN CountryCode = "BN"
-	// CountryCodeBG represents the CountryCode `"BG"`.
+	// CountryCodeBG: Bulgaria
 	CountryCodeBG CountryCode = "BG"
-	// CountryCodeBF represents the CountryCode `"BF"`.
+	// CountryCodeBF: Burkina Faso
 	CountryCodeBF CountryCode = "BF"
-	// CountryCodeBI represents the CountryCode `"BI"`.
+	// CountryCodeBI: Burundi
 	CountryCodeBI CountryCode = "BI"
-	// CountryCodeCV represents the CountryCode `"CV"`.
+	// CountryCodeCV: Cabo Verde
 	CountryCodeCV CountryCode = "CV"
-	// CountryCodeKH represents the CountryCode `"KH"`.
+	// CountryCodeKH: Cambodia
 	CountryCodeKH CountryCode = "KH"
-	// CountryCodeCM represents the CountryCode `"CM"`.
+	// CountryCodeCM: Cameroon
 	CountryCodeCM CountryCode = "CM"
-	// CountryCodeCA represents the CountryCode `"CA"`.
+	// CountryCodeCA: Canada
 	CountryCodeCA CountryCode = "CA"
-	// CountryCodeKY represents the CountryCode `"KY"`.
+	// CountryCodeKY: Cayman Islands
 	CountryCodeKY CountryCode = "KY"
-	// CountryCodeCF represents the CountryCode `"CF"`.
+	// CountryCodeCF: Central African Republic
 	CountryCodeCF CountryCode = "CF"
-	// CountryCodeTD represents the CountryCode `"TD"`.
+	// CountryCodeTD: Chad
 	CountryCodeTD CountryCode = "TD"
-	// CountryCodeCL represents the CountryCode `"CL"`.
+	// CountryCodeCL: Chile
 	CountryCodeCL CountryCode = "CL"
-	// CountryCodeCN represents the CountryCode `"CN"`.
+	// CountryCodeCN: China
 	CountryCodeCN CountryCode = "CN"
-	// CountryCodeCX represents the CountryCode `"CX"`.
+	// CountryCodeCX: Christmas Island
 	CountryCodeCX CountryCode = "CX"
-	// CountryCodeCC represents the CountryCode `"CC"`.
+	// CountryCodeCC: Cocos (Keeling) Islands
 	CountryCodeCC CountryCode = "CC"
-	// CountryCodeCO represents the CountryCode `"CO"`.
+	// CountryCodeCO: Colombia
 	CountryCodeCO CountryCode = "CO"
-	// CountryCodeKM represents the CountryCode `"KM"`.
+	// CountryCodeKM: Comoros
 	CountryCodeKM CountryCode = "KM"
-	// CountryCodeCG represents the CountryCode `"CG"`.
+	// CountryCodeCG: Congo
 	CountryCodeCG CountryCode = "CG"
-	// CountryCodeCD represents the CountryCode `"CD"`.
+	// CountryCodeCD: Congo (Democratic Republic of the)
 	CountryCodeCD CountryCode = "CD"
-	// CountryCodeCK represents the CountryCode `"CK"`.
+	// CountryCodeCK: Cook Islands
 	CountryCodeCK CountryCode = "CK"
-	// CountryCodeCR represents the CountryCode `"CR"`.
+	// CountryCodeCR: Costa Rica
 	CountryCodeCR CountryCode = "CR"
-	// CountryCodeCI represents the CountryCode `"CI"`.
+	// CountryCodeCI: Côte d'Ivoire
 	CountryCodeCI CountryCode = "CI"
-	// CountryCodeHR represents the CountryCode `"HR"`.
+	// CountryCodeHR: Croatia
 	CountryCodeHR CountryCode = "HR"
-	// CountryCodeCU represents the CountryCode `"CU"`.
+	// CountryCodeCU: Cuba
 	CountryCodeCU CountryCode = "CU"
-	// CountryCodeCW represents the CountryCode `"CW"`.
+	// CountryCodeCW: Curaçao
 	CountryCodeCW CountryCode = "CW"
-	// CountryCodeCY represents the CountryCode `"CY"`.
+	// CountryCodeCY: Cyprus
 	CountryCodeCY CountryCode = "CY"
-	// CountryCodeCZ represents the CountryCode `"CZ"`.
+	// CountryCodeCZ: Czechia
 	CountryCodeCZ CountryCode = "CZ"
-	// CountryCodeDK represents the CountryCode `"DK"`.
+	// CountryCodeDK: Denmark
 	CountryCodeDK CountryCode = "DK"
-	// CountryCodeDJ represents the CountryCode `"DJ"`.
+	// CountryCodeDJ: Djibouti
 	CountryCodeDJ CountryCode = "DJ"
-	// CountryCodeDM represents the CountryCode `"DM"`.
+	// CountryCodeDM: Dominica
 	CountryCodeDM CountryCode = "DM"
-	// CountryCodeDO represents the CountryCode `"DO"`.
+	// CountryCodeDO: Dominican Republic
 	CountryCodeDO CountryCode = "DO"
-	// CountryCodeEC represents the CountryCode `"EC"`.
+	// CountryCodeEC: Ecuador
 	CountryCodeEC CountryCode = "EC"
-	// CountryCodeEG represents the CountryCode `"EG"`.
+	// CountryCodeEG: Egypt
 	CountryCodeEG CountryCode = "EG"
-	// CountryCodeSV represents the CountryCode `"SV"`.
+	// CountryCodeSV: El Salvador
 	CountryCodeSV CountryCode = "SV"
-	// CountryCodeGQ represents the CountryCode `"GQ"`.
+	// CountryCodeGQ: Equatorial Guinea
 	CountryCodeGQ CountryCode = "GQ"
-	// CountryCodeER represents the CountryCode `"ER"`.
+	// CountryCodeER: Eritrea
 	CountryCodeER CountryCode = "ER"
-	// CountryCodeEE represents the CountryCode `"EE"`.
+	// CountryCodeEE: Estonia
 	CountryCodeEE CountryCode = "EE"
-	// CountryCodeET represents the CountryCode `"ET"`.
+	// CountryCodeET: Ethiopia
 	CountryCodeET CountryCode = "ET"
-	// CountryCodeFK represents the CountryCode `"FK"`.
+	// CountryCodeFK: Falkland Islands (Malvinas)
 	CountryCodeFK CountryCode = "FK"
-	// CountryCodeFO represents the CountryCode `"FO"`.
+	// CountryCodeFO: Faroe Islands
 	CountryCodeFO CountryCode = "FO"
-	// CountryCodeFJ represents the CountryCode `"FJ"`.
+	// CountryCodeFJ: Fiji
 	CountryCodeFJ CountryCode = "FJ"
-	// CountryCodeFI represents the CountryCode `"FI"`.
+	// CountryCodeFI: Finland
 	CountryCodeFI CountryCode = "FI"
-	// CountryCodeFR represents the CountryCode `"FR"`.
+	// CountryCodeFR: France
 	CountryCodeFR CountryCode = "FR"
-	// CountryCodeGF represents the CountryCode `"GF"`.
+	// CountryCodeGF: French Guiana
 	CountryCodeGF CountryCode = "GF"
-	// CountryCodePF represents the CountryCode `"PF"`.
+	// CountryCodePF: French Polynesia
 	CountryCodePF CountryCode = "PF"
-	// CountryCodeTF represents the CountryCode `"TF"`.
+	// CountryCodeTF: French Southern Territories
 	CountryCodeTF CountryCode = "TF"
-	// CountryCodeGA represents the CountryCode `"GA"`.
+	// CountryCodeGA: Gabon
 	CountryCodeGA CountryCode = "GA"
-	// CountryCodeGM represents the CountryCode `"GM"`.
+	// CountryCodeGM: Gambia
 	CountryCodeGM CountryCode = "GM"
-	// CountryCodeGE represents the CountryCode `"GE"`.
+	// CountryCodeGE: Georgia
 	CountryCodeGE CountryCode = "GE"
-	// CountryCodeDE represents the CountryCode `"DE"`.
+	// CountryCodeDE: Germany
 	CountryCodeDE CountryCode = "DE"
-	// CountryCodeGH represents the CountryCode `"GH"`.
+	// CountryCodeGH: Ghana
 	CountryCodeGH CountryCode = "GH"
-	// CountryCodeGI represents the CountryCode `"GI"`.
+	// CountryCodeGI: Gibraltar
 	CountryCodeGI CountryCode = "GI"
-	// CountryCodeGR represents the CountryCode `"GR"`.
+	// CountryCodeGR: Greece
 	CountryCodeGR CountryCode = "GR"
-	// CountryCodeGL represents the CountryCode `"GL"`.
+	// CountryCodeGL: Greenland
 	CountryCodeGL CountryCode = "GL"
-	// CountryCodeGD represents the CountryCode `"GD"`.
+	// CountryCodeGD: Grenada
 	CountryCodeGD CountryCode = "GD"
-	// CountryCodeGP represents the CountryCode `"GP"`.
+	// CountryCodeGP: Guadeloupe
 	CountryCodeGP CountryCode = "GP"
-	// CountryCodeGU represents the CountryCode `"GU"`.
+	// CountryCodeGU: Guam
 	CountryCodeGU CountryCode = "GU"
-	// CountryCodeGT represents the CountryCode `"GT"`.
+	// CountryCodeGT: Guatemala
 	CountryCodeGT CountryCode = "GT"
-	// CountryCodeGG represents the CountryCode `"GG"`.
+	// CountryCodeGG: Guernsey
 	CountryCodeGG CountryCode = "GG"
-	// CountryCodeGN represents the CountryCode `"GN"`.
+	// CountryCodeGN: Guinea
 	CountryCodeGN CountryCode = "GN"
-	// CountryCodeGW represents the CountryCode `"GW"`.
+	// CountryCodeGW: Guinea-Bissau
 	CountryCodeGW CountryCode = "GW"
-	// CountryCodeGY represents the CountryCode `"GY"`.
+	// CountryCodeGY: Guyana
 	CountryCodeGY CountryCode = "GY"
-	// CountryCodeHT represents the CountryCode `"HT"`.
+	// CountryCodeHT: Haiti
 	CountryCodeHT CountryCode = "HT"
-	// CountryCodeHM represents the CountryCode `"HM"`.
+	// CountryCodeHM: Heard Island and McDonald Islands
 	CountryCodeHM CountryCode = "HM"
-	// CountryCodeVA represents the CountryCode `"VA"`.
+	// CountryCodeVA: Holy See
 	CountryCodeVA CountryCode = "VA"
-	// CountryCodeHN represents the CountryCode `"HN"`.
+	// CountryCodeHN: Honduras
 	CountryCodeHN CountryCode = "HN"
-	// CountryCodeHK represents the CountryCode `"HK"`.
+	// CountryCodeHK: Hong Kong
 	CountryCodeHK CountryCode = "HK"
-	// CountryCodeHU represents the CountryCode `"HU"`.
+	// CountryCodeHU: Hungary
 	CountryCodeHU CountryCode = "HU"
-	// CountryCodeIS represents the CountryCode `"IS"`.
+	// CountryCodeIS: Iceland
 	CountryCodeIS CountryCode = "IS"
-	// CountryCodeIN represents the CountryCode `"IN"`.
+	// CountryCodeIN: India
 	CountryCodeIN CountryCode = "IN"
-	// CountryCodeID represents the CountryCode `"ID"`.
+	// CountryCodeID: Indonesia
 	CountryCodeID CountryCode = "ID"
-	// CountryCodeIR represents the CountryCode `"IR"`.
+	// CountryCodeIR: Iran (Islamic Republic of)
 	CountryCodeIR CountryCode = "IR"
-	// CountryCodeIQ represents the CountryCode `"IQ"`.
+	// CountryCodeIQ: Iraq
 	CountryCodeIQ CountryCode = "IQ"
-	// CountryCodeIE represents the CountryCode `"IE"`.
+	// CountryCodeIE: Ireland
 	CountryCodeIE CountryCode = "IE"
-	// CountryCodeIM represents the CountryCode `"IM"`.
+	// CountryCodeIM: Isle of Man
 	CountryCodeIM CountryCode = "IM"
-	// CountryCodeIL represents the CountryCode `"IL"`.
+	// CountryCodeIL: Israel
 	CountryCodeIL CountryCode = "IL"
-	// CountryCodeIT represents the CountryCode `"IT"`.
+	// CountryCodeIT: Italy
 	CountryCodeIT CountryCode = "IT"
-	// CountryCodeJM represents the CountryCode `"JM"`.
+	// CountryCodeJM: Jamaica
 	CountryCodeJM CountryCode = "JM"
-	// CountryCodeJP represents the CountryCode `"JP"`.
+	// CountryCodeJP: Japan
 	CountryCodeJP CountryCode = "JP"
-	// CountryCodeJE represents the CountryCode `"JE"`.
+	// CountryCodeJE: Jersey
 	CountryCodeJE CountryCode = "JE"
-	// CountryCodeJO represents the CountryCode `"JO"`.
+	// CountryCodeJO: Jordan
 	CountryCodeJO CountryCode = "JO"
-	// CountryCodeKZ represents the CountryCode `"KZ"`.
+	// CountryCodeKZ: Kazakhstan
 	CountryCodeKZ CountryCode = "KZ"
-	// CountryCodeKE represents the CountryCode `"KE"`.
+	// CountryCodeKE: Kenya
 	CountryCodeKE CountryCode = "KE"
-	// CountryCodeKI represents the CountryCode `"KI"`.
+	// CountryCodeKI: Kiribati
 	CountryCodeKI CountryCode = "KI"
-	// CountryCodeKP represents the CountryCode `"KP"`.
+	// CountryCodeKP: Korea (Democratic People's Republic of)
 	CountryCodeKP CountryCode = "KP"
-	// CountryCodeKR represents the CountryCode `"KR"`.
+	// CountryCodeKR: Korea (Republic of)
 	CountryCodeKR CountryCode = "KR"
-	// CountryCodeKW represents the CountryCode `"KW"`.
+	// CountryCodeKW: Kuwait
 	CountryCodeKW CountryCode = "KW"
-	// CountryCodeKG represents the CountryCode `"KG"`.
+	// CountryCodeKG: Kyrgyzstan
 	CountryCodeKG CountryCode = "KG"
-	// CountryCodeLA represents the CountryCode `"LA"`.
+	// CountryCodeLA: Lao People's Democratic Republic
 	CountryCodeLA CountryCode = "LA"
-	// CountryCodeLV represents the CountryCode `"LV"`.
+	// CountryCodeLV: Latvia
 	CountryCodeLV CountryCode = "LV"
-	// CountryCodeLB represents the CountryCode `"LB"`.
+	// CountryCodeLB: Lebanon
 	CountryCodeLB CountryCode = "LB"
-	// CountryCodeLS represents the CountryCode `"LS"`.
+	// CountryCodeLS: Lesotho
 	CountryCodeLS CountryCode = "LS"
-	// CountryCodeLR represents the CountryCode `"LR"`.
+	// CountryCodeLR: Liberia
 	CountryCodeLR CountryCode = "LR"
-	// CountryCodeLY represents the CountryCode `"LY"`.
+	// CountryCodeLY: Libya
 	CountryCodeLY CountryCode = "LY"
-	// CountryCodeLI represents the CountryCode `"LI"`.
+	// CountryCodeLI: Liechtenstein
 	CountryCodeLI CountryCode = "LI"
-	// CountryCodeLT represents the CountryCode `"LT"`.
+	// CountryCodeLT: Lithuania
 	CountryCodeLT CountryCode = "LT"
-	// CountryCodeLU represents the CountryCode `"LU"`.
+	// CountryCodeLU: Luxembourg
 	CountryCodeLU CountryCode = "LU"
-	// CountryCodeMO represents the CountryCode `"MO"`.
+	// CountryCodeMO: Macao
 	CountryCodeMO CountryCode = "MO"
-	// CountryCodeMK represents the CountryCode `"MK"`.
+	// CountryCodeMK: Macedonia (the former Yugoslav Republic of)
 	CountryCodeMK CountryCode = "MK"
-	// CountryCodeMG represents the CountryCode `"MG"`.
+	// CountryCodeMG: Madagascar
 	CountryCodeMG CountryCode = "MG"
-	// CountryCodeMW represents the CountryCode `"MW"`.
+	// CountryCodeMW: Malawi
 	CountryCodeMW CountryCode = "MW"
-	// CountryCodeMY represents the CountryCode `"MY"`.
+	// CountryCodeMY: Malaysia
 	CountryCodeMY CountryCode = "MY"
-	// CountryCodeMV represents the CountryCode `"MV"`.
+	// CountryCodeMV: Maldives
 	CountryCodeMV CountryCode = "MV"
-	// CountryCodeML represents the CountryCode `"ML"`.
+	// CountryCodeML: Mali
 	CountryCodeML CountryCode = "ML"
-	// CountryCodeMT represents the CountryCode `"MT"`.
+	// CountryCodeMT: Malta
 	CountryCodeMT CountryCode = "MT"
-	// CountryCodeMH represents the CountryCode `"MH"`.
+	// CountryCodeMH: Marshall Islands
 	CountryCodeMH CountryCode = "MH"
-	// CountryCodeMQ represents the CountryCode `"MQ"`.
+	// CountryCodeMQ: Martinique
 	CountryCodeMQ CountryCode = "MQ"
-	// CountryCodeMR represents the CountryCode `"MR"`.
+	// CountryCodeMR: Mauritania
 	CountryCodeMR CountryCode = "MR"
-	// CountryCodeMU represents the CountryCode `"MU"`.
+	// CountryCodeMU: Mauritius
 	CountryCodeMU CountryCode = "MU"
-	// CountryCodeYT represents the CountryCode `"YT"`.
+	// CountryCodeYT: Mayotte
 	CountryCodeYT CountryCode = "YT"
-	// CountryCodeMX represents the CountryCode `"MX"`.
+	// CountryCodeMX: Mexico
 	CountryCodeMX CountryCode = "MX"
-	// CountryCodeFM represents the CountryCode `"FM"`.
+	// CountryCodeFM: Micronesia (Federated States of)
 	CountryCodeFM CountryCode = "FM"
-	// CountryCodeMD represents the CountryCode `"MD"`.
+	// CountryCodeMD: Moldova (Republic of)
 	CountryCodeMD CountryCode = "MD"
-	// CountryCodeMC represents the CountryCode `"MC"`.
+	// CountryCodeMC: Monaco
 	CountryCodeMC CountryCode = "MC"
-	// CountryCodeMN represents the CountryCode `"MN"`.
+	// CountryCodeMN: Mongolia
 	CountryCodeMN CountryCode = "MN"
-	// CountryCodeME represents the CountryCode `"ME"`.
+	// CountryCodeME: Montenegro
 	CountryCodeME CountryCode = "ME"
-	// CountryCodeMS represents the CountryCode `"MS"`.
+	// CountryCodeMS: Montserrat
 	CountryCodeMS CountryCode = "MS"
-	// CountryCodeMA represents the CountryCode `"MA"`.
+	// CountryCodeMA: Morocco
 	CountryCodeMA CountryCode = "MA"
-	// CountryCodeMZ represents the CountryCode `"MZ"`.
+	// CountryCodeMZ: Mozambique
 	CountryCodeMZ CountryCode = "MZ"
-	// CountryCodeMM represents the CountryCode `"MM"`.
+	// CountryCodeMM: Myanmar
 	CountryCodeMM CountryCode = "MM"
-	// CountryCodeNA represents the CountryCode `"NA"`.
+	// CountryCodeNA: Namibia
 	CountryCodeNA CountryCode = "NA"
-	// CountryCodeNR represents the CountryCode `"NR"`.
+	// CountryCodeNR: Nauru
 	CountryCodeNR CountryCode = "NR"
-	// CountryCodeNP represents the CountryCode `"NP"`.
+	// CountryCodeNP: Nepal
 	CountryCodeNP CountryCode = "NP"
-	// CountryCodeNL represents the CountryCode `"NL"`.
+	// CountryCodeNL: Netherlands
 	CountryCodeNL CountryCode = "NL"
-	// CountryCodeNC represents the CountryCode `"NC"`.
+	// CountryCodeNC: New Caledonia
 	CountryCodeNC CountryCode = "NC"
-	// CountryCodeNZ represents the CountryCode `"NZ"`.
+	// CountryCodeNZ: New Zealand
 	CountryCodeNZ CountryCode = "NZ"
-	// CountryCodeNI represents the CountryCode `"NI"`.
+	// CountryCodeNI: Nicaragua
 	CountryCodeNI CountryCode = "NI"
-	// CountryCodeNE represents the CountryCode `"NE"`.
+	// CountryCodeNE: Niger
 	CountryCodeNE CountryCode = "NE"
-	// CountryCodeNG represents the CountryCode `"NG"`.
+	// CountryCodeNG: Nigeria
 	CountryCodeNG CountryCode = "NG"
-	// CountryCodeNU represents the CountryCode `"NU"`.
+	// CountryCodeNU: Niue
 	CountryCodeNU CountryCode = "NU"
-	// CountryCodeNF represents the CountryCode `"NF"`.
+	// CountryCodeNF: Norfolk Island
 	CountryCodeNF CountryCode = "NF"
-	// CountryCodeMP represents the CountryCode `"MP"`.
+	// CountryCodeMP: Northern Mariana Islands
 	CountryCodeMP CountryCode = "MP"
-	// CountryCodeNO represents the CountryCode `"NO"`.
+	// CountryCodeNO: Norway
 	CountryCodeNO CountryCode = "NO"
-	// CountryCodeOM represents the CountryCode `"OM"`.
+	// CountryCodeOM: Oman
 	CountryCodeOM CountryCode = "OM"
-	// CountryCodePK represents the CountryCode `"PK"`.
+	// CountryCodePK: Pakistan
 	CountryCodePK CountryCode = "PK"
-	// CountryCodePW represents the CountryCode `"PW"`.
+	// CountryCodePW: Palau
 	CountryCodePW CountryCode = "PW"
-	// CountryCodePS represents the CountryCode `"PS"`.
+	// CountryCodePS: Palestine, State of
 	CountryCodePS CountryCode = "PS"
-	// CountryCodePA represents the CountryCode `"PA"`.
+	// CountryCodePA: Panama
 	CountryCodePA CountryCode = "PA"
-	// CountryCodePG represents the CountryCode `"PG"`.
+	// CountryCodePG: Papua New Guinea
 	CountryCodePG CountryCode = "PG"
-	// CountryCodePY represents the CountryCode `"PY"`.
+	// CountryCodePY: Paraguay
 	CountryCodePY CountryCode = "PY"
-	// CountryCodePE represents the CountryCode `"PE"`.
+	// CountryCodePE: Peru
 	CountryCodePE CountryCode = "PE"
-	// CountryCodePH represents the CountryCode `"PH"`.
+	// CountryCodePH: Philippines
 	CountryCodePH CountryCode = "PH"
-	// CountryCodePN represents the CountryCode `"PN"`.
+	// CountryCodePN: Pitcairn
 	CountryCodePN CountryCode = "PN"
-	// CountryCodePL represents the CountryCode `"PL"`.
+	// CountryCodePL: Poland
 	CountryCodePL CountryCode = "PL"
-	// CountryCodePT represents the CountryCode `"PT"`.
+	// CountryCodePT: Portugal
 	CountryCodePT CountryCode = "PT"
-	// CountryCodePR represents the CountryCode `"PR"`.
+	// CountryCodePR: Puerto Rico
 	CountryCodePR CountryCode = "PR"
-	// CountryCodeQA represents the CountryCode `"QA"`.
+	// CountryCodeQA: Qatar
 	CountryCodeQA CountryCode = "QA"
-	// CountryCodeRE represents the CountryCode `"RE"`.
+	// CountryCodeRE: Réunion
 	CountryCodeRE CountryCode = "RE"
-	// CountryCodeRO represents the CountryCode `"RO"`.
+	// CountryCodeRO: Romania
 	CountryCodeRO CountryCode = "RO"
-	// CountryCodeRU represents the CountryCode `"RU"`.
+	// CountryCodeRU: Russian Federation
 	CountryCodeRU CountryCode = "RU"
-	// CountryCodeRW represents the CountryCode `"RW"`.
+	// CountryCodeRW: Rwanda
 	CountryCodeRW CountryCode = "RW"
-	// CountryCodeBL represents the CountryCode `"BL"`.
+	// CountryCodeBL: Saint Barthélemy
 	CountryCodeBL CountryCode = "BL"
-	// CountryCodeSH represents the CountryCode `"SH"`.
+	// CountryCodeSH: Saint Helena, Ascension and Tristan da Cunha
 	CountryCodeSH CountryCode = "SH"
-	// CountryCodeKN represents the CountryCode `"KN"`.
+	// CountryCodeKN: Saint Kitts and Nevis
 	CountryCodeKN CountryCode = "KN"
-	// CountryCodeLC represents the CountryCode `"LC"`.
+	// CountryCodeLC: Saint Lucia
 	CountryCodeLC CountryCode = "LC"
-	// CountryCodeMF represents the CountryCode `"MF"`.
+	// CountryCodeMF: Saint Martin (French part)
 	CountryCodeMF CountryCode = "MF"
-	// CountryCodePM represents the CountryCode `"PM"`.
+	// CountryCodePM: Saint Pierre and Miquelon
 	CountryCodePM CountryCode = "PM"
-	// CountryCodeVC represents the CountryCode `"VC"`.
+	// CountryCodeVC: Saint Vincent and the Grenadines
 	CountryCodeVC CountryCode = "VC"
-	// CountryCodeWS represents the CountryCode `"WS"`.
+	// CountryCodeWS: Samoa
 	CountryCodeWS CountryCode = "WS"
-	// CountryCodeSM represents the CountryCode `"SM"`.
+	// CountryCodeSM: San Marino
 	CountryCodeSM CountryCode = "SM"
-	// CountryCodeST represents the CountryCode `"ST"`.
+	// CountryCodeST: Sao Tome and Principe
 	CountryCodeST CountryCode = "ST"
-	// CountryCodeSA represents the CountryCode `"SA"`.
+	// CountryCodeSA: Saudi Arabia
 	CountryCodeSA CountryCode = "SA"
-	// CountryCodeSN represents the CountryCode `"SN"`.
+	// CountryCodeSN: Senegal
 	CountryCodeSN CountryCode = "SN"
-	// CountryCodeRS represents the CountryCode `"RS"`.
+	// CountryCodeRS: Serbia
 	CountryCodeRS CountryCode = "RS"
-	// CountryCodeSC represents the CountryCode `"SC"`.
+	// CountryCodeSC: Seychelles
 	CountryCodeSC CountryCode = "SC"
-	// CountryCodeSL represents the CountryCode `"SL"`.
+	// CountryCodeSL: Sierra Leone
 	CountryCodeSL CountryCode = "SL"
-	// CountryCodeSG represents the CountryCode `"SG"`.
+	// CountryCodeSG: Singapore
 	CountryCodeSG CountryCode = "SG"
-	// CountryCodeSX represents the CountryCode `"SX"`.
+	// CountryCodeSX: Sint Maarten (Dutch part)
 	CountryCodeSX CountryCode = "SX"
-	// CountryCodeSK represents the CountryCode `"SK"`.
+	// CountryCodeSK: Slovakia
 	CountryCodeSK CountryCode = "SK"
-	// CountryCodeSI represents the CountryCode `"SI"`.
+	// CountryCodeSI: Slovenia
 	CountryCodeSI CountryCode = "SI"
-	// CountryCodeSB represents the CountryCode `"SB"`.
+	// CountryCodeSB: Solomon Islands
 	CountryCodeSB CountryCode = "SB"
-	// CountryCodeSO represents the CountryCode `"SO"`.
+	// CountryCodeSO: Somalia
 	CountryCodeSO CountryCode = "SO"
-	// CountryCodeZA represents the CountryCode `"ZA"`.
+	// CountryCodeZA: South Africa
 	CountryCodeZA CountryCode = "ZA"
-	// CountryCodeGS represents the CountryCode `"GS"`.
+	// CountryCodeGS: South Georgia and the South Sandwich Islands
 	CountryCodeGS CountryCode = "GS"
-	// CountryCodeSS represents the CountryCode `"SS"`.
+	// CountryCodeSS: South Sudan
 	CountryCodeSS CountryCode = "SS"
-	// CountryCodeES represents the CountryCode `"ES"`.
+	// CountryCodeES: Spain
 	CountryCodeES CountryCode = "ES"
-	// CountryCodeLK represents the CountryCode `"LK"`.
+	// CountryCodeLK: Sri Lanka
 	CountryCodeLK CountryCode = "LK"
-	// CountryCodeSD represents the CountryCode `"SD"`.
+	// CountryCodeSD: Sudan
 	CountryCodeSD CountryCode = "SD"
-	// CountryCodeSR represents the CountryCode `"SR"`.
+	// CountryCodeSR: Suriname
 	CountryCodeSR CountryCode = "SR"
-	// CountryCodeSJ represents the CountryCode `"SJ"`.
+	// CountryCodeSJ: Svalbard and Jan Mayen
 	CountryCodeSJ CountryCode = "SJ"
-	// CountryCodeSZ represents the CountryCode `"SZ"`.
+	// CountryCodeSZ: Swaziland
 	CountryCodeSZ CountryCode = "SZ"
-	// CountryCodeSE represents the CountryCode `"SE"`.
+	// CountryCodeSE: Sweden
 	CountryCodeSE CountryCode = "SE"
-	// CountryCodeCH represents the CountryCode `"CH"`.
+	// CountryCodeCH: Switzerland
 	CountryCodeCH CountryCode = "CH"
-	// CountryCodeSY represents the CountryCode `"SY"`.
+	// CountryCodeSY: Syrian Arab Republic
 	CountryCodeSY CountryCode = "SY"
-	// CountryCodeTW represents the CountryCode `"TW"`.
+	// CountryCodeTW: Taiwan, Province of China
 	CountryCodeTW CountryCode = "TW"
-	// CountryCodeTJ represents the CountryCode `"TJ"`.
+	// CountryCodeTJ: Tajikistan
 	CountryCodeTJ CountryCode = "TJ"
-	// CountryCodeTZ represents the CountryCode `"TZ"`.
+	// CountryCodeTZ: Tanzania, United Republic of
 	CountryCodeTZ CountryCode = "TZ"
-	// CountryCodeTH represents the CountryCode `"TH"`.
+	// CountryCodeTH: Thailand
 	CountryCodeTH CountryCode = "TH"
-	// CountryCodeTL represents the CountryCode `"TL"`.
+	// CountryCodeTL: Timor-Leste
 	CountryCodeTL CountryCode = "TL"
-	// CountryCodeTG represents the CountryCode `"TG"`.
+	// CountryCodeTG: Togo
 	CountryCodeTG CountryCode = "TG"
-	// CountryCodeTK represents the CountryCode `"TK"`.
+	// CountryCodeTK: Tokelau
 	CountryCodeTK CountryCode = "TK"
-	// CountryCodeTO represents the CountryCode `"TO"`.
+	// CountryCodeTO: Tonga
 	CountryCodeTO CountryCode = "TO"
-	// CountryCodeTT represents the CountryCode `"TT"`.
+	// CountryCodeTT: Trinidad and Tobago
 	CountryCodeTT CountryCode = "TT"
-	// CountryCodeTN represents the CountryCode `"TN"`.
+	// CountryCodeTN: Tunisia
 	CountryCodeTN CountryCode = "TN"
-	// CountryCodeTR represents the CountryCode `"TR"`.
+	// CountryCodeTR: Turkey
 	CountryCodeTR CountryCode = "TR"
-	// CountryCodeTM represents the CountryCode `"TM"`.
+	// CountryCodeTM: Turkmenistan
 	CountryCodeTM CountryCode = "TM"
-	// CountryCodeTC represents the CountryCode `"TC"`.
+	// CountryCodeTC: Turks and Caicos Islands
 	CountryCodeTC CountryCode = "TC"
-	// CountryCodeTV represents the CountryCode `"TV"`.
+	// CountryCodeTV: Tuvalu
 	CountryCodeTV CountryCode = "TV"
-	// CountryCodeUG represents the CountryCode `"UG"`.
+	// CountryCodeUG: Uganda
 	CountryCodeUG CountryCode = "UG"
-	// CountryCodeUA represents the CountryCode `"UA"`.
+	// CountryCodeUA: Ukraine
 	CountryCodeUA CountryCode = "UA"
-	// CountryCodeAE represents the CountryCode `"AE"`.
+	// CountryCodeAE: United Arab Emirates
 	CountryCodeAE CountryCode = "AE"
-	// CountryCodeGB represents the CountryCode `"GB"`.
+	// CountryCodeGB: United Kingdom of Great Britain and Northern Ireland
 	CountryCodeGB CountryCode = "GB"
-	// CountryCodeUS represents the CountryCode `"US"`.
+	// CountryCodeUS: United States of America
 	CountryCodeUS CountryCode = "US"
-	// CountryCodeUM represents the CountryCode `"UM"`.
+	// CountryCodeUM: United States Minor Outlying Islands
 	CountryCodeUM CountryCode = "UM"
-	// CountryCodeUY represents the CountryCode `"UY"`.
+	// CountryCodeUY: Uruguay
 	CountryCodeUY CountryCode = "UY"
-	// CountryCodeUZ represents the CountryCode `"UZ"`.
+	// CountryCodeUZ: Uzbekistan
 	CountryCodeUZ CountryCode = "UZ"
-	// CountryCodeVU represents the CountryCode `"VU"`.
+	// CountryCodeVU: Vanuatu
 	CountryCodeVU CountryCode = "VU"
-	// CountryCodeVE represents the CountryCode `"VE"`.
+	// CountryCodeVE: Venezuela (Bolivarian Republic of)
 	CountryCodeVE CountryCode = "VE"
-	// CountryCodeVN represents the CountryCode `"VN"`.
+	// CountryCodeVN: Viet Nam
 	CountryCodeVN CountryCode = "VN"
-	// CountryCodeVG represents the CountryCode `"VG"`.
+	// CountryCodeVG: Virgin Islands (British)
 	CountryCodeVG CountryCode = "VG"
-	// CountryCodeVI represents the CountryCode `"VI"`.
+	// CountryCodeVI: Virgin Islands (U.S.)
 	CountryCodeVI CountryCode = "VI"
-	// CountryCodeWF represents the CountryCode `"WF"`.
+	// CountryCodeWF: Wallis and Futuna
 	CountryCodeWF CountryCode = "WF"
-	// CountryCodeEH represents the CountryCode `"EH"`.
+	// CountryCodeEH: Western Sahara
 	CountryCodeEH CountryCode = "EH"
-	// CountryCodeYE represents the CountryCode `"YE"`.
+	// CountryCodeYE: Yemen
 	CountryCodeYE CountryCode = "YE"
-	// CountryCodeZM represents the CountryCode `"ZM"`.
+	// CountryCodeZM: Zambia
 	CountryCodeZM CountryCode = "ZM"
-	// CountryCodeZW represents the CountryCode `"ZW"`.
+	// CountryCodeZW: Zimbabwe
 	CountryCodeZW CountryCode = "ZW"
 )
 
@@ -1140,9 +1140,9 @@ const (
 type CreatedAtSortMode string
 
 const (
-	// CreatedAtSortModeCreatedAtAscending represents the CreatedAtSortMode `"created-at-ascending"`.
+	// CreatedAtSortModeCreatedAtAscending: sort in increasing order of "created_at"
 	CreatedAtSortModeCreatedAtAscending CreatedAtSortMode = "created-at-ascending"
-	// CreatedAtSortModeCreatedAtDescending represents the CreatedAtSortMode `"created-at-descending"`.
+	// CreatedAtSortModeCreatedAtDescending: sort in decreasing order of "created_at"
 	CreatedAtSortModeCreatedAtDescending CreatedAtSortMode = "created-at-descending"
 )
 
@@ -1151,283 +1151,283 @@ const (
 type Currency string
 
 const (
-	// CurrencyAed represents the Currency `"aed"`.
+	// CurrencyAed: United Arab Emirates Dirham
 	CurrencyAed Currency = "aed"
-	// CurrencyAfn represents the Currency `"afn"`.
+	// CurrencyAfn: Afghan Afghani
 	CurrencyAfn Currency = "afn"
-	// CurrencyAll represents the Currency `"all"`.
+	// CurrencyAll: Albanian Lek
 	CurrencyAll Currency = "all"
-	// CurrencyAmd represents the Currency `"amd"`.
+	// CurrencyAmd: Armenian Dram
 	CurrencyAmd Currency = "amd"
-	// CurrencyAng represents the Currency `"ang"`.
+	// CurrencyAng: Netherlands Antillean Gulden
 	CurrencyAng Currency = "ang"
-	// CurrencyAoa represents the Currency `"aoa"`.
+	// CurrencyAoa: Angolan Kwanza
 	CurrencyAoa Currency = "aoa"
-	// CurrencyArs represents the Currency `"ars"`.
+	// CurrencyArs: Argentine Peso
 	CurrencyArs Currency = "ars"
-	// CurrencyAud represents the Currency `"aud"`.
+	// CurrencyAud: Australian Dollar
 	CurrencyAud Currency = "aud"
-	// CurrencyAwg represents the Currency `"awg"`.
+	// CurrencyAwg: Aruban Florin
 	CurrencyAwg Currency = "awg"
-	// CurrencyAzn represents the Currency `"azn"`.
+	// CurrencyAzn: Azerbaijani Manat
 	CurrencyAzn Currency = "azn"
-	// CurrencyBam represents the Currency `"bam"`.
+	// CurrencyBam: Bosnia & Herzegovina Convertible Mark
 	CurrencyBam Currency = "bam"
-	// CurrencyBbd represents the Currency `"bbd"`.
+	// CurrencyBbd: Barbadian Dollar
 	CurrencyBbd Currency = "bbd"
-	// CurrencyBdt represents the Currency `"bdt"`.
+	// CurrencyBdt: Bangladeshi Taka
 	CurrencyBdt Currency = "bdt"
-	// CurrencyBgn represents the Currency `"bgn"`.
+	// CurrencyBgn: Bulgarian Lev
 	CurrencyBgn Currency = "bgn"
-	// CurrencyBif represents the Currency `"bif"`.
+	// CurrencyBif: Burundian Franc
 	CurrencyBif Currency = "bif"
-	// CurrencyBmd represents the Currency `"bmd"`.
+	// CurrencyBmd: Bermudian Dollar
 	CurrencyBmd Currency = "bmd"
-	// CurrencyBnd represents the Currency `"bnd"`.
+	// CurrencyBnd: Brunei Dollar
 	CurrencyBnd Currency = "bnd"
-	// CurrencyBob represents the Currency `"bob"`.
+	// CurrencyBob: Bolivian Boliviano
 	CurrencyBob Currency = "bob"
-	// CurrencyBrl represents the Currency `"brl"`.
+	// CurrencyBrl: Brazilian Real
 	CurrencyBrl Currency = "brl"
-	// CurrencyBsd represents the Currency `"bsd"`.
+	// CurrencyBsd: Bahamian Dollar
 	CurrencyBsd Currency = "bsd"
-	// CurrencyBwp represents the Currency `"bwp"`.
+	// CurrencyBwp: Botswana Pula
 	CurrencyBwp Currency = "bwp"
-	// CurrencyBzd represents the Currency `"bzd"`.
+	// CurrencyBzd: Belize Dollar
 	CurrencyBzd Currency = "bzd"
-	// CurrencyCad represents the Currency `"cad"`.
+	// CurrencyCad: Canadian Dollar
 	CurrencyCad Currency = "cad"
-	// CurrencyCdf represents the Currency `"cdf"`.
+	// CurrencyCdf: Congolese Franc
 	CurrencyCdf Currency = "cdf"
-	// CurrencyChf represents the Currency `"chf"`.
+	// CurrencyChf: Swiss Franc
 	CurrencyChf Currency = "chf"
-	// CurrencyClp represents the Currency `"clp"`.
+	// CurrencyClp: Chilean Peso
 	CurrencyClp Currency = "clp"
-	// CurrencyCny represents the Currency `"cny"`.
+	// CurrencyCny: Chinese Renminbi Yuan
 	CurrencyCny Currency = "cny"
-	// CurrencyCop represents the Currency `"cop"`.
+	// CurrencyCop: Colombian Peso
 	CurrencyCop Currency = "cop"
-	// CurrencyCrc represents the Currency `"crc"`.
+	// CurrencyCrc: Costa Rican Colón
 	CurrencyCrc Currency = "crc"
-	// CurrencyCve represents the Currency `"cve"`.
+	// CurrencyCve: Cape Verdean Escudo
 	CurrencyCve Currency = "cve"
-	// CurrencyCzk represents the Currency `"czk"`.
+	// CurrencyCzk: Czech Koruna
 	CurrencyCzk Currency = "czk"
-	// CurrencyDjf represents the Currency `"djf"`.
+	// CurrencyDjf: Djiboutian Franc
 	CurrencyDjf Currency = "djf"
-	// CurrencyDkk represents the Currency `"dkk"`.
+	// CurrencyDkk: Danish Krone
 	CurrencyDkk Currency = "dkk"
-	// CurrencyDop represents the Currency `"dop"`.
+	// CurrencyDop: Dominican Peso
 	CurrencyDop Currency = "dop"
-	// CurrencyDzd represents the Currency `"dzd"`.
+	// CurrencyDzd: Algerian Dinar
 	CurrencyDzd Currency = "dzd"
-	// CurrencyEek represents the Currency `"eek"`.
+	// CurrencyEek: Estonian Kroon
 	CurrencyEek Currency = "eek"
-	// CurrencyEgp represents the Currency `"egp"`.
+	// CurrencyEgp: Egyptian Pound
 	CurrencyEgp Currency = "egp"
-	// CurrencyEtb represents the Currency `"etb"`.
+	// CurrencyEtb: Ethiopian Birr
 	CurrencyEtb Currency = "etb"
-	// CurrencyEur represents the Currency `"eur"`.
+	// CurrencyEur: Euro
 	CurrencyEur Currency = "eur"
-	// CurrencyFjd represents the Currency `"fjd"`.
+	// CurrencyFjd: Fijian Dollar
 	CurrencyFjd Currency = "fjd"
-	// CurrencyFkp represents the Currency `"fkp"`.
+	// CurrencyFkp: Falkland Islands Pound
 	CurrencyFkp Currency = "fkp"
-	// CurrencyGbp represents the Currency `"gbp"`.
+	// CurrencyGbp: British Pound
 	CurrencyGbp Currency = "gbp"
-	// CurrencyGel represents the Currency `"gel"`.
+	// CurrencyGel: Georgian Lari
 	CurrencyGel Currency = "gel"
-	// CurrencyGip represents the Currency `"gip"`.
+	// CurrencyGip: Gibraltar Pound
 	CurrencyGip Currency = "gip"
-	// CurrencyGmd represents the Currency `"gmd"`.
+	// CurrencyGmd: Gambian Dalasi
 	CurrencyGmd Currency = "gmd"
-	// CurrencyGnf represents the Currency `"gnf"`.
+	// CurrencyGnf: Guinean Franc
 	CurrencyGnf Currency = "gnf"
-	// CurrencyGtq represents the Currency `"gtq"`.
+	// CurrencyGtq: Guatemalan Quetzal
 	CurrencyGtq Currency = "gtq"
-	// CurrencyGyd represents the Currency `"gyd"`.
+	// CurrencyGyd: Guyanese Dollar
 	CurrencyGyd Currency = "gyd"
-	// CurrencyHkd represents the Currency `"hkd"`.
+	// CurrencyHkd: Hong Kong Dollar
 	CurrencyHkd Currency = "hkd"
-	// CurrencyHnl represents the Currency `"hnl"`.
+	// CurrencyHnl: Honduran Lempira
 	CurrencyHnl Currency = "hnl"
-	// CurrencyHrk represents the Currency `"hrk"`.
+	// CurrencyHrk: Croatian Kuna
 	CurrencyHrk Currency = "hrk"
-	// CurrencyHtg represents the Currency `"htg"`.
+	// CurrencyHtg: Haitian Gourde
 	CurrencyHtg Currency = "htg"
-	// CurrencyHuf represents the Currency `"huf"`.
+	// CurrencyHuf: Hungarian Forint
 	CurrencyHuf Currency = "huf"
-	// CurrencyIdr represents the Currency `"idr"`.
+	// CurrencyIdr: Indonesian Rupiah
 	CurrencyIdr Currency = "idr"
-	// CurrencyIls represents the Currency `"ils"`.
+	// CurrencyIls: Israeli New Sheqel
 	CurrencyIls Currency = "ils"
-	// CurrencyInr represents the Currency `"inr"`.
+	// CurrencyInr: Indian Rupee
 	CurrencyInr Currency = "inr"
-	// CurrencyIsk represents the Currency `"isk"`.
+	// CurrencyIsk: Icelandic Króna
 	CurrencyIsk Currency = "isk"
-	// CurrencyJmd represents the Currency `"jmd"`.
+	// CurrencyJmd: Jamaican Dollar
 	CurrencyJmd Currency = "jmd"
-	// CurrencyJpy represents the Currency `"jpy"`.
+	// CurrencyJpy: Japanese Yen
 	CurrencyJpy Currency = "jpy"
-	// CurrencyKes represents the Currency `"kes"`.
+	// CurrencyKes: Kenyan Shilling
 	CurrencyKes Currency = "kes"
-	// CurrencyKgs represents the Currency `"kgs"`.
+	// CurrencyKgs: Kyrgyzstani Som
 	CurrencyKgs Currency = "kgs"
-	// CurrencyKhr represents the Currency `"khr"`.
+	// CurrencyKhr: Cambodian Riel
 	CurrencyKhr Currency = "khr"
-	// CurrencyKmf represents the Currency `"kmf"`.
+	// CurrencyKmf: Comorian Franc
 	CurrencyKmf Currency = "kmf"
-	// CurrencyKrw represents the Currency `"krw"`.
+	// CurrencyKrw: South Korean Won
 	CurrencyKrw Currency = "krw"
-	// CurrencyKyd represents the Currency `"kyd"`.
+	// CurrencyKyd: Cayman Islands Dollar
 	CurrencyKyd Currency = "kyd"
-	// CurrencyKzt represents the Currency `"kzt"`.
+	// CurrencyKzt: Kazakhstani Tenge
 	CurrencyKzt Currency = "kzt"
-	// CurrencyLak represents the Currency `"lak"`.
+	// CurrencyLak: Lao Kip
 	CurrencyLak Currency = "lak"
-	// CurrencyLbp represents the Currency `"lbp"`.
+	// CurrencyLbp: Lebanese Pound
 	CurrencyLbp Currency = "lbp"
-	// CurrencyLkr represents the Currency `"lkr"`.
+	// CurrencyLkr: Sri Lankan Rupee
 	CurrencyLkr Currency = "lkr"
-	// CurrencyLrd represents the Currency `"lrd"`.
+	// CurrencyLrd: Liberian Dollar
 	CurrencyLrd Currency = "lrd"
-	// CurrencyLsl represents the Currency `"lsl"`.
+	// CurrencyLsl: Lesotho Loti
 	CurrencyLsl Currency = "lsl"
-	// CurrencyLtl represents the Currency `"ltl"`.
+	// CurrencyLtl: Lithuanian Litas
 	CurrencyLtl Currency = "ltl"
-	// CurrencyLvl represents the Currency `"lvl"`.
+	// CurrencyLvl: Latvian Lats
 	CurrencyLvl Currency = "lvl"
-	// CurrencyMad represents the Currency `"mad"`.
+	// CurrencyMad: Moroccan Dirham
 	CurrencyMad Currency = "mad"
-	// CurrencyMdl represents the Currency `"mdl"`.
+	// CurrencyMdl: Moldovan Leu
 	CurrencyMdl Currency = "mdl"
-	// CurrencyMga represents the Currency `"mga"`.
+	// CurrencyMga: Malagasy Ariary
 	CurrencyMga Currency = "mga"
-	// CurrencyMkd represents the Currency `"mkd"`.
+	// CurrencyMkd: Macedonian Denar
 	CurrencyMkd Currency = "mkd"
-	// CurrencyMnt represents the Currency `"mnt"`.
+	// CurrencyMnt: Mongolian Tögrög
 	CurrencyMnt Currency = "mnt"
-	// CurrencyMop represents the Currency `"mop"`.
+	// CurrencyMop: Macanese Pataca
 	CurrencyMop Currency = "mop"
-	// CurrencyMro represents the Currency `"mro"`.
+	// CurrencyMro: Mauritanian Ouguiya
 	CurrencyMro Currency = "mro"
-	// CurrencyMur represents the Currency `"mur"`.
+	// CurrencyMur: Mauritian Rupee
 	CurrencyMur Currency = "mur"
-	// CurrencyMvr represents the Currency `"mvr"`.
+	// CurrencyMvr: Maldivian Rufiyaa
 	CurrencyMvr Currency = "mvr"
-	// CurrencyMwk represents the Currency `"mwk"`.
+	// CurrencyMwk: Malawian Kwacha
 	CurrencyMwk Currency = "mwk"
-	// CurrencyMxn represents the Currency `"mxn"`.
+	// CurrencyMxn: Mexican Peso
 	CurrencyMxn Currency = "mxn"
-	// CurrencyMyr represents the Currency `"myr"`.
+	// CurrencyMyr: Malaysian Ringgit
 	CurrencyMyr Currency = "myr"
-	// CurrencyMzn represents the Currency `"mzn"`.
+	// CurrencyMzn: Mozambican Metical
 	CurrencyMzn Currency = "mzn"
-	// CurrencyNad represents the Currency `"nad"`.
+	// CurrencyNad: Namibian Dollar
 	CurrencyNad Currency = "nad"
-	// CurrencyNgn represents the Currency `"ngn"`.
+	// CurrencyNgn: Nigerian Naira
 	CurrencyNgn Currency = "ngn"
-	// CurrencyNio represents the Currency `"nio"`.
+	// CurrencyNio: Nicaraguan Córdoba
 	CurrencyNio Currency = "nio"
-	// CurrencyNok represents the Currency `"nok"`.
+	// CurrencyNok: Norwegian Krone
 	CurrencyNok Currency = "nok"
-	// CurrencyNpr represents the Currency `"npr"`.
+	// CurrencyNpr: Nepalese Rupee
 	CurrencyNpr Currency = "npr"
-	// CurrencyNzd represents the Currency `"nzd"`.
+	// CurrencyNzd: New Zealand Dollar
 	CurrencyNzd Currency = "nzd"
-	// CurrencyPab represents the Currency `"pab"`.
+	// CurrencyPab: Panamanian Balboa
 	CurrencyPab Currency = "pab"
-	// CurrencyPen represents the Currency `"pen"`.
+	// CurrencyPen: Peruvian Nuevo Sol
 	CurrencyPen Currency = "pen"
-	// CurrencyPgk represents the Currency `"pgk"`.
+	// CurrencyPgk: Papua New Guinean Kina
 	CurrencyPgk Currency = "pgk"
-	// CurrencyPhp represents the Currency `"php"`.
+	// CurrencyPhp: Philippine Peso
 	CurrencyPhp Currency = "php"
-	// CurrencyPkr represents the Currency `"pkr"`.
+	// CurrencyPkr: Pakistani Rupee
 	CurrencyPkr Currency = "pkr"
-	// CurrencyPln represents the Currency `"pln"`.
+	// CurrencyPln: Polish Złoty
 	CurrencyPln Currency = "pln"
-	// CurrencyPyg represents the Currency `"pyg"`.
+	// CurrencyPyg: Paraguayan Guaraní
 	CurrencyPyg Currency = "pyg"
-	// CurrencyQar represents the Currency `"qar"`.
+	// CurrencyQar: Qatari Riyal
 	CurrencyQar Currency = "qar"
-	// CurrencyRon represents the Currency `"ron"`.
+	// CurrencyRon: Romanian Leu
 	CurrencyRon Currency = "ron"
-	// CurrencyRsd represents the Currency `"rsd"`.
+	// CurrencyRsd: Serbian Dinar
 	CurrencyRsd Currency = "rsd"
-	// CurrencyRub represents the Currency `"rub"`.
+	// CurrencyRub: Russian Ruble
 	CurrencyRub Currency = "rub"
-	// CurrencyRwf represents the Currency `"rwf"`.
+	// CurrencyRwf: Rwandan Franc
 	CurrencyRwf Currency = "rwf"
-	// CurrencySar represents the Currency `"sar"`.
+	// CurrencySar: Saudi Riyal
 	CurrencySar Currency = "sar"
-	// CurrencySbd represents the Currency `"sbd"`.
+	// CurrencySbd: Solomon Islands Dollar
 	CurrencySbd Currency = "sbd"
-	// CurrencyScr represents the Currency `"scr"`.
+	// CurrencyScr: Seychellois Rupee
 	CurrencyScr Currency = "scr"
-	// CurrencySek represents the Currency `"sek"`.
+	// CurrencySek: Swedish Krona
 	CurrencySek Currency = "sek"
-	// CurrencySgd represents the Currency `"sgd"`.
+	// CurrencySgd: Singapore Dollar
 	CurrencySgd Currency = "sgd"
-	// CurrencyShp represents the Currency `"shp"`.
+	// CurrencyShp: Saint Helenian Pound
 	CurrencyShp Currency = "shp"
-	// CurrencySll represents the Currency `"sll"`.
+	// CurrencySll: Sierra Leonean Leone
 	CurrencySll Currency = "sll"
-	// CurrencySos represents the Currency `"sos"`.
+	// CurrencySos: Somali Shilling
 	CurrencySos Currency = "sos"
-	// CurrencySrd represents the Currency `"srd"`.
+	// CurrencySrd: Surinamese Dollar
 	CurrencySrd Currency = "srd"
-	// CurrencyStd represents the Currency `"std"`.
+	// CurrencyStd: São Tomé and Príncipe Dobra
 	CurrencyStd Currency = "std"
-	// CurrencySvc represents the Currency `"svc"`.
+	// CurrencySvc: Salvadoran Colón
 	CurrencySvc Currency = "svc"
-	// CurrencySzl represents the Currency `"szl"`.
+	// CurrencySzl: Swazi Lilangeni
 	CurrencySzl Currency = "szl"
-	// CurrencyThb represents the Currency `"thb"`.
+	// CurrencyThb: Thai Baht
 	CurrencyThb Currency = "thb"
-	// CurrencyTjs represents the Currency `"tjs"`.
+	// CurrencyTjs: Tajikistani Somoni
 	CurrencyTjs Currency = "tjs"
-	// CurrencyTop represents the Currency `"top"`.
+	// CurrencyTop: Tongan Paʻanga
 	CurrencyTop Currency = "top"
-	// CurrencyTry represents the Currency `"try"`.
+	// CurrencyTry: Turkish Lira
 	CurrencyTry Currency = "try"
-	// CurrencyTtd represents the Currency `"ttd"`.
+	// CurrencyTtd: Trinidad and Tobago Dollar
 	CurrencyTtd Currency = "ttd"
-	// CurrencyTwd represents the Currency `"twd"`.
+	// CurrencyTwd: New Taiwan Dollar
 	CurrencyTwd Currency = "twd"
-	// CurrencyTzs represents the Currency `"tzs"`.
+	// CurrencyTzs: Tanzanian Shilling
 	CurrencyTzs Currency = "tzs"
-	// CurrencyUah represents the Currency `"uah"`.
+	// CurrencyUah: Ukrainian Hryvnia
 	CurrencyUah Currency = "uah"
-	// CurrencyUgx represents the Currency `"ugx"`.
+	// CurrencyUgx: Ugandan Shilling
 	CurrencyUgx Currency = "ugx"
-	// CurrencyUsd represents the Currency `"usd"`.
+	// CurrencyUsd: United States Dollar
 	CurrencyUsd Currency = "usd"
-	// CurrencyUyu represents the Currency `"uyu"`.
+	// CurrencyUyu: Uruguayan Peso
 	CurrencyUyu Currency = "uyu"
-	// CurrencyUzs represents the Currency `"uzs"`.
+	// CurrencyUzs: Uzbekistani Som
 	CurrencyUzs Currency = "uzs"
-	// CurrencyVef represents the Currency `"vef"`.
+	// CurrencyVef: Venezuelan Bolívar
 	CurrencyVef Currency = "vef"
-	// CurrencyVnd represents the Currency `"vnd"`.
+	// CurrencyVnd: Vietnamese Đồng
 	CurrencyVnd Currency = "vnd"
-	// CurrencyVuv represents the Currency `"vuv"`.
+	// CurrencyVuv: Vanuatu Vatu
 	CurrencyVuv Currency = "vuv"
-	// CurrencyWst represents the Currency `"wst"`.
+	// CurrencyWst: Samoan Tala
 	CurrencyWst Currency = "wst"
-	// CurrencyXaf represents the Currency `"xaf"`.
+	// CurrencyXaf: Central African Cfa Franc
 	CurrencyXaf Currency = "xaf"
-	// CurrencyXcd represents the Currency `"xcd"`.
+	// CurrencyXcd: East Caribbean Dollar
 	CurrencyXcd Currency = "xcd"
-	// CurrencyXof represents the Currency `"xof"`.
+	// CurrencyXof: West African Cfa Franc
 	CurrencyXof Currency = "xof"
-	// CurrencyXpf represents the Currency `"xpf"`.
+	// CurrencyXpf: Cfp Franc
 	CurrencyXpf Currency = "xpf"
-	// CurrencyYer represents the Currency `"yer"`.
+	// CurrencyYer: Yemeni Rial
 	CurrencyYer Currency = "yer"
-	// CurrencyZar represents the Currency `"zar"`.
+	// CurrencyZar: South African Rand
 	CurrencyZar Currency = "zar"
-	// CurrencyZmw represents the Currency `"zmw"`.
+	// CurrencyZmw: Zambian Kwacha
 	CurrencyZmw Currency = "zmw"
 )
 
@@ -1917,21 +1917,21 @@ type FileDensity struct {
 type FileExportFormat string
 
 const (
-	// FileExportFormatDae represents the FileExportFormat `"dae"`.
+	// FileExportFormatDae: The COLLADA/DAE file format. <https://en.wikipedia.org/wiki/COLLADA>
 	FileExportFormatDae FileExportFormat = "dae"
-	// FileExportFormatDxf represents the FileExportFormat `"dxf"`.
+	// FileExportFormatDxf: The DXF file format. <https://en.wikipedia.org/wiki/AutoCAD_DXF>
 	FileExportFormatDxf FileExportFormat = "dxf"
-	// FileExportFormatFbx represents the FileExportFormat `"fbx"`.
+	// FileExportFormatFbx: The FBX file format. <https://en.wikipedia.org/wiki/FBX>
 	FileExportFormatFbx FileExportFormat = "fbx"
-	// FileExportFormatFbxb represents the FileExportFormat `"fbxb"`.
+	// FileExportFormatFbxb: The FBX file format (in binary). <https://en.wikipedia.org/wiki/FBX>
 	FileExportFormatFbxb FileExportFormat = "fbxb"
-	// FileExportFormatObj represents the FileExportFormat `"obj"`.
+	// FileExportFormatObj: The OBJ file format. A zip file containing both the obj file itself and its associated mtl file for full processing. <https://en.wikipedia.org/wiki/Wavefront_.obj_file>> The OBJ file format. <https://en.wikipedia.org/wiki/Wavefront_.obj_file> It may or may not have an an attached material (mtl // mtllib) within the file, but we interact with it as if it does not.
 	FileExportFormatObj FileExportFormat = "obj"
-	// FileExportFormatPly represents the FileExportFormat `"ply"`.
+	// FileExportFormatPly: The PLY file format. <https://en.wikipedia.org/wiki/PLY_(file_format)>
 	FileExportFormatPly FileExportFormat = "ply"
-	// FileExportFormatStep represents the FileExportFormat `"step"`.
+	// FileExportFormatStep: The STEP file format. <https://en.wikipedia.org/wiki/ISO_10303-21>
 	FileExportFormatStep FileExportFormat = "step"
-	// FileExportFormatStl represents the FileExportFormat `"stl"`.
+	// FileExportFormatStl: The STL file format. <https://en.wikipedia.org/wiki/STL_(file_format)>
 	FileExportFormatStl FileExportFormat = "stl"
 )
 
@@ -1939,21 +1939,21 @@ const (
 type FileImportFormat string
 
 const (
-	// FileImportFormatDae represents the FileImportFormat `"dae"`.
+	// FileImportFormatDae: The COLLADA/DAE file format. <https://en.wikipedia.org/wiki/COLLADA>
 	FileImportFormatDae FileImportFormat = "dae"
-	// FileImportFormatDxf represents the FileImportFormat `"dxf"`.
+	// FileImportFormatDxf: The DXF file format. <https://en.wikipedia.org/wiki/AutoCAD_DXF>
 	FileImportFormatDxf FileImportFormat = "dxf"
-	// FileImportFormatFbx represents the FileImportFormat `"fbx"`.
+	// FileImportFormatFbx: The FBX file format. <https://en.wikipedia.org/wiki/FBX>
 	FileImportFormatFbx FileImportFormat = "fbx"
-	// FileImportFormatObjZip represents the FileImportFormat `"obj_zip"`.
+	// FileImportFormatObjZip: The OBJ file format. A zip file containing both the obj file itself and its associated mtl file for full processing. <https://en.wikipedia.org/wiki/Wavefront_.obj_file>>
 	FileImportFormatObjZip FileImportFormat = "obj_zip"
-	// FileImportFormatObj represents the FileImportFormat `"obj"`.
+	// FileImportFormatObj: The OBJ file format. <https://en.wikipedia.org/wiki/Wavefront_.obj_file> It may or may not have an an attached material (mtl // mtllib) within the file, but we interact with it as if it does not.
 	FileImportFormatObj FileImportFormat = "obj"
-	// FileImportFormatPly represents the FileImportFormat `"ply"`.
+	// FileImportFormatPly: The PLY file format. <https://en.wikipedia.org/wiki/PLY_(file_format)>
 	FileImportFormatPly FileImportFormat = "ply"
-	// FileImportFormatStep represents the FileImportFormat `"step"`.
+	// FileImportFormatStep: The STEP file format. <https://en.wikipedia.org/wiki/ISO_10303-21>
 	FileImportFormatStep FileImportFormat = "step"
-	// FileImportFormatStl represents the FileImportFormat `"stl"`.
+	// FileImportFormatStl: The STL file format. <https://en.wikipedia.org/wiki/STL_(file_format)>
 	FileImportFormatStl FileImportFormat = "stl"
 )
 
@@ -2172,17 +2172,17 @@ type InvoiceLineItem struct {
 type InvoiceStatus string
 
 const (
-	// InvoiceStatusDeleted represents the InvoiceStatus `"deleted"`.
+	// InvoiceStatusDeleted: Deleted.
 	InvoiceStatusDeleted InvoiceStatus = "deleted"
-	// InvoiceStatusDraft represents the InvoiceStatus `"draft"`.
+	// InvoiceStatusDraft: Draft.
 	InvoiceStatusDraft InvoiceStatus = "draft"
-	// InvoiceStatusOpen represents the InvoiceStatus `"open"`.
+	// InvoiceStatusOpen: Open.
 	InvoiceStatusOpen InvoiceStatus = "open"
-	// InvoiceStatusPaid represents the InvoiceStatus `"paid"`.
+	// InvoiceStatusPaid: Paid.
 	InvoiceStatusPaid InvoiceStatus = "paid"
-	// InvoiceStatusUncollectible represents the InvoiceStatus `"uncollectible"`.
+	// InvoiceStatusUncollectible: Uncollectible.
 	InvoiceStatusUncollectible InvoiceStatus = "uncollectible"
-	// InvoiceStatusVoid represents the InvoiceStatus `"void"`.
+	// InvoiceStatusVoid: Void.
 	InvoiceStatusVoid InvoiceStatus = "void"
 )
 
@@ -2292,25 +2292,25 @@ type Metadata struct {
 type Method string
 
 const (
-	// MethodOPTIONS represents the Method `"OPTIONS"`.
+	// MethodOPTIONS: The `OPTIONS` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.2.1).
 	MethodOPTIONS Method = "OPTIONS"
-	// MethodGET represents the Method `"GET"`.
+	// MethodGET: The `GET` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1).
 	MethodGET Method = "GET"
-	// MethodPOST represents the Method `"POST"`.
+	// MethodPOST: The `POST` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1).
 	MethodPOST Method = "POST"
-	// MethodPUT represents the Method `"PUT"`.
+	// MethodPUT: The `PUT` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1).
 	MethodPUT Method = "PUT"
-	// MethodDELETE represents the Method `"DELETE"`.
+	// MethodDELETE: The `DELETE` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.5).
 	MethodDELETE Method = "DELETE"
-	// MethodHEAD represents the Method `"HEAD"`.
+	// MethodHEAD: The `HEAD` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.2).
 	MethodHEAD Method = "HEAD"
-	// MethodTRACE represents the Method `"TRACE"`.
+	// MethodTRACE: The `TRACE` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3).
 	MethodTRACE Method = "TRACE"
-	// MethodCONNECT represents the Method `"CONNECT"`.
+	// MethodCONNECT: The `CONNECT` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.6).
 	MethodCONNECT Method = "CONNECT"
-	// MethodPATCH represents the Method `"PATCH"`.
+	// MethodPATCH: The `PATCH` method as defined in [RFC 5789](https://tools.ietf.org/html/rfc5789).
 	MethodPATCH Method = "PATCH"
-	// MethodEXTENSION represents the Method `"EXTENSION"`.
+	// MethodEXTENSION: A catch all.
 	MethodEXTENSION Method = "EXTENSION"
 )
 
@@ -2346,7 +2346,7 @@ type OAuth2ClientInfo struct {
 type OAuth2GrantType string
 
 const (
-	// OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode represents the OAuth2GrantType `"urn:ietf:params:oauth:grant-type:device_code"`.
+	// OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode: An OAuth 2.0 Device Authorization Grant.
 	OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode OAuth2GrantType = "urn:ietf:params:oauth:grant-type:device_code"
 )
 
@@ -2404,7 +2404,7 @@ type PaymentMethodCardChecks struct {
 type PaymentMethodType string
 
 const (
-	// PaymentMethodTypeCard represents the PaymentMethodType `"card"`.
+	// PaymentMethodTypeCard: A card payment method.
 	PaymentMethodTypeCard PaymentMethodType = "card"
 )
 
@@ -2438,71 +2438,71 @@ type PhysicsConstant struct {
 type PhysicsConstantName string
 
 const (
-	// PhysicsConstantNamePi represents the PhysicsConstantName `"pi"`.
+	// PhysicsConstantNamePi: pi - Ratio of a circle's circumference to its diameter. <https://en.wikipedia.org/wiki/Pi>
 	PhysicsConstantNamePi PhysicsConstantName = "pi"
-	// PhysicsConstantNameC represents the PhysicsConstantName `"c"`.
+	// PhysicsConstantNameC: c - Speed of light in vacuum. <https://en.wikipedia.org/wiki//Speed_of_light>
 	PhysicsConstantNameC PhysicsConstantName = "c"
-	// PhysicsConstantNameSpeedOfLight represents the PhysicsConstantName `"speed_of_light"`.
+	// PhysicsConstantNameSpeedOfLight: Speed of light in a vacuum. <https://en.wikipedia.org/wiki//Speed_of_light>
 	PhysicsConstantNameSpeedOfLight PhysicsConstantName = "speed_of_light"
-	// PhysicsConstantNameG represents the PhysicsConstantName `"G"`.
+	// PhysicsConstantNameG: G - Newtonian constant of gravitation. <https://en.wikipedia.org/wiki/Gravitational_constant>
 	PhysicsConstantNameG PhysicsConstantName = "G"
-	// PhysicsConstantNameNewtonianGravitation represents the PhysicsConstantName `"newtonian_gravitation"`.
+	// PhysicsConstantNameNewtonianGravitation: Newtonian constant of gravitation. <https://en.wikipedia.org/wiki/Gravitational_constant>
 	PhysicsConstantNameNewtonianGravitation PhysicsConstantName = "newtonian_gravitation"
-	// PhysicsConstantNameH represents the PhysicsConstantName `"h"`.
+	// PhysicsConstantNameH: h - Planck constant. <https://en.wikipedia.org/wiki/Planck_constant>
 	PhysicsConstantNameH PhysicsConstantName = "h"
-	// PhysicsConstantNamePlanckConst represents the PhysicsConstantName `"planck_const"`.
+	// PhysicsConstantNamePlanckConst: Planck constant. <https://en.wikipedia.org/wiki/Planck_constant>
 	PhysicsConstantNamePlanckConst PhysicsConstantName = "planck_const"
-	// PhysicsConstantNameMu0 represents the PhysicsConstantName `"mu_0"`.
+	// PhysicsConstantNameMu0: mu_0 - vacuum permeability. <https://en.wikipedia.org/wiki/Vacuum_permeability>
 	PhysicsConstantNameMu0 PhysicsConstantName = "mu_0"
-	// PhysicsConstantNameVacuumPermeability represents the PhysicsConstantName `"vacuum_permeability"`.
+	// PhysicsConstantNameVacuumPermeability: vacuum permeability. <https://en.wikipedia.org/wiki/Vacuum_permeability>
 	PhysicsConstantNameVacuumPermeability PhysicsConstantName = "vacuum_permeability"
-	// PhysicsConstantNameE0 represents the PhysicsConstantName `"E_0"`.
+	// PhysicsConstantNameE0: ε_0 - vacuum permitivity. <https://en.wikipedia.org/wiki/Vacuum_permittivity>
 	PhysicsConstantNameE0 PhysicsConstantName = "E_0"
-	// PhysicsConstantNameVacuumPermitivity represents the PhysicsConstantName `"vacuum_permitivity"`.
+	// PhysicsConstantNameVacuumPermitivity: vacuum permitivity. <https://en.wikipedia.org/wiki/Vacuum_permittivity>]
 	PhysicsConstantNameVacuumPermitivity PhysicsConstantName = "vacuum_permitivity"
-	// PhysicsConstantNameZ0 represents the PhysicsConstantName `"Z_0"`.
+	// PhysicsConstantNameZ0: Z_0 - characteristic impedance of vacuum. <https://en.wikipedia.org/wiki/Impedance_of_free_space>
 	PhysicsConstantNameZ0 PhysicsConstantName = "Z_0"
-	// PhysicsConstantNameVacuumImpedance represents the PhysicsConstantName `"vacuum_impedance"`.
+	// PhysicsConstantNameVacuumImpedance: characteristic impedance of vacuum. <https://en.wikipedia.org/wiki/Impedance_of_free_space>
 	PhysicsConstantNameVacuumImpedance PhysicsConstantName = "vacuum_impedance"
-	// PhysicsConstantNameKE represents the PhysicsConstantName `"k_e"`.
+	// PhysicsConstantNameKE: k_e - Coulomb's constant. <https://en.wikipedia.org/wiki/Coulomb_constant>
 	PhysicsConstantNameKE PhysicsConstantName = "k_e"
-	// PhysicsConstantNameCoulombConst represents the PhysicsConstantName `"coulomb_const"`.
+	// PhysicsConstantNameCoulombConst: Coulomb's constant. <https://en.wikipedia.org/wiki/Coulomb_constant>
 	PhysicsConstantNameCoulombConst PhysicsConstantName = "coulomb_const"
-	// PhysicsConstantNameE represents the PhysicsConstantName `"e"`.
+	// PhysicsConstantNameE: e - elementary charge. <https://en.wikipedia.org/wiki/Elementary_charge>
 	PhysicsConstantNameE PhysicsConstantName = "e"
-	// PhysicsConstantNameElementaryCharge represents the PhysicsConstantName `"elementary_charge"`.
+	// PhysicsConstantNameElementaryCharge: elementary charge. <https://en.wikipedia.org/wiki/Elementary_charge>
 	PhysicsConstantNameElementaryCharge PhysicsConstantName = "elementary_charge"
-	// PhysicsConstantNameME represents the PhysicsConstantName `"m_e"`.
+	// PhysicsConstantNameME: m_e - electron mass. <https://en.wikipedia.org/wiki/Electron_mass>
 	PhysicsConstantNameME PhysicsConstantName = "m_e"
-	// PhysicsConstantNameElectronMass represents the PhysicsConstantName `"electron_mass"`.
+	// PhysicsConstantNameElectronMass: electron mass. <https://en.wikipedia.org/wiki/Electron_mass>
 	PhysicsConstantNameElectronMass PhysicsConstantName = "electron_mass"
-	// PhysicsConstantNameMP represents the PhysicsConstantName `"m_p"`.
+	// PhysicsConstantNameMP: m_p - proton mass. <https://en.wikipedia.org/wiki/Proton>
 	PhysicsConstantNameMP PhysicsConstantName = "m_p"
-	// PhysicsConstantNameProtonMass represents the PhysicsConstantName `"proton_mass"`.
+	// PhysicsConstantNameProtonMass: proton mass. <https://en.wikipedia.org/wiki/Proton>
 	PhysicsConstantNameProtonMass PhysicsConstantName = "proton_mass"
-	// PhysicsConstantNameMuB represents the PhysicsConstantName `"mu_B"`.
+	// PhysicsConstantNameMuB: mu_B - Bohr magneton. <https://en.wikipedia.org/wiki/Bohr_magneton>
 	PhysicsConstantNameMuB PhysicsConstantName = "mu_B"
-	// PhysicsConstantNameBohrMagneton represents the PhysicsConstantName `"bohr_magneton"`.
+	// PhysicsConstantNameBohrMagneton: Bohr magneton. <https://en.wikipedia.org/wiki/Bohr_magneton>
 	PhysicsConstantNameBohrMagneton PhysicsConstantName = "bohr_magneton"
-	// PhysicsConstantNameNA represents the PhysicsConstantName `"NA"`.
+	// PhysicsConstantNameNA: NA - Avogadro's Number. <https://en.wikipedia.org/wiki/Avogadro_constant>
 	PhysicsConstantNameNA PhysicsConstantName = "NA"
-	// PhysicsConstantNameAvogadroNum represents the PhysicsConstantName `"avogadro_num"`.
+	// PhysicsConstantNameAvogadroNum: Avogadro's Number. <https://en.wikipedia.org/wiki/Avogadro_constant>
 	PhysicsConstantNameAvogadroNum PhysicsConstantName = "avogadro_num"
-	// PhysicsConstantNameR represents the PhysicsConstantName `"R"`.
+	// PhysicsConstantNameR: R - Molar Gas constant. <https://en.wikipedia.org/wiki/Gas_constant>
 	PhysicsConstantNameR PhysicsConstantName = "R"
-	// PhysicsConstantNameMolarGasConst represents the PhysicsConstantName `"molar_gas_const"`.
+	// PhysicsConstantNameMolarGasConst: Molar Gas constant. <https://en.wikipedia.org/wiki/Gas_constant>
 	PhysicsConstantNameMolarGasConst PhysicsConstantName = "molar_gas_const"
-	// PhysicsConstantNameKB represents the PhysicsConstantName `"K_B"`.
+	// PhysicsConstantNameKB: K_B - Boltzmann constant. <https://en.wikipedia.org/wiki/Boltzmann_constant>
 	PhysicsConstantNameKB PhysicsConstantName = "K_B"
-	// PhysicsConstantNameBoltzmannConst represents the PhysicsConstantName `"boltzmann_const"`.
+	// PhysicsConstantNameBoltzmannConst: Boltzmann constant. <https://en.wikipedia.org/wiki/Boltzmann_constant>
 	PhysicsConstantNameBoltzmannConst PhysicsConstantName = "boltzmann_const"
-	// PhysicsConstantNameF represents the PhysicsConstantName `"F"`.
+	// PhysicsConstantNameF: F - Faraday constant. <https://en.wikipedia.org/wiki/Faraday_constant>
 	PhysicsConstantNameF PhysicsConstantName = "F"
-	// PhysicsConstantNameFaradayConst represents the PhysicsConstantName `"faraday_const"`.
+	// PhysicsConstantNameFaradayConst: Faraday constant. <https://en.wikipedia.org/wiki/Faraday_constant>
 	PhysicsConstantNameFaradayConst PhysicsConstantName = "faraday_const"
-	// PhysicsConstantNameSigma represents the PhysicsConstantName `"sigma"`.
+	// PhysicsConstantNameSigma: Sigma - Stefan-Boltzmann constant. <https://en.wikipedia.org/wiki/Stefan%E2%80%93Boltzmann_constant>
 	PhysicsConstantNameSigma PhysicsConstantName = "sigma"
-	// PhysicsConstantNameStefanBoltzmannConst represents the PhysicsConstantName `"stefan_boltzmann_const"`.
+	// PhysicsConstantNameStefanBoltzmannConst: Stefan-Boltzmann constant. <https://en.wikipedia.org/wiki/Stefan%E2%80%93Boltzmann_constant>
 	PhysicsConstantNameStefanBoltzmannConst PhysicsConstantName = "stefan_boltzmann_const"
 )
 
@@ -2659,11 +2659,11 @@ type UnitAccelerationConversion struct {
 type UnitAccelerationFormat string
 
 const (
-	// UnitAccelerationFormatMetersPerSecondSquared represents the UnitAccelerationFormat `"meters_per_second_squared"`.
+	// UnitAccelerationFormatMetersPerSecondSquared: Acceleration in m/s^2 unit form
 	UnitAccelerationFormatMetersPerSecondSquared UnitAccelerationFormat = "meters_per_second_squared"
-	// UnitAccelerationFormatFeetPerSecondSquared represents the UnitAccelerationFormat `"feet_per_second_squared"`.
+	// UnitAccelerationFormatFeetPerSecondSquared: Acceleration in ft/s^2 unit form
 	UnitAccelerationFormatFeetPerSecondSquared UnitAccelerationFormat = "feet_per_second_squared"
-	// UnitAccelerationFormatStandardGravity represents the UnitAccelerationFormat `"standard_gravity"`.
+	// UnitAccelerationFormatStandardGravity: Acceleration in standard gravity (g) unit form (aka where 9.80665 m/s^2 is the base unit). <https://en.wikipedia.org/wiki/Standard_gravity>
 	UnitAccelerationFormatStandardGravity UnitAccelerationFormat = "standard_gravity"
 )
 
@@ -2701,19 +2701,19 @@ type UnitAngleConversion struct {
 type UnitAngleFormat string
 
 const (
-	// UnitAngleFormatRadian represents the UnitAngleFormat `"radian"`.
+	// UnitAngleFormatRadian: <https://en.wikipedia.org/wiki/Radian>
 	UnitAngleFormatRadian UnitAngleFormat = "radian"
-	// UnitAngleFormatDegree represents the UnitAngleFormat `"degree"`.
+	// UnitAngleFormatDegree: <https://en.wikipedia.org/wiki/Degree_(angle)>
 	UnitAngleFormatDegree UnitAngleFormat = "degree"
-	// UnitAngleFormatArcminute represents the UnitAngleFormat `"arcminute"`.
+	// UnitAngleFormatArcminute: <https://en.wikipedia.org/wiki/Minute_and_second_of_arc>
 	UnitAngleFormatArcminute UnitAngleFormat = "arcminute"
-	// UnitAngleFormatArcsecond represents the UnitAngleFormat `"arcsecond"`.
+	// UnitAngleFormatArcsecond: <https://en.wikipedia.org/wiki/Minute_and_second_of_arc>
 	UnitAngleFormatArcsecond UnitAngleFormat = "arcsecond"
-	// UnitAngleFormatMilliarcsecond represents the UnitAngleFormat `"milliarcsecond"`.
+	// UnitAngleFormatMilliarcsecond: <https://en.wikipedia.org/wiki/Minute_and_second_of_arc#Symbols_and_abbreviations>
 	UnitAngleFormatMilliarcsecond UnitAngleFormat = "milliarcsecond"
-	// UnitAngleFormatTurn represents the UnitAngleFormat `"turn"`.
+	// UnitAngleFormatTurn: <https://en.wikipedia.org/wiki/Turn_(angle)>
 	UnitAngleFormatTurn UnitAngleFormat = "turn"
-	// UnitAngleFormatGradian represents the UnitAngleFormat `"gradian"`.
+	// UnitAngleFormatGradian: <https://en.wikipedia.org/wiki/Gradian>
 	UnitAngleFormatGradian UnitAngleFormat = "gradian"
 )
 
@@ -2751,13 +2751,13 @@ type UnitAngularVelocityConversion struct {
 type UnitAngularVelocityFormat string
 
 const (
-	// UnitAngularVelocityFormatRadiansPerSecond represents the UnitAngularVelocityFormat `"radians_per_second"`.
+	// UnitAngularVelocityFormatRadiansPerSecond: <https://en.wikipedia.org/wiki/Radian_per_second>
 	UnitAngularVelocityFormatRadiansPerSecond UnitAngularVelocityFormat = "radians_per_second"
-	// UnitAngularVelocityFormatDegreesPerSecond represents the UnitAngularVelocityFormat `"degrees_per_second"`.
+	// UnitAngularVelocityFormatDegreesPerSecond: <https://en.wikipedia.org/wiki/Rotational_speed>
 	UnitAngularVelocityFormatDegreesPerSecond UnitAngularVelocityFormat = "degrees_per_second"
-	// UnitAngularVelocityFormatRevolutionsPerMinute represents the UnitAngularVelocityFormat `"revolutions_per_minute"`.
+	// UnitAngularVelocityFormatRevolutionsPerMinute: <https://en.wikipedia.org/wiki/Revolutions_per_minute>
 	UnitAngularVelocityFormatRevolutionsPerMinute UnitAngularVelocityFormat = "revolutions_per_minute"
-	// UnitAngularVelocityFormatMilliarcsecondsPerYear represents the UnitAngularVelocityFormat `"milliarcseconds_per_year"`.
+	// UnitAngularVelocityFormatMilliarcsecondsPerYear: <https://en.wikipedia.org/wiki/Minute_and_second_of_arc#Symbols_and_abbreviations>
 	UnitAngularVelocityFormatMilliarcsecondsPerYear UnitAngularVelocityFormat = "milliarcseconds_per_year"
 )
 
@@ -2795,19 +2795,19 @@ type UnitAreaConversion struct {
 type UnitAreaFormat string
 
 const (
-	// UnitAreaFormatSquareMeter represents the UnitAreaFormat `"square_meter"`.
+	// UnitAreaFormatSquareMeter: <https://en.wikipedia.org/wiki/Square_metre>
 	UnitAreaFormatSquareMeter UnitAreaFormat = "square_meter"
-	// UnitAreaFormatSquareFoot represents the UnitAreaFormat `"square_foot"`.
+	// UnitAreaFormatSquareFoot: <https://en.wikipedia.org/wiki/Square_foot>
 	UnitAreaFormatSquareFoot UnitAreaFormat = "square_foot"
-	// UnitAreaFormatSquareInch represents the UnitAreaFormat `"square_inch"`.
+	// UnitAreaFormatSquareInch: <https://en.wikipedia.org/wiki/Square_inch>
 	UnitAreaFormatSquareInch UnitAreaFormat = "square_inch"
-	// UnitAreaFormatSquareMile represents the UnitAreaFormat `"square_mile"`.
+	// UnitAreaFormatSquareMile: <https://en.wikipedia.org/wiki/Square_mile>
 	UnitAreaFormatSquareMile UnitAreaFormat = "square_mile"
-	// UnitAreaFormatSquareKilometer represents the UnitAreaFormat `"square_kilometer"`.
+	// UnitAreaFormatSquareKilometer: <https://en.wikipedia.org/wiki/Square_kilometre>
 	UnitAreaFormatSquareKilometer UnitAreaFormat = "square_kilometer"
-	// UnitAreaFormatHectare represents the UnitAreaFormat `"hectare"`.
+	// UnitAreaFormatHectare: <https://en.wikipedia.org/wiki/Hectare>
 	UnitAreaFormatHectare UnitAreaFormat = "hectare"
-	// UnitAreaFormatAcre represents the UnitAreaFormat `"acre"`.
+	// UnitAreaFormatAcre: <https://en.wikipedia.org/wiki/Acre>
 	UnitAreaFormatAcre UnitAreaFormat = "acre"
 )
 
@@ -2845,9 +2845,9 @@ type UnitChargeConversion struct {
 type UnitChargeFormat string
 
 const (
-	// UnitChargeFormatCoulomb represents the UnitChargeFormat `"coulomb"`.
+	// UnitChargeFormatCoulomb: <https://en.wikipedia.org/wiki/Coulomb>
 	UnitChargeFormatCoulomb UnitChargeFormat = "coulomb"
-	// UnitChargeFormatAmpereHour represents the UnitChargeFormat `"ampere_hour"`.
+	// UnitChargeFormatAmpereHour: <https://en.wikipedia.org/wiki/Ampere_hour>
 	UnitChargeFormatAmpereHour UnitChargeFormat = "ampere_hour"
 )
 
@@ -2885,13 +2885,13 @@ type UnitConcentrationConversion struct {
 type UnitConcentrationFormat string
 
 const (
-	// UnitConcentrationFormatPartsPerMillion represents the UnitConcentrationFormat `"parts_per_million"`.
+	// UnitConcentrationFormatPartsPerMillion: Per Million - <https://en.wikipedia.org/wiki/Parts-per_notation>
 	UnitConcentrationFormatPartsPerMillion UnitConcentrationFormat = "parts_per_million"
-	// UnitConcentrationFormatPartsPerBillion represents the UnitConcentrationFormat `"parts_per_billion"`.
+	// UnitConcentrationFormatPartsPerBillion: Per Billion - <https://en.wikipedia.org/wiki/Parts-per_notation>
 	UnitConcentrationFormatPartsPerBillion UnitConcentrationFormat = "parts_per_billion"
-	// UnitConcentrationFormatPartsPerTrillion represents the UnitConcentrationFormat `"parts_per_trillion"`.
+	// UnitConcentrationFormatPartsPerTrillion: Per Trillion - <https://en.wikipedia.org/wiki/Parts-per_notation>
 	UnitConcentrationFormatPartsPerTrillion UnitConcentrationFormat = "parts_per_trillion"
-	// UnitConcentrationFormatPercent represents the UnitConcentrationFormat `"percent"`.
+	// UnitConcentrationFormatPercent: <https://en.wikipedia.org/wiki/Concentration>, <https://en.wikipedia.org/wiki/Percentage>
 	UnitConcentrationFormatPercent UnitConcentrationFormat = "percent"
 )
 
@@ -2929,13 +2929,13 @@ type UnitDataConversion struct {
 type UnitDataFormat string
 
 const (
-	// UnitDataFormatByte represents the UnitDataFormat `"byte"`.
+	// UnitDataFormatByte: <https://en.wikipedia.org/wiki/Byte>
 	UnitDataFormatByte UnitDataFormat = "byte"
-	// UnitDataFormatExabyte represents the UnitDataFormat `"exabyte"`.
+	// UnitDataFormatExabyte: <https://en.wikipedia.org/wiki/Byte#Multiple-byte_units>
 	UnitDataFormatExabyte UnitDataFormat = "exabyte"
-	// UnitDataFormatBit represents the UnitDataFormat `"bit"`.
+	// UnitDataFormatBit: <https://en.wikipedia.org/wiki/Bit>
 	UnitDataFormatBit UnitDataFormat = "bit"
-	// UnitDataFormatExabit represents the UnitDataFormat `"exabit"`.
+	// UnitDataFormatExabit: <https://en.wikipedia.org/wiki/Exabit>
 	UnitDataFormatExabit UnitDataFormat = "exabit"
 )
 
@@ -2973,13 +2973,13 @@ type UnitDataTransferRateConversion struct {
 type UnitDataTransferRateFormat string
 
 const (
-	// UnitDataTransferRateFormatBytesPerSecond represents the UnitDataTransferRateFormat `"bytes_per_second"`.
+	// UnitDataTransferRateFormatBytesPerSecond: <https://en.wikipedia.org/wiki/Byte>
 	UnitDataTransferRateFormatBytesPerSecond UnitDataTransferRateFormat = "bytes_per_second"
-	// UnitDataTransferRateFormatExabytesPerSecond represents the UnitDataTransferRateFormat `"exabytes_per_second"`.
+	// UnitDataTransferRateFormatExabytesPerSecond: <https://en.wikipedia.org/wiki/Byte#Multiple-byte_units>
 	UnitDataTransferRateFormatExabytesPerSecond UnitDataTransferRateFormat = "exabytes_per_second"
-	// UnitDataTransferRateFormatBitsPerSecond represents the UnitDataTransferRateFormat `"bits_per_second"`.
+	// UnitDataTransferRateFormatBitsPerSecond: <https://en.wikipedia.org/wiki/Bit>
 	UnitDataTransferRateFormatBitsPerSecond UnitDataTransferRateFormat = "bits_per_second"
-	// UnitDataTransferRateFormatExabitsPerSecond represents the UnitDataTransferRateFormat `"exabits_per_second"`.
+	// UnitDataTransferRateFormatExabitsPerSecond: <https://en.wikipedia.org/wiki/Exabit>
 	UnitDataTransferRateFormatExabitsPerSecond UnitDataTransferRateFormat = "exabits_per_second"
 )
 
@@ -3017,25 +3017,25 @@ type UnitDensityConversion struct {
 type UnitDensityFormat string
 
 const (
-	// UnitDensityFormatKilogramsPerCubicMeter represents the UnitDensityFormat `"kilograms_per_cubic_meter"`.
+	// UnitDensityFormatKilogramsPerCubicMeter: <https://en.wikipedia.org/wiki/Kilogram_per_cubic_metre>
 	UnitDensityFormatKilogramsPerCubicMeter UnitDensityFormat = "kilograms_per_cubic_meter"
-	// UnitDensityFormatGramsPerMilliliter represents the UnitDensityFormat `"grams_per_milliliter"`.
+	// UnitDensityFormatGramsPerMilliliter: <https://en.wikipedia.org/wiki/Specific_density>
 	UnitDensityFormatGramsPerMilliliter UnitDensityFormat = "grams_per_milliliter"
-	// UnitDensityFormatKilogramsPerLiter represents the UnitDensityFormat `"kilograms_per_liter"`.
+	// UnitDensityFormatKilogramsPerLiter: <https://en.wikipedia.org/wiki/Kilogram_per_cubic_metre>
 	UnitDensityFormatKilogramsPerLiter UnitDensityFormat = "kilograms_per_liter"
-	// UnitDensityFormatOuncesPerCubicFoot represents the UnitDensityFormat `"ounces_per_cubic_foot"`.
+	// UnitDensityFormatOuncesPerCubicFoot: <https://en.wikipedia.org/wiki/Density#Unit>
 	UnitDensityFormatOuncesPerCubicFoot UnitDensityFormat = "ounces_per_cubic_foot"
-	// UnitDensityFormatOuncesPerCubicInch represents the UnitDensityFormat `"ounces_per_cubic_inch"`.
+	// UnitDensityFormatOuncesPerCubicInch: <https://en.wikipedia.org/wiki/Density#Unit>
 	UnitDensityFormatOuncesPerCubicInch UnitDensityFormat = "ounces_per_cubic_inch"
-	// UnitDensityFormatOuncesPerGallon represents the UnitDensityFormat `"ounces_per_gallon"`.
+	// UnitDensityFormatOuncesPerGallon: <https://en.wikipedia.org/wiki/Density#Unit>
 	UnitDensityFormatOuncesPerGallon UnitDensityFormat = "ounces_per_gallon"
-	// UnitDensityFormatPoundsPerCubicFoot represents the UnitDensityFormat `"pounds_per_cubic_foot"`.
+	// UnitDensityFormatPoundsPerCubicFoot: <https://en.wikipedia.org/wiki/Density#Unit>
 	UnitDensityFormatPoundsPerCubicFoot UnitDensityFormat = "pounds_per_cubic_foot"
-	// UnitDensityFormatPoundsPerCubicInch represents the UnitDensityFormat `"pounds_per_cubic_inch"`.
+	// UnitDensityFormatPoundsPerCubicInch: <https://en.wikipedia.org/wiki/Density#Unit>
 	UnitDensityFormatPoundsPerCubicInch UnitDensityFormat = "pounds_per_cubic_inch"
-	// UnitDensityFormatPoundsPerGallon represents the UnitDensityFormat `"pounds_per_gallon"`.
+	// UnitDensityFormatPoundsPerGallon: <https://en.wikipedia.org/wiki/Density#Unit>
 	UnitDensityFormatPoundsPerGallon UnitDensityFormat = "pounds_per_gallon"
-	// UnitDensityFormatSlugsPerCubicFoot represents the UnitDensityFormat `"slugs_per_cubic_foot"`.
+	// UnitDensityFormatSlugsPerCubicFoot: <https://en.wikipedia.org/wiki/Slug_(unit)> and <https://en.wikipedia.org/wiki/Density#Unit>
 	UnitDensityFormatSlugsPerCubicFoot UnitDensityFormat = "slugs_per_cubic_foot"
 )
 
@@ -3073,23 +3073,23 @@ type UnitEnergyConversion struct {
 type UnitEnergyFormat string
 
 const (
-	// UnitEnergyFormatJoule represents the UnitEnergyFormat `"joule"`.
+	// UnitEnergyFormatJoule: <https://en.wikipedia.org/wiki/Joule>
 	UnitEnergyFormatJoule UnitEnergyFormat = "joule"
-	// UnitEnergyFormatCalorie represents the UnitEnergyFormat `"calorie"`.
+	// UnitEnergyFormatCalorie: <https://en.wikipedia.org/wiki/Calorie>
 	UnitEnergyFormatCalorie UnitEnergyFormat = "calorie"
-	// UnitEnergyFormatKilowattHour represents the UnitEnergyFormat `"kilowatt_hour"`.
+	// UnitEnergyFormatKilowattHour: <https://en.wikipedia.org/wiki/Kilowatt-hour>
 	UnitEnergyFormatKilowattHour UnitEnergyFormat = "kilowatt_hour"
-	// UnitEnergyFormatWattHour represents the UnitEnergyFormat `"watt_hour"`.
+	// UnitEnergyFormatWattHour: <https://en.wikipedia.org/wiki/Kilowatt-hour>
 	UnitEnergyFormatWattHour UnitEnergyFormat = "watt_hour"
-	// UnitEnergyFormatBritishThermalUnit represents the UnitEnergyFormat `"british_thermal_unit"`.
+	// UnitEnergyFormatBritishThermalUnit: <https://en.wikipedia.org/wiki/British_thermal_unit>
 	UnitEnergyFormatBritishThermalUnit UnitEnergyFormat = "british_thermal_unit"
-	// UnitEnergyFormatBritishThermalUnitIso represents the UnitEnergyFormat `"british_thermal_unit_iso"`.
+	// UnitEnergyFormatBritishThermalUnitIso: <https://en.wikipedia.org/wiki/Therm#Definitions>
 	UnitEnergyFormatBritishThermalUnitIso UnitEnergyFormat = "british_thermal_unit_iso"
-	// UnitEnergyFormatBritishThermalUnit59 represents the UnitEnergyFormat `"british_thermal_unit59"`.
+	// UnitEnergyFormatBritishThermalUnit59: <https://en.wikipedia.org/wiki/Therm#Definitions>
 	UnitEnergyFormatBritishThermalUnit59 UnitEnergyFormat = "british_thermal_unit59"
-	// UnitEnergyFormatTherm represents the UnitEnergyFormat `"therm"`.
+	// UnitEnergyFormatTherm: <https://en.wikipedia.org/wiki/Therm>
 	UnitEnergyFormatTherm UnitEnergyFormat = "therm"
-	// UnitEnergyFormatFootPound represents the UnitEnergyFormat `"foot_pound"`.
+	// UnitEnergyFormatFootPound: <https://en.wikipedia.org/wiki/Foot-pound_(energy)>
 	UnitEnergyFormatFootPound UnitEnergyFormat = "foot_pound"
 )
 
@@ -3127,15 +3127,15 @@ type UnitForceConversion struct {
 type UnitForceFormat string
 
 const (
-	// UnitForceFormatNewton represents the UnitForceFormat `"newton"`.
+	// UnitForceFormatNewton: <https://en.wikipedia.org/wiki/Newton_(unit)>
 	UnitForceFormatNewton UnitForceFormat = "newton"
-	// UnitForceFormatPound represents the UnitForceFormat `"pound"`.
+	// UnitForceFormatPound: <https://en.wikipedia.org/wiki/Pound_(force)>
 	UnitForceFormatPound UnitForceFormat = "pound"
-	// UnitForceFormatDyne represents the UnitForceFormat `"dyne"`.
+	// UnitForceFormatDyne: <https://en.wikipedia.org/wiki/Dyne>
 	UnitForceFormatDyne UnitForceFormat = "dyne"
-	// UnitForceFormatKilopond represents the UnitForceFormat `"kilopond"`.
+	// UnitForceFormatKilopond: <https://en.wikipedia.org/wiki/Kilogram-force>
 	UnitForceFormatKilopond UnitForceFormat = "kilopond"
-	// UnitForceFormatPoundal represents the UnitForceFormat `"poundal"`.
+	// UnitForceFormatPoundal: <https://en.wikipedia.org/wiki/Poundal>
 	UnitForceFormatPoundal UnitForceFormat = "poundal"
 )
 
@@ -3173,13 +3173,13 @@ type UnitIlluminanceConversion struct {
 type UnitIlluminanceFormat string
 
 const (
-	// UnitIlluminanceFormatLux represents the UnitIlluminanceFormat `"lux"`.
+	// UnitIlluminanceFormatLux: <https://en.wikipedia.org/wiki/Lux>
 	UnitIlluminanceFormatLux UnitIlluminanceFormat = "lux"
-	// UnitIlluminanceFormatFootcandle represents the UnitIlluminanceFormat `"footcandle"`.
+	// UnitIlluminanceFormatFootcandle: <https://en.wikipedia.org/wiki/Foot-candle>
 	UnitIlluminanceFormatFootcandle UnitIlluminanceFormat = "footcandle"
-	// UnitIlluminanceFormatLumensPerSquareInch represents the UnitIlluminanceFormat `"lumens_per_square_inch"`.
+	// UnitIlluminanceFormatLumensPerSquareInch: <https://en.wikipedia.org/wiki/Lumen_(unit)>
 	UnitIlluminanceFormatLumensPerSquareInch UnitIlluminanceFormat = "lumens_per_square_inch"
-	// UnitIlluminanceFormatPhot represents the UnitIlluminanceFormat `"phot"`.
+	// UnitIlluminanceFormatPhot: <https://en.wikipedia.org/wiki/Phot>
 	UnitIlluminanceFormatPhot UnitIlluminanceFormat = "phot"
 )
 
@@ -3217,47 +3217,47 @@ type UnitLengthConversion struct {
 type UnitLengthFormat string
 
 const (
-	// UnitLengthFormatMeter represents the UnitLengthFormat `"meter"`.
+	// UnitLengthFormatMeter: <https://en.wikipedia.org/wiki/Metre>
 	UnitLengthFormatMeter UnitLengthFormat = "meter"
-	// UnitLengthFormatMillimeter represents the UnitLengthFormat `"millimeter"`.
+	// UnitLengthFormatMillimeter: <https://en.wikipedia.org/wiki/Millimetre>
 	UnitLengthFormatMillimeter UnitLengthFormat = "millimeter"
-	// UnitLengthFormatCentimeter represents the UnitLengthFormat `"centimeter"`.
+	// UnitLengthFormatCentimeter: <https://en.wikipedia.org/wiki/Centimetre>
 	UnitLengthFormatCentimeter UnitLengthFormat = "centimeter"
-	// UnitLengthFormatKilometer represents the UnitLengthFormat `"kilometer"`.
+	// UnitLengthFormatKilometer: <https://en.wikipedia.org/wiki/Kilometre>
 	UnitLengthFormatKilometer UnitLengthFormat = "kilometer"
-	// UnitLengthFormatFoot represents the UnitLengthFormat `"foot"`.
+	// UnitLengthFormatFoot: <https://en.wikipedia.org/wiki/Foot_(unit)>
 	UnitLengthFormatFoot UnitLengthFormat = "foot"
-	// UnitLengthFormatMil represents the UnitLengthFormat `"mil"`.
+	// UnitLengthFormatMil: <https://en.wikipedia.org/wiki/Thousandth_of_an_inch>
 	UnitLengthFormatMil UnitLengthFormat = "mil"
-	// UnitLengthFormatInch represents the UnitLengthFormat `"inch"`.
+	// UnitLengthFormatInch: <https://en.wikipedia.org/wiki/Inch>
 	UnitLengthFormatInch UnitLengthFormat = "inch"
-	// UnitLengthFormatMile represents the UnitLengthFormat `"mile"`.
+	// UnitLengthFormatMile: <https://en.wikipedia.org/wiki/Mile>
 	UnitLengthFormatMile UnitLengthFormat = "mile"
-	// UnitLengthFormatNauticalMile represents the UnitLengthFormat `"nautical_mile"`.
+	// UnitLengthFormatNauticalMile: <https://en.wikipedia.org/wiki/Nautical_mile>
 	UnitLengthFormatNauticalMile UnitLengthFormat = "nautical_mile"
-	// UnitLengthFormatAstronomicalUnit represents the UnitLengthFormat `"astronomical_unit"`.
+	// UnitLengthFormatAstronomicalUnit: <https://en.wikipedia.org/wiki/Astronomical_unit>
 	UnitLengthFormatAstronomicalUnit UnitLengthFormat = "astronomical_unit"
-	// UnitLengthFormatLightyear represents the UnitLengthFormat `"lightyear"`.
+	// UnitLengthFormatLightyear: <https://en.wikipedia.org/wiki/Light-year>
 	UnitLengthFormatLightyear UnitLengthFormat = "lightyear"
-	// UnitLengthFormatParsec represents the UnitLengthFormat `"parsec"`.
+	// UnitLengthFormatParsec: <https://en.wikipedia.org/wiki/Parsec>
 	UnitLengthFormatParsec UnitLengthFormat = "parsec"
-	// UnitLengthFormatAngstrom represents the UnitLengthFormat `"angstrom"`.
+	// UnitLengthFormatAngstrom: <https://en.wikipedia.org/wiki/Angstrom>
 	UnitLengthFormatAngstrom UnitLengthFormat = "angstrom"
-	// UnitLengthFormatCubit represents the UnitLengthFormat `"cubit"`.
+	// UnitLengthFormatCubit: <https://en.wikipedia.org/wiki/Cubit>
 	UnitLengthFormatCubit UnitLengthFormat = "cubit"
-	// UnitLengthFormatFathom represents the UnitLengthFormat `"fathom"`.
+	// UnitLengthFormatFathom: <https://en.wikipedia.org/wiki/Fathom>
 	UnitLengthFormatFathom UnitLengthFormat = "fathom"
-	// UnitLengthFormatChain represents the UnitLengthFormat `"chain"`.
+	// UnitLengthFormatChain: <https://en.wikipedia.org/wiki/Chain_(unit)>
 	UnitLengthFormatChain UnitLengthFormat = "chain"
-	// UnitLengthFormatFurlong represents the UnitLengthFormat `"furlong"`.
+	// UnitLengthFormatFurlong: <https://en.wikipedia.org/wiki/Furlong>
 	UnitLengthFormatFurlong UnitLengthFormat = "furlong"
-	// UnitLengthFormatHand represents the UnitLengthFormat `"hand"`.
+	// UnitLengthFormatHand: <https://en.wikipedia.org/wiki/Hand_(unit)>
 	UnitLengthFormatHand UnitLengthFormat = "hand"
-	// UnitLengthFormatLeague represents the UnitLengthFormat `"league"`.
+	// UnitLengthFormatLeague: <https://en.wikipedia.org/wiki/League_(unit)>
 	UnitLengthFormatLeague UnitLengthFormat = "league"
-	// UnitLengthFormatNauticalLeague represents the UnitLengthFormat `"nautical_league"`.
+	// UnitLengthFormatNauticalLeague: <https://en.wikipedia.org/wiki/List_of_nautical_units_of_measurement>
 	UnitLengthFormatNauticalLeague UnitLengthFormat = "nautical_league"
-	// UnitLengthFormatYard represents the UnitLengthFormat `"yard"`.
+	// UnitLengthFormatYard: <https://en.wikipedia.org/wiki/Yard>
 	UnitLengthFormatYard UnitLengthFormat = "yard"
 )
 
@@ -3295,9 +3295,9 @@ type UnitMagneticFieldStrengthConversion struct {
 type UnitMagneticFieldStrengthFormat string
 
 const (
-	// UnitMagneticFieldStrengthFormatTesla represents the UnitMagneticFieldStrengthFormat `"tesla"`.
+	// UnitMagneticFieldStrengthFormatTesla: <https://en.wikipedia.org/wiki/Tesla_(unit)>
 	UnitMagneticFieldStrengthFormatTesla UnitMagneticFieldStrengthFormat = "tesla"
-	// UnitMagneticFieldStrengthFormatGauss represents the UnitMagneticFieldStrengthFormat `"gauss"`.
+	// UnitMagneticFieldStrengthFormatGauss: <https://en.wikipedia.org/wiki/Gauss_(unit)>
 	UnitMagneticFieldStrengthFormatGauss UnitMagneticFieldStrengthFormat = "gauss"
 )
 
@@ -3335,9 +3335,9 @@ type UnitMagneticFluxConversion struct {
 type UnitMagneticFluxFormat string
 
 const (
-	// UnitMagneticFluxFormatWeber represents the UnitMagneticFluxFormat `"weber"`.
+	// UnitMagneticFluxFormatWeber: <https://en.wikipedia.org/wiki/Weber_(unit)>
 	UnitMagneticFluxFormatWeber UnitMagneticFluxFormat = "weber"
-	// UnitMagneticFluxFormatMaxwell represents the UnitMagneticFluxFormat `"maxwell"`.
+	// UnitMagneticFluxFormatMaxwell: <https://en.wikipedia.org/wiki/Maxwell_(unit)>
 	UnitMagneticFluxFormatMaxwell UnitMagneticFluxFormat = "maxwell"
 )
 
@@ -3375,25 +3375,25 @@ type UnitMassConversion struct {
 type UnitMassFormat string
 
 const (
-	// UnitMassFormatGram represents the UnitMassFormat `"gram"`.
+	// UnitMassFormatGram: <https://en.wikipedia.org/wiki/Gram>
 	UnitMassFormatGram UnitMassFormat = "gram"
-	// UnitMassFormatKilogram represents the UnitMassFormat `"kilogram"`.
+	// UnitMassFormatKilogram: <https://en.wikipedia.org/wiki/Kilogram>
 	UnitMassFormatKilogram UnitMassFormat = "kilogram"
-	// UnitMassFormatMetricTon represents the UnitMassFormat `"metric_ton"`.
+	// UnitMassFormatMetricTon: <https://en.wikipedia.org/wiki/Tonne>
 	UnitMassFormatMetricTon UnitMassFormat = "metric_ton"
-	// UnitMassFormatPound represents the UnitMassFormat `"pound"`.
+	// UnitMassFormatPound: <https://en.wikipedia.org/wiki/Pound_(mass)>
 	UnitMassFormatPound UnitMassFormat = "pound"
-	// UnitMassFormatLongTon represents the UnitMassFormat `"long_ton"`.
+	// UnitMassFormatLongTon: <https://en.wikipedia.org/wiki/Long_ton>
 	UnitMassFormatLongTon UnitMassFormat = "long_ton"
-	// UnitMassFormatShortTon represents the UnitMassFormat `"short_ton"`.
+	// UnitMassFormatShortTon: <https://en.wikipedia.org/wiki/Short_ton>
 	UnitMassFormatShortTon UnitMassFormat = "short_ton"
-	// UnitMassFormatStone represents the UnitMassFormat `"stone"`.
+	// UnitMassFormatStone: <https://en.wikipedia.org/wiki/Stone_(unit)>
 	UnitMassFormatStone UnitMassFormat = "stone"
-	// UnitMassFormatOunce represents the UnitMassFormat `"ounce"`.
+	// UnitMassFormatOunce: <https://en.wikipedia.org/wiki/Ounce>
 	UnitMassFormatOunce UnitMassFormat = "ounce"
-	// UnitMassFormatCarat represents the UnitMassFormat `"carat"`.
+	// UnitMassFormatCarat: <https://en.wikipedia.org/wiki/Carat_(mass)>
 	UnitMassFormatCarat UnitMassFormat = "carat"
-	// UnitMassFormatSlug represents the UnitMassFormat `"slug"`.
+	// UnitMassFormatSlug: <https://en.wikipedia.org/wiki/Slug_(unit)>
 	UnitMassFormatSlug UnitMassFormat = "slug"
 )
 
@@ -3401,39 +3401,39 @@ const (
 type UnitMetricPower string
 
 const (
-	// UnitMetricPowerAtto represents the UnitMetricPower `"atto"`.
+	// UnitMetricPowerAtto: Atto (symbol a) is a unit prefix in the metric system denoting a factor of 10^−18 or 0.000000000000000001. <https://en.wikipedia.org/wiki/Atto->
 	UnitMetricPowerAtto UnitMetricPower = "atto"
-	// UnitMetricPowerFemto represents the UnitMetricPower `"femto"`.
+	// UnitMetricPowerFemto: Femto (symbol f) is a unit prefix in the metric system denoting a factor of 10^-15. <https://en.wikipedia.org/wiki/Femto->
 	UnitMetricPowerFemto UnitMetricPower = "femto"
-	// UnitMetricPowerPico represents the UnitMetricPower `"pico"`.
+	// UnitMetricPowerPico: Pico (unit symbol p) is a unit prefix in the metric system denoting a factor of one trillionth in the short scale and one billionth in the long scale (0.000000000001); that is, 10^−12. <https://en.wikipedia.org/wiki/Pico->
 	UnitMetricPowerPico UnitMetricPower = "pico"
-	// UnitMetricPowerNano represents the UnitMetricPower `"nano"`.
+	// UnitMetricPowerNano: Nano (symbol n) is a unit prefix meaning "one billionth". Used primarily with the metric system, this prefix denotes a factor of 10^−9 or 0.000000001. <https://en.wikipedia.org/wiki/Nano->
 	UnitMetricPowerNano UnitMetricPower = "nano"
-	// UnitMetricPowerMicro represents the UnitMetricPower `"micro"`.
+	// UnitMetricPowerMicro: Micro (Greek letter μ (U+03BC) or the legacy symbol µ (U+00B5)) is a unit prefix in the metric system denoting a factor of 10^−6 (one millionth). <https://en.wikipedia.org/wiki/Micro->
 	UnitMetricPowerMicro UnitMetricPower = "micro"
-	// UnitMetricPowerMilli represents the UnitMetricPower `"milli"`.
+	// UnitMetricPowerMilli: Milli (symbol m) is a unit prefix in the metric system denoting a factor of one thousandth (10^−3). <https://en.wikipedia.org/wiki/Milli->
 	UnitMetricPowerMilli UnitMetricPower = "milli"
-	// UnitMetricPowerCenti represents the UnitMetricPower `"centi"`.
+	// UnitMetricPowerCenti: Centi (symbol c) is a unit prefix in the metric system denoting a factor of one hundredth. <https://en.wikipedia.org/wiki/Centi->
 	UnitMetricPowerCenti UnitMetricPower = "centi"
-	// UnitMetricPowerDeci represents the UnitMetricPower `"deci"`.
+	// UnitMetricPowerDeci: Deci (symbol d) is a decimal unit prefix in the metric system denoting a factor of one tenth. <https://en.wikipedia.org/wiki/Deci->
 	UnitMetricPowerDeci UnitMetricPower = "deci"
-	// UnitMetricPowerUnit represents the UnitMetricPower `"unit"`.
+	// UnitMetricPowerUnit: One metric unit.
 	UnitMetricPowerUnit UnitMetricPower = "unit"
-	// UnitMetricPowerDeca represents the UnitMetricPower `"deca"`.
+	// UnitMetricPowerDeca: Deca is a decimal unit prefix in the metric system denoting a factor of ten. <https://en.wikipedia.org/wiki/Deca->
 	UnitMetricPowerDeca UnitMetricPower = "deca"
-	// UnitMetricPowerHecto represents the UnitMetricPower `"hecto"`.
+	// UnitMetricPowerHecto: Hecto (symbol: h) is a decimal unit prefix in the metric system denoting a factor of one hundred. <https://en.wikipedia.org/wiki/Hecto->
 	UnitMetricPowerHecto UnitMetricPower = "hecto"
-	// UnitMetricPowerKilo represents the UnitMetricPower `"kilo"`.
+	// UnitMetricPowerKilo: Kilo is a decimal unit prefix in the metric system denoting multiplication by one thousand (10^3). <https://en.wikipedia.org/wiki/Kilo->
 	UnitMetricPowerKilo UnitMetricPower = "kilo"
-	// UnitMetricPowerMega represents the UnitMetricPower `"mega"`.
+	// UnitMetricPowerMega: Mega is a unit prefix in metric systems of units denoting a factor of one million (10^6 or 1000000). <https://en.wikipedia.org/wiki/Mega->
 	UnitMetricPowerMega UnitMetricPower = "mega"
-	// UnitMetricPowerGiga represents the UnitMetricPower `"giga"`.
+	// UnitMetricPowerGiga: Giga is a unit prefix in the metric system denoting a factor of a short-scale billion or long-scale milliard (10^9 or 1000000000). <https://en.wikipedia.org/wiki/Giga->
 	UnitMetricPowerGiga UnitMetricPower = "giga"
-	// UnitMetricPowerTera represents the UnitMetricPower `"tera"`.
+	// UnitMetricPowerTera: Tera is a unit prefix in the metric system denoting multiplication by one trillion, or 10^12 or 1000000000000 (one trillion short scale; one billion long scale). <https://en.wikipedia.org/wiki/Tera->
 	UnitMetricPowerTera UnitMetricPower = "tera"
-	// UnitMetricPowerPeta represents the UnitMetricPower `"peta"`.
+	// UnitMetricPowerPeta: Peta is a decimal unit prefix in the metric system denoting multiplication by one quadrillion, or 10^15 (1000000000000000). <https://en.wikipedia.org/wiki/Peta->
 	UnitMetricPowerPeta UnitMetricPower = "peta"
-	// UnitMetricPowerExa represents the UnitMetricPower `"exa"`.
+	// UnitMetricPowerExa: Exa is a decimal unit prefix in the metric system denoting 10^18 or 1000000000000000000. <https://en.wikipedia.org/wiki/Exa->
 	UnitMetricPowerExa UnitMetricPower = "exa"
 )
 
@@ -3561,11 +3561,11 @@ type UnitPowerConversion struct {
 type UnitPowerFormat string
 
 const (
-	// UnitPowerFormatWatt represents the UnitPowerFormat `"watt"`.
+	// UnitPowerFormatWatt: <https://en.wikipedia.org/wiki/Watt>
 	UnitPowerFormatWatt UnitPowerFormat = "watt"
-	// UnitPowerFormatHorsepower represents the UnitPowerFormat `"horsepower"`.
+	// UnitPowerFormatHorsepower: <https://en.wikipedia.org/wiki/Horsepower>
 	UnitPowerFormatHorsepower UnitPowerFormat = "horsepower"
-	// UnitPowerFormatMilliwatt represents the UnitPowerFormat `"milliwatt"`.
+	// UnitPowerFormatMilliwatt: <https://en.wikipedia.org/wiki/Watt#Milliwatt>
 	UnitPowerFormatMilliwatt UnitPowerFormat = "milliwatt"
 )
 
@@ -3603,15 +3603,15 @@ type UnitPressureConversion struct {
 type UnitPressureFormat string
 
 const (
-	// UnitPressureFormatPascal represents the UnitPressureFormat `"pascal"`.
+	// UnitPressureFormatPascal: <https://en.wikipedia.org/wiki/Pascal_(unit)>
 	UnitPressureFormatPascal UnitPressureFormat = "pascal"
-	// UnitPressureFormatBar represents the UnitPressureFormat `"bar"`.
+	// UnitPressureFormatBar: <https://en.wikipedia.org/wiki/Bar_(unit)>
 	UnitPressureFormatBar UnitPressureFormat = "bar"
-	// UnitPressureFormatMbar represents the UnitPressureFormat `"mbar"`.
+	// UnitPressureFormatMbar: MilliBar <https://en.wikipedia.org/wiki/Bar_(unit)>
 	UnitPressureFormatMbar UnitPressureFormat = "mbar"
-	// UnitPressureFormatAtmosphere represents the UnitPressureFormat `"atmosphere"`.
+	// UnitPressureFormatAtmosphere: <https://en.wikipedia.org/wiki/Standard_atmosphere_(unit)>
 	UnitPressureFormatAtmosphere UnitPressureFormat = "atmosphere"
-	// UnitPressureFormatPoundsPerSquareInch represents the UnitPressureFormat `"pounds_per_square_inch"`.
+	// UnitPressureFormatPoundsPerSquareInch: psi - <https://en.wikipedia.org/wiki/Pound_per_square_inch>
 	UnitPressureFormatPoundsPerSquareInch UnitPressureFormat = "pounds_per_square_inch"
 )
 
@@ -3649,11 +3649,11 @@ type UnitRadiationConversion struct {
 type UnitRadiationFormat string
 
 const (
-	// UnitRadiationFormatGray represents the UnitRadiationFormat `"gray"`.
+	// UnitRadiationFormatGray: <https://en.wikipedia.org/wiki/Gray_(unit)>
 	UnitRadiationFormatGray UnitRadiationFormat = "gray"
-	// UnitRadiationFormatSievert represents the UnitRadiationFormat `"sievert"`.
+	// UnitRadiationFormatSievert: <https://en.wikipedia.org/wiki/Sievert>
 	UnitRadiationFormatSievert UnitRadiationFormat = "sievert"
-	// UnitRadiationFormatRad represents the UnitRadiationFormat `"rad"`.
+	// UnitRadiationFormatRad: <https://en.wikipedia.org/wiki/Rad_(unit)>
 	UnitRadiationFormatRad UnitRadiationFormat = "rad"
 )
 
@@ -3691,11 +3691,11 @@ type UnitRadioactivityConversion struct {
 type UnitRadioactivityFormat string
 
 const (
-	// UnitRadioactivityFormatBecquerel represents the UnitRadioactivityFormat `"becquerel"`.
+	// UnitRadioactivityFormatBecquerel: <https://en.wikipedia.org/wiki/Becquerel>
 	UnitRadioactivityFormatBecquerel UnitRadioactivityFormat = "becquerel"
-	// UnitRadioactivityFormatCurie represents the UnitRadioactivityFormat `"curie"`.
+	// UnitRadioactivityFormatCurie: <https://en.wikipedia.org/wiki/Curie_(unit)>
 	UnitRadioactivityFormatCurie UnitRadioactivityFormat = "curie"
-	// UnitRadioactivityFormatRutherford represents the UnitRadioactivityFormat `"rutherford"`.
+	// UnitRadioactivityFormatRutherford: <https://en.wikipedia.org/wiki/Rutherford_(unit)>
 	UnitRadioactivityFormatRutherford UnitRadioactivityFormat = "rutherford"
 )
 
@@ -3733,11 +3733,11 @@ type UnitSolidAngleConversion struct {
 type UnitSolidAngleFormat string
 
 const (
-	// UnitSolidAngleFormatSteradian represents the UnitSolidAngleFormat `"steradian"`.
+	// UnitSolidAngleFormatSteradian: <https://en.wikipedia.org/wiki/Steradian>
 	UnitSolidAngleFormatSteradian UnitSolidAngleFormat = "steradian"
-	// UnitSolidAngleFormatDegreeSquared represents the UnitSolidAngleFormat `"degree_squared"`.
+	// UnitSolidAngleFormatDegreeSquared: <https://en.wikipedia.org/wiki/Square_degree>
 	UnitSolidAngleFormatDegreeSquared UnitSolidAngleFormat = "degree_squared"
-	// UnitSolidAngleFormatSpat represents the UnitSolidAngleFormat `"spat"`.
+	// UnitSolidAngleFormatSpat: <https://en.wikipedia.org/wiki/Spat_(angular_unit)>
 	UnitSolidAngleFormatSpat UnitSolidAngleFormat = "spat"
 )
 
@@ -3775,15 +3775,15 @@ type UnitTemperatureConversion struct {
 type UnitTemperatureFormat string
 
 const (
-	// UnitTemperatureFormatKelvin represents the UnitTemperatureFormat `"kelvin"`.
+	// UnitTemperatureFormatKelvin: <https://en.wikipedia.org/wiki/Kelvin>
 	UnitTemperatureFormatKelvin UnitTemperatureFormat = "kelvin"
-	// UnitTemperatureFormatCelsius represents the UnitTemperatureFormat `"celsius"`.
+	// UnitTemperatureFormatCelsius: <https://en.wikipedia.org/wiki/Celsius>
 	UnitTemperatureFormatCelsius UnitTemperatureFormat = "celsius"
-	// UnitTemperatureFormatFahrenheit represents the UnitTemperatureFormat `"fahrenheit"`.
+	// UnitTemperatureFormatFahrenheit: <https://en.wikipedia.org/wiki/Fahrenheit>
 	UnitTemperatureFormatFahrenheit UnitTemperatureFormat = "fahrenheit"
-	// UnitTemperatureFormatReaumur represents the UnitTemperatureFormat `"reaumur"`.
+	// UnitTemperatureFormatReaumur: <https://en.wikipedia.org/wiki/R%C3%A9aumur_scale>
 	UnitTemperatureFormatReaumur UnitTemperatureFormat = "reaumur"
-	// UnitTemperatureFormatRankine represents the UnitTemperatureFormat `"rankine"`.
+	// UnitTemperatureFormatRankine: <https://en.wikipedia.org/wiki/Rankine_scale>
 	UnitTemperatureFormatRankine UnitTemperatureFormat = "rankine"
 )
 
@@ -3821,21 +3821,21 @@ type UnitTimeConversion struct {
 type UnitTimeFormat string
 
 const (
-	// UnitTimeFormatSecond represents the UnitTimeFormat `"second"`.
+	// UnitTimeFormatSecond: <https://en.wikipedia.org/wiki/Second>
 	UnitTimeFormatSecond UnitTimeFormat = "second"
-	// UnitTimeFormatMinute represents the UnitTimeFormat `"minute"`.
+	// UnitTimeFormatMinute: <https://en.wikipedia.org/wiki/Minute>
 	UnitTimeFormatMinute UnitTimeFormat = "minute"
-	// UnitTimeFormatHour represents the UnitTimeFormat `"hour"`.
+	// UnitTimeFormatHour: <https://en.wikipedia.org/wiki/Hour>
 	UnitTimeFormatHour UnitTimeFormat = "hour"
-	// UnitTimeFormatDay represents the UnitTimeFormat `"day"`.
+	// UnitTimeFormatDay: <https://en.wikipedia.org/wiki/Day>
 	UnitTimeFormatDay UnitTimeFormat = "day"
-	// UnitTimeFormatWeek represents the UnitTimeFormat `"week"`.
+	// UnitTimeFormatWeek: <https://en.wikipedia.org/wiki/Week>
 	UnitTimeFormatWeek UnitTimeFormat = "week"
-	// UnitTimeFormatYear represents the UnitTimeFormat `"year"`.
+	// UnitTimeFormatYear: <https://en.wikipedia.org/wiki/Year>
 	UnitTimeFormatYear UnitTimeFormat = "year"
-	// UnitTimeFormatJulianYear represents the UnitTimeFormat `"julian_year"`.
+	// UnitTimeFormatJulianYear: <https://en.wikipedia.org/wiki/Julian_year>
 	UnitTimeFormatJulianYear UnitTimeFormat = "julian_year"
-	// UnitTimeFormatGregorianYear represents the UnitTimeFormat `"gregorian_year"`.
+	// UnitTimeFormatGregorianYear: <https://en.wikipedia.org/wiki/Gregorian_calendar>
 	UnitTimeFormatGregorianYear UnitTimeFormat = "gregorian_year"
 )
 
@@ -3873,15 +3873,15 @@ type UnitVelocityConversion struct {
 type UnitVelocityFormat string
 
 const (
-	// UnitVelocityFormatMetersPerSecond represents the UnitVelocityFormat `"meters_per_second"`.
+	// UnitVelocityFormatMetersPerSecond: <https://en.wikipedia.org/wiki/Metre_per_second>
 	UnitVelocityFormatMetersPerSecond UnitVelocityFormat = "meters_per_second"
-	// UnitVelocityFormatFeetPerSecond represents the UnitVelocityFormat `"feet_per_second"`.
+	// UnitVelocityFormatFeetPerSecond: <https://en.wikipedia.org/wiki/Foot_per_second>
 	UnitVelocityFormatFeetPerSecond UnitVelocityFormat = "feet_per_second"
-	// UnitVelocityFormatMilesPerHour represents the UnitVelocityFormat `"miles_per_hour"`.
+	// UnitVelocityFormatMilesPerHour: <https://en.wikipedia.org/wiki/Miles_per_hour>
 	UnitVelocityFormatMilesPerHour UnitVelocityFormat = "miles_per_hour"
-	// UnitVelocityFormatKilometersPerHour represents the UnitVelocityFormat `"kilometers_per_hour"`.
+	// UnitVelocityFormatKilometersPerHour: <https://en.wikipedia.org/wiki/Kilometres_per_hour>
 	UnitVelocityFormatKilometersPerHour UnitVelocityFormat = "kilometers_per_hour"
-	// UnitVelocityFormatKnot represents the UnitVelocityFormat `"knot"`.
+	// UnitVelocityFormatKnot: <https://en.wikipedia.org/wiki/Knot_(unit)>
 	UnitVelocityFormatKnot UnitVelocityFormat = "knot"
 )
 
@@ -3919,11 +3919,11 @@ type UnitVoltageConversion struct {
 type UnitVoltageFormat string
 
 const (
-	// UnitVoltageFormatVolt represents the UnitVoltageFormat `"volt"`.
+	// UnitVoltageFormatVolt: <https://en.wikipedia.org/wiki/Volt>
 	UnitVoltageFormatVolt UnitVoltageFormat = "volt"
-	// UnitVoltageFormatStatvolt represents the UnitVoltageFormat `"statvolt"`.
+	// UnitVoltageFormatStatvolt: <https://en.wikipedia.org/wiki/Statvolt>
 	UnitVoltageFormatStatvolt UnitVoltageFormat = "statvolt"
-	// UnitVoltageFormatAbvolt represents the UnitVoltageFormat `"abvolt"`.
+	// UnitVoltageFormatAbvolt: <https://en.wikipedia.org/wiki/Abvolt>
 	UnitVoltageFormatAbvolt UnitVoltageFormat = "abvolt"
 )
 
@@ -3961,65 +3961,65 @@ type UnitVolumeConversion struct {
 type UnitVolumeFormat string
 
 const (
-	// UnitVolumeFormatCubicMeter represents the UnitVolumeFormat `"cubic_meter"`.
+	// UnitVolumeFormatCubicMeter: Unit Meter <https://en.wikipedia.org/wiki/Cubic_metre>
 	UnitVolumeFormatCubicMeter UnitVolumeFormat = "cubic_meter"
-	// UnitVolumeFormatCubicCentimeter represents the UnitVolumeFormat `"cubic_centimeter"`.
+	// UnitVolumeFormatCubicCentimeter: Centimeter <https://en.wikipedia.org/wiki/Centimetre>
 	UnitVolumeFormatCubicCentimeter UnitVolumeFormat = "cubic_centimeter"
-	// UnitVolumeFormatCubicMillimeter represents the UnitVolumeFormat `"cubic_millimeter"`.
+	// UnitVolumeFormatCubicMillimeter: Millimeter <https://en.wikipedia.org/wiki/Cubic_metre>
 	UnitVolumeFormatCubicMillimeter UnitVolumeFormat = "cubic_millimeter"
-	// UnitVolumeFormatCubicKilometer represents the UnitVolumeFormat `"cubic_kilometer"`.
+	// UnitVolumeFormatCubicKilometer: Kilometer <https://en.wikipedia.org/wiki/Cubic_metre>
 	UnitVolumeFormatCubicKilometer UnitVolumeFormat = "cubic_kilometer"
-	// UnitVolumeFormatLiter represents the UnitVolumeFormat `"liter"`.
+	// UnitVolumeFormatLiter: Unit Liter <https://en.wikipedia.org/wiki/Litre>
 	UnitVolumeFormatLiter UnitVolumeFormat = "liter"
-	// UnitVolumeFormatCubicInch represents the UnitVolumeFormat `"cubic_inch"`.
+	// UnitVolumeFormatCubicInch: Cubic Inch <https://en.wikipedia.org/wiki/Cubic_inch>
 	UnitVolumeFormatCubicInch UnitVolumeFormat = "cubic_inch"
-	// UnitVolumeFormatCubicFoot represents the UnitVolumeFormat `"cubic_foot"`.
+	// UnitVolumeFormatCubicFoot: Foot <https://en.wikipedia.org/wiki/Cubic_foot>
 	UnitVolumeFormatCubicFoot UnitVolumeFormat = "cubic_foot"
-	// UnitVolumeFormatCubicYard represents the UnitVolumeFormat `"cubic_yard"`.
+	// UnitVolumeFormatCubicYard: Yard <https://en.wikipedia.org/wiki/Cubic_foot>
 	UnitVolumeFormatCubicYard UnitVolumeFormat = "cubic_yard"
-	// UnitVolumeFormatCubicMile represents the UnitVolumeFormat `"cubic_mile"`.
+	// UnitVolumeFormatCubicMile: Mile <https://en.wikipedia.org/wiki/Cubic_foot>
 	UnitVolumeFormatCubicMile UnitVolumeFormat = "cubic_mile"
-	// UnitVolumeFormatGallon represents the UnitVolumeFormat `"gallon"`.
+	// UnitVolumeFormatGallon: Gallon <https://en.wikipedia.org/wiki/Gallon>
 	UnitVolumeFormatGallon UnitVolumeFormat = "gallon"
-	// UnitVolumeFormatQuart represents the UnitVolumeFormat `"quart"`.
+	// UnitVolumeFormatQuart: Quart <https://en.wikipedia.org/wiki/Quart>
 	UnitVolumeFormatQuart UnitVolumeFormat = "quart"
-	// UnitVolumeFormatPint represents the UnitVolumeFormat `"pint"`.
+	// UnitVolumeFormatPint: Pint <https://en.wikipedia.org/wiki/Pint>
 	UnitVolumeFormatPint UnitVolumeFormat = "pint"
-	// UnitVolumeFormatCup represents the UnitVolumeFormat `"cup"`.
+	// UnitVolumeFormatCup: Cup <https://en.wikipedia.org/wiki/Cup_(unit)>
 	UnitVolumeFormatCup UnitVolumeFormat = "cup"
-	// UnitVolumeFormatFluidOunce represents the UnitVolumeFormat `"fluid_ounce"`.
+	// UnitVolumeFormatFluidOunce: Fluid Ounce <https://en.wikipedia.org/wiki/Fluid_ounce>
 	UnitVolumeFormatFluidOunce UnitVolumeFormat = "fluid_ounce"
-	// UnitVolumeFormatBarrel represents the UnitVolumeFormat `"barrel"`.
+	// UnitVolumeFormatBarrel: Barrel <https://en.wikipedia.org/wiki/Barrel_(unit)>
 	UnitVolumeFormatBarrel UnitVolumeFormat = "barrel"
-	// UnitVolumeFormatBushel represents the UnitVolumeFormat `"bushel"`.
+	// UnitVolumeFormatBushel: Bushel <https://en.wikipedia.org/wiki/Bushel>
 	UnitVolumeFormatBushel UnitVolumeFormat = "bushel"
-	// UnitVolumeFormatCord represents the UnitVolumeFormat `"cord"`.
+	// UnitVolumeFormatCord: Cord <https://en.wikipedia.org/wiki/Cord_(unit)>
 	UnitVolumeFormatCord UnitVolumeFormat = "cord"
-	// UnitVolumeFormatCubicFathom represents the UnitVolumeFormat `"cubic_fathom"`.
+	// UnitVolumeFormatCubicFathom: Cubic Fathom <https://en.wikipedia.org/wiki/Cubic_fathom>
 	UnitVolumeFormatCubicFathom UnitVolumeFormat = "cubic_fathom"
-	// UnitVolumeFormatTablespoon represents the UnitVolumeFormat `"tablespoon"`.
+	// UnitVolumeFormatTablespoon: Tablespoon <https://en.wikipedia.org/wiki/Tablespoon>
 	UnitVolumeFormatTablespoon UnitVolumeFormat = "tablespoon"
-	// UnitVolumeFormatTeaspoon represents the UnitVolumeFormat `"teaspoon"`.
+	// UnitVolumeFormatTeaspoon: Teaspoon <https://en.wikipedia.org/wiki/Teaspoon>
 	UnitVolumeFormatTeaspoon UnitVolumeFormat = "teaspoon"
-	// UnitVolumeFormatPinch represents the UnitVolumeFormat `"pinch"`.
+	// UnitVolumeFormatPinch: Pinch <https://en.wikipedia.org/wiki/Pinch_(unit)>
 	UnitVolumeFormatPinch UnitVolumeFormat = "pinch"
-	// UnitVolumeFormatDash represents the UnitVolumeFormat `"dash"`.
+	// UnitVolumeFormatDash: Dash <https://en.wikipedia.org/wiki/Cooking_weights_and_measures>
 	UnitVolumeFormatDash UnitVolumeFormat = "dash"
-	// UnitVolumeFormatDrop represents the UnitVolumeFormat `"drop"`.
+	// UnitVolumeFormatDrop: Drop <https://en.wikipedia.org/wiki/Cooking_weights_and_measures>
 	UnitVolumeFormatDrop UnitVolumeFormat = "drop"
-	// UnitVolumeFormatFifth represents the UnitVolumeFormat `"fifth"`.
+	// UnitVolumeFormatFifth: Fifth <https://en.wikipedia.org/wiki/Fifth_(unit)>
 	UnitVolumeFormatFifth UnitVolumeFormat = "fifth"
-	// UnitVolumeFormatDram represents the UnitVolumeFormat `"dram"`.
+	// UnitVolumeFormatDram: Dram <https://en.wikipedia.org/wiki/Dram_(unit)>
 	UnitVolumeFormatDram UnitVolumeFormat = "dram"
-	// UnitVolumeFormatGill represents the UnitVolumeFormat `"gill"`.
+	// UnitVolumeFormatGill: Gill <https://en.wikipedia.org/wiki/Gill_(unit)>
 	UnitVolumeFormatGill UnitVolumeFormat = "gill"
-	// UnitVolumeFormatPeck represents the UnitVolumeFormat `"peck"`.
+	// UnitVolumeFormatPeck: Peck <https://en.wikipedia.org/wiki/Imperial_units>
 	UnitVolumeFormatPeck UnitVolumeFormat = "peck"
-	// UnitVolumeFormatSack represents the UnitVolumeFormat `"sack"`.
+	// UnitVolumeFormatSack: Stack <https://en.wikipedia.org/wiki/Stack_(unit)>
 	UnitVolumeFormatSack UnitVolumeFormat = "sack"
-	// UnitVolumeFormatShot represents the UnitVolumeFormat `"shot"`.
+	// UnitVolumeFormatShot: Shot <https://en.wikipedia.org/wiki/Shot_glass>
 	UnitVolumeFormatShot UnitVolumeFormat = "shot"
-	// UnitVolumeFormatStrike represents the UnitVolumeFormat `"strike"`.
+	// UnitVolumeFormatStrike: Strike <https://en.wikipedia.org/wiki/Strike_(unit)>
 	UnitVolumeFormatStrike UnitVolumeFormat = "strike"
 )
 
