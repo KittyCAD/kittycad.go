@@ -3,7 +3,7 @@ type {{.Name}} string
 
 const (
     {{range .Values -}}
-        // {{.Name}} represents the {{$.Name}} `"{{.Value}}"`.
+        {{if .Description}}// {{.Description}}{{else}}// {{.Name}} represents the {{$.Name}} `"{{.Value}}"`.{{end}}
         {{.Name}} {{$.Name}} = "{{.Value}}"
     {{end -}}
 )

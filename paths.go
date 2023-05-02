@@ -16,6 +16,7 @@ import (
 )
 
 // GetSchema: Get OpenAPI schema.
+//
 func (s *MetaService) GetSchema() error {
 	// Create the url.
 	path := "/"
@@ -45,6 +46,7 @@ func (s *MetaService) GetSchema() error {
 }
 
 // GetAiPluginManifest: Get AI plugin manifest.
+//
 func (s *MetaService) GetAiPluginManifest() (*AiPluginManifest, error) {
 	// Create the url.
 	path := "/.well-known/ai-plugin.json"
@@ -83,8 +85,10 @@ func (s *MetaService) GetAiPluginManifest() (*AiPluginManifest, error) {
 }
 
 // Getdata: Get the metadata about our currently running server.
+//
 // This includes information on any of our other distributed systems it is connected to.
 // You must be a KittyCAD employee to perform this request.
+//
 func (s *MetaService) Getdata() (*Metadata, error) {
 	// Create the url.
 	path := "/_meta/info"
@@ -122,15 +126,50 @@ func (s *MetaService) Getdata() (*Metadata, error) {
 
 }
 
+// GetMetrics: Get prometheus metrics
+//
+// You must be a KittyCAD employee to perform this request.
+//
+func (s *MetaService) GetMetrics() error {
+	// Create the url.
+	path := "/_meta/metrics"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // CreateImageTo3D: Generate a 3D model from an image.
+//
 // This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
+//
 //
 // Parameters
 //
-//   - `inputFormat`: An enumeration.
-//   - `outputFormat`: The valid types of output file formats.
-//   - `body`
-func (s *AiService) CreateImageTo3D(inputFormat ImageType, outputFormat FileExportFormat, body []byte) (*Mesh, error) {
+// 	- `inputFormat`: An enumeration.
+// 	- `outputFormat`: The valid types of output file formats.
+// 	- `body`
+//
+func (s *AiService) CreateImageTo3D(inputFormat ImageType, outputFormat any, body []byte) (*Mesh, error) {
 	// Create the url.
 	path := "/ai/image-to-3d/{{.input_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -181,13 +220,16 @@ func (s *AiService) CreateImageTo3D(inputFormat ImageType, outputFormat FileExpo
 }
 
 // CreateTextTo3D: Generate a 3D model from text.
+//
 // This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of output file formats.
-//   - `prompt`
-func (s *AiService) CreateTextTo3D(outputFormat FileExportFormat, prompt string) (*Mesh, error) {
+// 	- `outputFormat`: The valid types of output file formats.
+// 	- `prompt`
+//
+func (s *AiService) CreateTextTo3D(outputFormat any, prompt string) (*Mesh, error) {
 	// Create the url.
 	path := "/ai/text-to-3d/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -233,12 +275,15 @@ func (s *AiService) CreateTextTo3D(outputFormat FileExportFormat, prompt string)
 }
 
 // GetMetrics: Get API call metrics.
+//
 // This endpoint requires authentication by a KittyCAD employee. The API calls are grouped by the parameter passed.
+//
 //
 // Parameters
 //
-//   - `groupBy`: The field of an API call to group by.
-func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQueryGroup, error) {
+// 	- `groupBy`: The field of an API call to group by.
+//
+func (s *APICallService) GetMetrics(groupBy any) (*[]APICallQueryGroup, error) {
 	// Create the url.
 	path := "/api-call-metrics"
 	uri := resolveRelative(s.client.server, path)
@@ -283,18 +328,19 @@ func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQuer
 }
 
 // List: List API calls.
+//
 // This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.
+//
 //
 // Parameters
 //
-//   - `limit`
+// 	- `limit`
+// 	- `pageToken`
+// 	- `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
-//   - `pageToken`
+// 		Currently, we only support scanning in ascending order.
 //
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
+func (s *APICallService) List(limit int, pageToken string, sortBy any) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -341,13 +387,16 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 }
 
 // Get: Get details of an API call.
+//
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
 // If the user is not authenticated to view the specified API call, then it is not returned.
 // Only KittyCAD employees can view API calls for other users.
 //
+//
 // Parameters
 //
-//   - `id`
+// 	- `id`
+//
 func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 	// Create the url.
 	path := "/api-calls/{{.id}}"
@@ -393,12 +442,15 @@ func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 }
 
 // GithubCallback: Listen for callbacks to GitHub app authentication.
+//
 // This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
 // The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 //
+//
 // Parameters
 //
-//   - `body`
+// 	- `body`
+//
 func (s *AppService) GithubCallback(body any) error {
 	// Create the url.
 	path := "/apps/github/callback"
@@ -437,8 +489,10 @@ func (s *AppService) GithubCallback(body any) error {
 }
 
 // GithubConsent: Get the consent URL for GitHub app authentication.
+//
 // This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
 // The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
+//
 func (s *AppService) GithubConsent() (*AppClientInfo, error) {
 	// Create the url.
 	path := "/apps/github/consent"
@@ -477,11 +531,14 @@ func (s *AppService) GithubConsent() (*AppClientInfo, error) {
 }
 
 // GithubWebhook: Listen for GitHub webhooks.
+//
 // These come from the GitHub app.
+//
 //
 // Parameters
 //
-//   - `body`
+// 	- `body`
+//
 func (s *AppService) GithubWebhook(body []byte) error {
 	// Create the url.
 	path := "/apps/github/webhook"
@@ -516,21 +573,21 @@ func (s *AppService) GithubWebhook(body []byte) error {
 }
 
 // ListAsyncOperations: List async operations.
+//
 // For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
 // This endpoint requires authentication by a KittyCAD employee.
 //
+//
 // Parameters
 //
-//   - `limit`
+// 	- `limit`
+// 	- `pageToken`
+// 	- `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
-//   - `pageToken`
+// 		Currently, we only support scanning in ascending order.
+// 	- `status`: The status of an async API call.
 //
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-//
-//   - `status`: The status of an async API call.
-func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy CreatedAtSortMode, status APICallStatus) (*AsyncAPICallResultsPage, error) {
+func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy any, status any) (*AsyncAPICallResultsPage, error) {
 	// Create the url.
 	path := "/async/operations"
 	uri := resolveRelative(s.client.server, path)
@@ -578,14 +635,17 @@ func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy
 }
 
 // GetAsyncOperation: Get an async operation.
+//
 // Get the status and output of an async operation.
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested async operation for the user.
 // If the user is not authenticated to view the specified async operation, then it is not returned.
 // Only KittyCAD employees with the proper access can view async operations for other users.
 //
+//
 // Parameters
 //
-//   - `id`
+// 	- `id`
+//
 func (s *APICallService) GetAsyncOperation(id string) (*any, error) {
 	// Create the url.
 	path := "/async/operations/{{.id}}"
@@ -631,9 +691,12 @@ func (s *APICallService) GetAsyncOperation(id string) (*any, error) {
 }
 
 // AuthEmail: Create an email verification request for a user.
+//
+//
 // Parameters
 //
-//   - `body`: The body of the form for email authentication.
+// 	- `body`: The body of the form for email authentication.
+//
 func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationToken, error) {
 	// Create the url.
 	path := "/auth/email"
@@ -681,11 +744,14 @@ func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTo
 }
 
 // AuthEmailCallback: Listen for callbacks for email verification for users.
+//
+//
 // Parameters
 //
-//   - `callbackUrl`
-//   - `email`
-//   - `token`
+// 	- `callbackUrl`
+// 	- `email`
+// 	- `token`
+//
 func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token string) error {
 	// Create the url.
 	path := "/auth/email/callback"
@@ -724,10 +790,13 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 }
 
 // GetPhysics: Get a physics constant.
+//
+//
 // Parameters
 //
-//   - `constant`: The valid types of phys constant names.
-func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsConstant, error) {
+// 	- `constant`: The valid types of phys constant names.
+//
+func (s *ConstantService) GetPhysics(constant any) (*PhysicsConstant, error) {
 	// Create the url.
 	path := "/constant/physics/{{.constant}}"
 	uri := resolveRelative(s.client.server, path)
@@ -772,11 +841,14 @@ func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsCons
 }
 
 // Cmd: Submit one drawing operation.
+//
 // Response depends on which command was submitted, so unfortunately the OpenAPI schema can't generate the right response type.
+//
 //
 // Parameters
 //
-//   - `body`: A graphics command submitted to the KittyCAD engine via the Drawing API.
+// 	- `body`: A graphics command submitted to the KittyCAD engine via the Drawing API.
+//
 func (s *DrawingService) Cmd(body DrawingCmdReq) error {
 	// Create the url.
 	path := "/drawing/cmd"
@@ -815,9 +887,12 @@ func (s *DrawingService) Cmd(body DrawingCmdReq) error {
 }
 
 // CmdBatch: Submit many drawing operations.
+//
+//
 // Parameters
 //
-//   - `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Drawing API.
+// 	- `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Drawing API.
+//
 func (s *DrawingService) CmdBatch(body DrawingCmdReqBatch) (*DrawingOutcomes, error) {
 	// Create the url.
 	path := "/drawing/cmd_batch"
@@ -865,14 +940,17 @@ func (s *DrawingService) CmdBatch(body DrawingCmdReqBatch) (*DrawingOutcomes, er
 }
 
 // CreateCenterOfMass: Get CAD file center of mass.
+//
 // Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
+//
 // Parameters
 //
-//   - `srcFormat`: The valid types of source file formats.
-//   - `body`
-func (s *FileService) CreateCenterOfMass(srcFormat FileImportFormat, body []byte) (*FileCenterOfMass, error) {
+// 	- `srcFormat`: The valid types of source file formats.
+// 	- `body`
+//
+func (s *FileService) CreateCenterOfMass(srcFormat any, body []byte) (*FileCenterOfMass, error) {
 	// Create the url.
 	path := "/file/center-of-mass"
 	uri := resolveRelative(s.client.server, path)
@@ -922,16 +1000,19 @@ func (s *FileService) CreateCenterOfMass(srcFormat FileImportFormat, body []byte
 }
 
 // CreateConversion: Convert CAD file.
+//
 // Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
 // If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
+//
 // Parameters
 //
-//   - `outputFormat`: The valid types of output file formats.
-//   - `srcFormat`: The valid types of source file formats.
-//   - `body`
-func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat FileImportFormat, body []byte) (*FileConversion, error) {
+// 	- `outputFormat`: The valid types of output file formats.
+// 	- `srcFormat`: The valid types of source file formats.
+// 	- `body`
+//
+func (s *FileService) CreateConversion(outputFormat any, srcFormat any, body []byte) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -982,15 +1063,18 @@ func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat 
 }
 
 // CreateDensity: Get CAD file density.
+//
 // Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
+//
 // Parameters
 //
-//   - `materialMass`
-//   - `srcFormat`: The valid types of source file formats.
-//   - `body`
-func (s *FileService) CreateDensity(materialMass float64, srcFormat FileImportFormat, body []byte) (*FileDensity, error) {
+// 	- `materialMass`
+// 	- `srcFormat`: The valid types of source file formats.
+// 	- `body`
+//
+func (s *FileService) CreateDensity(materialMass float64, srcFormat any, body []byte) (*FileDensity, error) {
 	// Create the url.
 	path := "/file/density"
 	uri := resolveRelative(s.client.server, path)
@@ -1040,13 +1124,16 @@ func (s *FileService) CreateDensity(materialMass float64, srcFormat FileImportFo
 
 }
 
-// CreateExecution: Execute a KittyCAD program in a specific language.
+// CreateFileExecution: Execute a KittyCAD program in a specific language.
+//
+//
 // Parameters
 //
-//   - `lang`: The language code is written in.
-//   - `output`
-//   - `body`
-func (s *FileService) CreateExecution(lang CodeLanguage, output string, body []byte) (*CodeOutput, error) {
+// 	- `lang`: The language code is written in.
+// 	- `output`
+// 	- `body`
+//
+func (s *ExecutorService) CreateFileExecution(lang CodeLanguage, output string, body []byte) (*CodeOutput, error) {
 	// Create the url.
 	path := "/file/execute/{{.lang}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1097,15 +1184,18 @@ func (s *FileService) CreateExecution(lang CodeLanguage, output string, body []b
 }
 
 // CreateMass: Get CAD file mass.
+//
 // Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
+//
 // Parameters
 //
-//   - `materialDensity`
-//   - `srcFormat`: The valid types of source file formats.
-//   - `body`
-func (s *FileService) CreateMass(materialDensity float64, srcFormat FileImportFormat, body []byte) (*FileMass, error) {
+// 	- `materialDensity`
+// 	- `srcFormat`: The valid types of source file formats.
+// 	- `body`
+//
+func (s *FileService) CreateMass(materialDensity float64, srcFormat any, body []byte) (*FileMass, error) {
 	// Create the url.
 	path := "/file/mass"
 	uri := resolveRelative(s.client.server, path)
@@ -1156,14 +1246,17 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat FileImportFo
 }
 
 // CreateSurfaceArea: Get CAD file surface area.
+//
 // Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
+//
 // Parameters
 //
-//   - `srcFormat`: The valid types of source file formats.
-//   - `body`
-func (s *FileService) CreateSurfaceArea(srcFormat FileImportFormat, body []byte) (*FileSurfaceArea, error) {
+// 	- `srcFormat`: The valid types of source file formats.
+// 	- `body`
+//
+func (s *FileService) CreateSurfaceArea(srcFormat any, body []byte) (*FileSurfaceArea, error) {
 	// Create the url.
 	path := "/file/surface-area"
 	uri := resolveRelative(s.client.server, path)
@@ -1213,14 +1306,17 @@ func (s *FileService) CreateSurfaceArea(srcFormat FileImportFormat, body []byte)
 }
 
 // CreateVolume: Get CAD file volume.
+//
 // Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
+//
 // Parameters
 //
-//   - `srcFormat`: The valid types of source file formats.
-//   - `body`
-func (s *FileService) CreateVolume(srcFormat FileImportFormat, body []byte) (*FileVolume, error) {
+// 	- `srcFormat`: The valid types of source file formats.
+// 	- `body`
+//
+func (s *FileService) CreateVolume(srcFormat any, body []byte) (*FileVolume, error) {
 	// Create the url.
 	path := "/file/volume"
 	uri := resolveRelative(s.client.server, path)
@@ -1270,7 +1366,9 @@ func (s *FileService) CreateVolume(srcFormat FileImportFormat, body []byte) (*Fi
 }
 
 // Logout: This endpoint removes the session cookie for a user.
+//
 // This is used in logout scenarios.
+//
 func (s *HiddenService) Logout() error {
 	// Create the url.
 	path := "/logout"
@@ -1300,11 +1398,14 @@ func (s *HiddenService) Logout() error {
 }
 
 // DeviceAuthRequest: Start an OAuth 2.0 Device Authorization Grant.
+//
 // This endpoint is designed to be accessed from an *unauthenticated* API client. It generates and records a `device_code` and `user_code` which must be verified and confirmed prior to a token being granted.
+//
 //
 // Parameters
 //
-//   - `body`: The request parameters for the OAuth 2.0 Device Authorization Grant flow.
+// 	- `body`: The request parameters for the OAuth 2.0 Device Authorization Grant flow.
+//
 func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) error {
 	// Create the url.
 	path := "/oauth2/device/auth"
@@ -1346,11 +1447,14 @@ func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) error {
 }
 
 // DeviceAuthConfirm: Confirm an OAuth 2.0 Device Authorization Grant.
+//
 // This endpoint is designed to be accessed by the user agent (browser), not the client requesting the token. So we do not actually return the token here; it will be returned in response to the poll on `/oauth2/device/token`.
+//
 //
 // Parameters
 //
-//   - `body`: The request parameters to verify the `user_code` for the OAuth 2.0 Device Authorization Grant.
+// 	- `body`: The request parameters to verify the `user_code` for the OAuth 2.0 Device Authorization Grant.
+//
 func (s *Oauth2Service) DeviceAuthConfirm(body DeviceAuthVerifyParams) error {
 	// Create the url.
 	path := "/oauth2/device/confirm"
@@ -1389,11 +1493,14 @@ func (s *Oauth2Service) DeviceAuthConfirm(body DeviceAuthVerifyParams) error {
 }
 
 // DeviceAccessToken: Request a device access token.
+//
 // This endpoint should be polled by the client until the user code is verified and the grant is confirmed.
+//
 //
 // Parameters
 //
-//   - `body`: The form for a device access token request.
+// 	- `body`: The form for a device access token request.
+//
 func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) error {
 	// Create the url.
 	path := "/oauth2/device/token"
@@ -1435,11 +1542,14 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) err
 }
 
 // DeviceAuthVerify: Verify an OAuth 2.0 Device Authorization Grant.
+//
 // This endpoint should be accessed in a full user agent (e.g., a browser). If the user is not logged in, we redirect them to the login page and use the `callback_url` parameter to get them to the UI verification form upon logging in. If they are logged in, we redirect them to the UI verification form on the website.
+//
 //
 // Parameters
 //
-//   - `userCode`
+// 	- `userCode`
+//
 func (s *Oauth2Service) DeviceAuthVerify(userCode string) error {
 	// Create the url.
 	path := "/oauth2/device/verify"
@@ -1476,12 +1586,15 @@ func (s *Oauth2Service) DeviceAuthVerify(userCode string) error {
 }
 
 // ProviderCallback: Listen for callbacks for the OAuth 2.0 provider.
+//
+//
 // Parameters
 //
-//   - `provider`: An account provider.
-//   - `code`
-//   - `state`
-func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, state string) error {
+// 	- `provider`: An account provider.
+// 	- `code`
+// 	- `state`
+//
+func (s *Oauth2Service) ProviderCallback(provider any, code string, state string) error {
 	// Create the url.
 	path := "/oauth2/provider/{{.provider}}/callback"
 	uri := resolveRelative(s.client.server, path)
@@ -1519,11 +1632,14 @@ func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, 
 }
 
 // ProviderConsent: Get the consent URL and other information for the OAuth 2.0 provider.
+//
+//
 // Parameters
 //
-//   - `provider`: An account provider.
-//   - `callbackUrl`
-func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl string) (*OAuth2ClientInfo, error) {
+// 	- `provider`: An account provider.
+// 	- `callbackUrl`
+//
+func (s *Oauth2Service) ProviderConsent(provider any, callbackUrl string) (*OAuth2ClientInfo, error) {
 	// Create the url.
 	path := "/oauth2/provider/{{.provider}}/consent"
 	uri := resolveRelative(s.client.server, path)
@@ -1569,7 +1685,9 @@ func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl st
 }
 
 // GetOpenaiSchema: Get AI plugin OpenAPI schema.
+//
 // This is the same as the OpenAPI schema, BUT it has some modifications to make it compatible with OpenAI. For example, descriptions must be < 300 chars.
+//
 func (s *MetaService) GetOpenaiSchema() error {
 	// Create the url.
 	path := "/openai/openapi.json"
@@ -1599,6 +1717,7 @@ func (s *MetaService) GetOpenaiSchema() error {
 }
 
 // Ping: Return pong.
+//
 func (s *MetaService) Ping() (*Pong, error) {
 	// Create the url.
 	path := "/ping"
@@ -1637,14 +1756,17 @@ func (s *MetaService) Ping() (*Pong, error) {
 }
 
 // GetAccelerationConversion: Convert acceleration units.
+//
 // Convert an acceleration unit value to another acceleration unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of acceleration unit formats.
-//   - `srcFormat`: The valid types of acceleration unit formats.
-//   - `value`
-func (s *UnitService) GetAccelerationConversion(outputFormat UnitAccelerationFormat, srcFormat UnitAccelerationFormat, value float64) (*UnitAccelerationConversion, error) {
+// 	- `outputFormat`: The valid types of acceleration unit formats.
+// 	- `srcFormat`: The valid types of acceleration unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetAccelerationConversion(outputFormat any, srcFormat any, value float64) (*UnitAccelerationConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/acceleration/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1691,14 +1813,17 @@ func (s *UnitService) GetAccelerationConversion(outputFormat UnitAccelerationFor
 }
 
 // GetAngleConversion: Convert angle units.
+//
 // Convert an angle unit value to another angle unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of angle formats.
-//   - `srcFormat`: The valid types of angle formats.
-//   - `value`
-func (s *UnitService) GetAngleConversion(outputFormat UnitAngleFormat, srcFormat UnitAngleFormat, value float64) (*UnitAngleConversion, error) {
+// 	- `outputFormat`: The valid types of angle formats.
+// 	- `srcFormat`: The valid types of angle formats.
+// 	- `value`
+//
+func (s *UnitService) GetAngleConversion(outputFormat any, srcFormat any, value float64) (*UnitAngleConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/angle/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1745,14 +1870,17 @@ func (s *UnitService) GetAngleConversion(outputFormat UnitAngleFormat, srcFormat
 }
 
 // GetAngularVelocityConversion: Convert angular velocity units.
+//
 // Convert an angular velocity unit value to another angular velocity unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of angular velocity unit formats.
-//   - `srcFormat`: The valid types of angular velocity unit formats.
-//   - `value`
-func (s *UnitService) GetAngularVelocityConversion(outputFormat UnitAngularVelocityFormat, srcFormat UnitAngularVelocityFormat, value float64) (*UnitAngularVelocityConversion, error) {
+// 	- `outputFormat`: The valid types of angular velocity unit formats.
+// 	- `srcFormat`: The valid types of angular velocity unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetAngularVelocityConversion(outputFormat any, srcFormat any, value float64) (*UnitAngularVelocityConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/angular-velocity/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1799,14 +1927,17 @@ func (s *UnitService) GetAngularVelocityConversion(outputFormat UnitAngularVeloc
 }
 
 // GetAreaConversion: Convert area units.
+//
 // Convert an area unit value to another area unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of area unit formats.
-//   - `srcFormat`: The valid types of area unit formats.
-//   - `value`
-func (s *UnitService) GetAreaConversion(outputFormat UnitAreaFormat, srcFormat UnitAreaFormat, value float64) (*UnitAreaConversion, error) {
+// 	- `outputFormat`: The valid types of area unit formats.
+// 	- `srcFormat`: The valid types of area unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetAreaConversion(outputFormat any, srcFormat any, value float64) (*UnitAreaConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/area/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1853,14 +1984,17 @@ func (s *UnitService) GetAreaConversion(outputFormat UnitAreaFormat, srcFormat U
 }
 
 // GetChargeConversion: Convert charge units.
+//
 // Convert a charge unit value to another charge unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of charge unit formats.
-//   - `srcFormat`: The valid types of charge unit formats.
-//   - `value`
-func (s *UnitService) GetChargeConversion(outputFormat UnitChargeFormat, srcFormat UnitChargeFormat, value float64) (*UnitChargeConversion, error) {
+// 	- `outputFormat`: The valid types of charge unit formats.
+// 	- `srcFormat`: The valid types of charge unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetChargeConversion(outputFormat any, srcFormat any, value float64) (*UnitChargeConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/charge/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1907,14 +2041,17 @@ func (s *UnitService) GetChargeConversion(outputFormat UnitChargeFormat, srcForm
 }
 
 // GetConcentrationConversion: Convert concentration units.
+//
 // Convert a concentration unit value to another concentration unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of concentration unit formats.
-//   - `srcFormat`: The valid types of concentration unit formats.
-//   - `value`
-func (s *UnitService) GetConcentrationConversion(outputFormat UnitConcentrationFormat, srcFormat UnitConcentrationFormat, value float64) (*UnitConcentrationConversion, error) {
+// 	- `outputFormat`: The valid types of concentration unit formats.
+// 	- `srcFormat`: The valid types of concentration unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetConcentrationConversion(outputFormat any, srcFormat any, value float64) (*UnitConcentrationConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/concentration/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1961,14 +2098,17 @@ func (s *UnitService) GetConcentrationConversion(outputFormat UnitConcentrationF
 }
 
 // GetDataTransferRateConversion: Convert data transfer rate units.
+//
 // Convert a data transfer rate unit value to another data transfer rate unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of data transfer unit formats.
-//   - `srcFormat`: The valid types of data transfer unit formats.
-//   - `value`
-func (s *UnitService) GetDataTransferRateConversion(outputFormat UnitDataTransferRateFormat, srcFormat UnitDataTransferRateFormat, value float64) (*UnitDataTransferRateConversion, error) {
+// 	- `outputFormat`: The valid types of data transfer unit formats.
+// 	- `srcFormat`: The valid types of data transfer unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetDataTransferRateConversion(outputFormat any, srcFormat any, value float64) (*UnitDataTransferRateConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/data-transfer-rate/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2015,14 +2155,17 @@ func (s *UnitService) GetDataTransferRateConversion(outputFormat UnitDataTransfe
 }
 
 // GetDataConversion: Convert data units.
+//
 // Convert a data unit value to another data unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of data unit formats.
-//   - `srcFormat`: The valid types of data unit formats.
-//   - `value`
-func (s *UnitService) GetDataConversion(outputFormat UnitDataFormat, srcFormat UnitDataFormat, value float64) (*UnitDataConversion, error) {
+// 	- `outputFormat`: The valid types of data unit formats.
+// 	- `srcFormat`: The valid types of data unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetDataConversion(outputFormat any, srcFormat any, value float64) (*UnitDataConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/data/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2069,14 +2212,17 @@ func (s *UnitService) GetDataConversion(outputFormat UnitDataFormat, srcFormat U
 }
 
 // GetDensityConversion: Convert density units.
+//
 // Convert a density unit value to another density unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of density unit formats.
-//   - `srcFormat`: The valid types of density unit formats.
-//   - `value`
-func (s *UnitService) GetDensityConversion(outputFormat UnitDensityFormat, srcFormat UnitDensityFormat, value float64) (*UnitDensityConversion, error) {
+// 	- `outputFormat`: The valid types of density unit formats.
+// 	- `srcFormat`: The valid types of density unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetDensityConversion(outputFormat any, srcFormat any, value float64) (*UnitDensityConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/density/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2123,14 +2269,17 @@ func (s *UnitService) GetDensityConversion(outputFormat UnitDensityFormat, srcFo
 }
 
 // GetEnergyConversion: Convert energy units.
+//
 // Convert a energy unit value to another energy unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of energy unit formats.
-//   - `srcFormat`: The valid types of energy unit formats.
-//   - `value`
-func (s *UnitService) GetEnergyConversion(outputFormat UnitEnergyFormat, srcFormat UnitEnergyFormat, value float64) (*UnitEnergyConversion, error) {
+// 	- `outputFormat`: The valid types of energy unit formats.
+// 	- `srcFormat`: The valid types of energy unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetEnergyConversion(outputFormat any, srcFormat any, value float64) (*UnitEnergyConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/energy/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2177,14 +2326,17 @@ func (s *UnitService) GetEnergyConversion(outputFormat UnitEnergyFormat, srcForm
 }
 
 // GetForceConversion: Convert force units.
+//
 // Convert a force unit value to another force unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of force unit formats.
-//   - `srcFormat`: The valid types of force unit formats.
-//   - `value`
-func (s *UnitService) GetForceConversion(outputFormat UnitForceFormat, srcFormat UnitForceFormat, value float64) (*UnitForceConversion, error) {
+// 	- `outputFormat`: The valid types of force unit formats.
+// 	- `srcFormat`: The valid types of force unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetForceConversion(outputFormat any, srcFormat any, value float64) (*UnitForceConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/force/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2231,14 +2383,17 @@ func (s *UnitService) GetForceConversion(outputFormat UnitForceFormat, srcFormat
 }
 
 // GetIlluminanceConversion: Convert illuminance units.
+//
 // Convert a illuminance unit value to another illuminance unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of illuminance unit formats.
-//   - `srcFormat`: The valid types of illuminance unit formats.
-//   - `value`
-func (s *UnitService) GetIlluminanceConversion(outputFormat UnitIlluminanceFormat, srcFormat UnitIlluminanceFormat, value float64) (*UnitIlluminanceConversion, error) {
+// 	- `outputFormat`: The valid types of illuminance unit formats.
+// 	- `srcFormat`: The valid types of illuminance unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetIlluminanceConversion(outputFormat any, srcFormat any, value float64) (*UnitIlluminanceConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/illuminance/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2285,14 +2440,17 @@ func (s *UnitService) GetIlluminanceConversion(outputFormat UnitIlluminanceForma
 }
 
 // GetLengthConversion: Convert length units.
+//
 // Convert a length unit value to another length unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of length unit formats.
-//   - `srcFormat`: The valid types of length unit formats.
-//   - `value`
-func (s *UnitService) GetLengthConversion(outputFormat UnitLengthFormat, srcFormat UnitLengthFormat, value float64) (*UnitLengthConversion, error) {
+// 	- `outputFormat`: The valid types of length unit formats.
+// 	- `srcFormat`: The valid types of length unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetLengthConversion(outputFormat any, srcFormat any, value float64) (*UnitLengthConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/length/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2339,14 +2497,17 @@ func (s *UnitService) GetLengthConversion(outputFormat UnitLengthFormat, srcForm
 }
 
 // GetMagneticFieldStrengthConversion: Convert magnetic field strength units.
+//
 // Convert a magnetic field strength unit value to another magnetic field strength unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of magnetic field strength unit formats.
-//   - `srcFormat`: The valid types of magnetic field strength unit formats.
-//   - `value`
-func (s *UnitService) GetMagneticFieldStrengthConversion(outputFormat UnitMagneticFieldStrengthFormat, srcFormat UnitMagneticFieldStrengthFormat, value float64) (*UnitMagneticFieldStrengthConversion, error) {
+// 	- `outputFormat`: The valid types of magnetic field strength unit formats.
+// 	- `srcFormat`: The valid types of magnetic field strength unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetMagneticFieldStrengthConversion(outputFormat any, srcFormat any, value float64) (*UnitMagneticFieldStrengthConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/magnetic-field-strength/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2393,14 +2554,17 @@ func (s *UnitService) GetMagneticFieldStrengthConversion(outputFormat UnitMagnet
 }
 
 // GetMagneticFluxConversion: Convert magnetic flux units.
+//
 // Convert a magnetic flux unit value to another magnetic flux unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of magnetic flux unit formats.
-//   - `srcFormat`: The valid types of magnetic flux unit formats.
-//   - `value`
-func (s *UnitService) GetMagneticFluxConversion(outputFormat UnitMagneticFluxFormat, srcFormat UnitMagneticFluxFormat, value float64) (*UnitMagneticFluxConversion, error) {
+// 	- `outputFormat`: The valid types of magnetic flux unit formats.
+// 	- `srcFormat`: The valid types of magnetic flux unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetMagneticFluxConversion(outputFormat any, srcFormat any, value float64) (*UnitMagneticFluxConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/magnetic-flux/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2447,14 +2611,17 @@ func (s *UnitService) GetMagneticFluxConversion(outputFormat UnitMagneticFluxFor
 }
 
 // GetMassConversion: Convert mass units.
+//
 // Convert a mass unit value to another mass unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of mass unit formats.
-//   - `srcFormat`: The valid types of mass unit formats.
-//   - `value`
-func (s *UnitService) GetMassConversion(outputFormat UnitMassFormat, srcFormat UnitMassFormat, value float64) (*UnitMassConversion, error) {
+// 	- `outputFormat`: The valid types of mass unit formats.
+// 	- `srcFormat`: The valid types of mass unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetMassConversion(outputFormat any, srcFormat any, value float64) (*UnitMassConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/mass/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2501,14 +2668,17 @@ func (s *UnitService) GetMassConversion(outputFormat UnitMassFormat, srcFormat U
 }
 
 // GetMetricPowerCubedConversion: Convert metric cubed units.
+//
 // Convert a metric cubed unit value to another metric cubed unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of metric unit formats.
-//   - `srcFormat`: The valid types of metric unit formats.
-//   - `value`
-func (s *UnitService) GetMetricPowerCubedConversion(outputFormat UnitMetricPower, srcFormat UnitMetricPower, value float64) (*UnitMetricPowerCubedConversion, error) {
+// 	- `outputFormat`: The valid types of metric unit formats.
+// 	- `srcFormat`: The valid types of metric unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetMetricPowerCubedConversion(outputFormat any, srcFormat any, value float64) (*UnitMetricPowerCubedConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/metric/cubed/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2555,14 +2725,17 @@ func (s *UnitService) GetMetricPowerCubedConversion(outputFormat UnitMetricPower
 }
 
 // GetMetricPowerConversion: Convert metric units.
+//
 // Convert a metric unit value to another metric unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of metric unit formats.
-//   - `srcFormat`: The valid types of metric unit formats.
-//   - `value`
-func (s *UnitService) GetMetricPowerConversion(outputFormat UnitMetricPower, srcFormat UnitMetricPower, value float64) (*UnitMetricPowerConversion, error) {
+// 	- `outputFormat`: The valid types of metric unit formats.
+// 	- `srcFormat`: The valid types of metric unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetMetricPowerConversion(outputFormat any, srcFormat any, value float64) (*UnitMetricPowerConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/metric/power/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2609,14 +2782,17 @@ func (s *UnitService) GetMetricPowerConversion(outputFormat UnitMetricPower, src
 }
 
 // GetMetricPowerSquaredConversion: Convert metric squared units.
+//
 // Convert a metric squared unit value to another metric squared unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of metric unit formats.
-//   - `srcFormat`: The valid types of metric unit formats.
-//   - `value`
-func (s *UnitService) GetMetricPowerSquaredConversion(outputFormat UnitMetricPower, srcFormat UnitMetricPower, value float64) (*UnitMetricPowerSquaredConversion, error) {
+// 	- `outputFormat`: The valid types of metric unit formats.
+// 	- `srcFormat`: The valid types of metric unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetMetricPowerSquaredConversion(outputFormat any, srcFormat any, value float64) (*UnitMetricPowerSquaredConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/metric/squared/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2663,14 +2839,17 @@ func (s *UnitService) GetMetricPowerSquaredConversion(outputFormat UnitMetricPow
 }
 
 // GetPowerConversion: Convert power units.
+//
 // Convert a power unit value to another power unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of power unit formats.
-//   - `srcFormat`: The valid types of power unit formats.
-//   - `value`
-func (s *UnitService) GetPowerConversion(outputFormat UnitPowerFormat, srcFormat UnitPowerFormat, value float64) (*UnitPowerConversion, error) {
+// 	- `outputFormat`: The valid types of power unit formats.
+// 	- `srcFormat`: The valid types of power unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetPowerConversion(outputFormat any, srcFormat any, value float64) (*UnitPowerConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/power/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2717,14 +2896,17 @@ func (s *UnitService) GetPowerConversion(outputFormat UnitPowerFormat, srcFormat
 }
 
 // GetPressureConversion: Convert pressure units.
+//
 // Convert a pressure unit value to another pressure unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of pressure unit formats.
-//   - `srcFormat`: The valid types of pressure unit formats.
-//   - `value`
-func (s *UnitService) GetPressureConversion(outputFormat UnitPressureFormat, srcFormat UnitPressureFormat, value float64) (*UnitPressureConversion, error) {
+// 	- `outputFormat`: The valid types of pressure unit formats.
+// 	- `srcFormat`: The valid types of pressure unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetPressureConversion(outputFormat any, srcFormat any, value float64) (*UnitPressureConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/pressure/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2771,14 +2953,17 @@ func (s *UnitService) GetPressureConversion(outputFormat UnitPressureFormat, src
 }
 
 // GetRadiationConversion: Convert radiation units.
+//
 // Convert a radiation unit value to another radiation unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.
-//   - `srcFormat`: The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.
-//   - `value`
-func (s *UnitService) GetRadiationConversion(outputFormat UnitRadiationFormat, srcFormat UnitRadiationFormat, value float64) (*UnitRadiationConversion, error) {
+// 	- `outputFormat`: The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.
+// 	- `srcFormat`: The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.
+// 	- `value`
+//
+func (s *UnitService) GetRadiationConversion(outputFormat any, srcFormat any, value float64) (*UnitRadiationConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/radiation/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2825,14 +3010,17 @@ func (s *UnitService) GetRadiationConversion(outputFormat UnitRadiationFormat, s
 }
 
 // GetRadioactivityConversion: Convert radioactivity units.
+//
 // Convert a radioactivity unit value to another radioactivity unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.
-//   - `srcFormat`: The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.
-//   - `value`
-func (s *UnitService) GetRadioactivityConversion(outputFormat UnitRadioactivityFormat, srcFormat UnitRadioactivityFormat, value float64) (*UnitRadioactivityConversion, error) {
+// 	- `outputFormat`: The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.
+// 	- `srcFormat`: The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.
+// 	- `value`
+//
+func (s *UnitService) GetRadioactivityConversion(outputFormat any, srcFormat any, value float64) (*UnitRadioactivityConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/radioactivity/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2879,14 +3067,17 @@ func (s *UnitService) GetRadioactivityConversion(outputFormat UnitRadioactivityF
 }
 
 // GetSolidAngleConversion: Convert solid angle units.
+//
 // Convert a solid angle unit value to another solid angle unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of solid angle unit formats.
-//   - `srcFormat`: The valid types of solid angle unit formats.
-//   - `value`
-func (s *UnitService) GetSolidAngleConversion(outputFormat UnitSolidAngleFormat, srcFormat UnitSolidAngleFormat, value float64) (*UnitSolidAngleConversion, error) {
+// 	- `outputFormat`: The valid types of solid angle unit formats.
+// 	- `srcFormat`: The valid types of solid angle unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetSolidAngleConversion(outputFormat any, srcFormat any, value float64) (*UnitSolidAngleConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/solid-angle/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2933,14 +3124,17 @@ func (s *UnitService) GetSolidAngleConversion(outputFormat UnitSolidAngleFormat,
 }
 
 // GetTemperatureConversion: Convert temperature units.
+//
 // Convert a temperature unit value to another temperature unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of temperature unit formats.
-//   - `srcFormat`: The valid types of temperature unit formats.
-//   - `value`
-func (s *UnitService) GetTemperatureConversion(outputFormat UnitTemperatureFormat, srcFormat UnitTemperatureFormat, value float64) (*UnitTemperatureConversion, error) {
+// 	- `outputFormat`: The valid types of temperature unit formats.
+// 	- `srcFormat`: The valid types of temperature unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetTemperatureConversion(outputFormat any, srcFormat any, value float64) (*UnitTemperatureConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/temperature/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2987,14 +3181,17 @@ func (s *UnitService) GetTemperatureConversion(outputFormat UnitTemperatureForma
 }
 
 // GetTimeConversion: Convert time units.
+//
 // Convert a time unit value to another time unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of time unit formats.
-//   - `srcFormat`: The valid types of time unit formats.
-//   - `value`
-func (s *UnitService) GetTimeConversion(outputFormat UnitTimeFormat, srcFormat UnitTimeFormat, value float64) (*UnitTimeConversion, error) {
+// 	- `outputFormat`: The valid types of time unit formats.
+// 	- `srcFormat`: The valid types of time unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetTimeConversion(outputFormat any, srcFormat any, value float64) (*UnitTimeConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/time/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3041,14 +3238,17 @@ func (s *UnitService) GetTimeConversion(outputFormat UnitTimeFormat, srcFormat U
 }
 
 // GetVelocityConversion: Convert velocity units.
+//
 // Convert a velocity unit value to another velocity unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of velocity unit formats.
-//   - `srcFormat`: The valid types of velocity unit formats.
-//   - `value`
-func (s *UnitService) GetVelocityConversion(outputFormat UnitVelocityFormat, srcFormat UnitVelocityFormat, value float64) (*UnitVelocityConversion, error) {
+// 	- `outputFormat`: The valid types of velocity unit formats.
+// 	- `srcFormat`: The valid types of velocity unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetVelocityConversion(outputFormat any, srcFormat any, value float64) (*UnitVelocityConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/velocity/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3095,14 +3295,17 @@ func (s *UnitService) GetVelocityConversion(outputFormat UnitVelocityFormat, src
 }
 
 // GetVoltageConversion: Convert voltage units.
+//
 // Convert a voltage unit value to another voltage unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of voltage unit formats.
-//   - `srcFormat`: The valid types of voltage unit formats.
-//   - `value`
-func (s *UnitService) GetVoltageConversion(outputFormat UnitVoltageFormat, srcFormat UnitVoltageFormat, value float64) (*UnitVoltageConversion, error) {
+// 	- `outputFormat`: The valid types of voltage unit formats.
+// 	- `srcFormat`: The valid types of voltage unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetVoltageConversion(outputFormat any, srcFormat any, value float64) (*UnitVoltageConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/voltage/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3149,14 +3352,17 @@ func (s *UnitService) GetVoltageConversion(outputFormat UnitVoltageFormat, srcFo
 }
 
 // GetVolumeConversion: Convert volume units.
+//
 // Convert a volume unit value to another volume unit value. This is a nice endpoint to use for helper functions.
+//
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of volume unit formats.
-//   - `srcFormat`: The valid types of volume unit formats.
-//   - `value`
-func (s *UnitService) GetVolumeConversion(outputFormat UnitVolumeFormat, srcFormat UnitVolumeFormat, value float64) (*UnitVolumeConversion, error) {
+// 	- `outputFormat`: The valid types of volume unit formats.
+// 	- `srcFormat`: The valid types of volume unit formats.
+// 	- `value`
+//
+func (s *UnitService) GetVolumeConversion(outputFormat any, srcFormat any, value float64) (*UnitVolumeConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/volume/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3203,8 +3409,10 @@ func (s *UnitService) GetVolumeConversion(outputFormat UnitVolumeFormat, srcForm
 }
 
 // GetSelf: Get your user.
+//
 // Get the user information for the authenticated user.
 // Alternatively, you can also use the `/users/me` endpoint.
+//
 func (s *UserService) GetSelf() (*User, error) {
 	// Create the url.
 	path := "/user"
@@ -3243,11 +3451,14 @@ func (s *UserService) GetSelf() (*User, error) {
 }
 
 // UpdateSelf: Update your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It updates information about the authenticated user.
+//
 //
 // Parameters
 //
-//   - `body`: The user-modifiable parts of a User.
+// 	- `body`: The user-modifiable parts of a User.
+//
 func (s *UserService) UpdateSelf(body UpdateUser) (*User, error) {
 	// Create the url.
 	path := "/user"
@@ -3295,8 +3506,10 @@ func (s *UserService) UpdateSelf(body UpdateUser) (*User, error) {
 }
 
 // DeleteSelf: Delete your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It deletes the authenticated user from KittyCAD's database.
 // This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.
+//
 func (s *UserService) DeleteSelf() error {
 	// Create the url.
 	path := "/user"
@@ -3326,19 +3539,20 @@ func (s *UserService) DeleteSelf() error {
 }
 
 // UserList: List API calls for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
+//
 // Parameters
 //
-//   - `limit`
+// 	- `limit`
+// 	- `pageToken`
+// 	- `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
-//   - `pageToken`
+// 		Currently, we only support scanning in ascending order.
 //
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
+func (s *APICallService) UserList(limit int, pageToken string, sortBy any) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/user/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -3385,11 +3599,14 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 }
 
 // GetForUser: Get an API call for a user.
+//
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
+//
 //
 // Parameters
 //
-//   - `id`
+// 	- `id`
+//
 func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 	// Create the url.
 	path := "/user/api-calls/{{.id}}"
@@ -3435,19 +3652,20 @@ func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 }
 
 // ListForUser: List API tokens for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
 // The API tokens are returned in order of creation, with the most recently created API tokens first.
 //
+//
 // Parameters
 //
-//   - `limit`
+// 	- `limit`
+// 	- `pageToken`
+// 	- `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
-//   - `pageToken`
+// 		Currently, we only support scanning in ascending order.
 //
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*APITokenResultsPage, error) {
+func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy any) (*APITokenResultsPage, error) {
 	// Create the url.
 	path := "/user/api-tokens"
 	uri := resolveRelative(s.client.server, path)
@@ -3494,7 +3712,9 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 }
 
 // CreateForUser: Create a new API token for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.
+//
 func (s *APITokenService) CreateForUser() (*APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens"
@@ -3533,11 +3753,14 @@ func (s *APITokenService) CreateForUser() (*APIToken, error) {
 }
 
 // GetForUser: Get an API token for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
+//
 //
 // Parameters
 //
-//   - `token`
+// 	- `token`
+//
 func (s *APITokenService) GetForUser(token UUID) (*APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens/{{.token}}"
@@ -3583,12 +3806,15 @@ func (s *APITokenService) GetForUser(token UUID) (*APIToken, error) {
 }
 
 // DeleteForUser: Delete an API token for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It deletes the requested API token for the user.
 // This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.
 //
+//
 // Parameters
 //
-//   - `token`
+// 	- `token`
+//
 func (s *APITokenService) DeleteForUser(token UUID) error {
 	// Create the url.
 	path := "/user/api-tokens/{{.token}}"
@@ -3625,8 +3851,10 @@ func (s *APITokenService) DeleteForUser(token UUID) error {
 }
 
 // GetSelfExtended: Get extended information about your user.
+//
 // Get the user information for the authenticated user.
 // Alternatively, you can also use the `/users-extended/me` endpoint.
+//
 func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 	// Create the url.
 	path := "/user/extended"
@@ -3665,7 +3893,9 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 }
 
 // GetFrontHashSelf: Get your user's front verification hash.
+//
 // This info is sent to front when initialing the front chat, it prevents impersonations using js hacks in the browser
+//
 func (s *UserService) GetFrontHashSelf() (*string, error) {
 	// Create the url.
 	path := "/user/front-hash"
@@ -3704,7 +3934,9 @@ func (s *UserService) GetFrontHashSelf() (*string, error) {
 }
 
 // GetOnboardingSelf: Get your user's onboarding status.
+//
 // Checks key part of their api usage to determine their onboarding progress
+//
 func (s *UserService) GetOnboardingSelf() (*Onboarding, error) {
 	// Create the url.
 	path := "/user/onboarding"
@@ -3743,8 +3975,10 @@ func (s *UserService) GetOnboardingSelf() (*Onboarding, error) {
 }
 
 // GetInformationForUser: Get payment info about your user.
+//
 // This includes billing address, phone, and name.
 // This endpoint requires authentication by any KittyCAD user. It gets the payment information for the authenticated user.
+//
 func (s *PaymentService) GetInformationForUser() (*Customer, error) {
 	// Create the url.
 	path := "/user/payment"
@@ -3783,12 +4017,15 @@ func (s *PaymentService) GetInformationForUser() (*Customer, error) {
 }
 
 // CreateInformationForUser: Create payment info for your user.
+//
 // This includes billing address, phone, and name.
 // This endpoint requires authentication by any KittyCAD user. It creates the payment information for the authenticated user.
 //
+//
 // Parameters
 //
-//   - `body`: The billing information for payments.
+// 	- `body`: The billing information for payments.
+//
 func (s *PaymentService) CreateInformationForUser(body BillingInfo) (*Customer, error) {
 	// Create the url.
 	path := "/user/payment"
@@ -3836,12 +4073,15 @@ func (s *PaymentService) CreateInformationForUser(body BillingInfo) (*Customer, 
 }
 
 // UpdateInformationForUser: Update payment info for your user.
+//
 // This includes billing address, phone, and name.
 // This endpoint requires authentication by any KittyCAD user. It updates the payment information for the authenticated user.
 //
+//
 // Parameters
 //
-//   - `body`: The billing information for payments.
+// 	- `body`: The billing information for payments.
+//
 func (s *PaymentService) UpdateInformationForUser(body BillingInfo) (*Customer, error) {
 	// Create the url.
 	path := "/user/payment"
@@ -3889,8 +4129,10 @@ func (s *PaymentService) UpdateInformationForUser(body BillingInfo) (*Customer, 
 }
 
 // DeleteInformationForUser: Delete payment info for your user.
+//
 // This includes billing address, phone, and name.
 // This endpoint requires authentication by any KittyCAD user. It deletes the payment information for the authenticated user.
+//
 func (s *PaymentService) DeleteInformationForUser() error {
 	// Create the url.
 	path := "/user/payment"
@@ -3920,7 +4162,9 @@ func (s *PaymentService) DeleteInformationForUser() error {
 }
 
 // GetBalanceForUser: Get balance for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It gets the balance information for the authenticated user.
+//
 func (s *PaymentService) GetBalanceForUser() (*CustomerBalance, error) {
 	// Create the url.
 	path := "/user/payment/balance"
@@ -3959,7 +4203,9 @@ func (s *PaymentService) GetBalanceForUser() (*CustomerBalance, error) {
 }
 
 // CreateIntentForUser: Create a payment intent for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It creates a new payment intent for the authenticated user.
+//
 func (s *PaymentService) CreateIntentForUser() (*PaymentIntent, error) {
 	// Create the url.
 	path := "/user/payment/intent"
@@ -3998,7 +4244,9 @@ func (s *PaymentService) CreateIntentForUser() (*PaymentIntent, error) {
 }
 
 // ListInvoicesForUser: List invoices for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It lists invoices for the authenticated user.
+//
 func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
 	// Create the url.
 	path := "/user/payment/invoices"
@@ -4037,7 +4285,9 @@ func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
 }
 
 // ListMethodsForUser: List payment methods for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It lists payment methods for the authenticated user.
+//
 func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
 	// Create the url.
 	path := "/user/payment/methods"
@@ -4076,11 +4326,14 @@ func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
 }
 
 // DeleteMethodForUser: Delete a payment method for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It deletes the specified payment method for the authenticated user.
+//
 //
 // Parameters
 //
-//   - `id`
+// 	- `id`
+//
 func (s *PaymentService) DeleteMethodForUser(id string) error {
 	// Create the url.
 	path := "/user/payment/methods/{{.id}}"
@@ -4117,7 +4370,9 @@ func (s *PaymentService) DeleteMethodForUser(id string) error {
 }
 
 // ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.
+//
 // This endpoint requires authentication by any KittyCAD user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
+//
 func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
 	// Create the url.
 	path := "/user/payment/tax"
@@ -4146,13 +4401,16 @@ func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
 
 }
 
-// GetForUser: Get a session for your user.
+// GetSessionFor: Get a session for your user.
+//
 // This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
+//
 //
 // Parameters
 //
-//   - `token`
-func (s *SessionService) GetForUser(token UUID) (*Session, error) {
+// 	- `token`
+//
+func (s *UserService) GetSessionFor(token UUID) (*Session, error) {
 	// Create the url.
 	path := "/user/session/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -4197,18 +4455,19 @@ func (s *SessionService) GetForUser(token UUID) (*Session, error) {
 }
 
 // List: List users.
+//
 // This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
+//
 //
 // Parameters
 //
-//   - `limit`
+// 	- `limit`
+// 	- `pageToken`
+// 	- `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
-//   - `pageToken`
+// 		Currently, we only support scanning in ascending order.
 //
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*UserResultsPage, error) {
+func (s *UserService) List(limit int, pageToken string, sortBy any) (*UserResultsPage, error) {
 	// Create the url.
 	path := "/users"
 	uri := resolveRelative(s.client.server, path)
@@ -4255,18 +4514,19 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 }
 
 // ListExtended: List users with extended information.
+//
 // This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
+//
 //
 // Parameters
 //
-//   - `limit`
+// 	- `limit`
+// 	- `pageToken`
+// 	- `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
-//   - `pageToken`
+// 		Currently, we only support scanning in ascending order.
 //
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAtSortMode) (*ExtendedUserResultsPage, error) {
+func (s *UserService) ListExtended(limit int, pageToken string, sortBy any) (*ExtendedUserResultsPage, error) {
 	// Create the url.
 	path := "/users-extended"
 	uri := resolveRelative(s.client.server, path)
@@ -4313,13 +4573,16 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 }
 
 // GetExtended: Get extended information about a user.
+//
 // To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
 // To get information about any KittyCAD user, you must be a KittyCAD employee.
 //
+//
 // Parameters
 //
-//   - `id`
+// 	- `id`
+//
 func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 	// Create the url.
 	path := "/users-extended/{{.id}}"
@@ -4365,13 +4628,16 @@ func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 }
 
 // Get: Get a user.
+//
 // To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 // Alternatively, to get information about the authenticated user, use `/user` endpoint.
 // To get information about any KittyCAD user, you must be a KittyCAD employee.
 //
+//
 // Parameters
 //
-//   - `id`
+// 	- `id`
+//
 func (s *UserService) Get(id string) (*User, error) {
 	// Create the url.
 	path := "/users/{{.id}}"
@@ -4417,23 +4683,23 @@ func (s *UserService) Get(id string) (*User, error) {
 }
 
 // ListForUser: List API calls for a user.
+//
 // This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if "me" is passed as the user id.
 // Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.
 // If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
+//
 // Parameters
 //
-//   - `id`
+// 	- `id`
+// 	- `limit`
+// 	- `pageToken`
+// 	- `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
-//   - `limit`
+// 		Currently, we only support scanning in ascending order.
 //
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
+func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy any) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/users/{{.id}}/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -4477,5 +4743,37 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// CreateTerm: Create a terminal.
+//
+// Attach to a docker container to create an interactive terminal.
+//
+func (s *ExecutorService) CreateTerm() error {
+	// Create the url.
+	path := "/ws/executor/term"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }
