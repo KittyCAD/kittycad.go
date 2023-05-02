@@ -63,7 +63,6 @@ const (
 )
 
 // AiPluginManifest: AI plugin manifest.
-//
 // This is used for OpenAI's ChatGPT plugins. You can read more about them [here](https://platform.openai.com/docs/plugins/getting-started/plugin-manifest).
 type AiPluginManifest struct {
 	// API: API specification.
@@ -131,7 +130,6 @@ const (
 )
 
 // APICallWithPrice: An API call with the price.
-//
 // This is a join of the `ApiCall` and `ApiCallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt: The date and time the API call completed billing.
@@ -189,7 +187,6 @@ type APICallWithPriceResultsPage struct {
 }
 
 // APIToken: An API token.
-//
 // These are used to authenticate users with Bearer authentication.
 type APIToken struct {
 	// CreatedAt: The date and time the API token was created.
@@ -461,7 +458,6 @@ type BillingInfo struct {
 }
 
 // CacheMetadata: Metadata about our cache.
-//
 // This is mostly used for internal purposes and debugging.
 type CacheMetadata struct {
 	// Ok: If the cache returned an ok response from ping.
@@ -539,7 +535,6 @@ type Commit struct {
 }
 
 // Connection: Metadata about a pub-sub connection.
-//
 // This is mostly used for internal purposes and debugging.
 type Connection struct {
 	// AuthTimeout: The auth timeout of the server.
@@ -1141,7 +1136,6 @@ const (
 )
 
 // CreatedAtSortMode: Supported set of sort modes for scanning by created_at only.
-//
 // Currently, we only support scanning in ascending order.
 type CreatedAtSortMode string
 
@@ -1153,7 +1147,6 @@ const (
 )
 
 // Currency: Currency is the list of supported currencies.
-//
 // This comes from the Stripe API docs: For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
 type Currency string
 
@@ -1467,7 +1460,6 @@ type Customer struct {
 }
 
 // CustomerBalance: A balance for a user.
-//
 // This holds information about the financial balance for the user.
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
@@ -1745,7 +1737,6 @@ type EmailAuthenticationForm struct {
 }
 
 // EngineMetadata: Metadata about our currently running server.
-//
 // This is mostly used for internal purposes and debugging.
 type EngineMetadata struct {
 	// AsyncJobsRunning: If any async job is currently running.
@@ -1785,7 +1776,6 @@ type Error struct {
 }
 
 // ExecutorMetadata: Metadata about our currently running server.
-//
 // This is mostly used for internal purposes and debugging.
 type ExecutorMetadata struct {
 	// DockerInfo: Information about the docker daemon.
@@ -1797,7 +1787,6 @@ type ExecutorMetadata struct {
 }
 
 // ExtendedUser: Extended user information.
-//
 // This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Front
 type ExtendedUser struct {
 	// Company: The user's company.
@@ -2023,7 +2012,6 @@ type FileSurfaceArea struct {
 }
 
 // FileSystemMetadata: Metadata about our file system.
-//
 // This is mostly used for internal purposes and debugging.
 type FileSystemMetadata struct {
 	// Ok: If the file system passed a sanity check.
@@ -2277,7 +2265,6 @@ type MetaClusterInfo struct {
 }
 
 // Metadata: Metadata about our currently running server.
-//
 // This is mostly used for internal purposes and debugging.
 type Metadata struct {
 	// Cache: Metadata about our cache.
@@ -2299,7 +2286,6 @@ type Metadata struct {
 }
 
 // Method: The Request Method (VERB)
-//
 // This type also contains constants for a number of common HTTP methods such as GET, POST, etc.
 //
 // Currently includes 8 variants representing the 8 methods defined in [RFC 7230](https://tools.ietf.org/html/rfc7231#section-4.1), plus PATCH, and an Extension variant for all extensions.
@@ -2521,7 +2507,6 @@ const (
 )
 
 // PluginsInfo: Available plugins per type.
-//
 // **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
 type PluginsInfo struct {
 	// Authorization: Names of available authorization plugins.
@@ -2535,7 +2520,6 @@ type PluginsInfo struct {
 }
 
 // PointEMetadata: Metadata about our point-e instance.
-//
 // This is mostly used for internal purposes and debugging.
 type PointEMetadata struct {
 	// Ok: If the point-e service returned an ok response from ping.
@@ -2577,7 +2561,6 @@ type Runtime struct {
 }
 
 // Session: An authentication session.
-//
 // For our UIs, these are automatically created by Next.js.
 type Session struct {
 	// CreatedAt: The date and time the session was created.
@@ -4095,7 +4078,6 @@ type UserResultsPage struct {
 }
 
 // VerificationToken: A verification token for a user.
-//
 // This is typically used to verify a user's email address.
 type VerificationToken struct {
 	// CreatedAt: The date and time the verification token was created.
