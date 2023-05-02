@@ -169,7 +169,7 @@ func (s *MetaService) GetMetrics() error {
 // 	- `outputFormat`: The valid types of output file formats.
 // 	- `body`
 //
-func (s *AiService) CreateImageTo3D(inputFormat ImageType, outputFormat any, body []byte) (*Mesh, error) {
+func (s *AiService) CreateImageTo3D(inputFormat ImageType, outputFormat FileExportFormat, body []byte) (*Mesh, error) {
 	// Create the url.
 	path := "/ai/image-to-3d/{{.input_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -229,7 +229,7 @@ func (s *AiService) CreateImageTo3D(inputFormat ImageType, outputFormat any, bod
 // 	- `outputFormat`: The valid types of output file formats.
 // 	- `prompt`
 //
-func (s *AiService) CreateTextTo3D(outputFormat any, prompt string) (*Mesh, error) {
+func (s *AiService) CreateTextTo3D(outputFormat FileExportFormat, prompt string) (*Mesh, error) {
 	// Create the url.
 	path := "/ai/text-to-3d/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -283,7 +283,7 @@ func (s *AiService) CreateTextTo3D(outputFormat any, prompt string) (*Mesh, erro
 //
 // 	- `groupBy`: The field of an API call to group by.
 //
-func (s *APICallService) GetMetrics(groupBy any) (*[]APICallQueryGroup, error) {
+func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQueryGroup, error) {
 	// Create the url.
 	path := "/api-call-metrics"
 	uri := resolveRelative(s.client.server, path)
@@ -340,7 +340,7 @@ func (s *APICallService) GetMetrics(groupBy any) (*[]APICallQueryGroup, error) {
 //
 // 		Currently, we only support scanning in ascending order.
 //
-func (s *APICallService) List(limit int, pageToken string, sortBy any) (*APICallWithPriceResultsPage, error) {
+func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -587,7 +587,7 @@ func (s *AppService) GithubWebhook(body []byte) error {
 // 		Currently, we only support scanning in ascending order.
 // 	- `status`: The status of an async API call.
 //
-func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy any, status any) (*AsyncAPICallResultsPage, error) {
+func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy CreatedAtSortMode, status APICallStatus) (*AsyncAPICallResultsPage, error) {
 	// Create the url.
 	path := "/async/operations"
 	uri := resolveRelative(s.client.server, path)
@@ -796,7 +796,7 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 //
 // 	- `constant`: The valid types of phys constant names.
 //
-func (s *ConstantService) GetPhysics(constant any) (*PhysicsConstant, error) {
+func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsConstant, error) {
 	// Create the url.
 	path := "/constant/physics/{{.constant}}"
 	uri := resolveRelative(s.client.server, path)
@@ -950,7 +950,7 @@ func (s *DrawingService) CmdBatch(body DrawingCmdReqBatch) (*DrawingOutcomes, er
 // 	- `srcFormat`: The valid types of source file formats.
 // 	- `body`
 //
-func (s *FileService) CreateCenterOfMass(srcFormat any, body []byte) (*FileCenterOfMass, error) {
+func (s *FileService) CreateCenterOfMass(srcFormat FileImportFormat, body []byte) (*FileCenterOfMass, error) {
 	// Create the url.
 	path := "/file/center-of-mass"
 	uri := resolveRelative(s.client.server, path)
@@ -1012,7 +1012,7 @@ func (s *FileService) CreateCenterOfMass(srcFormat any, body []byte) (*FileCente
 // 	- `srcFormat`: The valid types of source file formats.
 // 	- `body`
 //
-func (s *FileService) CreateConversion(outputFormat any, srcFormat any, body []byte) (*FileConversion, error) {
+func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat FileImportFormat, body []byte) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1074,7 +1074,7 @@ func (s *FileService) CreateConversion(outputFormat any, srcFormat any, body []b
 // 	- `srcFormat`: The valid types of source file formats.
 // 	- `body`
 //
-func (s *FileService) CreateDensity(materialMass float64, srcFormat any, body []byte) (*FileDensity, error) {
+func (s *FileService) CreateDensity(materialMass float64, srcFormat FileImportFormat, body []byte) (*FileDensity, error) {
 	// Create the url.
 	path := "/file/density"
 	uri := resolveRelative(s.client.server, path)
@@ -1195,7 +1195,7 @@ func (s *ExecutorService) CreateFileExecution(lang CodeLanguage, output string, 
 // 	- `srcFormat`: The valid types of source file formats.
 // 	- `body`
 //
-func (s *FileService) CreateMass(materialDensity float64, srcFormat any, body []byte) (*FileMass, error) {
+func (s *FileService) CreateMass(materialDensity float64, srcFormat FileImportFormat, body []byte) (*FileMass, error) {
 	// Create the url.
 	path := "/file/mass"
 	uri := resolveRelative(s.client.server, path)
@@ -1256,7 +1256,7 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat any, body []
 // 	- `srcFormat`: The valid types of source file formats.
 // 	- `body`
 //
-func (s *FileService) CreateSurfaceArea(srcFormat any, body []byte) (*FileSurfaceArea, error) {
+func (s *FileService) CreateSurfaceArea(srcFormat FileImportFormat, body []byte) (*FileSurfaceArea, error) {
 	// Create the url.
 	path := "/file/surface-area"
 	uri := resolveRelative(s.client.server, path)
@@ -1316,7 +1316,7 @@ func (s *FileService) CreateSurfaceArea(srcFormat any, body []byte) (*FileSurfac
 // 	- `srcFormat`: The valid types of source file formats.
 // 	- `body`
 //
-func (s *FileService) CreateVolume(srcFormat any, body []byte) (*FileVolume, error) {
+func (s *FileService) CreateVolume(srcFormat FileImportFormat, body []byte) (*FileVolume, error) {
 	// Create the url.
 	path := "/file/volume"
 	uri := resolveRelative(s.client.server, path)
@@ -1594,7 +1594,7 @@ func (s *Oauth2Service) DeviceAuthVerify(userCode string) error {
 // 	- `code`
 // 	- `state`
 //
-func (s *Oauth2Service) ProviderCallback(provider any, code string, state string) error {
+func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, state string) error {
 	// Create the url.
 	path := "/oauth2/provider/{{.provider}}/callback"
 	uri := resolveRelative(s.client.server, path)
@@ -1639,7 +1639,7 @@ func (s *Oauth2Service) ProviderCallback(provider any, code string, state string
 // 	- `provider`: An account provider.
 // 	- `callbackUrl`
 //
-func (s *Oauth2Service) ProviderConsent(provider any, callbackUrl string) (*OAuth2ClientInfo, error) {
+func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl string) (*OAuth2ClientInfo, error) {
 	// Create the url.
 	path := "/oauth2/provider/{{.provider}}/consent"
 	uri := resolveRelative(s.client.server, path)
@@ -1766,7 +1766,7 @@ func (s *MetaService) Ping() (*Pong, error) {
 // 	- `srcFormat`: The valid types of acceleration unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetAccelerationConversion(outputFormat any, srcFormat any, value float64) (*UnitAccelerationConversion, error) {
+func (s *UnitService) GetAccelerationConversion(outputFormat UnitAccelerationFormat, srcFormat UnitAccelerationFormat, value float64) (*UnitAccelerationConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/acceleration/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1823,7 +1823,7 @@ func (s *UnitService) GetAccelerationConversion(outputFormat any, srcFormat any,
 // 	- `srcFormat`: The valid types of angle formats.
 // 	- `value`
 //
-func (s *UnitService) GetAngleConversion(outputFormat any, srcFormat any, value float64) (*UnitAngleConversion, error) {
+func (s *UnitService) GetAngleConversion(outputFormat UnitAngleFormat, srcFormat UnitAngleFormat, value float64) (*UnitAngleConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/angle/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1880,7 +1880,7 @@ func (s *UnitService) GetAngleConversion(outputFormat any, srcFormat any, value 
 // 	- `srcFormat`: The valid types of angular velocity unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetAngularVelocityConversion(outputFormat any, srcFormat any, value float64) (*UnitAngularVelocityConversion, error) {
+func (s *UnitService) GetAngularVelocityConversion(outputFormat UnitAngularVelocityFormat, srcFormat UnitAngularVelocityFormat, value float64) (*UnitAngularVelocityConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/angular-velocity/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1937,7 +1937,7 @@ func (s *UnitService) GetAngularVelocityConversion(outputFormat any, srcFormat a
 // 	- `srcFormat`: The valid types of area unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetAreaConversion(outputFormat any, srcFormat any, value float64) (*UnitAreaConversion, error) {
+func (s *UnitService) GetAreaConversion(outputFormat UnitAreaFormat, srcFormat UnitAreaFormat, value float64) (*UnitAreaConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/area/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -1994,7 +1994,7 @@ func (s *UnitService) GetAreaConversion(outputFormat any, srcFormat any, value f
 // 	- `srcFormat`: The valid types of charge unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetChargeConversion(outputFormat any, srcFormat any, value float64) (*UnitChargeConversion, error) {
+func (s *UnitService) GetChargeConversion(outputFormat UnitChargeFormat, srcFormat UnitChargeFormat, value float64) (*UnitChargeConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/charge/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2051,7 +2051,7 @@ func (s *UnitService) GetChargeConversion(outputFormat any, srcFormat any, value
 // 	- `srcFormat`: The valid types of concentration unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetConcentrationConversion(outputFormat any, srcFormat any, value float64) (*UnitConcentrationConversion, error) {
+func (s *UnitService) GetConcentrationConversion(outputFormat UnitConcentrationFormat, srcFormat UnitConcentrationFormat, value float64) (*UnitConcentrationConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/concentration/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2108,7 +2108,7 @@ func (s *UnitService) GetConcentrationConversion(outputFormat any, srcFormat any
 // 	- `srcFormat`: The valid types of data transfer unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetDataTransferRateConversion(outputFormat any, srcFormat any, value float64) (*UnitDataTransferRateConversion, error) {
+func (s *UnitService) GetDataTransferRateConversion(outputFormat UnitDataTransferRateFormat, srcFormat UnitDataTransferRateFormat, value float64) (*UnitDataTransferRateConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/data-transfer-rate/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2165,7 +2165,7 @@ func (s *UnitService) GetDataTransferRateConversion(outputFormat any, srcFormat 
 // 	- `srcFormat`: The valid types of data unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetDataConversion(outputFormat any, srcFormat any, value float64) (*UnitDataConversion, error) {
+func (s *UnitService) GetDataConversion(outputFormat UnitDataFormat, srcFormat UnitDataFormat, value float64) (*UnitDataConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/data/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2222,7 +2222,7 @@ func (s *UnitService) GetDataConversion(outputFormat any, srcFormat any, value f
 // 	- `srcFormat`: The valid types of density unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetDensityConversion(outputFormat any, srcFormat any, value float64) (*UnitDensityConversion, error) {
+func (s *UnitService) GetDensityConversion(outputFormat UnitDensityFormat, srcFormat UnitDensityFormat, value float64) (*UnitDensityConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/density/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2279,7 +2279,7 @@ func (s *UnitService) GetDensityConversion(outputFormat any, srcFormat any, valu
 // 	- `srcFormat`: The valid types of energy unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetEnergyConversion(outputFormat any, srcFormat any, value float64) (*UnitEnergyConversion, error) {
+func (s *UnitService) GetEnergyConversion(outputFormat UnitEnergyFormat, srcFormat UnitEnergyFormat, value float64) (*UnitEnergyConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/energy/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2336,7 +2336,7 @@ func (s *UnitService) GetEnergyConversion(outputFormat any, srcFormat any, value
 // 	- `srcFormat`: The valid types of force unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetForceConversion(outputFormat any, srcFormat any, value float64) (*UnitForceConversion, error) {
+func (s *UnitService) GetForceConversion(outputFormat UnitForceFormat, srcFormat UnitForceFormat, value float64) (*UnitForceConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/force/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2393,7 +2393,7 @@ func (s *UnitService) GetForceConversion(outputFormat any, srcFormat any, value 
 // 	- `srcFormat`: The valid types of illuminance unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetIlluminanceConversion(outputFormat any, srcFormat any, value float64) (*UnitIlluminanceConversion, error) {
+func (s *UnitService) GetIlluminanceConversion(outputFormat UnitIlluminanceFormat, srcFormat UnitIlluminanceFormat, value float64) (*UnitIlluminanceConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/illuminance/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2450,7 +2450,7 @@ func (s *UnitService) GetIlluminanceConversion(outputFormat any, srcFormat any, 
 // 	- `srcFormat`: The valid types of length unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetLengthConversion(outputFormat any, srcFormat any, value float64) (*UnitLengthConversion, error) {
+func (s *UnitService) GetLengthConversion(outputFormat UnitLengthFormat, srcFormat UnitLengthFormat, value float64) (*UnitLengthConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/length/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2507,7 +2507,7 @@ func (s *UnitService) GetLengthConversion(outputFormat any, srcFormat any, value
 // 	- `srcFormat`: The valid types of magnetic field strength unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetMagneticFieldStrengthConversion(outputFormat any, srcFormat any, value float64) (*UnitMagneticFieldStrengthConversion, error) {
+func (s *UnitService) GetMagneticFieldStrengthConversion(outputFormat UnitMagneticFieldStrengthFormat, srcFormat UnitMagneticFieldStrengthFormat, value float64) (*UnitMagneticFieldStrengthConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/magnetic-field-strength/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2564,7 +2564,7 @@ func (s *UnitService) GetMagneticFieldStrengthConversion(outputFormat any, srcFo
 // 	- `srcFormat`: The valid types of magnetic flux unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetMagneticFluxConversion(outputFormat any, srcFormat any, value float64) (*UnitMagneticFluxConversion, error) {
+func (s *UnitService) GetMagneticFluxConversion(outputFormat UnitMagneticFluxFormat, srcFormat UnitMagneticFluxFormat, value float64) (*UnitMagneticFluxConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/magnetic-flux/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2621,7 +2621,7 @@ func (s *UnitService) GetMagneticFluxConversion(outputFormat any, srcFormat any,
 // 	- `srcFormat`: The valid types of mass unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetMassConversion(outputFormat any, srcFormat any, value float64) (*UnitMassConversion, error) {
+func (s *UnitService) GetMassConversion(outputFormat UnitMassFormat, srcFormat UnitMassFormat, value float64) (*UnitMassConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/mass/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2678,7 +2678,7 @@ func (s *UnitService) GetMassConversion(outputFormat any, srcFormat any, value f
 // 	- `srcFormat`: The valid types of metric unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetMetricPowerCubedConversion(outputFormat any, srcFormat any, value float64) (*UnitMetricPowerCubedConversion, error) {
+func (s *UnitService) GetMetricPowerCubedConversion(outputFormat UnitMetricPower, srcFormat UnitMetricPower, value float64) (*UnitMetricPowerCubedConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/metric/cubed/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2735,7 +2735,7 @@ func (s *UnitService) GetMetricPowerCubedConversion(outputFormat any, srcFormat 
 // 	- `srcFormat`: The valid types of metric unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetMetricPowerConversion(outputFormat any, srcFormat any, value float64) (*UnitMetricPowerConversion, error) {
+func (s *UnitService) GetMetricPowerConversion(outputFormat UnitMetricPower, srcFormat UnitMetricPower, value float64) (*UnitMetricPowerConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/metric/power/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2792,7 +2792,7 @@ func (s *UnitService) GetMetricPowerConversion(outputFormat any, srcFormat any, 
 // 	- `srcFormat`: The valid types of metric unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetMetricPowerSquaredConversion(outputFormat any, srcFormat any, value float64) (*UnitMetricPowerSquaredConversion, error) {
+func (s *UnitService) GetMetricPowerSquaredConversion(outputFormat UnitMetricPower, srcFormat UnitMetricPower, value float64) (*UnitMetricPowerSquaredConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/metric/squared/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2849,7 +2849,7 @@ func (s *UnitService) GetMetricPowerSquaredConversion(outputFormat any, srcForma
 // 	- `srcFormat`: The valid types of power unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetPowerConversion(outputFormat any, srcFormat any, value float64) (*UnitPowerConversion, error) {
+func (s *UnitService) GetPowerConversion(outputFormat UnitPowerFormat, srcFormat UnitPowerFormat, value float64) (*UnitPowerConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/power/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2906,7 +2906,7 @@ func (s *UnitService) GetPowerConversion(outputFormat any, srcFormat any, value 
 // 	- `srcFormat`: The valid types of pressure unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetPressureConversion(outputFormat any, srcFormat any, value float64) (*UnitPressureConversion, error) {
+func (s *UnitService) GetPressureConversion(outputFormat UnitPressureFormat, srcFormat UnitPressureFormat, value float64) (*UnitPressureConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/pressure/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2963,7 +2963,7 @@ func (s *UnitService) GetPressureConversion(outputFormat any, srcFormat any, val
 // 	- `srcFormat`: The valid types of radiation unit formats. These describe the radiation energy absorbed by a mass or material and/or how it affects the relative damage to the human body.
 // 	- `value`
 //
-func (s *UnitService) GetRadiationConversion(outputFormat any, srcFormat any, value float64) (*UnitRadiationConversion, error) {
+func (s *UnitService) GetRadiationConversion(outputFormat UnitRadiationFormat, srcFormat UnitRadiationFormat, value float64) (*UnitRadiationConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/radiation/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3020,7 +3020,7 @@ func (s *UnitService) GetRadiationConversion(outputFormat any, srcFormat any, va
 // 	- `srcFormat`: The valid types of radioactivity unit formats. These describe the amount of radiation emitted by a radioactive material.
 // 	- `value`
 //
-func (s *UnitService) GetRadioactivityConversion(outputFormat any, srcFormat any, value float64) (*UnitRadioactivityConversion, error) {
+func (s *UnitService) GetRadioactivityConversion(outputFormat UnitRadioactivityFormat, srcFormat UnitRadioactivityFormat, value float64) (*UnitRadioactivityConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/radioactivity/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3077,7 +3077,7 @@ func (s *UnitService) GetRadioactivityConversion(outputFormat any, srcFormat any
 // 	- `srcFormat`: The valid types of solid angle unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetSolidAngleConversion(outputFormat any, srcFormat any, value float64) (*UnitSolidAngleConversion, error) {
+func (s *UnitService) GetSolidAngleConversion(outputFormat UnitSolidAngleFormat, srcFormat UnitSolidAngleFormat, value float64) (*UnitSolidAngleConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/solid-angle/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3134,7 +3134,7 @@ func (s *UnitService) GetSolidAngleConversion(outputFormat any, srcFormat any, v
 // 	- `srcFormat`: The valid types of temperature unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetTemperatureConversion(outputFormat any, srcFormat any, value float64) (*UnitTemperatureConversion, error) {
+func (s *UnitService) GetTemperatureConversion(outputFormat UnitTemperatureFormat, srcFormat UnitTemperatureFormat, value float64) (*UnitTemperatureConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/temperature/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3191,7 +3191,7 @@ func (s *UnitService) GetTemperatureConversion(outputFormat any, srcFormat any, 
 // 	- `srcFormat`: The valid types of time unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetTimeConversion(outputFormat any, srcFormat any, value float64) (*UnitTimeConversion, error) {
+func (s *UnitService) GetTimeConversion(outputFormat UnitTimeFormat, srcFormat UnitTimeFormat, value float64) (*UnitTimeConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/time/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3248,7 +3248,7 @@ func (s *UnitService) GetTimeConversion(outputFormat any, srcFormat any, value f
 // 	- `srcFormat`: The valid types of velocity unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetVelocityConversion(outputFormat any, srcFormat any, value float64) (*UnitVelocityConversion, error) {
+func (s *UnitService) GetVelocityConversion(outputFormat UnitVelocityFormat, srcFormat UnitVelocityFormat, value float64) (*UnitVelocityConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/velocity/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3305,7 +3305,7 @@ func (s *UnitService) GetVelocityConversion(outputFormat any, srcFormat any, val
 // 	- `srcFormat`: The valid types of voltage unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetVoltageConversion(outputFormat any, srcFormat any, value float64) (*UnitVoltageConversion, error) {
+func (s *UnitService) GetVoltageConversion(outputFormat UnitVoltageFormat, srcFormat UnitVoltageFormat, value float64) (*UnitVoltageConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/voltage/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3362,7 +3362,7 @@ func (s *UnitService) GetVoltageConversion(outputFormat any, srcFormat any, valu
 // 	- `srcFormat`: The valid types of volume unit formats.
 // 	- `value`
 //
-func (s *UnitService) GetVolumeConversion(outputFormat any, srcFormat any, value float64) (*UnitVolumeConversion, error) {
+func (s *UnitService) GetVolumeConversion(outputFormat UnitVolumeFormat, srcFormat UnitVolumeFormat, value float64) (*UnitVolumeConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/volume/{{.src_format}}/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3552,7 +3552,7 @@ func (s *UserService) DeleteSelf() error {
 //
 // 		Currently, we only support scanning in ascending order.
 //
-func (s *APICallService) UserList(limit int, pageToken string, sortBy any) (*APICallWithPriceResultsPage, error) {
+func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/user/api-calls"
 	uri := resolveRelative(s.client.server, path)
@@ -3665,7 +3665,7 @@ func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 //
 // 		Currently, we only support scanning in ascending order.
 //
-func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy any) (*APITokenResultsPage, error) {
+func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*APITokenResultsPage, error) {
 	// Create the url.
 	path := "/user/api-tokens"
 	uri := resolveRelative(s.client.server, path)
@@ -4467,7 +4467,7 @@ func (s *UserService) GetSessionFor(token UUID) (*Session, error) {
 //
 // 		Currently, we only support scanning in ascending order.
 //
-func (s *UserService) List(limit int, pageToken string, sortBy any) (*UserResultsPage, error) {
+func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*UserResultsPage, error) {
 	// Create the url.
 	path := "/users"
 	uri := resolveRelative(s.client.server, path)
@@ -4526,7 +4526,7 @@ func (s *UserService) List(limit int, pageToken string, sortBy any) (*UserResult
 //
 // 		Currently, we only support scanning in ascending order.
 //
-func (s *UserService) ListExtended(limit int, pageToken string, sortBy any) (*ExtendedUserResultsPage, error) {
+func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAtSortMode) (*ExtendedUserResultsPage, error) {
 	// Create the url.
 	path := "/users-extended"
 	uri := resolveRelative(s.client.server, path)
@@ -4699,7 +4699,7 @@ func (s *UserService) Get(id string) (*User, error) {
 //
 // 		Currently, we only support scanning in ascending order.
 //
-func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy any) (*APICallWithPriceResultsPage, error) {
+func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/users/{{.id}}/api-calls"
 	uri := resolveRelative(s.client.server, path)

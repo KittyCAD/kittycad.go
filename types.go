@@ -17,7 +17,7 @@ type AiPluginAPI struct {
 	// IsUserAuthenticated: If the API is authenticated.
 	IsUserAuthenticated bool `json:"is_user_authenticated" yaml:"is_user_authenticated" schema:"is_user_authenticated"`
 	// Type: The type of API.
-	Type any `json:"type" yaml:"type" schema:"type"`
+	Type AiPluginAPIType `json:"type" yaml:"type" schema:"type"`
 	// Url: The url to the API's schema.
 	Url URL `json:"url" yaml:"url" schema:"url,required"`
 }
@@ -33,9 +33,9 @@ const (
 // AiPluginAuth: AI plugin auth information.
 type AiPluginAuth struct {
 	// AuthorizationType: The type of http authorization.
-	AuthorizationType any `json:"authorization_type" yaml:"authorization_type" schema:"authorization_type"`
+	AuthorizationType AiPluginHttpAuthType `json:"authorization_type" yaml:"authorization_type" schema:"authorization_type"`
 	// Type: The type of authentication.
-	Type any `json:"type" yaml:"type" schema:"type"`
+	Type AiPluginAuthType `json:"type" yaml:"type" schema:"type"`
 }
 
 // AiPluginAuthType: AI plugin auth type.
@@ -151,7 +151,7 @@ type APICallWithPrice struct {
 	// Litterbox: If the API call was spawned from the litterbox or not.
 	Litterbox bool `json:"litterbox" yaml:"litterbox" schema:"litterbox"`
 	// Method: The HTTP method requsted by the API call.
-	Method any `json:"method" yaml:"method" schema:"method,required"`
+	Method Method `json:"method" yaml:"method" schema:"method,required"`
 	// Minutes: The number of minutes the API call was billed for.
 	Minutes int `json:"minutes" yaml:"minutes" schema:"minutes"`
 	// Origin: The origin of the API call.
@@ -239,9 +239,9 @@ type AsyncAPICall struct {
 	// StartedAt: The time and date the async API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the async API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// Type: The type of async API call.
-	Type any `json:"type" yaml:"type" schema:"type,required"`
+	Type AsyncAPICallType `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the async API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the async API call.
@@ -265,13 +265,13 @@ type AsyncAPICallOutputCompletedAt struct {
 	// Output: The converted file, if completed, base64 encoded.
 	Output Base64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat FileExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the file conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
@@ -295,11 +295,11 @@ type AsyncAPICallOutputCreatedAt struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
@@ -325,11 +325,11 @@ type AsyncAPICallOutputError struct {
 	// MaterialDensity: The material density as denoted by the user.
 	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
 	// SrcFormat: The source format of the file.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
@@ -351,11 +351,11 @@ type AsyncAPICallOutputID struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
@@ -383,11 +383,11 @@ type AsyncAPICallOutputOutput struct {
 	// MaterialMass: The material mass as denoted by the user.
 	MaterialMass float64 `json:"material_mass" yaml:"material_mass" schema:"material_mass"`
 	// SrcFormat: The source format of the file.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
@@ -409,11 +409,11 @@ type AsyncAPICallOutputOutputFormat struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// SurfaceArea: The resulting surface area.
 	SurfaceArea float64 `json:"surface_area" yaml:"surface_area" schema:"surface_area"`
 	// Type:
@@ -1449,7 +1449,7 @@ type Customer struct {
 	// CreatedAt: Time at which the object was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Currency: Three-letter ISO code for the currency the customer can be charged in for recurring billing purposes.
-	Currency any `json:"currency" yaml:"currency" schema:"currency"`
+	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
 	// Delinquent: When the customer's latest invoice is billed by charging automatically, `delinquent` is `true` if the invoice's latest charge failed.
 	//
 	// When the customer's latest invoice is billed by sending an invoice, `delinquent` is `true` if the invoice isn't paid by its due date.  If an invoice is marked uncollectible by dunning, `delinquent` doesn't get reset to `false`.
@@ -1495,7 +1495,7 @@ type DeviceAccessTokenRequestForm struct {
 	// DeviceCode: The device code.
 	DeviceCode UUID `json:"device_code" yaml:"device_code" schema:"device_code,required"`
 	// GrantType: The grant type.
-	GrantType any `json:"grant_type" yaml:"grant_type" schema:"grant_type,required"`
+	GrantType OAuth2GrantType `json:"grant_type" yaml:"grant_type" schema:"grant_type,required"`
 }
 
 // DeviceAuthRequestForm: The request parameters for the OAuth 2.0 Device Authorization Grant flow.
@@ -1857,11 +1857,11 @@ type FileCenterOfMass struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -1883,13 +1883,13 @@ type FileConversion struct {
 	// Output: The converted file, if completed, base64 encoded.
 	Output Base64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat FileExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the file conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -1913,11 +1913,11 @@ type FileDensity struct {
 	// MaterialMass: The material mass as denoted by the user.
 	MaterialMass float64 `json:"material_mass" yaml:"material_mass" schema:"material_mass"`
 	// SrcFormat: The source format of the file.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -1985,11 +1985,11 @@ type FileMass struct {
 	// MaterialDensity: The material density as denoted by the user.
 	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
 	// SrcFormat: The source format of the file.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2009,11 +2009,11 @@ type FileSurfaceArea struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// SurfaceArea: The resulting surface area.
 	SurfaceArea float64 `json:"surface_area" yaml:"surface_area" schema:"surface_area"`
 	// UpdatedAt: The time and date the API call was last updated.
@@ -2043,11 +2043,11 @@ type FileVolume struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SrcFormat: The source format of the file.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2115,7 +2115,7 @@ type Invoice struct {
 	// CreatedAt: Time at which the object was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-	Currency any `json:"currency" yaml:"currency" schema:"currency"`
+	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
 	// CustomerEmail: The email address for the customer. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated.
 	CustomerEmail string `json:"customer_email" yaml:"customer_email" schema:"customer_email"`
 	// CustomerID: Customer ID. The unique identifier for the customer this invoice belongs to. This is the customer ID in the payments service, not our database customer ID.
@@ -2147,7 +2147,7 @@ type Invoice struct {
 	// Status: The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
 	//
 	// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
-	Status any `json:"status" yaml:"status" schema:"status"`
+	Status InvoiceStatus `json:"status" yaml:"status" schema:"status"`
 	// Subtotal: Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.
 	//
 	// Item discounts are already incorporated.
@@ -2167,7 +2167,7 @@ type InvoiceLineItem struct {
 	// Amount: The amount, in USD.
 	Amount float64 `json:"amount" yaml:"amount" schema:"amount"`
 	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-	Currency any `json:"currency" yaml:"currency" schema:"currency"`
+	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
 	// Description: The description.
 	Description string `json:"description" yaml:"description" schema:"description"`
 	// ID: Unique identifier for the object.
@@ -2333,7 +2333,7 @@ type NewAddress struct {
 	// City: The city component.
 	City string `json:"city" yaml:"city" schema:"city"`
 	// Country: The country component. This is a two-letter ISO country code.
-	Country any `json:"country" yaml:"country" schema:"country,required"`
+	Country CountryCode `json:"country" yaml:"country" schema:"country,required"`
 	// State: The state component.
 	State string `json:"state" yaml:"state" schema:"state"`
 	// Street1: The first street component.
@@ -2401,7 +2401,7 @@ type PaymentMethod struct {
 	// Metadata: Set of key-value pairs.
 	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Type: The type of payment method.
-	Type any `json:"type" yaml:"type" schema:"type,required"`
+	Type PaymentMethodType `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // PaymentMethodCardChecks: Card checks.
@@ -2427,7 +2427,7 @@ type PhysicsConstant struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// Constant: The constant we are returning.
-	Constant any `json:"constant" yaml:"constant" schema:"constant,required"`
+	Constant PhysicsConstantName `json:"constant" yaml:"constant" schema:"constant,required"`
 	// CreatedAt: The time and date the API call was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Error: The error the function returned, if any.
@@ -2439,7 +2439,7 @@ type PhysicsConstant struct {
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2659,13 +2659,13 @@ type UnitAccelerationConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitAccelerationFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitAccelerationFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2701,13 +2701,13 @@ type UnitAngleConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitAngleFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitAngleFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2751,13 +2751,13 @@ type UnitAngularVelocityConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitAngularVelocityFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitAngularVelocityFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2795,13 +2795,13 @@ type UnitAreaConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitAreaFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitAreaFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2845,13 +2845,13 @@ type UnitChargeConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitChargeFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitChargeFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2885,13 +2885,13 @@ type UnitConcentrationConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitConcentrationFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitConcentrationFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2929,13 +2929,13 @@ type UnitDataConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitDataFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitDataFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2973,13 +2973,13 @@ type UnitDataTransferRateConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitDataTransferRateFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitDataTransferRateFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3017,13 +3017,13 @@ type UnitDensityConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitDensityFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitDensityFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3073,13 +3073,13 @@ type UnitEnergyConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitEnergyFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitEnergyFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3127,13 +3127,13 @@ type UnitForceConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitForceFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitForceFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3173,13 +3173,13 @@ type UnitIlluminanceConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitIlluminanceFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitIlluminanceFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3217,13 +3217,13 @@ type UnitLengthConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitLengthFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitLengthFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3295,13 +3295,13 @@ type UnitMagneticFieldStrengthConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitMagneticFieldStrengthFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitMagneticFieldStrengthFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3335,13 +3335,13 @@ type UnitMagneticFluxConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitMagneticFluxFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitMagneticFluxFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3375,13 +3375,13 @@ type UnitMassConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitMassFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitMassFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3471,13 +3471,13 @@ type UnitMetricPowerConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitMetricPower `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitMetricPower `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3501,13 +3501,13 @@ type UnitMetricPowerCubedConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitMetricPower `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitMetricPower `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3531,13 +3531,13 @@ type UnitMetricPowerSquaredConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitMetricPower `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitMetricPower `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3561,13 +3561,13 @@ type UnitPowerConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitPowerFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitPowerFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3603,13 +3603,13 @@ type UnitPressureConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitPressureFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitPressureFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3649,13 +3649,13 @@ type UnitRadiationConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitRadiationFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitRadiationFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3691,13 +3691,13 @@ type UnitRadioactivityConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitRadioactivityFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitRadioactivityFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3733,13 +3733,13 @@ type UnitSolidAngleConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitSolidAngleFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitSolidAngleFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3775,13 +3775,13 @@ type UnitTemperatureConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitTemperatureFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitTemperatureFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3821,13 +3821,13 @@ type UnitTimeConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitTimeFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitTimeFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3873,13 +3873,13 @@ type UnitVelocityConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitVelocityFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitVelocityFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3919,13 +3919,13 @@ type UnitVoltageConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitVoltageFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitVoltageFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -3961,13 +3961,13 @@ type UnitVolumeConversion struct {
 	// Output: The resulting value.
 	Output float64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the unit conversion.
-	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	OutputFormat UnitVolumeFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// SrcFormat: The source format of the unit conversion.
-	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	SrcFormat UnitVolumeFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
-	Status any `json:"status" yaml:"status" schema:"status,required"`
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
