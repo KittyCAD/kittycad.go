@@ -90,19 +90,6 @@ func ExampleMetaService_Getdata() {
 }
 
 // Create a client with your token.
-func ExampleMetaService_GetMetrics() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	if err := client.Meta.GetMetrics(); err != nil {
-		panic(err)
-	}
-
-}
-
-// Create a client with your token.
 func ExampleAiService_CreateImageTo3D() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {

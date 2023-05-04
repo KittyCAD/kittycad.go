@@ -57,14 +57,6 @@
  },
  {
   "op": "add",
-  "path": "/paths/~1_meta~1metrics/get/x-go",
-  "value": {
-   "example": "// GetMetrics: Get prometheus metrics\n// \n// You must be a KittyCAD employee to perform this request.\n// \n// Create a client with your token.\nfunc ExampleMetaService_GetMetrics() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Meta.GetMetrics(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.GetMetrics"
-  }
- },
- {
-  "op": "add",
   "path": "/paths/~1ai~1image-to-3d~1{input_format}~1{output_format}/post/x-go",
   "value": {
    "example": "// CreateImageTo3D: Generate a 3D model from an image.\n// \n// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.\n// \n// \n// Parameters\n// \n// \t- `inputFormat`: An enumeration.\n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleAiService_CreateImageTo3D() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.CreateImageTo3D(kittycad.ImageTypePng, \"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
