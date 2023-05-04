@@ -122,36 +122,6 @@ func (s *MetaService) Getdata() (*Metadata, error) {
 
 }
 
-// GetMetrics: Get prometheus metrics
-// You must be a KittyCAD employee to perform this request.
-func (s *MetaService) GetMetrics() error {
-	// Create the url.
-	path := "/_meta/metrics"
-	uri := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-
-	// Return.
-	return nil
-
-}
-
 // CreateImageTo3D: Generate a 3D model from an image.
 // This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
 //
