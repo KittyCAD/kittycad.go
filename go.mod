@@ -3,7 +3,7 @@ module github.com/kittycad/kittycad.go
 go 1.18
 
 require (
-	github.com/getkin/kin-openapi v0.116.0
+	github.com/getkin/kin-openapi v0.117.0
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/schema v1.2.0
 	github.com/iancoleman/strcase v0.2.0
