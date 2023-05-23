@@ -28,8 +28,6 @@ type Client struct {
 	Beta *BetaService
 	// Constant: Constants. These are helpful as helpers.
 	Constant *ConstantService
-	// Drawing: Drawing API for updating your 3D files using the KittyCAD engine.
-	Drawing *DrawingService
 	// Executor: Endpoints that allow for code execution or creation of code execution environments.
 	Executor *ExecutorService
 	// File: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
@@ -38,6 +36,8 @@ type Client struct {
 	Hidden *HiddenService
 	// Meta: Meta information about the API.
 	Meta *MetaService
+	// Modeling: Modeling API for updating your 3D files using the KittyCAD engine.
+	Modeling *ModelingService
 	// Oauth2: Endpoints that implement OAuth 2.0 grant flows.
 	Oauth2 *Oauth2Service
 	// Payment: Operations around payments and billing.
@@ -66,9 +66,6 @@ type BetaService service
 // ConstantService: Constants. These are helpful as helpers.
 type ConstantService service
 
-// DrawingService: Drawing API for updating your 3D files using the KittyCAD engine.
-type DrawingService service
-
 // ExecutorService: Endpoints that allow for code execution or creation of code execution environments.
 type ExecutorService service
 
@@ -80,6 +77,9 @@ type HiddenService service
 
 // MetaService: Meta information about the API.
 type MetaService service
+
+// ModelingService: Modeling API for updating your 3D files using the KittyCAD engine.
+type ModelingService service
 
 // Oauth2Service: Endpoints that implement OAuth 2.0 grant flows.
 type Oauth2Service service

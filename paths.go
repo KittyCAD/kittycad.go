@@ -771,100 +771,10 @@ func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsCons
 
 }
 
-// Cmd: Submit one drawing operation.
-// Response depends on which command was submitted, so unfortunately the OpenAPI schema can't generate the right response type.
-//
-// Parameters
-//
-//   - `body`: A graphics command submitted to the KittyCAD engine via the Drawing API.
-func (s *DrawingService) Cmd(body DrawingCmdReq) error {
-	// Create the url.
-	path := "/drawing/cmd"
-	uri := resolveRelative(s.client.server, path)
-
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(body); err != nil {
-		return fmt.Errorf("encoding json body request failed: %v", err)
-	}
-
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add our headers.
-	req.Header.Add("Content-Type", "application/json")
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-
-	// Return.
-	return nil
-
-}
-
-// CmdBatch: Submit many drawing operations.
-// Parameters
-//
-//   - `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Drawing API.
-func (s *DrawingService) CmdBatch(body DrawingCmdReqBatch) (*DrawingOutcomes, error) {
-	// Create the url.
-	path := "/drawing/cmd_batch"
-	uri := resolveRelative(s.client.server, path)
-
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(body); err != nil {
-		return nil, fmt.Errorf("encoding json body request failed: %v", err)
-	}
-
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add our headers.
-	req.Header.Add("Content-Type", "application/json")
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded DrawingOutcomes
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // CreateCenterOfMass: Get CAD file center of mass.
+// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+// Currently, this endpoint returns the cartesian co-ordinate in world space measure units.
+// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
@@ -982,6 +892,9 @@ func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat 
 }
 
 // CreateDensity: Get CAD file density.
+// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+// Currently, this endpoint assumes if you are giving a material mass in a specific mass units, we return a density in mass unit per cubic measure unit.
+// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
@@ -1097,6 +1010,9 @@ func (s *ExecutorService) CreateFileExecution(lang CodeLanguage, output string, 
 }
 
 // CreateMass: Get CAD file mass.
+// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+// Currently, this endpoint assumes if you are giving a material density in a specific mass unit per cubic measure unit, we return a mass in mass units. The same mass units as passed in the material density.
+// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
@@ -1156,6 +1072,9 @@ func (s *FileService) CreateMass(materialDensity float64, srcFormat FileImportFo
 }
 
 // CreateSurfaceArea: Get CAD file surface area.
+// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+// Currently, this endpoint returns the square measure units.
+// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
@@ -1213,6 +1132,9 @@ func (s *FileService) CreateSurfaceArea(srcFormat FileImportFormat, body []byte)
 }
 
 // CreateVolume: Get CAD file volume.
+// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+// Currently, this endpoint returns the cubic measure units.
+// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
@@ -1296,6 +1218,99 @@ func (s *HiddenService) Logout() error {
 
 	// Return.
 	return nil
+
+}
+
+// Cmd: Submit one modeling operation.
+// Response depends on which command was submitted, so unfortunately the OpenAPI schema can't generate the right response type.
+//
+// Parameters
+//
+//   - `body`: A graphics command submitted to the KittyCAD engine via the Modeling API.
+func (s *ModelingService) Cmd(body ModelingCmdReq) error {
+	// Create the url.
+	path := "/modeling/cmd"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// CmdBatch: Submit many modeling operations.
+// Parameters
+//
+//   - `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Modeling API.
+func (s *ModelingService) CmdBatch(body ModelingCmdReqBatch) (*ModelingOutcomes, error) {
+	// Create the url.
+	path := "/modeling/cmd_batch"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ModelingOutcomes
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
 
 }
 
@@ -4485,6 +4500,36 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 func (s *ExecutorService) CreateTerm() error {
 	// Create the url.
 	path := "/ws/executor/term"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// CommandsWs: Open a websocket which accepts modeling commands.
+// Pass those commands to the engine via websocket, and pass responses back to the client. Basically, this is a websocket proxy between the frontend/client and the engine.
+func (s *ModelingService) CommandsWs() error {
+	// Create the url.
+	path := "/ws/modeling/commands"
 	uri := resolveRelative(s.client.server, path)
 
 	// Create the request.

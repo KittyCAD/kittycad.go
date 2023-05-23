@@ -289,35 +289,6 @@ func ExampleConstantService_GetPhysics() {
 }
 
 // Create a client with your token.
-func ExampleDrawingService_Cmd() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	if err := client.Drawing.Cmd(kittycad.DrawingCmdReq{Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), FileID: "some-string"}); err != nil {
-		panic(err)
-	}
-
-}
-
-// Create a client with your token.
-func ExampleDrawingService_CmdBatch() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Drawing.CmdBatch(kittycad.DrawingCmdReqBatch{Cmds: map[string]kittycad.DrawingCmdReq{"example": {Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), FileID: "some-string"}}, FileID: "some-string"})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// Create a client with your token.
 func ExampleFileService_CreateCenterOfMass() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -439,6 +410,35 @@ func ExampleHiddenService_Logout() {
 	if err := client.Hidden.Logout(); err != nil {
 		panic(err)
 	}
+
+}
+
+// Create a client with your token.
+func ExampleModelingService_Cmd() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Modeling.Cmd(kittycad.ModelingCmdReq{Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), FileID: "some-string"}); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleModelingService_CmdBatch() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Modeling.CmdBatch(kittycad.ModelingCmdReqBatch{Cmds: map[string]kittycad.ModelingCmdReq{"example": {Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), FileID: "some-string"}}, FileID: "some-string"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
 
 }
 
@@ -1457,6 +1457,19 @@ func ExampleExecutorService_CreateTerm() {
 	}
 
 	if err := client.Executor.CreateTerm(); err != nil {
+		panic(err)
+	}
+
+}
+
+// Create a client with your token.
+func ExampleModelingService_CommandsWs() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Modeling.CommandsWs(); err != nil {
 		panic(err)
 	}
 

@@ -161,25 +161,9 @@
  },
  {
   "op": "add",
-  "path": "/paths/~1drawing~1cmd/post/x-go",
-  "value": {
-   "example": "// Cmd: Submit one drawing operation.\n// \n// Response depends on which command was submitted, so unfortunately the OpenAPI schema can't generate the right response type.\n// \n// \n// Parameters\n// \n// \t- `body`: A graphics command submitted to the KittyCAD engine via the Drawing API.\n// \n// Create a client with your token.\nfunc ExampleDrawingService_Cmd() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Drawing.Cmd(kittycad.DrawingCmdReq{Cmd: \"\", CmdID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), FileID: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#DrawingService.Cmd"
-  }
- },
- {
-  "op": "add",
-  "path": "/paths/~1drawing~1cmd_batch/post/x-go",
-  "value": {
-   "example": "// CmdBatch: Submit many drawing operations.\n// \n// \n// Parameters\n// \n// \t- `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Drawing API.\n// \n// Create a client with your token.\nfunc ExampleDrawingService_CmdBatch() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Drawing.CmdBatch(kittycad.DrawingCmdReqBatch{Cmds: map[string]kittycad.DrawingCmdReq{\"example\": kittycad.DrawingCmdReq{Cmd: \"\", CmdID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), FileID: \"some-string\"}}, FileID: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#DrawingService.CmdBatch"
-  }
- },
- {
-  "op": "add",
   "path": "/paths/~1file~1center-of-mass/post/x-go",
   "value": {
-   "example": "// CreateCenterOfMass: Get CAD file center of mass.\n// \n// Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateCenterOfMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateCenterOfMass(\"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateCenterOfMass: Get CAD file center of mass.\n// \n// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.\n// Currently, this endpoint returns the cartesian co-ordinate in world space measure units.\n// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.\n// Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateCenterOfMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateCenterOfMass(\"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateCenterOfMass"
   }
  },
@@ -195,7 +179,7 @@
   "op": "add",
   "path": "/paths/~1file~1density/post/x-go",
   "value": {
-   "example": "// CreateDensity: Get CAD file density.\n// \n// Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialMass`\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateDensity() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateDensity(123.45, \"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateDensity: Get CAD file density.\n// \n// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.\n// Currently, this endpoint assumes if you are giving a material mass in a specific mass units, we return a density in mass unit per cubic measure unit.\n// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.\n// Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialMass`\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateDensity() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateDensity(123.45, \"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateDensity"
   }
  },
@@ -211,7 +195,7 @@
   "op": "add",
   "path": "/paths/~1file~1mass/post/x-go",
   "value": {
-   "example": "// CreateMass: Get CAD file mass.\n// \n// Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialDensity`\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateMass(123.45, \"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateMass: Get CAD file mass.\n// \n// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.\n// Currently, this endpoint assumes if you are giving a material density in a specific mass unit per cubic measure unit, we return a mass in mass units. The same mass units as passed in the material density.\n// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.\n// Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialDensity`\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateMass(123.45, \"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateMass"
   }
  },
@@ -219,7 +203,7 @@
   "op": "add",
   "path": "/paths/~1file~1surface-area/post/x-go",
   "value": {
-   "example": "// CreateSurfaceArea: Get CAD file surface area.\n// \n// Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateSurfaceArea() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateSurfaceArea(\"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateSurfaceArea: Get CAD file surface area.\n// \n// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.\n// Currently, this endpoint returns the square measure units.\n// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.\n// Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateSurfaceArea() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateSurfaceArea(\"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateSurfaceArea"
   }
  },
@@ -227,7 +211,7 @@
   "op": "add",
   "path": "/paths/~1file~1volume/post/x-go",
   "value": {
-   "example": "// CreateVolume: Get CAD file volume.\n// \n// Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateVolume() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateVolume(\"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateVolume: Get CAD file volume.\n// \n// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.\n// Currently, this endpoint returns the cubic measure units.\n// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.\n// Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateVolume() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateVolume(\"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateVolume"
   }
  },
@@ -237,6 +221,22 @@
   "value": {
    "example": "// Logout: This endpoint removes the session cookie for a user.\n// \n// This is used in logout scenarios.\n// \n// Create a client with your token.\nfunc ExampleHiddenService_Logout() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.Logout(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.Logout"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1modeling~1cmd/post/x-go",
+  "value": {
+   "example": "// Cmd: Submit one modeling operation.\n// \n// Response depends on which command was submitted, so unfortunately the OpenAPI schema can't generate the right response type.\n// \n// \n// Parameters\n// \n// \t- `body`: A graphics command submitted to the KittyCAD engine via the Modeling API.\n// \n// Create a client with your token.\nfunc ExampleModelingService_Cmd() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Modeling.Cmd(kittycad.ModelingCmdReq{Cmd: \"\", CmdID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), FileID: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ModelingService.Cmd"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1modeling~1cmd_batch/post/x-go",
+  "value": {
+   "example": "// CmdBatch: Submit many modeling operations.\n// \n// \n// Parameters\n// \n// \t- `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Modeling API.\n// \n// Create a client with your token.\nfunc ExampleModelingService_CmdBatch() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Modeling.CmdBatch(kittycad.ModelingCmdReqBatch{Cmds: map[string]kittycad.ModelingCmdReq{\"example\": kittycad.ModelingCmdReq{Cmd: \"\", CmdID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), FileID: \"some-string\"}}, FileID: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ModelingService.CmdBatch"
   }
  },
  {
@@ -765,6 +765,14 @@
   "value": {
    "example": "// CreateTerm: Create a terminal.\n// \n// Attach to a docker container to create an interactive terminal.\n// \n// Create a client with your token.\nfunc ExampleExecutorService_CreateTerm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Executor.CreateTerm(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ExecutorService.CreateTerm"
+  }
+ },
+ {
+  "op": "add",
+  "path": "/paths/~1ws~1modeling~1commands/get/x-go",
+  "value": {
+   "example": "// CommandsWs: Open a websocket which accepts modeling commands.\n// \n// Pass those commands to the engine via websocket, and pass responses back to the client. Basically, this is a websocket proxy between the frontend/client and the engine.\n// \n// Create a client with your token.\nfunc ExampleModelingService_CommandsWs() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Modeling.CommandsWs(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ModelingService.CommandsWs"
   }
  }
 ]
