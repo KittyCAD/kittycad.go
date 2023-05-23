@@ -63,6 +63,7 @@ const (
 )
 
 // AiPluginManifest: AI plugin manifest.
+//
 // This is used for OpenAI's ChatGPT plugins. You can read more about them [here](https://platform.openai.com/docs/plugins/getting-started/plugin-manifest).
 type AiPluginManifest struct {
 	// API: API specification.
@@ -130,6 +131,7 @@ const (
 )
 
 // APICallWithPrice: An API call with the price.
+//
 // This is a join of the `ApiCall` and `ApiCallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt: The date and time the API call completed billing.
@@ -187,6 +189,7 @@ type APICallWithPriceResultsPage struct {
 }
 
 // APIToken: An API token.
+//
 // These are used to authenticate users with Bearer authentication.
 type APIToken struct {
 	// CreatedAt: The date and time the API token was created.
@@ -458,6 +461,7 @@ type BillingInfo struct {
 }
 
 // CacheMetadata: Metadata about our cache.
+//
 // This is mostly used for internal purposes and debugging.
 type CacheMetadata struct {
 	// Ok: If the cache returned an ok response from ping.
@@ -535,6 +539,7 @@ type Commit struct {
 }
 
 // Connection: Metadata about a pub-sub connection.
+//
 // This is mostly used for internal purposes and debugging.
 type Connection struct {
 	// AuthTimeout: The auth timeout of the server.
@@ -1136,6 +1141,7 @@ const (
 )
 
 // CreatedAtSortMode: Supported set of sort modes for scanning by created_at only.
+//
 // Currently, we only support scanning in ascending order.
 type CreatedAtSortMode string
 
@@ -1147,6 +1153,7 @@ const (
 )
 
 // Currency: Currency is the list of supported currencies.
+//
 // This comes from the Stripe API docs: For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
 type Currency string
 
@@ -1460,6 +1467,7 @@ type Customer struct {
 }
 
 // CustomerBalance: A balance for a user.
+//
 // This holds information about the financial balance for the user.
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
@@ -1640,94 +1648,6 @@ type DockerSystemInfo struct {
 	Warnings []string `json:"warnings" yaml:"warnings" schema:"warnings"`
 }
 
-// DrawCircle is the type definition for a DrawCircle.
-type DrawCircle struct {
-	// Center: The center of the circle.
-	Center []float64 `json:"center" yaml:"center" schema:"center,required"`
-	// Radius: The radius of the circle.
-	Radius float64 `json:"radius" yaml:"radius" schema:"radius,required"`
-}
-
-// DrawingCmdDrawCircle: Draw a circle.
-type DrawingCmdDrawCircle struct {
-	// DrawCircle:
-	DrawCircle DrawCircle `json:"DrawCircle" yaml:"DrawCircle" schema:"DrawCircle,required"`
-}
-
-// Extrude is the type definition for a Extrude.
-type Extrude struct {
-	// Distance: How far to extrude.
-	Distance float64 `json:"distance" yaml:"distance" schema:"distance,required"`
-	// Sketch: Which sketch to extrude.
-	Sketch UUID `json:"sketch" yaml:"sketch" schema:"sketch,required"`
-}
-
-// DrawingCmdExtrude: Extrude a sketch.
-type DrawingCmdExtrude struct {
-	// Extrude:
-	Extrude Extrude `json:"Extrude" yaml:"Extrude" schema:"Extrude,required"`
-}
-
-// DrawingCmdReq: A graphics command submitted to the KittyCAD engine via the Drawing API.
-type DrawingCmdReq struct {
-	// Cmd: Commands that the KittyCAD engine can execute.
-	Cmd any `json:"cmd" yaml:"cmd" schema:"cmd,required"`
-	// CmdID: All commands have unique IDs. These should be randomly generated.
-	CmdID UUID `json:"cmd_id" yaml:"cmd_id" schema:"cmd_id,required"`
-	// FileID:
-	FileID string `json:"file_id" yaml:"file_id" schema:"file_id,required"`
-}
-
-// DrawingCmdReqBatch: A batch set of graphics commands submitted to the KittyCAD engine via the Drawing API.
-type DrawingCmdReqBatch struct {
-	// Cmds: A set of commands to submit to the KittyCAD engine in a batch.
-	Cmds map[string]DrawingCmdReq `json:"cmds" yaml:"cmds" schema:"cmds,required"`
-	// FileID: Which file is being drawn in.
-	FileID string `json:"file_id" yaml:"file_id" schema:"file_id,required"`
-}
-
-// DrawingError: Why a command submitted to the Drawing API failed.
-type DrawingError struct {
-	// ErrorCode: A string error code which refers to a family of errors. E.g. "InvalidInput".
-	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code,required"`
-	// ExternalMessage: Describe the specific error which occurred. Will be shown to users, not logged.
-	ExternalMessage string `json:"external_message" yaml:"external_message" schema:"external_message,required"`
-	// InternalMessage: Describe the specific error which occurred. Will be logged, not shown to users.
-	InternalMessage string `json:"internal_message" yaml:"internal_message" schema:"internal_message,required"`
-	// StatusCode: A HTTP status code.
-	StatusCode int `json:"status_code" yaml:"status_code" schema:"status_code,required"`
-}
-
-// DrawingOutcomeSuccess: Each successful command has some result. Unfortunately this isn't strongly typed, because the result depends on the command. This means the OpenAPI schema for this won't be very useful.
-type DrawingOutcomeSuccess struct {
-	// Success:
-	Success any `json:"Success" yaml:"Success" schema:"Success,required"`
-}
-
-// DrawingOutcomeError: It failed. Why? See 'struct Error' above.
-type DrawingOutcomeError struct {
-	// Error: Why a command submitted to the Drawing API failed.
-	Error DrawingError `json:"Error" yaml:"Error" schema:"Error,required"`
-}
-
-// Cancelled is the type definition for a Cancelled.
-type Cancelled struct {
-	// WhatFailed: The ID of the command that failed, cancelling this command.
-	WhatFailed UUID `json:"what_failed" yaml:"what_failed" schema:"what_failed,required"`
-}
-
-// DrawingOutcomeCancelled: Cancelled because it required the output of a previous command, which failed.
-type DrawingOutcomeCancelled struct {
-	// Cancelled:
-	Cancelled Cancelled `json:"Cancelled" yaml:"Cancelled" schema:"Cancelled,required"`
-}
-
-// DrawingOutcomes: The result from a batch of drawing commands.
-type DrawingOutcomes struct {
-	// Outcomes: The results from each command in the batch.
-	Outcomes map[string]any `json:"outcomes" yaml:"outcomes" schema:"outcomes,required"`
-}
-
 // EmailAuthenticationForm: The body of the form for email authentication.
 type EmailAuthenticationForm struct {
 	// CallbackUrl: The URL to redirect back to after we have authenticated.
@@ -1737,6 +1657,7 @@ type EmailAuthenticationForm struct {
 }
 
 // EngineMetadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type EngineMetadata struct {
 	// AsyncJobsRunning: If any async job is currently running.
@@ -1757,11 +1678,11 @@ type EngineMetadata struct {
 type Environment string
 
 const (
-	// EnvironmentDEVELOPMENT represents the Environment `"DEVELOPMENT"`.
+	// EnvironmentDEVELOPMENT: The development environment. This is for running locally.
 	EnvironmentDEVELOPMENT Environment = "DEVELOPMENT"
-	// EnvironmentPREVIEW represents the Environment `"PREVIEW"`.
+	// EnvironmentPREVIEW: The preview environment. This is when PRs are created and a service is deployed for testing.
 	EnvironmentPREVIEW Environment = "PREVIEW"
-	// EnvironmentPRODUCTION represents the Environment `"PRODUCTION"`.
+	// EnvironmentPRODUCTION: The production environment.
 	EnvironmentPRODUCTION Environment = "PRODUCTION"
 )
 
@@ -1776,6 +1697,7 @@ type Error struct {
 }
 
 // ExecutorMetadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type ExecutorMetadata struct {
 	// DockerInfo: Information about the docker daemon.
@@ -1787,6 +1709,7 @@ type ExecutorMetadata struct {
 }
 
 // ExtendedUser: Extended user information.
+//
 // This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Front
 type ExtendedUser struct {
 	// Company: The user's company.
@@ -1829,6 +1752,14 @@ type ExtendedUserResultsPage struct {
 	Items []ExtendedUser `json:"items" yaml:"items" schema:"items,required"`
 	// NextPage: token used to fetch the next page of results (if any)
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// Extrude: Command for extruding a solid.
+type Extrude struct {
+	// Distance: How far off the plane to extrude
+	Distance float64 `json:"distance" yaml:"distance" schema:"distance,required"`
+	// Target: Which sketch to extrude
+	Target UUID `json:"target" yaml:"target" schema:"target,required"`
 }
 
 // FileCenterOfMass: A file center of mass result.
@@ -2012,6 +1943,7 @@ type FileSurfaceArea struct {
 }
 
 // FileSystemMetadata: Metadata about our file system.
+//
 // This is mostly used for internal purposes and debugging.
 type FileSystemMetadata struct {
 	// Ok: If the file system passed a sanity check.
@@ -2248,6 +2180,14 @@ type LeafNode struct {
 	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
 }
 
+// Line3D: Command for adding a line.
+type Line3D struct {
+	// From: Start of the line
+	From Point3D `json:"from" yaml:"from" schema:"from,required"`
+	// To: End of the line
+	To Point3D `json:"to" yaml:"to" schema:"to,required"`
+}
+
 // Mesh is the type definition for a Mesh.
 type Mesh struct {
 	// Mesh:
@@ -2265,6 +2205,7 @@ type MetaClusterInfo struct {
 }
 
 // Metadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type Metadata struct {
 	// Cache: Metadata about our cache.
@@ -2286,6 +2227,7 @@ type Metadata struct {
 }
 
 // Method: The Request Method (VERB)
+//
 // This type also contains constants for a number of common HTTP methods such as GET, POST, etc.
 //
 // Currently includes 8 variants representing the 8 methods defined in [RFC 7230](https://tools.ietf.org/html/rfc7231#section-4.1), plus PATCH, and an Extension variant for all extensions.
@@ -2313,6 +2255,98 @@ const (
 	// MethodEXTENSION: A catch all.
 	MethodEXTENSION Method = "EXTENSION"
 )
+
+// AddLine: Command for adding a line.
+type AddLine struct {
+	// From: Start of the line
+	From Point3D `json:"from" yaml:"from" schema:"from,required"`
+	// To: End of the line
+	To Point3D `json:"to" yaml:"to" schema:"to,required"`
+}
+
+// ModelingCmdAddLine: Add a line
+type ModelingCmdAddLine struct {
+	// AddLine: Command for adding a line.
+	AddLine Line3D `json:"AddLine" yaml:"AddLine" schema:"AddLine,required"`
+}
+
+// ModelingCmdExtrude: Extrude a solid
+type ModelingCmdExtrude struct {
+	// Extrude: Command for extruding a solid.
+	Extrude Extrude `json:"Extrude" yaml:"Extrude" schema:"Extrude,required"`
+}
+
+// SelectionClick is the type definition for a SelectionClick.
+type SelectionClick struct {
+	// At: Where the mouse was clicked. TODO engine#1035: Choose a coordinate system for this.
+	At Point2D `json:"at" yaml:"at" schema:"at,required"`
+}
+
+// ModelingCmdSelectionClick: Mouse clicked on the engine window, trying to select some surface.
+type ModelingCmdSelectionClick struct {
+	// SelectionClick:
+	SelectionClick SelectionClick `json:"SelectionClick" yaml:"SelectionClick" schema:"SelectionClick,required"`
+}
+
+// ModelingCmdReq: A graphics command submitted to the KittyCAD engine via the Modeling API.
+type ModelingCmdReq struct {
+	// Cmd: Which command to submit to the Kittycad engine.
+	Cmd any `json:"cmd" yaml:"cmd" schema:"cmd,required"`
+	// CmdID: ID of command being submitted.
+	CmdID UUID `json:"cmd_id" yaml:"cmd_id" schema:"cmd_id,required"`
+	// FileID: ID of the model's file.
+	FileID string `json:"file_id" yaml:"file_id" schema:"file_id,required"`
+}
+
+// ModelingCmdReqBatch: A batch set of graphics commands submitted to the KittyCAD engine via the Modeling API.
+type ModelingCmdReqBatch struct {
+	// Cmds: A set of commands to submit to the KittyCAD engine in a batch.
+	Cmds map[string]ModelingCmdReq `json:"cmds" yaml:"cmds" schema:"cmds,required"`
+	// FileID: Which file is being drawn in.
+	FileID string `json:"file_id" yaml:"file_id" schema:"file_id,required"`
+}
+
+// ModelingError: Why a command submitted to the Modeling API failed.
+type ModelingError struct {
+	// ErrorCode: A string error code which refers to a family of errors. E.g. "InvalidInput".
+	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code,required"`
+	// ExternalMessage: Describe the specific error which occurred. Will be shown to users, not logged.
+	ExternalMessage string `json:"external_message" yaml:"external_message" schema:"external_message,required"`
+	// InternalMessage: Describe the specific error which occurred. Will be logged, not shown to users.
+	InternalMessage string `json:"internal_message" yaml:"internal_message" schema:"internal_message,required"`
+	// StatusCode: A HTTP status code.
+	StatusCode int `json:"status_code" yaml:"status_code" schema:"status_code,required"`
+}
+
+// ModelingOutcomeSuccess: Each successful command has some result. Unfortunately this isn't strongly typed, because the result depends on the command. This means the OpenAPI schema for this won't be very useful.
+type ModelingOutcomeSuccess struct {
+	// Success:
+	Success any `json:"Success" yaml:"Success" schema:"Success,required"`
+}
+
+// ModelingOutcomeError: It failed. Why? See 'struct Error' above.
+type ModelingOutcomeError struct {
+	// Error: Why a command submitted to the Modeling API failed.
+	Error ModelingError `json:"Error" yaml:"Error" schema:"Error,required"`
+}
+
+// Cancelled is the type definition for a Cancelled.
+type Cancelled struct {
+	// WhatFailed: The ID of the command that failed, cancelling this command.
+	WhatFailed UUID `json:"what_failed" yaml:"what_failed" schema:"what_failed,required"`
+}
+
+// ModelingOutcomeCancelled: Cancelled because it required the output of a previous command, which failed.
+type ModelingOutcomeCancelled struct {
+	// Cancelled:
+	Cancelled Cancelled `json:"Cancelled" yaml:"Cancelled" schema:"Cancelled,required"`
+}
+
+// ModelingOutcomes: The result from a batch of modeling commands.
+type ModelingOutcomes struct {
+	// Outcomes: The results from each command in the batch.
+	Outcomes map[string]any `json:"outcomes" yaml:"outcomes" schema:"outcomes,required"`
+}
 
 // NewAddress: The struct that is used to create a new record. This is automatically generated and has all the same fields as the main struct only it is missing the `id`.
 type NewAddress struct {
@@ -2507,6 +2541,7 @@ const (
 )
 
 // PluginsInfo: Available plugins per type.
+//
 // **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
 type PluginsInfo struct {
 	// Authorization: Names of available authorization plugins.
@@ -2519,7 +2554,26 @@ type PluginsInfo struct {
 	Volume []string `json:"volume" yaml:"volume" schema:"volume"`
 }
 
+// Point2D: A point in 2D space
+type Point2D struct {
+	// X:
+	X float64 `json:"x" yaml:"x" schema:"x,required"`
+	// Y:
+	Y float64 `json:"y" yaml:"y" schema:"y,required"`
+}
+
+// Point3D: A point in 3D space
+type Point3D struct {
+	// X:
+	X float64 `json:"x" yaml:"x" schema:"x,required"`
+	// Y:
+	Y float64 `json:"y" yaml:"y" schema:"y,required"`
+	// Z:
+	Z float64 `json:"z" yaml:"z" schema:"z,required"`
+}
+
 // PointEMetadata: Metadata about our point-e instance.
+//
 // This is mostly used for internal purposes and debugging.
 type PointEMetadata struct {
 	// Ok: If the point-e service returned an ok response from ping.
@@ -2561,6 +2615,7 @@ type Runtime struct {
 }
 
 // Session: An authentication session.
+//
 // For our UIs, these are automatically created by Next.js.
 type Session struct {
 	// CreatedAt: The date and time the session was created.
@@ -4078,6 +4133,7 @@ type UserResultsPage struct {
 }
 
 // VerificationToken: A verification token for a user.
+//
 // This is typically used to verify a user's email address.
 type VerificationToken struct {
 	// CreatedAt: The date and time the verification token was created.

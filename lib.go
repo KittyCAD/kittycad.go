@@ -58,11 +58,11 @@ func NewClient(token, userAgent string) (*Client, error) {
 	client.App = &AppService{client: client}
 	client.Beta = &BetaService{client: client}
 	client.Constant = &ConstantService{client: client}
-	client.Drawing = &DrawingService{client: client}
 	client.Executor = &ExecutorService{client: client}
 	client.File = &FileService{client: client}
 	client.Hidden = &HiddenService{client: client}
 	client.Meta = &MetaService{client: client}
+	client.Modeling = &ModelingService{client: client}
 	client.Oauth2 = &Oauth2Service{client: client}
 	client.Payment = &PaymentService{client: client}
 	client.Unit = &UnitService{client: client}
