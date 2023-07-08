@@ -308,7 +308,7 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 					} else if typeName != propName {
 						return fmt.Errorf("one of %q has a different type than the others: %q", name, value.Value.Enum[0].(string))
 					}
-					types = append(types, value.Value.Enum[0].(string))
+					types = append(types, name+" "+value.Value.Enum[0].(string))
 				} else {
 					types = append(types, name+" "+propName)
 				}
@@ -319,6 +319,10 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 	}
 
 	for index, oneOf := range s.OneOf {
+		if types[index] == "InputFormat coords" {
+			continue
+		}
+
 		// Check if we already have a schema for this one of.
 		reference, ok := spec.Components.Schemas[types[index]]
 		if !ok {

@@ -24,627 +24,651 @@
   "path": "/components/schemas/AsyncApiCallOutput/oneOf/5/properties/type"
  },
  {
-  "op": "add",
-  "path": "/info/x-go",
+  "op": "remove",
+  "path": "/components/schemas/InputFormat/oneOf/0/properties"
+ },
+ {
+  "op": "remove",
+  "path": "/components/schemas/InputFormat/oneOf/2/properties/type"
+ },
+ {
+  "op": "remove",
+  "path": "/components/schemas/OutputFormat/oneOf/0/properties/type"
+ },
+ {
+  "op": "remove",
+  "path": "/components/schemas/OutputFormat/oneOf/1/properties/type"
+ },
+ {
+  "op": "remove",
+  "path": "/components/schemas/OutputFormat/oneOf/2/properties/type"
+ },
+ {
+  "op": "remove",
+  "path": "/components/schemas/OutputFormat/oneOf/3/properties/type"
+ },
+ {
   "value": {
    "client": "// Create a client with your token.\nfunc ExampleNewClient() {\n\tclient, err := kittycad.NewClient(\"$TOKEN\", \"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\t// Call the client's methods.\n\tresult, err := client.Meta.Ping()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Println(result)\n}\n\n// - OR -\n\n// Create a new client with your token parsed from the environment\n// variable: `KITTYCAD_API_TOKEN`.\nfunc ExampleNewClientFromEnv() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\t// Call the client's methods.\n\tresult, err := client.Meta.Ping()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n}\n",
    "install": "go get github.com/kittycad/kittycad.go"
-  }
+  },
+  "op": "add",
+  "path": "/info/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1/get/x-go",
   "value": {
    "example": "// GetSchema: Get OpenAPI schema.\n// \n// Create a client with your token.\nfunc ExampleMetaService_GetSchema() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Meta.GetSchema(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.GetSchema"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1.well-known~1ai-plugin.json/get/x-go",
   "value": {
    "example": "// GetAiPluginManifest: Get AI plugin manifest.\n// \n// Create a client with your token.\nfunc ExampleMetaService_GetAiPluginManifest() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Meta.GetAiPluginManifest()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.GetAiPluginManifest"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1.well-known~1ai-plugin.json/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1_meta~1info/get/x-go",
   "value": {
    "example": "// Getdata: Get the metadata about our currently running server.\n// \n// This includes information on any of our other distributed systems it is connected to.\n// You must be a KittyCAD employee to perform this request.\n// \n// Create a client with your token.\nfunc ExampleMetaService_Getdata() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Meta.Getdata()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.Getdata"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1_meta~1info/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1ai~1image-to-3d~1{input_format}~1{output_format}/post/x-go",
   "value": {
    "example": "// CreateImageTo3D: Generate a 3D model from an image.\n// \n// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.\n// \n// \n// Parameters\n// \n// \t- `inputFormat`: An enumeration.\n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleAiService_CreateImageTo3D() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.CreateImageTo3D(kittycad.ImageTypePng, \"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AiService.CreateImageTo3D"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1ai~1image-to-3d~1{input_format}~1{output_format}/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1ai~1text-to-3d~1{output_format}/post/x-go",
   "value": {
    "example": "// CreateTextTo3D: Generate a 3D model from text.\n// \n// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `prompt`\n// \n// Create a client with your token.\nfunc ExampleAiService_CreateTextTo3D() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.CreateTextTo3D(\"\", \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AiService.CreateTextTo3D"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1ai~1text-to-3d~1{output_format}/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1api-call-metrics/get/x-go",
   "value": {
    "example": "// GetMetrics: Get API call metrics.\n// \n// This endpoint requires authentication by a KittyCAD employee. The API calls are grouped by the parameter passed.\n// \n// \n// Parameters\n// \n// \t- `groupBy`: The field of an API call to group by.\n// \n// Create a client with your token.\nfunc ExampleAPICallService_GetMetrics() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.GetMetrics(\"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.GetMetrics"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1api-call-metrics/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1api-calls/get/x-go",
   "value": {
    "example": "// List: List API calls.\n// \n// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// Create a client with your token.\nfunc ExampleAPICallService_List() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.List(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.List"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1api-calls/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1api-calls~1{id}/get/x-go",
   "value": {
    "example": "// Get: Get details of an API call.\n// \n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.\n// If the user is not authenticated to view the specified API call, then it is not returned.\n// Only KittyCAD employees can view API calls for other users.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// Create a client with your token.\nfunc ExampleAPICallService_Get() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.Get(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.Get"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1api-calls~1{id}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1apps~1github~1callback/get/x-go",
   "value": {
    "example": "// GithubCallback: Listen for callbacks to GitHub app authentication.\n// \n// This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.\n// The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleAppService_GithubCallback() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.App.GithubCallback(\"\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AppService.GithubCallback"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1apps~1github~1callback/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1apps~1github~1consent/get/x-go",
   "value": {
    "example": "// GithubConsent: Get the consent URL for GitHub app authentication.\n// \n// This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.\n// The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.\n// \n// Create a client with your token.\nfunc ExampleAppService_GithubConsent() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.App.GithubConsent()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AppService.GithubConsent"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1apps~1github~1consent/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1apps~1github~1webhook/post/x-go",
   "value": {
    "example": "// GithubWebhook: Listen for GitHub webhooks.\n// \n// These come from the GitHub app.\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleAppService_GithubWebhook() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.App.GithubWebhook([]byte(\"some-binary\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AppService.GithubWebhook"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1apps~1github~1webhook/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1async~1operations/get/x-go",
   "value": {
    "example": "// ListAsyncOperations: List async operations.\n// \n// For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.\n// This endpoint requires authentication by a KittyCAD employee.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \t- `status`: The status of an async API call.\n// \n// Create a client with your token.\nfunc ExampleAPICallService_ListAsyncOperations() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.ListAsyncOperations(123, \"some-string\", \"\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.ListAsyncOperations"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1async~1operations/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1async~1operations~1{id}/get/x-go",
   "value": {
    "example": "// GetAsyncOperation: Get an async operation.\n// \n// Get the status and output of an async operation.\n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested async operation for the user.\n// If the user is not authenticated to view the specified async operation, then it is not returned.\n// Only KittyCAD employees with the proper access can view async operations for other users.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// Create a client with your token.\nfunc ExampleAPICallService_GetAsyncOperation() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.GetAsyncOperation(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.GetAsyncOperation"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1async~1operations~1{id}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1auth~1email/post/x-go",
   "value": {
    "example": "// AuthEmail: Create an email verification request for a user.\n// \n// \n// Parameters\n// \n// \t- `body`: The body of the form for email authentication.\n// \n// Create a client with your token.\nfunc ExampleHiddenService_AuthEmail() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Hidden.AuthEmail(kittycad.EmailAuthenticationForm{CallbackUrl: kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, Email: \"example@example.com\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.AuthEmail"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1auth~1email/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1auth~1email~1callback/get/x-go",
   "value": {
    "example": "// AuthEmailCallback: Listen for callbacks for email verification for users.\n// \n// \n// Parameters\n// \n// \t- `callbackUrl`\n// \t- `email`\n// \t- `token`\n// \n// Create a client with your token.\nfunc ExampleHiddenService_AuthEmailCallback() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.AuthEmailCallback(kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, \"example@example.com\", \"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.AuthEmailCallback"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1auth~1email~1callback/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1constant~1physics~1{constant}/get/x-go",
   "value": {
    "example": "// GetPhysics: Get a physics constant.\n// \n// \n// Parameters\n// \n// \t- `constant`: The valid types of phys constant names.\n// \n// Create a client with your token.\nfunc ExampleConstantService_GetPhysics() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Constant.GetPhysics(\"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ConstantService.GetPhysics"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1constant~1physics~1{constant}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1file~1center-of-mass/post/x-go",
   "value": {
    "example": "// CreateCenterOfMass: Get CAD file center of mass.\n// \n// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.\n// Currently, this endpoint returns the cartesian co-ordinate in world space measure units.\n// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.\n// Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateCenterOfMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateCenterOfMass(\"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateCenterOfMass"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1file~1center-of-mass/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1file~1conversion~1{src_format}~1{output_format}/post/x-go",
   "value": {
-   "example": "// CreateConversion: Convert CAD file.\n// \n// Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.\n// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateConversion(\"\", \"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateConversion: Convert CAD file with defaults.\n// \n// If you wish to specify the conversion options, use the `/file/conversion` endpoint instead.\n// Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.\n// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateConversion(\"\", \"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1file~1conversion~1{src_format}~1{output_format}/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1file~1density/post/x-go",
   "value": {
    "example": "// CreateDensity: Get CAD file density.\n// \n// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.\n// Currently, this endpoint assumes if you are giving a material mass in a specific mass units, we return a density in mass unit per cubic measure unit.\n// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.\n// Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialMass`\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateDensity() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateDensity(123.45, \"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateDensity"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1file~1density/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1file~1execute~1{lang}/post/x-go",
   "value": {
    "example": "// CreateFileExecution: Execute a KittyCAD program in a specific language.\n// \n// \n// Parameters\n// \n// \t- `lang`: The language code is written in.\n// \t- `output`\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleExecutorService_CreateFileExecution() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Executor.CreateFileExecution(\"\", \"some-string\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ExecutorService.CreateFileExecution"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1file~1execute~1{lang}/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1file~1mass/post/x-go",
   "value": {
    "example": "// CreateMass: Get CAD file mass.\n// \n// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.\n// Currently, this endpoint assumes if you are giving a material density in a specific mass unit per cubic measure unit, we return a mass in mass units. The same mass units as passed in the material density.\n// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.\n// Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `materialDensity`\n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateMass() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateMass(123.45, \"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateMass"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1file~1mass/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1file~1surface-area/post/x-go",
   "value": {
    "example": "// CreateSurfaceArea: Get CAD file surface area.\n// \n// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.\n// Currently, this endpoint returns the square measure units.\n// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.\n// Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateSurfaceArea() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateSurfaceArea(\"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateSurfaceArea"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1file~1surface-area/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1file~1volume/post/x-go",
   "value": {
    "example": "// CreateVolume: Get CAD file volume.\n// \n// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.\n// Currently, this endpoint returns the cubic measure units.\n// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.\n// Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.\n// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `srcFormat`: The valid types of source file formats.\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleFileService_CreateVolume() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.File.CreateVolume(\"\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FileService.CreateVolume"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1file~1volume/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1logout/post/x-go",
   "value": {
    "example": "// Logout: This endpoint removes the session cookie for a user.\n// \n// This is used in logout scenarios.\n// \n// Create a client with your token.\nfunc ExampleHiddenService_Logout() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.Logout(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.Logout"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1logout/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1modeling~1cmd/post/x-go",
   "value": {
    "example": "// Cmd: Submit one modeling operation.\n// \n// Response depends on which command was submitted, so unfortunately the OpenAPI schema can't generate the right response type.\n// \n// \n// Parameters\n// \n// \t- `body`: A graphics command submitted to the KittyCAD engine via the Modeling API.\n// \n// Create a client with your token.\nfunc ExampleModelingService_Cmd() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Modeling.Cmd(kittycad.ModelingCmdReq{Cmd: \"\", CmdID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), FileID: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ModelingService.Cmd"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1modeling~1cmd/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1modeling~1cmd_batch/post/x-go",
   "value": {
    "example": "// CmdBatch: Submit many modeling operations.\n// \n// \n// Parameters\n// \n// \t- `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Modeling API.\n// \n// Create a client with your token.\nfunc ExampleModelingService_CmdBatch() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Modeling.CmdBatch(kittycad.ModelingCmdReqBatch{Cmds: map[string]kittycad.ModelingCmdReq{\"example\": kittycad.ModelingCmdReq{Cmd: \"\", CmdID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), FileID: \"some-string\"}}, FileID: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ModelingService.CmdBatch"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1modeling~1cmd_batch/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1oauth2~1device~1auth/post/x-go",
   "value": {
    "example": "// DeviceAuthRequest: Start an OAuth 2.0 Device Authorization Grant.\n// \n// This endpoint is designed to be accessed from an *unauthenticated* API client. It generates and records a `device_code` and `user_code` which must be verified and confirmed prior to a token being granted.\n// \n// \n// Parameters\n// \n// \t- `body`: The request parameters for the OAuth 2.0 Device Authorization Grant flow.\n// \n// Create a client with your token.\nfunc ExampleOauth2Service_DeviceAuthRequest() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Oauth2.DeviceAuthRequest(kittycad.DeviceAuthRequestForm{ClientID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.DeviceAuthRequest"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1device~1auth/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1oauth2~1device~1confirm/post/x-go",
   "value": {
    "example": "// DeviceAuthConfirm: Confirm an OAuth 2.0 Device Authorization Grant.\n// \n// This endpoint is designed to be accessed by the user agent (browser), not the client requesting the token. So we do not actually return the token here; it will be returned in response to the poll on `/oauth2/device/token`.\n// \n// \n// Parameters\n// \n// \t- `body`: The request parameters to verify the `user_code` for the OAuth 2.0 Device Authorization Grant.\n// \n// Create a client with your token.\nfunc ExampleOauth2Service_DeviceAuthConfirm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Oauth2.DeviceAuthConfirm(kittycad.DeviceAuthVerifyParams{UserCode: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.DeviceAuthConfirm"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1device~1confirm/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1oauth2~1device~1token/post/x-go",
   "value": {
    "example": "// DeviceAccessToken: Request a device access token.\n// \n// This endpoint should be polled by the client until the user code is verified and the grant is confirmed.\n// \n// \n// Parameters\n// \n// \t- `body`: The form for a device access token request.\n// \n// Create a client with your token.\nfunc ExampleOauth2Service_DeviceAccessToken() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Oauth2.DeviceAccessToken(kittycad.DeviceAccessTokenRequestForm{ClientID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), DeviceCode: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), GrantType: \"\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.DeviceAccessToken"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1device~1token/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1oauth2~1device~1verify/get/x-go",
   "value": {
    "example": "// DeviceAuthVerify: Verify an OAuth 2.0 Device Authorization Grant.\n// \n// This endpoint should be accessed in a full user agent (e.g., a browser). If the user is not logged in, we redirect them to the login page and use the `callback_url` parameter to get them to the UI verification form upon logging in. If they are logged in, we redirect them to the UI verification form on the website.\n// \n// \n// Parameters\n// \n// \t- `userCode`\n// \n// Create a client with your token.\nfunc ExampleOauth2Service_DeviceAuthVerify() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Oauth2.DeviceAuthVerify(\"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.DeviceAuthVerify"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1device~1verify/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1oauth2~1provider~1{provider}~1callback/get/x-go",
   "value": {
    "example": "// ProviderCallback: Listen for callbacks for the OAuth 2.0 provider.\n// \n// \n// Parameters\n// \n// \t- `provider`: An account provider.\n// \t- `code`\n// \t- `state`\n// \n// Create a client with your token.\nfunc ExampleOauth2Service_ProviderCallback() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Oauth2.ProviderCallback(\"\", \"some-string\", \"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.ProviderCallback"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1provider~1{provider}~1callback/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1oauth2~1provider~1{provider}~1consent/get/x-go",
   "value": {
    "example": "// ProviderConsent: Get the consent URL and other information for the OAuth 2.0 provider.\n// \n// \n// Parameters\n// \n// \t- `provider`: An account provider.\n// \t- `callbackUrl`\n// \n// Create a client with your token.\nfunc ExampleOauth2Service_ProviderConsent() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.ProviderConsent(\"\", \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.ProviderConsent"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1provider~1{provider}~1consent/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1openai~1openapi.json/get/x-go",
   "value": {
    "example": "// GetOpenaiSchema: Get AI plugin OpenAPI schema.\n// \n// This is the same as the OpenAPI schema, BUT it has some modifications to make it compatible with OpenAI. For example, descriptions must be \u003c 300 chars.\n// \n// Create a client with your token.\nfunc ExampleMetaService_GetOpenaiSchema() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Meta.GetOpenaiSchema(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.GetOpenaiSchema"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1openai~1openapi.json/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1ping/get/x-go",
   "value": {
    "example": "// Ping: Return pong.\n// \n// Create a client with your token.\nfunc ExampleMetaService_Ping() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Meta.Ping()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.Ping"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1ping/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1angle~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetAngleConversion: Convert angle units.\n// \n// Convert an angle unit value to another angle unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of angle formats.\n// \t- `outputUnit`: The valid types of angle formats.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetAngleConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetAngleConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetAngleConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1angle~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1area~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetAreaConversion: Convert area units.\n// \n// Convert an area unit value to another area unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of area units.\n// \t- `outputUnit`: The valid types of area units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetAreaConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetAreaConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetAreaConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1area~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1current~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetCurrentConversion: Convert current units.\n// \n// Convert a current unit value to another current unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of current units.\n// \t- `outputUnit`: The valid types of current units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetCurrentConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetCurrentConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetCurrentConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1current~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1energy~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetEnergyConversion: Convert energy units.\n// \n// Convert a energy unit value to another energy unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of energy units.\n// \t- `outputUnit`: The valid types of energy units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetEnergyConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetEnergyConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetEnergyConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1energy~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1force~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetForceConversion: Convert force units.\n// \n// Convert a force unit value to another force unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of force units.\n// \t- `outputUnit`: The valid types of force units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetForceConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetForceConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetForceConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1force~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1frequency~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetFrequencyConversion: Convert frequency units.\n// \n// Convert a frequency unit value to another frequency unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of frequency units.\n// \t- `outputUnit`: The valid types of frequency units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetFrequencyConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetFrequencyConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetFrequencyConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1frequency~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1length~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetLengthConversion: Convert length units.\n// \n// Convert a length unit value to another length unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of length units.\n// \t- `outputUnit`: The valid types of length units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetLengthConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetLengthConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetLengthConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1length~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1mass~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetMassConversion: Convert mass units.\n// \n// Convert a mass unit value to another mass unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of mass units.\n// \t- `outputUnit`: The valid types of mass units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetMassConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetMassConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetMassConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1mass~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1power~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetPowerConversion: Convert power units.\n// \n// Convert a power unit value to another power unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of power units.\n// \t- `outputUnit`: The valid types of power units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetPowerConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetPowerConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetPowerConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1power~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1pressure~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetPressureConversion: Convert pressure units.\n// \n// Convert a pressure unit value to another pressure unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of pressure units.\n// \t- `outputUnit`: The valid types of pressure units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetPressureConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetPressureConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetPressureConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1pressure~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1temperature~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetTemperatureConversion: Convert temperature units.\n// \n// Convert a temperature unit value to another temperature unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of temperature units.\n// \t- `outputUnit`: The valid types of temperature units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetTemperatureConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetTemperatureConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetTemperatureConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1temperature~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1torque~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetTorqueConversion: Convert torque units.\n// \n// Convert a torque unit value to another torque unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of torque units.\n// \t- `outputUnit`: The valid types of torque units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetTorqueConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetTorqueConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetTorqueConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1torque~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1unit~1conversion~1volume~1{input_unit}~1{output_unit}/get/x-go",
   "value": {
    "example": "// GetVolumeConversion: Convert volume units.\n// \n// Convert a volume unit value to another volume unit value. This is a nice endpoint to use for helper functions.\n// \n// \n// Parameters\n// \n// \t- `inputUnit`: The valid types of volume units.\n// \t- `outputUnit`: The valid types of volume units.\n// \t- `value`\n// \n// Create a client with your token.\nfunc ExampleUnitService_GetVolumeConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Unit.GetVolumeConversion(\"\", \"\", 123.45)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UnitService.GetVolumeConversion"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1unit~1conversion~1volume~1{input_unit}~1{output_unit}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user/delete/x-go",
   "value": {
    "example": "// DeleteSelf: Delete your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It deletes the authenticated user from KittyCAD's database.\n// This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.\n// \n// Create a client with your token.\nfunc ExampleUserService_DeleteSelf() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.DeleteSelf(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.DeleteSelf"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user/delete/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user/get/x-go",
   "value": {
    "example": "// GetSelf: Get your user.\n// \n// Get the user information for the authenticated user.\n// Alternatively, you can also use the `/users/me` endpoint.\n// \n// Create a client with your token.\nfunc ExampleUserService_GetSelf() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetSelf()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetSelf"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user/put/x-go",
   "value": {
    "example": "// UpdateSelf: Update your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It updates information about the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The user-modifiable parts of a User.\n// \n// Create a client with your token.\nfunc ExampleUserService_UpdateSelf() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: \"some-string\", Discord: \"some-string\", FirstName: \"some-string\", Github: \"some-string\", LastName: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.UpdateSelf"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user/put/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1api-calls/get/x-go",
   "value": {
    "example": "// UserList: List API calls for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// Create a client with your token.\nfunc ExampleAPICallService_UserList() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.UserList(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.UserList"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1api-calls/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1api-calls~1{id}/get/x-go",
   "value": {
    "example": "// GetForUser: Get an API call for a user.\n// \n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// Create a client with your token.\nfunc ExampleAPICallService_GetForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.GetForUser(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.GetForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1api-calls~1{id}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1api-tokens/get/x-go",
   "value": {
    "example": "// ListForUser: List API tokens for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.\n// The API tokens are returned in order of creation, with the most recently created API tokens first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// Create a client with your token.\nfunc ExampleAPITokenService_ListForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APIToken.ListForUser(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.ListForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1api-tokens/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1api-tokens/post/x-go",
   "value": {
    "example": "// CreateForUser: Create a new API token for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.\n// \n// Create a client with your token.\nfunc ExampleAPITokenService_CreateForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APIToken.CreateForUser()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.CreateForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1api-tokens/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1api-tokens~1{token}/delete/x-go",
   "value": {
    "example": "// DeleteForUser: Delete an API token for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It deletes the requested API token for the user.\n// This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.\n// \n// \n// Parameters\n// \n// \t- `token`\n// \n// Create a client with your token.\nfunc ExampleAPITokenService_DeleteForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.APIToken.DeleteForUser(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.DeleteForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1api-tokens~1{token}/delete/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1api-tokens~1{token}/get/x-go",
   "value": {
    "example": "// GetForUser: Get an API token for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.\n// \n// \n// Parameters\n// \n// \t- `token`\n// \n// Create a client with your token.\nfunc ExampleAPITokenService_GetForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APIToken.GetForUser(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.GetForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1api-tokens~1{token}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1extended/get/x-go",
   "value": {
    "example": "// GetSelfExtended: Get extended information about your user.\n// \n// Get the user information for the authenticated user.\n// Alternatively, you can also use the `/users-extended/me` endpoint.\n// \n// Create a client with your token.\nfunc ExampleUserService_GetSelfExtended() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetSelfExtended()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetSelfExtended"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1extended/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1front-hash/get/x-go",
   "value": {
    "example": "// GetFrontHashSelf: Get your user's front verification hash.\n// \n// This info is sent to front when initialing the front chat, it prevents impersonations using js hacks in the browser\n// \n// Create a client with your token.\nfunc ExampleUserService_GetFrontHashSelf() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetFrontHashSelf()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetFrontHashSelf"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1front-hash/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1onboarding/get/x-go",
   "value": {
    "example": "// GetOnboardingSelf: Get your user's onboarding status.\n// \n// Checks key part of their api usage to determine their onboarding progress\n// \n// Create a client with your token.\nfunc ExampleUserService_GetOnboardingSelf() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetOnboardingSelf()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetOnboardingSelf"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1onboarding/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1payment/delete/x-go",
   "value": {
    "example": "// DeleteInformationForUser: Delete payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any KittyCAD user. It deletes the payment information for the authenticated user.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_DeleteInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.DeleteInformationForUser(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.DeleteInformationForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1payment/delete/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1payment/get/x-go",
   "value": {
    "example": "// GetInformationForUser: Get payment info about your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any KittyCAD user. It gets the payment information for the authenticated user.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_GetInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetInformationForUser()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetInformationForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1payment/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1payment/post/x-go",
   "value": {
    "example": "// CreateInformationForUser: Create payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any KittyCAD user. It creates the payment information for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_CreateInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: \"some-string\", Country: \"\", State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", UserID: \"some-string\", Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.CreateInformationForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1payment/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1payment/put/x-go",
   "value": {
    "example": "// UpdateInformationForUser: Update payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any KittyCAD user. It updates the payment information for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_UpdateInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: \"some-string\", Country: \"\", State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", UserID: \"some-string\", Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.UpdateInformationForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1payment/put/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1payment~1balance/get/x-go",
   "value": {
    "example": "// GetBalanceForUser: Get balance for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It gets the balance information for the authenticated user.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_GetBalanceForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetBalanceForUser()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetBalanceForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1payment~1balance/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1payment~1intent/post/x-go",
   "value": {
    "example": "// CreateIntentForUser: Create a payment intent for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It creates a new payment intent for the authenticated user.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_CreateIntentForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.CreateIntentForUser()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.CreateIntentForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1payment~1intent/post/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1payment~1invoices/get/x-go",
   "value": {
    "example": "// ListInvoicesForUser: List invoices for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It lists invoices for the authenticated user.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_ListInvoicesForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ListInvoicesForUser()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ListInvoicesForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1payment~1invoices/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1payment~1methods/get/x-go",
   "value": {
    "example": "// ListMethodsForUser: List payment methods for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It lists payment methods for the authenticated user.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_ListMethodsForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ListMethodsForUser()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ListMethodsForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1payment~1methods/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1payment~1methods~1{id}/delete/x-go",
   "value": {
    "example": "// DeleteMethodForUser: Delete a payment method for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It deletes the specified payment method for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// Create a client with your token.\nfunc ExamplePaymentService_DeleteMethodForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.DeleteMethodForUser(\"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.DeleteMethodForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1payment~1methods~1{id}/delete/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1payment~1tax/get/x-go",
   "value": {
    "example": "// ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.\n// \n// This endpoint requires authentication by any KittyCAD user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.\n// \n// Create a client with your token.\nfunc ExamplePaymentService_ValidateCustomerTaxInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.ValidateCustomerTaxInformationForUser(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ValidateCustomerTaxInformationForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1payment~1tax/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1user~1session~1{token}/get/x-go",
   "value": {
    "example": "// GetSessionFor: Get a session for your user.\n// \n// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.\n// \n// \n// Parameters\n// \n// \t- `token`\n// \n// Create a client with your token.\nfunc ExampleUserService_GetSessionFor() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetSessionFor(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetSessionFor"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1user~1session~1{token}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1users/get/x-go",
   "value": {
    "example": "// List: List users.\n// \n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// Create a client with your token.\nfunc ExampleUserService_List() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.List(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.List"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1users/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1users-extended/get/x-go",
   "value": {
    "example": "// ListExtended: List users with extended information.\n// \n// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// Create a client with your token.\nfunc ExampleUserService_ListExtended() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.ListExtended(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.ListExtended"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1users-extended/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1users-extended~1{id}/get/x-go",
   "value": {
    "example": "// GetExtended: Get extended information about a user.\n// \n// To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.\n// Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.\n// To get information about any KittyCAD user, you must be a KittyCAD employee.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// Create a client with your token.\nfunc ExampleUserService_GetExtended() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetExtended(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetExtended"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1users-extended~1{id}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1users~1{id}/get/x-go",
   "value": {
    "example": "// Get: Get a user.\n// \n// To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.\n// Alternatively, to get information about the authenticated user, use `/user` endpoint.\n// To get information about any KittyCAD user, you must be a KittyCAD employee.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// Create a client with your token.\nfunc ExampleUserService_Get() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.Get(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.Get"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1users~1{id}/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1users~1{id}~1api-calls/get/x-go",
   "value": {
    "example": "// ListForUser: List API calls for a user.\n// \n// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if \"me\" is passed as the user id.\n// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.\n// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// Create a client with your token.\nfunc ExampleAPICallService_ListForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.ListForUser(\"some-string\", 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.ListForUser"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1users~1{id}~1api-calls/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1ws~1executor~1term/get/x-go",
   "value": {
    "example": "// CreateTerm: Create a terminal.\n// \n// Attach to a docker container to create an interactive terminal.\n// \n// Create a client with your token.\nfunc ExampleExecutorService_CreateTerm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Executor.CreateTerm(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ExecutorService.CreateTerm"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1ws~1executor~1term/get/x-go"
  },
  {
-  "op": "add",
-  "path": "/paths/~1ws~1modeling~1commands/get/x-go",
   "value": {
    "example": "// CommandsWs: Open a websocket which accepts modeling commands.\n// \n// Pass those commands to the engine via websocket, and pass responses back to the client. Basically, this is a websocket proxy between the frontend/client and the engine.\n// \n// Create a client with your token.\nfunc ExampleModelingService_CommandsWs() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Modeling.CommandsWs(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ModelingService.CommandsWs"
-  }
+  },
+  "op": "add",
+  "path": "/paths/~1ws~1modeling~1commands/get/x-go"
  }
 ]
