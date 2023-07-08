@@ -187,7 +187,7 @@
   "op": "add",
   "path": "/paths/~1file~1execute~1{lang}/post/x-go",
   "value": {
-   "example": "// CreateFileExecution: Execute a KittyCAD program in a specific language.\n// \n// \n// Parameters\n// \n// \t- `lang`: The language code is written in.\n// \t- `output`\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleExecutorService_CreateFileExecution() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Executor.CreateFileExecution(kittycad.CodeLanguageGo, \"some-string\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateFileExecution: Execute a KittyCAD program in a specific language.\n// \n// \n// Parameters\n// \n// \t- `lang`: The language code is written in.\n// \t- `output`\n// \t- `body`\n// \n// Create a client with your token.\nfunc ExampleExecutorService_CreateFileExecution() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Executor.CreateFileExecution(\"\", \"some-string\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ExecutorService.CreateFileExecution"
   }
  },

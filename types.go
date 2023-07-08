@@ -464,6 +464,18 @@ type CacheMetadata struct {
 	Ok bool `json:"ok" yaml:"ok" schema:"ok,required"`
 }
 
+// CameraDragInteractionType: The type of camera drag interaction.
+type CameraDragInteractionType string
+
+const (
+	// CameraDragInteractionTypePan: Camera pan
+	CameraDragInteractionTypePan CameraDragInteractionType = "pan"
+	// CameraDragInteractionTypeRotate: Camera rotate (revolve/orbit)
+	CameraDragInteractionTypeRotate CameraDragInteractionType = "rotate"
+	// CameraDragInteractionTypeZoom: Camera zoom (increase or decrease distance to reference point center)
+	CameraDragInteractionTypeZoom CameraDragInteractionType = "zoom"
+)
+
 // CardDetails: The card details of a payment method.
 type CardDetails struct {
 	// Brand: Card brand.
@@ -508,11 +520,11 @@ type Cluster struct {
 type CodeLanguage string
 
 const (
-	// CodeLanguageGo represents the CodeLanguage `"go"`.
+	// CodeLanguageGo: The `go` programming language.
 	CodeLanguageGo CodeLanguage = "go"
-	// CodeLanguagePython represents the CodeLanguage `"python"`.
+	// CodeLanguagePython: The `python` programming language.
 	CodeLanguagePython CodeLanguage = "python"
-	// CodeLanguageNode represents the CodeLanguage `"node"`.
+	// CodeLanguageNode: The `node` programming language.
 	CodeLanguageNode CodeLanguage = "node"
 )
 
@@ -1135,6 +1147,20 @@ const (
 	CountryCodeZW CountryCode = "ZW"
 )
 
+// Coupon: The resource representing a Coupon.
+type Coupon struct {
+	// AmountOff: Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
+	AmountOff float64 `json:"amount_off" yaml:"amount_off" schema:"amount_off"`
+	// Deleted: Always true for a deleted object.
+	Deleted bool `json:"deleted" yaml:"deleted" schema:"deleted"`
+	// ID: Unique identifier for the object.
+	ID string `json:"id" yaml:"id" schema:"id"`
+	// PercentOff: Percent that will be taken off the subtotal of any invoices for this customer for the duration of the coupon.
+	//
+	// For example, a coupon with percent_off of 50 will make a %s100 invoice %s50 instead.
+	PercentOff float64 `json:"percent_off" yaml:"percent_off" schema:"percent_off"`
+}
+
 // CreatedAtSortMode: Supported set of sort modes for scanning by created_at only.
 // Currently, we only support scanning in ascending order.
 type CreatedAtSortMode string
@@ -1502,6 +1528,12 @@ type DeviceAuthVerifyParams struct {
 	UserCode string `json:"user_code" yaml:"user_code" schema:"user_code,required"`
 }
 
+// Discount: The resource representing a Discount.
+type Discount struct {
+	// Coupon: The coupon that applied to create this discount.
+	Coupon Coupon `json:"coupon" yaml:"coupon" schema:"coupon,required"`
+}
+
 // DockerSystemInfo: Docker system info.
 type DockerSystemInfo struct {
 	// Architecture: Hardware architecture of the host, as returned by the Go runtime (`GOARCH`).  A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
@@ -1745,9 +1777,11 @@ type ExtendedUserResultsPage struct {
 
 // Extrude: Command for extruding a solid.
 type Extrude struct {
+	// Cap: Whether to cap the extrusion with a face, or not. If true, the resulting solid will be closed on all sides, like a dice. If false, it will be open on one side, like a drinking glass.
+	Cap bool `json:"cap" yaml:"cap" schema:"cap,required"`
 	// Distance: How far off the plane to extrude
 	Distance float64 `json:"distance" yaml:"distance" schema:"distance,required"`
-	// Target: Which sketch to extrude
+	// Target: Which sketch to extrude. Must be a closed 2D solid.
 	Target UUID `json:"target" yaml:"target" schema:"target,required"`
 }
 
@@ -2032,6 +2066,8 @@ type Invoice struct {
 	DefaultPaymentMethod string `json:"default_payment_method" yaml:"default_payment_method" schema:"default_payment_method"`
 	// Description: Description of the invoice.
 	Description string `json:"description" yaml:"description" schema:"description"`
+	// Discounts: The discounts applied to the invoice. This is an array of discount objects.
+	Discounts []Discount `json:"discounts" yaml:"discounts" schema:"discounts"`
 	// ID: Unique identifier for the object.
 	ID string `json:"id" yaml:"id" schema:"id"`
 	// Lines: The individual line items that make up the invoice.
@@ -2168,14 +2204,6 @@ type LeafNode struct {
 	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
 }
 
-// Line3D: Command for adding a line.
-type Line3D struct {
-	// From: Start of the line
-	From Point3D `json:"from" yaml:"from" schema:"from,required"`
-	// To: End of the line
-	To Point3D `json:"to" yaml:"to" schema:"to,required"`
-}
-
 // Mesh is the type definition for a Mesh.
 type Mesh struct {
 	// Mesh:
@@ -2242,36 +2270,102 @@ const (
 	MethodEXTENSION Method = "EXTENSION"
 )
 
-// AddLine: Command for adding a line.
-type AddLine struct {
-	// From: Start of the line
-	From Point3D `json:"from" yaml:"from" schema:"from,required"`
-	// To: End of the line
+// StartPath: Start a path.
+type StartPath string
+
+const (
+	// StartPathStartPath represents the StartPath `"StartPath"`.
+	StartPathStartPath StartPath = "StartPath"
+)
+
+// MovePathPen is the type definition for a MovePathPen.
+type MovePathPen struct {
+	// Path: The ID of the command which created the path.
+	Path UUID `json:"path" yaml:"path" schema:"path,required"`
+	// To: Where the path's pen should be.
 	To Point3D `json:"to" yaml:"to" schema:"to,required"`
 }
 
-// ModelingCmdAddLine: Add a line
-type ModelingCmdAddLine struct {
-	// AddLine: Command for adding a line.
-	AddLine Line3D `json:"AddLine" yaml:"AddLine" schema:"AddLine,required"`
+// ModelingCmdMovePathPen: Move the path's "pen".
+type ModelingCmdMovePathPen struct {
+	// MovePathPen:
+	MovePathPen MovePathPen `json:"MovePathPen" yaml:"MovePathPen" schema:"MovePathPen,required"`
 }
 
-// ModelingCmdExtrude: Extrude a solid
+// ExtendPath is the type definition for a ExtendPath.
+type ExtendPath struct {
+	// Path: The ID of the command which created the path.
+	Path UUID `json:"path" yaml:"path" schema:"path,required"`
+	// Segment: Segment to append to the path. This segment will implicitly begin at the current "pen" location.
+	Segment any `json:"segment" yaml:"segment" schema:"segment,required"`
+}
+
+// ModelingCmdExtendPath: Extend a path by adding a new segment which starts at the path's "pen". If no "pen" location has been set before (via `MovePen`), then the pen is at the origin.
+type ModelingCmdExtendPath struct {
+	// ExtendPath:
+	ExtendPath ExtendPath `json:"ExtendPath" yaml:"ExtendPath" schema:"ExtendPath,required"`
+}
+
+// ModelingCmdExtrude: Extrude a 2D solid.
 type ModelingCmdExtrude struct {
 	// Extrude: Command for extruding a solid.
 	Extrude Extrude `json:"Extrude" yaml:"Extrude" schema:"Extrude,required"`
 }
 
-// SelectionClick is the type definition for a SelectionClick.
-type SelectionClick struct {
-	// At: Where the mouse was clicked. TODO engine#1035: Choose a coordinate system for this.
-	At Point2D `json:"at" yaml:"at" schema:"at,required"`
+// ClosePath is the type definition for a ClosePath.
+type ClosePath struct {
+	// PathID: Which path to close.
+	PathID UUID `json:"path_id" yaml:"path_id" schema:"path_id,required"`
 }
 
-// ModelingCmdSelectionClick: Mouse clicked on the engine window, trying to select some surface.
-type ModelingCmdSelectionClick struct {
-	// SelectionClick:
-	SelectionClick SelectionClick `json:"SelectionClick" yaml:"SelectionClick" schema:"SelectionClick,required"`
+// ModelingCmdClosePath: Closes a path, converting it to a 2D solid.
+type ModelingCmdClosePath struct {
+	// ClosePath:
+	ClosePath ClosePath `json:"ClosePath" yaml:"ClosePath" schema:"ClosePath,required"`
+}
+
+// CameraDragStart is the type definition for a CameraDragStart.
+type CameraDragStart struct {
+	// Interaction: The type of camera drag interaction.
+	Interaction CameraDragInteractionType `json:"interaction" yaml:"interaction" schema:"interaction,required"`
+	// Window: The initial mouse position.
+	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
+}
+
+// ModelingCmdCameraDragStart: Camera drag started.
+type ModelingCmdCameraDragStart struct {
+	// CameraDragStart:
+	CameraDragStart CameraDragStart `json:"CameraDragStart" yaml:"CameraDragStart" schema:"CameraDragStart,required"`
+}
+
+// CameraDragMove is the type definition for a CameraDragMove.
+type CameraDragMove struct {
+	// Interaction: The type of camera drag interaction.
+	Interaction CameraDragInteractionType `json:"interaction" yaml:"interaction" schema:"interaction,required"`
+	// Sequence: Logical timestamp. The client should increment this with every event in the current mouse drag. That way, if the events are being sent over an unordered channel, the API can ignore the older events.
+	Sequence int `json:"sequence" yaml:"sequence" schema:"sequence"`
+	// Window: The current mouse position.
+	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
+}
+
+// ModelingCmdCameraDragMove: Camera drag continued.
+type ModelingCmdCameraDragMove struct {
+	// CameraDragMove:
+	CameraDragMove CameraDragMove `json:"CameraDragMove" yaml:"CameraDragMove" schema:"CameraDragMove,required"`
+}
+
+// CameraDragEnd is the type definition for a CameraDragEnd.
+type CameraDragEnd struct {
+	// Interaction: The type of camera drag interaction.
+	Interaction CameraDragInteractionType `json:"interaction" yaml:"interaction" schema:"interaction,required"`
+	// Window: The final mouse position.
+	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
+}
+
+// ModelingCmdCameraDragEnd: Camera drag ended.
+type ModelingCmdCameraDragEnd struct {
+	// CameraDragEnd:
+	CameraDragEnd CameraDragEnd `json:"CameraDragEnd" yaml:"CameraDragEnd" schema:"CameraDragEnd,required"`
 }
 
 // ModelingCmdReq: A graphics command submitted to the KittyCAD engine via the Modeling API.
@@ -2386,6 +2480,52 @@ type OutputFile struct {
 	Contents string `json:"contents" yaml:"contents" schema:"contents"`
 	// Name: The name of the file.
 	Name string `json:"name" yaml:"name" schema:"name"`
+}
+
+// Line is the type definition for a Line.
+type Line struct {
+	// End: End point of the line.
+	End Point3D `json:"end" yaml:"end" schema:"end,required"`
+}
+
+// PathSegmentLine: A straight line segment. Goes from the current path "pen" to the given endpoint.
+type PathSegmentLine struct {
+	// Line:
+	Line Line `json:"Line" yaml:"Line" schema:"Line,required"`
+}
+
+// Arc is the type definition for a Arc.
+type Arc struct {
+	// AngleEnd: Start of the arc along circle's perimeter.
+	AngleEnd float64 `json:"angle_end" yaml:"angle_end" schema:"angle_end,required"`
+	// AngleStart: Start of the arc along circle's perimeter.
+	AngleStart float64 `json:"angle_start" yaml:"angle_start" schema:"angle_start,required"`
+	// Center: Center of the circle
+	Center Point2D `json:"center" yaml:"center" schema:"center,required"`
+	// Radius: Radius of the circle
+	Radius float64 `json:"radius" yaml:"radius" schema:"radius,required"`
+}
+
+// PathSegmentArc: A circular arc segment.
+type PathSegmentArc struct {
+	// Arc:
+	Arc Arc `json:"Arc" yaml:"Arc" schema:"Arc,required"`
+}
+
+// Bezier is the type definition for a Bezier.
+type Bezier struct {
+	// Control1: First control point.
+	Control1 Point3D `json:"control1" yaml:"control1" schema:"control1,required"`
+	// Control2: Second control point.
+	Control2 Point3D `json:"control2" yaml:"control2" schema:"control2,required"`
+	// End: Final control point.
+	End Point3D `json:"end" yaml:"end" schema:"end,required"`
+}
+
+// PathSegmentBezier: A cubic bezier curve segment. Start at the end of the current line, go through control point 1 and 2, then end at a given point.
+type PathSegmentBezier struct {
+	// Bezier:
+	Bezier Bezier `json:"Bezier" yaml:"Bezier" schema:"Bezier,required"`
 }
 
 // PaymentIntent: A payment intent response.

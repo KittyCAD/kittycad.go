@@ -313,6 +313,8 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 					types = append(types, name+" "+propName)
 				}
 			}
+		} else if v.Value.Type == "string" && v.Value.Enum != nil && len(v.Value.Enum) == 1 {
+			types = append(types, v.Value.Enum[0].(string))
 		}
 	}
 

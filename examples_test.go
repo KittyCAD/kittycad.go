@@ -343,7 +343,7 @@ func ExampleExecutorService_CreateFileExecution() {
 		panic(err)
 	}
 
-	result, err := client.Executor.CreateFileExecution(kittycad.CodeLanguageGo, "some-string", []byte("some-binary"))
+	result, err := client.Executor.CreateFileExecution("", "some-string", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}

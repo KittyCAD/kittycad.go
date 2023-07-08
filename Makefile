@@ -17,6 +17,7 @@ VERSION := $(shell cat $(CURDIR)/VERSION.txt)
 generate:
 	go install golang.org/x/tools/cmd/goimports@latest || go get -u golang.org/x/tools/cmd/goimports
 	go install golang.org/x/lint/golint || go get -u golang.org/x/lint/golint
+	go install github.com/sirupsen/logrus || go get github.com/sirupsen/logrus
 	go build -o $(CURDIR)/generate $(CURDIR)/cmd
 	./generate
 	goimports -w *.go
