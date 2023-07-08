@@ -259,12 +259,18 @@ type AsyncAPICallOutputCompletedAt struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Output: The converted file, if completed, base64 encoded.
+	// Output: The converted file (if single file conversion), if completed, base64 encoded. This field is deprecated, and will be removed in a future release. Use `outputs` instead.
 	Output Base64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
 	OutputFormat FileExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// OutputFormatOptions: The output format options of the file conversion.
+	OutputFormatOptions any `json:"output_format_options" yaml:"output_format_options" schema:"output_format_options"`
+	// Outputs: The converted files (if multiple file conversion), if completed, base64 encoded. The key of the map is the path of the output file.
+	Outputs map[string]Base64 `json:"outputs" yaml:"outputs" schema:"outputs"`
 	// SrcFormat: The source format of the file conversion.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// SrcFormatOptions: The source format options of the file conversion.
+	SrcFormatOptions any `json:"src_format_options" yaml:"src_format_options" schema:"src_format_options"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
@@ -446,6 +452,27 @@ const (
 	// AsyncAPICallTypeFileSurfaceArea: File surface area.
 	AsyncAPICallTypeFileSurfaceArea AsyncAPICallType = "FileSurfaceArea"
 )
+
+// Axi: Co-ordinate axis specifier.
+// See [cglearn.eu] for background reading.
+//
+// [cglearn.eu]: https://cglearn.eu/pub/computer-graphics/introduction-to-geometry#material-coordinate-systems-1
+type Axi string
+
+const (
+	// AxiY: 'Y' axis.
+	AxiY Axi = "y"
+	// AxiZ: 'Z' axis.
+	AxiZ Axi = "z"
+)
+
+// AxisDirectionPair: An [`Axis`] paired with a [`Direction`].
+type AxisDirectionPair struct {
+	// Axis: Axis specifier.
+	Axis Axi `json:"axis" yaml:"axis" schema:"axis,required"`
+	// Direction: Specifies which direction the axis is pointing.
+	Direction Direction `json:"direction" yaml:"direction" schema:"direction,required"`
+}
 
 // BillingInfo: The billing information for payments.
 type BillingInfo struct {
@@ -1528,6 +1555,16 @@ type DeviceAuthVerifyParams struct {
 	UserCode string `json:"user_code" yaml:"user_code" schema:"user_code,required"`
 }
 
+// Direction: Specifies the sign of a co-ordinate axis.
+type Direction string
+
+const (
+	// DirectionPositive: Increasing numbers.
+	DirectionPositive Direction = "positive"
+	// DirectionNegative: Decreasing numbers.
+	DirectionNegative Direction = "negative"
+)
+
 // Discount: The resource representing a Discount.
 type Discount struct {
 	// Coupon: The coupon that applied to create this discount.
@@ -1823,12 +1860,18 @@ type FileConversion struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Output: The converted file, if completed, base64 encoded.
+	// Output: The converted file (if single file conversion), if completed, base64 encoded. This field is deprecated, and will be removed in a future release. Use `outputs` instead.
 	Output Base64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
 	OutputFormat FileExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// OutputFormatOptions: The output format options of the file conversion.
+	OutputFormatOptions any `json:"output_format_options" yaml:"output_format_options" schema:"output_format_options"`
+	// Outputs: The converted files (if multiple file conversion), if completed, base64 encoded. The key of the map is the path of the output file.
+	Outputs map[string]Base64 `json:"outputs" yaml:"outputs" schema:"outputs"`
 	// SrcFormat: The source format of the file conversion.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// SrcFormatOptions: The source format options of the file conversion.
+	SrcFormatOptions any `json:"src_format_options" yaml:"src_format_options" schema:"src_format_options"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
@@ -1879,7 +1922,9 @@ const (
 	FileExportFormatFbx FileExportFormat = "fbx"
 	// FileExportFormatFbxb: The FBX file format (in binary). <https://en.wikipedia.org/wiki/FBX>
 	FileExportFormatFbxb FileExportFormat = "fbxb"
-	// FileExportFormatObj: The OBJ file format. A zip file containing both the obj file itself and its associated mtl file for full processing. <https://en.wikipedia.org/wiki/Wavefront_.obj_file>> The OBJ file format. <https://en.wikipedia.org/wiki/Wavefront_.obj_file> It may or may not have an an attached material (mtl // mtllib) within the file, but we interact with it as if it does not.
+	// FileExportFormatGltf: glTF 2.0. We refer to this as glTF since that is how our customers refer to it, although by default it will be in binary format and thus technically (glb).
+	FileExportFormatGltf FileExportFormat = "gltf"
+	// FileExportFormatObj: The OBJ file format. <https://en.wikipedia.org/wiki/Wavefront_.obj_file> It may or may not have an an attached material (mtl // mtllib) within the file, but we interact with it as if it does not.
 	FileExportFormatObj FileExportFormat = "obj"
 	// FileExportFormatPly: The PLY file format. <https://en.wikipedia.org/wiki/PLY_(file_format)>
 	FileExportFormatPly FileExportFormat = "ply"
@@ -1899,8 +1944,8 @@ const (
 	FileImportFormatDxf FileImportFormat = "dxf"
 	// FileImportFormatFbx: The FBX file format. <https://en.wikipedia.org/wiki/FBX>
 	FileImportFormatFbx FileImportFormat = "fbx"
-	// FileImportFormatObjZip: The OBJ file format. A zip file containing both the obj file itself and its associated mtl file for full processing. <https://en.wikipedia.org/wiki/Wavefront_.obj_file>>
-	FileImportFormatObjZip FileImportFormat = "obj_zip"
+	// FileImportFormatGltf: glTF 2.0.
+	FileImportFormatGltf FileImportFormat = "gltf"
 	// FileImportFormatObj: The OBJ file format. <https://en.wikipedia.org/wiki/Wavefront_.obj_file> It may or may not have an an attached material (mtl // mtllib) within the file, but we interact with it as if it does not.
 	FileImportFormatObj FileImportFormat = "obj"
 	// FileImportFormatPly: The PLY file format. <https://en.wikipedia.org/wiki/PLY_(file_format)>
@@ -2034,6 +2079,24 @@ type IndexInfo struct {
 	//
 	// **Warning**: Insecure registries can be useful when running a local registry. However, because its use creates security vulnerabilities it should ONLY be enabled for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
 	Secure bool `json:"secure" yaml:"secure" schema:"secure"`
+}
+
+// InputFormatGltf: Binary glTF 2.0. We refer to this as glTF since that is how our customers refer to it, but this can also import binary glTF (glb).
+type InputFormatGltf struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// InputFormatStep: Wavefront OBJ format.
+type InputFormatStep struct {
+	// Coords: Co-ordinate system of input data.
+	//
+	// Defaults to the [KittyCAD co-ordinate system].
+	//
+	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
+	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // Invoice: An invoice.
@@ -2482,6 +2545,52 @@ type OutputFile struct {
 	Name string `json:"name" yaml:"name" schema:"name"`
 }
 
+// OutputFormatStorage: glTF 2.0. We refer to this as glTF since that is how our customers refer to it, although by default it will be in binary format and thus technically (glb). If you prefer ascii output, you can set that option for the export.
+type OutputFormatStorage struct {
+	// Storage: Specifies which kind of glTF 2.0 will be exported.
+	Storage Storage `json:"storage" yaml:"storage" schema:"storage,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OutputFormatGltf: Wavefront OBJ format.
+type OutputFormatGltf struct {
+	// Coords: Co-ordinate system of output data.
+	//
+	// Defaults to the [KittyCAD co-ordinate system].
+	//
+	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
+	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OutputFormatCoords: ISO 10303-21 (STEP) format.
+type OutputFormatCoords struct {
+	// Coords: Co-ordinate system of output data.
+	//
+	// Defaults to the [KittyCAD co-ordinate system].
+	//
+	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
+	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OutputFormatObj: *ST**ereo**L**ithography format.
+type OutputFormatObj struct {
+	// Coords: Co-ordinate system of output data.
+	//
+	// Defaults to the [KittyCAD co-ordinate system].
+	//
+	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
+	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
+	// Storage: Export storage.
+	Storage Storage `json:"storage" yaml:"storage" schema:"storage,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // Line is the type definition for a Line.
 type Line struct {
 	// End: End point of the line.
@@ -2753,6 +2862,39 @@ type Session struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user that the session belongs to.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// Storage: Describes the storage format of a glTF 2.0 scene.
+type Storage string
+
+const (
+	// StorageBinary: Binary glTF 2.0.
+	//
+	// This is a single binary with .glb extension.
+	//
+	// This is the default setting.
+	StorageBinary Storage = "binary"
+	// StorageStandard: Standard glTF 2.0.
+	//
+	// This is a JSON file with .gltf extension paired with a separate binary blob file with .bin extension.
+	StorageStandard Storage = "standard"
+	// StorageEmbedded: Embedded glTF 2.0.
+	//
+	// Single JSON file with .gltf extension binary data encoded as base64 data URIs.
+	StorageEmbedded Storage = "embedded"
+)
+
+// System: Co-ordinate system definition.
+// The `up` axis must be orthogonal to the `forward` axis.
+//
+// See [cglearn.eu] for background reading.
+//
+// [cglearn.eu](https://cglearn.eu/pub/computer-graphics/introduction-to-geometry#material-coordinate-systems-1)
+type System struct {
+	// Forward: Axis the front face of a model looks along.
+	Forward AxisDirectionPair `json:"forward" yaml:"forward" schema:"forward,required"`
+	// Up: Axis pointing up and away from a model.
+	Up AxisDirectionPair `json:"up" yaml:"up" schema:"up,required"`
 }
 
 // SystemInfoCgroupDriverEnum is the type definition for a SystemInfoCgroupDriverEnum.
