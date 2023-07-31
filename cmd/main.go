@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/iancoleman/strcase"
 	"github.com/sirupsen/logrus"
 	"github.com/wI2L/jsondiff"
 )
@@ -17,6 +18,19 @@ import (
 // Embed our go code files.
 //go:embed *.go
 var goCodeFiles embed.FS
+
+func init() {
+	// results in "Api" using ToCamel("API")
+	// results in "api" using ToLowerCamel("API")
+	strcase.ConfigureAcronym("API", "api")
+	strcase.ConfigureAcronym("UUID", "uuid")
+	strcase.ConfigureAcronym("URL", "url")
+	strcase.ConfigureAcronym("IP", "ip")
+	strcase.ConfigureAcronym("ID", "id")
+	strcase.ConfigureAcronym("JSON", "json")
+	strcase.ConfigureAcronym("GPU", "gpu")
+
+}
 
 func main() {
 	if err := run(); err != nil {

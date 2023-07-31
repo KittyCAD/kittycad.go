@@ -26,8 +26,8 @@ type AiPluginAPI struct {
 type AiPluginAPIType string
 
 const (
-	// AiPluginAPITypeOpenapi: An OpenAPI specification.
-	AiPluginAPITypeOpenapi AiPluginAPIType = "openapi"
+	// AiPluginAPItypeOpenapi: An OpenAPI specification.
+	AiPluginAPItypeOpenapi AiPluginAPIType = "openapi"
 )
 
 // AiPluginAuth: AI plugin auth information.
@@ -63,6 +63,7 @@ const (
 )
 
 // AiPluginManifest: AI plugin manifest.
+//
 // This is used for OpenAI's ChatGPT plugins. You can read more about them [here](https://platform.openai.com/docs/plugins/getting-started/plugin-manifest).
 type AiPluginManifest struct {
 	// API: API specification.
@@ -130,6 +131,7 @@ const (
 )
 
 // APICallWithPrice: An API call with the price.
+//
 // This is a join of the `ApiCall` and `ApiCallPrice` tables.
 type APICallWithPrice struct {
 	// CompletedAt: The date and time the API call completed billing.
@@ -187,6 +189,7 @@ type APICallWithPriceResultsPage struct {
 }
 
 // APIToken: An API token.
+//
 // These are used to authenticate users with Bearer authentication.
 type APIToken struct {
 	// CreatedAt: The date and time the API token was created.
@@ -285,8 +288,10 @@ type AsyncAPICallOutputCompletedAt struct {
 
 // AsyncAPICallOutputCreatedAt: File center of mass.
 type AsyncAPICallOutputCreatedAt struct {
-	// CenterOfMass: The resulting center of mass.
-	CenterOfMass []float64 `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
+	// CenterOfMass: The resulting center of mass. This is deprecated and will be removed in a future release. Use `centers_of_mass` instead.
+	CenterOfMass Point3D `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
+	// CentersOfMass: The center of mass for each mesh in the file. The key of the hash map is the mesh name.
+	CentersOfMass map[string]Point3D `json:"centers_of_mass" yaml:"centers_of_mass" schema:"centers_of_mass"`
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -297,6 +302,8 @@ type AsyncAPICallOutputCreatedAt struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// OutputUnit: The output unit for the center of mass.
+	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
@@ -323,10 +330,16 @@ type AsyncAPICallOutputError struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Mass: The resulting mass.
+	// Mass: The resulting mass. This is deprecated and will be removed in a future release, use `masses` instead.
 	Mass float64 `json:"mass" yaml:"mass" schema:"mass"`
+	// Masses: The mass for each mesh in the file. The key of the hash map is the mesh name.
+	Masses map[string]float64 `json:"masses" yaml:"masses" schema:"masses"`
 	// MaterialDensity: The material density as denoted by the user.
 	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
+	// MaterialDensityUnit: The material density unit.
+	MaterialDensityUnit UnitDensity `json:"material_density_unit" yaml:"material_density_unit" schema:"material_density_unit,required"`
+	// OutputUnit: The output unit for the mass.
+	OutputUnit UnitMas `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
@@ -353,6 +366,8 @@ type AsyncAPICallOutputID struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// OutputUnit: The output unit for the volume.
+	OutputUnit UnitVolume `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
@@ -365,8 +380,10 @@ type AsyncAPICallOutputID struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
-	// Volume: The resulting volume.
+	// Volume: The resulting volume. This is deprecated and will be removed in a future release. Use `volumes` instead.
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
+	// Volumes: The volumes for each mesh in the file. The key of the hash map is the mesh name.
+	Volumes map[string]float64 `json:"volumes" yaml:"volumes" schema:"volumes"`
 }
 
 // AsyncAPICallOutputOutput: A file density.
@@ -375,7 +392,9 @@ type AsyncAPICallOutputOutput struct {
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Density: The resulting density.
+	// Densities: The density for each mesh in the file. The key of the hash map is the mesh name.
+	Densities map[string]float64 `json:"densities" yaml:"densities" schema:"densities"`
+	// Density: The resulting density. This is deprecated and will be removed in a future release, use `densities` instead.
 	Density float64 `json:"density" yaml:"density" schema:"density"`
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error" schema:"error"`
@@ -385,6 +404,10 @@ type AsyncAPICallOutputOutput struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// MaterialMass: The material mass as denoted by the user.
 	MaterialMass float64 `json:"material_mass" yaml:"material_mass" schema:"material_mass"`
+	// MaterialMassUnit: The material mass unit.
+	MaterialMassUnit UnitMas `json:"material_mass_unit" yaml:"material_mass_unit" schema:"material_mass_unit,required"`
+	// OutputUnit: The output unit for the density.
+	OutputUnit UnitDensity `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
@@ -411,14 +434,18 @@ type AsyncAPICallOutputOutputFormat struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// OutputUnit: The output unit for the surface area.
+	OutputUnit UnitArea `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// SurfaceArea: The resulting surface area.
+	// SurfaceArea: The resulting surface area. This is deprecated and will be removed in a future release. Use `surface_areas` instead.
 	SurfaceArea float64 `json:"surface_area" yaml:"surface_area" schema:"surface_area"`
+	// SurfaceAreas: The surface area for each mesh in the file. The key of the hash map is the mesh name.
+	SurfaceAreas map[string]float64 `json:"surface_areas" yaml:"surface_areas" schema:"surface_areas"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UpdatedAt: The time and date the API call was last updated.
@@ -454,6 +481,7 @@ const (
 )
 
 // Axi: Co-ordinate axis specifier.
+//
 // See [cglearn.eu] for background reading.
 //
 // [cglearn.eu]: https://cglearn.eu/pub/computer-graphics/introduction-to-geometry#material-coordinate-systems-1
@@ -485,6 +513,7 @@ type BillingInfo struct {
 }
 
 // CacheMetadata: Metadata about our cache.
+//
 // This is mostly used for internal purposes and debugging.
 type CacheMetadata struct {
 	// Ok: If the cache returned an ok response from ping.
@@ -574,6 +603,7 @@ type Commit struct {
 }
 
 // Connection: Metadata about a pub-sub connection.
+//
 // This is mostly used for internal purposes and debugging.
 type Connection struct {
 	// AuthTimeout: The auth timeout of the server.
@@ -674,504 +704,504 @@ type Connection struct {
 type CountryCode string
 
 const (
-	// CountryCodeAF: Afghanistan
-	CountryCodeAF CountryCode = "AF"
-	// CountryCodeAX: Åland Islands
-	CountryCodeAX CountryCode = "AX"
-	// CountryCodeAL: Albania
-	CountryCodeAL CountryCode = "AL"
-	// CountryCodeDZ: Algeria
-	CountryCodeDZ CountryCode = "DZ"
-	// CountryCodeAS: American Samoa
-	CountryCodeAS CountryCode = "AS"
-	// CountryCodeAD: Andorra
-	CountryCodeAD CountryCode = "AD"
-	// CountryCodeAO: Angola
-	CountryCodeAO CountryCode = "AO"
-	// CountryCodeAI: Anguilla
-	CountryCodeAI CountryCode = "AI"
-	// CountryCodeAQ: Antarctica
-	CountryCodeAQ CountryCode = "AQ"
-	// CountryCodeAG: Antigua and Barbuda
-	CountryCodeAG CountryCode = "AG"
-	// CountryCodeAR: Argentina
-	CountryCodeAR CountryCode = "AR"
-	// CountryCodeAM: Armenia
-	CountryCodeAM CountryCode = "AM"
-	// CountryCodeAW: Aruba
-	CountryCodeAW CountryCode = "AW"
-	// CountryCodeAU: Australia
-	CountryCodeAU CountryCode = "AU"
-	// CountryCodeAT: Austria
-	CountryCodeAT CountryCode = "AT"
-	// CountryCodeAZ: Azerbaijan
-	CountryCodeAZ CountryCode = "AZ"
-	// CountryCodeBS: Bahamas
-	CountryCodeBS CountryCode = "BS"
-	// CountryCodeBH: Bahrain
-	CountryCodeBH CountryCode = "BH"
-	// CountryCodeBD: Bangladesh
-	CountryCodeBD CountryCode = "BD"
-	// CountryCodeBB: Barbados
-	CountryCodeBB CountryCode = "BB"
-	// CountryCodeBY: Belarus
-	CountryCodeBY CountryCode = "BY"
-	// CountryCodeBE: Belgium
-	CountryCodeBE CountryCode = "BE"
-	// CountryCodeBZ: Belize
-	CountryCodeBZ CountryCode = "BZ"
-	// CountryCodeBJ: Benin
-	CountryCodeBJ CountryCode = "BJ"
-	// CountryCodeBM: Bermuda
-	CountryCodeBM CountryCode = "BM"
-	// CountryCodeBT: Bhutan
-	CountryCodeBT CountryCode = "BT"
-	// CountryCodeBO: Bolivia (Plurinational State of)
-	CountryCodeBO CountryCode = "BO"
-	// CountryCodeBQ: Bonaire, Sint Eustatius and Saba
-	CountryCodeBQ CountryCode = "BQ"
-	// CountryCodeBA: Bosnia and Herzegovina
-	CountryCodeBA CountryCode = "BA"
-	// CountryCodeBW: Botswana
-	CountryCodeBW CountryCode = "BW"
-	// CountryCodeBV: Bouvet Island
-	CountryCodeBV CountryCode = "BV"
-	// CountryCodeBR: Brazil
-	CountryCodeBR CountryCode = "BR"
-	// CountryCodeIO: British Indian Ocean Territory
-	CountryCodeIO CountryCode = "IO"
-	// CountryCodeBN: Brunei Darussalam
-	CountryCodeBN CountryCode = "BN"
-	// CountryCodeBG: Bulgaria
-	CountryCodeBG CountryCode = "BG"
-	// CountryCodeBF: Burkina Faso
-	CountryCodeBF CountryCode = "BF"
-	// CountryCodeBI: Burundi
-	CountryCodeBI CountryCode = "BI"
-	// CountryCodeCV: Cabo Verde
-	CountryCodeCV CountryCode = "CV"
-	// CountryCodeKH: Cambodia
-	CountryCodeKH CountryCode = "KH"
-	// CountryCodeCM: Cameroon
-	CountryCodeCM CountryCode = "CM"
-	// CountryCodeCA: Canada
-	CountryCodeCA CountryCode = "CA"
-	// CountryCodeKY: Cayman Islands
-	CountryCodeKY CountryCode = "KY"
-	// CountryCodeCF: Central African Republic
-	CountryCodeCF CountryCode = "CF"
-	// CountryCodeTD: Chad
-	CountryCodeTD CountryCode = "TD"
-	// CountryCodeCL: Chile
-	CountryCodeCL CountryCode = "CL"
-	// CountryCodeCN: China
-	CountryCodeCN CountryCode = "CN"
-	// CountryCodeCX: Christmas Island
-	CountryCodeCX CountryCode = "CX"
-	// CountryCodeCC: Cocos (Keeling) Islands
-	CountryCodeCC CountryCode = "CC"
-	// CountryCodeCO: Colombia
-	CountryCodeCO CountryCode = "CO"
-	// CountryCodeKM: Comoros
-	CountryCodeKM CountryCode = "KM"
-	// CountryCodeCG: Congo
-	CountryCodeCG CountryCode = "CG"
-	// CountryCodeCD: Congo (Democratic Republic of the)
-	CountryCodeCD CountryCode = "CD"
-	// CountryCodeCK: Cook Islands
-	CountryCodeCK CountryCode = "CK"
-	// CountryCodeCR: Costa Rica
-	CountryCodeCR CountryCode = "CR"
-	// CountryCodeCI: Côte d'Ivoire
-	CountryCodeCI CountryCode = "CI"
-	// CountryCodeHR: Croatia
-	CountryCodeHR CountryCode = "HR"
-	// CountryCodeCU: Cuba
-	CountryCodeCU CountryCode = "CU"
-	// CountryCodeCW: Curaçao
-	CountryCodeCW CountryCode = "CW"
-	// CountryCodeCY: Cyprus
-	CountryCodeCY CountryCode = "CY"
-	// CountryCodeCZ: Czechia
-	CountryCodeCZ CountryCode = "CZ"
-	// CountryCodeDK: Denmark
-	CountryCodeDK CountryCode = "DK"
-	// CountryCodeDJ: Djibouti
-	CountryCodeDJ CountryCode = "DJ"
-	// CountryCodeDM: Dominica
-	CountryCodeDM CountryCode = "DM"
-	// CountryCodeDO: Dominican Republic
-	CountryCodeDO CountryCode = "DO"
-	// CountryCodeEC: Ecuador
-	CountryCodeEC CountryCode = "EC"
-	// CountryCodeEG: Egypt
-	CountryCodeEG CountryCode = "EG"
-	// CountryCodeSV: El Salvador
-	CountryCodeSV CountryCode = "SV"
-	// CountryCodeGQ: Equatorial Guinea
-	CountryCodeGQ CountryCode = "GQ"
-	// CountryCodeER: Eritrea
-	CountryCodeER CountryCode = "ER"
-	// CountryCodeEE: Estonia
-	CountryCodeEE CountryCode = "EE"
-	// CountryCodeET: Ethiopia
-	CountryCodeET CountryCode = "ET"
-	// CountryCodeFK: Falkland Islands (Malvinas)
-	CountryCodeFK CountryCode = "FK"
-	// CountryCodeFO: Faroe Islands
-	CountryCodeFO CountryCode = "FO"
-	// CountryCodeFJ: Fiji
-	CountryCodeFJ CountryCode = "FJ"
-	// CountryCodeFI: Finland
-	CountryCodeFI CountryCode = "FI"
-	// CountryCodeFR: France
-	CountryCodeFR CountryCode = "FR"
-	// CountryCodeGF: French Guiana
-	CountryCodeGF CountryCode = "GF"
-	// CountryCodePF: French Polynesia
-	CountryCodePF CountryCode = "PF"
-	// CountryCodeTF: French Southern Territories
-	CountryCodeTF CountryCode = "TF"
-	// CountryCodeGA: Gabon
-	CountryCodeGA CountryCode = "GA"
-	// CountryCodeGM: Gambia
-	CountryCodeGM CountryCode = "GM"
-	// CountryCodeGE: Georgia
-	CountryCodeGE CountryCode = "GE"
-	// CountryCodeDE: Germany
-	CountryCodeDE CountryCode = "DE"
-	// CountryCodeGH: Ghana
-	CountryCodeGH CountryCode = "GH"
-	// CountryCodeGI: Gibraltar
-	CountryCodeGI CountryCode = "GI"
-	// CountryCodeGR: Greece
-	CountryCodeGR CountryCode = "GR"
-	// CountryCodeGL: Greenland
-	CountryCodeGL CountryCode = "GL"
-	// CountryCodeGD: Grenada
-	CountryCodeGD CountryCode = "GD"
-	// CountryCodeGP: Guadeloupe
-	CountryCodeGP CountryCode = "GP"
-	// CountryCodeGU: Guam
-	CountryCodeGU CountryCode = "GU"
-	// CountryCodeGT: Guatemala
-	CountryCodeGT CountryCode = "GT"
-	// CountryCodeGG: Guernsey
-	CountryCodeGG CountryCode = "GG"
-	// CountryCodeGN: Guinea
-	CountryCodeGN CountryCode = "GN"
-	// CountryCodeGW: Guinea-Bissau
-	CountryCodeGW CountryCode = "GW"
-	// CountryCodeGY: Guyana
-	CountryCodeGY CountryCode = "GY"
-	// CountryCodeHT: Haiti
-	CountryCodeHT CountryCode = "HT"
-	// CountryCodeHM: Heard Island and McDonald Islands
-	CountryCodeHM CountryCode = "HM"
-	// CountryCodeVA: Holy See
-	CountryCodeVA CountryCode = "VA"
-	// CountryCodeHN: Honduras
-	CountryCodeHN CountryCode = "HN"
-	// CountryCodeHK: Hong Kong
-	CountryCodeHK CountryCode = "HK"
-	// CountryCodeHU: Hungary
-	CountryCodeHU CountryCode = "HU"
-	// CountryCodeIS: Iceland
-	CountryCodeIS CountryCode = "IS"
-	// CountryCodeIN: India
-	CountryCodeIN CountryCode = "IN"
+	// CountryCodeAf: Afghanistan
+	CountryCodeAf CountryCode = "AF"
+	// CountryCodeAx: Åland Islands
+	CountryCodeAx CountryCode = "AX"
+	// CountryCodeAl: Albania
+	CountryCodeAl CountryCode = "AL"
+	// CountryCodeDz: Algeria
+	CountryCodeDz CountryCode = "DZ"
+	// CountryCodeAs: American Samoa
+	CountryCodeAs CountryCode = "AS"
+	// CountryCodeAd: Andorra
+	CountryCodeAd CountryCode = "AD"
+	// CountryCodeAo: Angola
+	CountryCodeAo CountryCode = "AO"
+	// CountryCodeAi: Anguilla
+	CountryCodeAi CountryCode = "AI"
+	// CountryCodeAq: Antarctica
+	CountryCodeAq CountryCode = "AQ"
+	// CountryCodeAg: Antigua and Barbuda
+	CountryCodeAg CountryCode = "AG"
+	// CountryCodeAr: Argentina
+	CountryCodeAr CountryCode = "AR"
+	// CountryCodeAm: Armenia
+	CountryCodeAm CountryCode = "AM"
+	// CountryCodeAw: Aruba
+	CountryCodeAw CountryCode = "AW"
+	// CountryCodeAu: Australia
+	CountryCodeAu CountryCode = "AU"
+	// CountryCodeAt: Austria
+	CountryCodeAt CountryCode = "AT"
+	// CountryCodeAz: Azerbaijan
+	CountryCodeAz CountryCode = "AZ"
+	// CountryCodeBs: Bahamas
+	CountryCodeBs CountryCode = "BS"
+	// CountryCodeBh: Bahrain
+	CountryCodeBh CountryCode = "BH"
+	// CountryCodeBd: Bangladesh
+	CountryCodeBd CountryCode = "BD"
+	// CountryCodeBb: Barbados
+	CountryCodeBb CountryCode = "BB"
+	// CountryCodeBy: Belarus
+	CountryCodeBy CountryCode = "BY"
+	// CountryCodeBe: Belgium
+	CountryCodeBe CountryCode = "BE"
+	// CountryCodeBz: Belize
+	CountryCodeBz CountryCode = "BZ"
+	// CountryCodeBj: Benin
+	CountryCodeBj CountryCode = "BJ"
+	// CountryCodeBm: Bermuda
+	CountryCodeBm CountryCode = "BM"
+	// CountryCodeBt: Bhutan
+	CountryCodeBt CountryCode = "BT"
+	// CountryCodeBo: Bolivia (Plurinational State of)
+	CountryCodeBo CountryCode = "BO"
+	// CountryCodeBq: Bonaire, Sint Eustatius and Saba
+	CountryCodeBq CountryCode = "BQ"
+	// CountryCodeBa: Bosnia and Herzegovina
+	CountryCodeBa CountryCode = "BA"
+	// CountryCodeBw: Botswana
+	CountryCodeBw CountryCode = "BW"
+	// CountryCodeBv: Bouvet Island
+	CountryCodeBv CountryCode = "BV"
+	// CountryCodeBr: Brazil
+	CountryCodeBr CountryCode = "BR"
+	// CountryCodeIo: British Indian Ocean Territory
+	CountryCodeIo CountryCode = "IO"
+	// CountryCodeBn: Brunei Darussalam
+	CountryCodeBn CountryCode = "BN"
+	// CountryCodeBg: Bulgaria
+	CountryCodeBg CountryCode = "BG"
+	// CountryCodeBf: Burkina Faso
+	CountryCodeBf CountryCode = "BF"
+	// CountryCodeBi: Burundi
+	CountryCodeBi CountryCode = "BI"
+	// CountryCodeCv: Cabo Verde
+	CountryCodeCv CountryCode = "CV"
+	// CountryCodeKh: Cambodia
+	CountryCodeKh CountryCode = "KH"
+	// CountryCodeCm: Cameroon
+	CountryCodeCm CountryCode = "CM"
+	// CountryCodeCa: Canada
+	CountryCodeCa CountryCode = "CA"
+	// CountryCodeKy: Cayman Islands
+	CountryCodeKy CountryCode = "KY"
+	// CountryCodeCf: Central African Republic
+	CountryCodeCf CountryCode = "CF"
+	// CountryCodeTd: Chad
+	CountryCodeTd CountryCode = "TD"
+	// CountryCodeCl: Chile
+	CountryCodeCl CountryCode = "CL"
+	// CountryCodeCn: China
+	CountryCodeCn CountryCode = "CN"
+	// CountryCodeCx: Christmas Island
+	CountryCodeCx CountryCode = "CX"
+	// CountryCodeCc: Cocos (Keeling) Islands
+	CountryCodeCc CountryCode = "CC"
+	// CountryCodeCo: Colombia
+	CountryCodeCo CountryCode = "CO"
+	// CountryCodeKm: Comoros
+	CountryCodeKm CountryCode = "KM"
+	// CountryCodeCg: Congo
+	CountryCodeCg CountryCode = "CG"
+	// CountryCodeCd: Congo (Democratic Republic of the)
+	CountryCodeCd CountryCode = "CD"
+	// CountryCodeCk: Cook Islands
+	CountryCodeCk CountryCode = "CK"
+	// CountryCodeCr: Costa Rica
+	CountryCodeCr CountryCode = "CR"
+	// CountryCodeCi: Côte d'Ivoire
+	CountryCodeCi CountryCode = "CI"
+	// CountryCodeHr: Croatia
+	CountryCodeHr CountryCode = "HR"
+	// CountryCodeCu: Cuba
+	CountryCodeCu CountryCode = "CU"
+	// CountryCodeCw: Curaçao
+	CountryCodeCw CountryCode = "CW"
+	// CountryCodeCy: Cyprus
+	CountryCodeCy CountryCode = "CY"
+	// CountryCodeCz: Czechia
+	CountryCodeCz CountryCode = "CZ"
+	// CountryCodeDk: Denmark
+	CountryCodeDk CountryCode = "DK"
+	// CountryCodeDj: Djibouti
+	CountryCodeDj CountryCode = "DJ"
+	// CountryCodeDm: Dominica
+	CountryCodeDm CountryCode = "DM"
+	// CountryCodeDo: Dominican Republic
+	CountryCodeDo CountryCode = "DO"
+	// CountryCodeEc: Ecuador
+	CountryCodeEc CountryCode = "EC"
+	// CountryCodeEg: Egypt
+	CountryCodeEg CountryCode = "EG"
+	// CountryCodeSv: El Salvador
+	CountryCodeSv CountryCode = "SV"
+	// CountryCodeGq: Equatorial Guinea
+	CountryCodeGq CountryCode = "GQ"
+	// CountryCodeEr: Eritrea
+	CountryCodeEr CountryCode = "ER"
+	// CountryCodeEe: Estonia
+	CountryCodeEe CountryCode = "EE"
+	// CountryCodeEt: Ethiopia
+	CountryCodeEt CountryCode = "ET"
+	// CountryCodeFk: Falkland Islands (Malvinas)
+	CountryCodeFk CountryCode = "FK"
+	// CountryCodeFo: Faroe Islands
+	CountryCodeFo CountryCode = "FO"
+	// CountryCodeFj: Fiji
+	CountryCodeFj CountryCode = "FJ"
+	// CountryCodeFi: Finland
+	CountryCodeFi CountryCode = "FI"
+	// CountryCodeFr: France
+	CountryCodeFr CountryCode = "FR"
+	// CountryCodeGf: French Guiana
+	CountryCodeGf CountryCode = "GF"
+	// CountryCodePf: French Polynesia
+	CountryCodePf CountryCode = "PF"
+	// CountryCodeTf: French Southern Territories
+	CountryCodeTf CountryCode = "TF"
+	// CountryCodeGa: Gabon
+	CountryCodeGa CountryCode = "GA"
+	// CountryCodeGm: Gambia
+	CountryCodeGm CountryCode = "GM"
+	// CountryCodeGe: Georgia
+	CountryCodeGe CountryCode = "GE"
+	// CountryCodeDe: Germany
+	CountryCodeDe CountryCode = "DE"
+	// CountryCodeGh: Ghana
+	CountryCodeGh CountryCode = "GH"
+	// CountryCodeGi: Gibraltar
+	CountryCodeGi CountryCode = "GI"
+	// CountryCodeGr: Greece
+	CountryCodeGr CountryCode = "GR"
+	// CountryCodeGl: Greenland
+	CountryCodeGl CountryCode = "GL"
+	// CountryCodeGd: Grenada
+	CountryCodeGd CountryCode = "GD"
+	// CountryCodeGp: Guadeloupe
+	CountryCodeGp CountryCode = "GP"
+	// CountryCodeGu: Guam
+	CountryCodeGu CountryCode = "GU"
+	// CountryCodeGt: Guatemala
+	CountryCodeGt CountryCode = "GT"
+	// CountryCodeGg: Guernsey
+	CountryCodeGg CountryCode = "GG"
+	// CountryCodeGn: Guinea
+	CountryCodeGn CountryCode = "GN"
+	// CountryCodeGw: Guinea-Bissau
+	CountryCodeGw CountryCode = "GW"
+	// CountryCodeGy: Guyana
+	CountryCodeGy CountryCode = "GY"
+	// CountryCodeHt: Haiti
+	CountryCodeHt CountryCode = "HT"
+	// CountryCodeHm: Heard Island and McDonald Islands
+	CountryCodeHm CountryCode = "HM"
+	// CountryCodeVa: Holy See
+	CountryCodeVa CountryCode = "VA"
+	// CountryCodeHn: Honduras
+	CountryCodeHn CountryCode = "HN"
+	// CountryCodeHk: Hong Kong
+	CountryCodeHk CountryCode = "HK"
+	// CountryCodeHu: Hungary
+	CountryCodeHu CountryCode = "HU"
+	// CountryCodeIs: Iceland
+	CountryCodeIs CountryCode = "IS"
+	// CountryCodeIn: India
+	CountryCodeIn CountryCode = "IN"
 	// CountryCodeID: Indonesia
 	CountryCodeID CountryCode = "ID"
-	// CountryCodeIR: Iran (Islamic Republic of)
-	CountryCodeIR CountryCode = "IR"
-	// CountryCodeIQ: Iraq
-	CountryCodeIQ CountryCode = "IQ"
-	// CountryCodeIE: Ireland
-	CountryCodeIE CountryCode = "IE"
-	// CountryCodeIM: Isle of Man
-	CountryCodeIM CountryCode = "IM"
-	// CountryCodeIL: Israel
-	CountryCodeIL CountryCode = "IL"
-	// CountryCodeIT: Italy
-	CountryCodeIT CountryCode = "IT"
-	// CountryCodeJM: Jamaica
-	CountryCodeJM CountryCode = "JM"
-	// CountryCodeJP: Japan
-	CountryCodeJP CountryCode = "JP"
-	// CountryCodeJE: Jersey
-	CountryCodeJE CountryCode = "JE"
-	// CountryCodeJO: Jordan
-	CountryCodeJO CountryCode = "JO"
-	// CountryCodeKZ: Kazakhstan
-	CountryCodeKZ CountryCode = "KZ"
-	// CountryCodeKE: Kenya
-	CountryCodeKE CountryCode = "KE"
-	// CountryCodeKI: Kiribati
-	CountryCodeKI CountryCode = "KI"
-	// CountryCodeKP: Korea (Democratic People's Republic of)
-	CountryCodeKP CountryCode = "KP"
-	// CountryCodeKR: Korea (Republic of)
-	CountryCodeKR CountryCode = "KR"
-	// CountryCodeKW: Kuwait
-	CountryCodeKW CountryCode = "KW"
-	// CountryCodeKG: Kyrgyzstan
-	CountryCodeKG CountryCode = "KG"
-	// CountryCodeLA: Lao People's Democratic Republic
-	CountryCodeLA CountryCode = "LA"
-	// CountryCodeLV: Latvia
-	CountryCodeLV CountryCode = "LV"
-	// CountryCodeLB: Lebanon
-	CountryCodeLB CountryCode = "LB"
-	// CountryCodeLS: Lesotho
-	CountryCodeLS CountryCode = "LS"
-	// CountryCodeLR: Liberia
-	CountryCodeLR CountryCode = "LR"
-	// CountryCodeLY: Libya
-	CountryCodeLY CountryCode = "LY"
-	// CountryCodeLI: Liechtenstein
-	CountryCodeLI CountryCode = "LI"
-	// CountryCodeLT: Lithuania
-	CountryCodeLT CountryCode = "LT"
-	// CountryCodeLU: Luxembourg
-	CountryCodeLU CountryCode = "LU"
-	// CountryCodeMO: Macao
-	CountryCodeMO CountryCode = "MO"
-	// CountryCodeMK: Macedonia (the former Yugoslav Republic of)
-	CountryCodeMK CountryCode = "MK"
-	// CountryCodeMG: Madagascar
-	CountryCodeMG CountryCode = "MG"
-	// CountryCodeMW: Malawi
-	CountryCodeMW CountryCode = "MW"
-	// CountryCodeMY: Malaysia
-	CountryCodeMY CountryCode = "MY"
-	// CountryCodeMV: Maldives
-	CountryCodeMV CountryCode = "MV"
-	// CountryCodeML: Mali
-	CountryCodeML CountryCode = "ML"
-	// CountryCodeMT: Malta
-	CountryCodeMT CountryCode = "MT"
-	// CountryCodeMH: Marshall Islands
-	CountryCodeMH CountryCode = "MH"
-	// CountryCodeMQ: Martinique
-	CountryCodeMQ CountryCode = "MQ"
-	// CountryCodeMR: Mauritania
-	CountryCodeMR CountryCode = "MR"
-	// CountryCodeMU: Mauritius
-	CountryCodeMU CountryCode = "MU"
-	// CountryCodeYT: Mayotte
-	CountryCodeYT CountryCode = "YT"
-	// CountryCodeMX: Mexico
-	CountryCodeMX CountryCode = "MX"
-	// CountryCodeFM: Micronesia (Federated States of)
-	CountryCodeFM CountryCode = "FM"
-	// CountryCodeMD: Moldova (Republic of)
-	CountryCodeMD CountryCode = "MD"
-	// CountryCodeMC: Monaco
-	CountryCodeMC CountryCode = "MC"
-	// CountryCodeMN: Mongolia
-	CountryCodeMN CountryCode = "MN"
-	// CountryCodeME: Montenegro
-	CountryCodeME CountryCode = "ME"
-	// CountryCodeMS: Montserrat
-	CountryCodeMS CountryCode = "MS"
-	// CountryCodeMA: Morocco
-	CountryCodeMA CountryCode = "MA"
-	// CountryCodeMZ: Mozambique
-	CountryCodeMZ CountryCode = "MZ"
-	// CountryCodeMM: Myanmar
-	CountryCodeMM CountryCode = "MM"
-	// CountryCodeNA: Namibia
-	CountryCodeNA CountryCode = "NA"
-	// CountryCodeNR: Nauru
-	CountryCodeNR CountryCode = "NR"
-	// CountryCodeNP: Nepal
-	CountryCodeNP CountryCode = "NP"
-	// CountryCodeNL: Netherlands
-	CountryCodeNL CountryCode = "NL"
-	// CountryCodeNC: New Caledonia
-	CountryCodeNC CountryCode = "NC"
-	// CountryCodeNZ: New Zealand
-	CountryCodeNZ CountryCode = "NZ"
-	// CountryCodeNI: Nicaragua
-	CountryCodeNI CountryCode = "NI"
-	// CountryCodeNE: Niger
-	CountryCodeNE CountryCode = "NE"
-	// CountryCodeNG: Nigeria
-	CountryCodeNG CountryCode = "NG"
-	// CountryCodeNU: Niue
-	CountryCodeNU CountryCode = "NU"
-	// CountryCodeNF: Norfolk Island
-	CountryCodeNF CountryCode = "NF"
-	// CountryCodeMP: Northern Mariana Islands
-	CountryCodeMP CountryCode = "MP"
-	// CountryCodeNO: Norway
-	CountryCodeNO CountryCode = "NO"
-	// CountryCodeOM: Oman
-	CountryCodeOM CountryCode = "OM"
-	// CountryCodePK: Pakistan
-	CountryCodePK CountryCode = "PK"
-	// CountryCodePW: Palau
-	CountryCodePW CountryCode = "PW"
-	// CountryCodePS: Palestine, State of
-	CountryCodePS CountryCode = "PS"
-	// CountryCodePA: Panama
-	CountryCodePA CountryCode = "PA"
-	// CountryCodePG: Papua New Guinea
-	CountryCodePG CountryCode = "PG"
-	// CountryCodePY: Paraguay
-	CountryCodePY CountryCode = "PY"
-	// CountryCodePE: Peru
-	CountryCodePE CountryCode = "PE"
-	// CountryCodePH: Philippines
-	CountryCodePH CountryCode = "PH"
-	// CountryCodePN: Pitcairn
-	CountryCodePN CountryCode = "PN"
-	// CountryCodePL: Poland
-	CountryCodePL CountryCode = "PL"
-	// CountryCodePT: Portugal
-	CountryCodePT CountryCode = "PT"
-	// CountryCodePR: Puerto Rico
-	CountryCodePR CountryCode = "PR"
-	// CountryCodeQA: Qatar
-	CountryCodeQA CountryCode = "QA"
-	// CountryCodeRE: Réunion
-	CountryCodeRE CountryCode = "RE"
-	// CountryCodeRO: Romania
-	CountryCodeRO CountryCode = "RO"
-	// CountryCodeRU: Russian Federation
-	CountryCodeRU CountryCode = "RU"
-	// CountryCodeRW: Rwanda
-	CountryCodeRW CountryCode = "RW"
-	// CountryCodeBL: Saint Barthélemy
-	CountryCodeBL CountryCode = "BL"
-	// CountryCodeSH: Saint Helena, Ascension and Tristan da Cunha
-	CountryCodeSH CountryCode = "SH"
-	// CountryCodeKN: Saint Kitts and Nevis
-	CountryCodeKN CountryCode = "KN"
-	// CountryCodeLC: Saint Lucia
-	CountryCodeLC CountryCode = "LC"
-	// CountryCodeMF: Saint Martin (French part)
-	CountryCodeMF CountryCode = "MF"
-	// CountryCodePM: Saint Pierre and Miquelon
-	CountryCodePM CountryCode = "PM"
-	// CountryCodeVC: Saint Vincent and the Grenadines
-	CountryCodeVC CountryCode = "VC"
-	// CountryCodeWS: Samoa
-	CountryCodeWS CountryCode = "WS"
-	// CountryCodeSM: San Marino
-	CountryCodeSM CountryCode = "SM"
-	// CountryCodeST: Sao Tome and Principe
-	CountryCodeST CountryCode = "ST"
-	// CountryCodeSA: Saudi Arabia
-	CountryCodeSA CountryCode = "SA"
-	// CountryCodeSN: Senegal
-	CountryCodeSN CountryCode = "SN"
-	// CountryCodeRS: Serbia
-	CountryCodeRS CountryCode = "RS"
-	// CountryCodeSC: Seychelles
-	CountryCodeSC CountryCode = "SC"
-	// CountryCodeSL: Sierra Leone
-	CountryCodeSL CountryCode = "SL"
-	// CountryCodeSG: Singapore
-	CountryCodeSG CountryCode = "SG"
-	// CountryCodeSX: Sint Maarten (Dutch part)
-	CountryCodeSX CountryCode = "SX"
-	// CountryCodeSK: Slovakia
-	CountryCodeSK CountryCode = "SK"
-	// CountryCodeSI: Slovenia
-	CountryCodeSI CountryCode = "SI"
-	// CountryCodeSB: Solomon Islands
-	CountryCodeSB CountryCode = "SB"
-	// CountryCodeSO: Somalia
-	CountryCodeSO CountryCode = "SO"
-	// CountryCodeZA: South Africa
-	CountryCodeZA CountryCode = "ZA"
-	// CountryCodeGS: South Georgia and the South Sandwich Islands
-	CountryCodeGS CountryCode = "GS"
-	// CountryCodeSS: South Sudan
-	CountryCodeSS CountryCode = "SS"
-	// CountryCodeES: Spain
-	CountryCodeES CountryCode = "ES"
-	// CountryCodeLK: Sri Lanka
-	CountryCodeLK CountryCode = "LK"
-	// CountryCodeSD: Sudan
-	CountryCodeSD CountryCode = "SD"
-	// CountryCodeSR: Suriname
-	CountryCodeSR CountryCode = "SR"
-	// CountryCodeSJ: Svalbard and Jan Mayen
-	CountryCodeSJ CountryCode = "SJ"
-	// CountryCodeSZ: Swaziland
-	CountryCodeSZ CountryCode = "SZ"
-	// CountryCodeSE: Sweden
-	CountryCodeSE CountryCode = "SE"
-	// CountryCodeCH: Switzerland
-	CountryCodeCH CountryCode = "CH"
-	// CountryCodeSY: Syrian Arab Republic
-	CountryCodeSY CountryCode = "SY"
-	// CountryCodeTW: Taiwan, Province of China
-	CountryCodeTW CountryCode = "TW"
-	// CountryCodeTJ: Tajikistan
-	CountryCodeTJ CountryCode = "TJ"
-	// CountryCodeTZ: Tanzania, United Republic of
-	CountryCodeTZ CountryCode = "TZ"
-	// CountryCodeTH: Thailand
-	CountryCodeTH CountryCode = "TH"
-	// CountryCodeTL: Timor-Leste
-	CountryCodeTL CountryCode = "TL"
-	// CountryCodeTG: Togo
-	CountryCodeTG CountryCode = "TG"
-	// CountryCodeTK: Tokelau
-	CountryCodeTK CountryCode = "TK"
-	// CountryCodeTO: Tonga
-	CountryCodeTO CountryCode = "TO"
-	// CountryCodeTT: Trinidad and Tobago
-	CountryCodeTT CountryCode = "TT"
-	// CountryCodeTN: Tunisia
-	CountryCodeTN CountryCode = "TN"
-	// CountryCodeTR: Turkey
-	CountryCodeTR CountryCode = "TR"
-	// CountryCodeTM: Turkmenistan
-	CountryCodeTM CountryCode = "TM"
-	// CountryCodeTC: Turks and Caicos Islands
-	CountryCodeTC CountryCode = "TC"
-	// CountryCodeTV: Tuvalu
-	CountryCodeTV CountryCode = "TV"
-	// CountryCodeUG: Uganda
-	CountryCodeUG CountryCode = "UG"
-	// CountryCodeUA: Ukraine
-	CountryCodeUA CountryCode = "UA"
-	// CountryCodeAE: United Arab Emirates
-	CountryCodeAE CountryCode = "AE"
-	// CountryCodeGB: United Kingdom of Great Britain and Northern Ireland
-	CountryCodeGB CountryCode = "GB"
-	// CountryCodeUS: United States of America
-	CountryCodeUS CountryCode = "US"
-	// CountryCodeUM: United States Minor Outlying Islands
-	CountryCodeUM CountryCode = "UM"
-	// CountryCodeUY: Uruguay
-	CountryCodeUY CountryCode = "UY"
-	// CountryCodeUZ: Uzbekistan
-	CountryCodeUZ CountryCode = "UZ"
-	// CountryCodeVU: Vanuatu
-	CountryCodeVU CountryCode = "VU"
-	// CountryCodeVE: Venezuela (Bolivarian Republic of)
-	CountryCodeVE CountryCode = "VE"
-	// CountryCodeVN: Viet Nam
-	CountryCodeVN CountryCode = "VN"
-	// CountryCodeVG: Virgin Islands (British)
-	CountryCodeVG CountryCode = "VG"
-	// CountryCodeVI: Virgin Islands (U.S.)
-	CountryCodeVI CountryCode = "VI"
-	// CountryCodeWF: Wallis and Futuna
-	CountryCodeWF CountryCode = "WF"
-	// CountryCodeEH: Western Sahara
-	CountryCodeEH CountryCode = "EH"
-	// CountryCodeYE: Yemen
-	CountryCodeYE CountryCode = "YE"
-	// CountryCodeZM: Zambia
-	CountryCodeZM CountryCode = "ZM"
-	// CountryCodeZW: Zimbabwe
-	CountryCodeZW CountryCode = "ZW"
+	// CountryCodeIr: Iran (Islamic Republic of)
+	CountryCodeIr CountryCode = "IR"
+	// CountryCodeIq: Iraq
+	CountryCodeIq CountryCode = "IQ"
+	// CountryCodeIe: Ireland
+	CountryCodeIe CountryCode = "IE"
+	// CountryCodeIm: Isle of Man
+	CountryCodeIm CountryCode = "IM"
+	// CountryCodeIl: Israel
+	CountryCodeIl CountryCode = "IL"
+	// CountryCodeIt: Italy
+	CountryCodeIt CountryCode = "IT"
+	// CountryCodeJm: Jamaica
+	CountryCodeJm CountryCode = "JM"
+	// CountryCodeJp: Japan
+	CountryCodeJp CountryCode = "JP"
+	// CountryCodeJe: Jersey
+	CountryCodeJe CountryCode = "JE"
+	// CountryCodeJo: Jordan
+	CountryCodeJo CountryCode = "JO"
+	// CountryCodeKz: Kazakhstan
+	CountryCodeKz CountryCode = "KZ"
+	// CountryCodeKe: Kenya
+	CountryCodeKe CountryCode = "KE"
+	// CountryCodeKi: Kiribati
+	CountryCodeKi CountryCode = "KI"
+	// CountryCodeKp: Korea (Democratic People's Republic of)
+	CountryCodeKp CountryCode = "KP"
+	// CountryCodeKr: Korea (Republic of)
+	CountryCodeKr CountryCode = "KR"
+	// CountryCodeKw: Kuwait
+	CountryCodeKw CountryCode = "KW"
+	// CountryCodeKg: Kyrgyzstan
+	CountryCodeKg CountryCode = "KG"
+	// CountryCodeLa: Lao People's Democratic Republic
+	CountryCodeLa CountryCode = "LA"
+	// CountryCodeLv: Latvia
+	CountryCodeLv CountryCode = "LV"
+	// CountryCodeLb: Lebanon
+	CountryCodeLb CountryCode = "LB"
+	// CountryCodeLs: Lesotho
+	CountryCodeLs CountryCode = "LS"
+	// CountryCodeLr: Liberia
+	CountryCodeLr CountryCode = "LR"
+	// CountryCodeLy: Libya
+	CountryCodeLy CountryCode = "LY"
+	// CountryCodeLi: Liechtenstein
+	CountryCodeLi CountryCode = "LI"
+	// CountryCodeLt: Lithuania
+	CountryCodeLt CountryCode = "LT"
+	// CountryCodeLu: Luxembourg
+	CountryCodeLu CountryCode = "LU"
+	// CountryCodeMo: Macao
+	CountryCodeMo CountryCode = "MO"
+	// CountryCodeMk: Macedonia (the former Yugoslav Republic of)
+	CountryCodeMk CountryCode = "MK"
+	// CountryCodeMg: Madagascar
+	CountryCodeMg CountryCode = "MG"
+	// CountryCodeMw: Malawi
+	CountryCodeMw CountryCode = "MW"
+	// CountryCodeMy: Malaysia
+	CountryCodeMy CountryCode = "MY"
+	// CountryCodeMv: Maldives
+	CountryCodeMv CountryCode = "MV"
+	// CountryCodeMl: Mali
+	CountryCodeMl CountryCode = "ML"
+	// CountryCodeMt: Malta
+	CountryCodeMt CountryCode = "MT"
+	// CountryCodeMh: Marshall Islands
+	CountryCodeMh CountryCode = "MH"
+	// CountryCodeMq: Martinique
+	CountryCodeMq CountryCode = "MQ"
+	// CountryCodeMr: Mauritania
+	CountryCodeMr CountryCode = "MR"
+	// CountryCodeMu: Mauritius
+	CountryCodeMu CountryCode = "MU"
+	// CountryCodeYt: Mayotte
+	CountryCodeYt CountryCode = "YT"
+	// CountryCodeMx: Mexico
+	CountryCodeMx CountryCode = "MX"
+	// CountryCodeFm: Micronesia (Federated States of)
+	CountryCodeFm CountryCode = "FM"
+	// CountryCodeMd: Moldova (Republic of)
+	CountryCodeMd CountryCode = "MD"
+	// CountryCodeMc: Monaco
+	CountryCodeMc CountryCode = "MC"
+	// CountryCodeMn: Mongolia
+	CountryCodeMn CountryCode = "MN"
+	// CountryCodeMe: Montenegro
+	CountryCodeMe CountryCode = "ME"
+	// CountryCodeMs: Montserrat
+	CountryCodeMs CountryCode = "MS"
+	// CountryCodeMa: Morocco
+	CountryCodeMa CountryCode = "MA"
+	// CountryCodeMz: Mozambique
+	CountryCodeMz CountryCode = "MZ"
+	// CountryCodeMm: Myanmar
+	CountryCodeMm CountryCode = "MM"
+	// CountryCodeNa: Namibia
+	CountryCodeNa CountryCode = "NA"
+	// CountryCodeNr: Nauru
+	CountryCodeNr CountryCode = "NR"
+	// CountryCodeNp: Nepal
+	CountryCodeNp CountryCode = "NP"
+	// CountryCodeNl: Netherlands
+	CountryCodeNl CountryCode = "NL"
+	// CountryCodeNc: New Caledonia
+	CountryCodeNc CountryCode = "NC"
+	// CountryCodeNz: New Zealand
+	CountryCodeNz CountryCode = "NZ"
+	// CountryCodeNi: Nicaragua
+	CountryCodeNi CountryCode = "NI"
+	// CountryCodeNe: Niger
+	CountryCodeNe CountryCode = "NE"
+	// CountryCodeNg: Nigeria
+	CountryCodeNg CountryCode = "NG"
+	// CountryCodeNu: Niue
+	CountryCodeNu CountryCode = "NU"
+	// CountryCodeNf: Norfolk Island
+	CountryCodeNf CountryCode = "NF"
+	// CountryCodeMp: Northern Mariana Islands
+	CountryCodeMp CountryCode = "MP"
+	// CountryCodeNo: Norway
+	CountryCodeNo CountryCode = "NO"
+	// CountryCodeOm: Oman
+	CountryCodeOm CountryCode = "OM"
+	// CountryCodePk: Pakistan
+	CountryCodePk CountryCode = "PK"
+	// CountryCodePw: Palau
+	CountryCodePw CountryCode = "PW"
+	// CountryCodePs: Palestine, State of
+	CountryCodePs CountryCode = "PS"
+	// CountryCodePa: Panama
+	CountryCodePa CountryCode = "PA"
+	// CountryCodePg: Papua New Guinea
+	CountryCodePg CountryCode = "PG"
+	// CountryCodePy: Paraguay
+	CountryCodePy CountryCode = "PY"
+	// CountryCodePe: Peru
+	CountryCodePe CountryCode = "PE"
+	// CountryCodePh: Philippines
+	CountryCodePh CountryCode = "PH"
+	// CountryCodePn: Pitcairn
+	CountryCodePn CountryCode = "PN"
+	// CountryCodePl: Poland
+	CountryCodePl CountryCode = "PL"
+	// CountryCodePt: Portugal
+	CountryCodePt CountryCode = "PT"
+	// CountryCodePr: Puerto Rico
+	CountryCodePr CountryCode = "PR"
+	// CountryCodeQa: Qatar
+	CountryCodeQa CountryCode = "QA"
+	// CountryCodeRe: Réunion
+	CountryCodeRe CountryCode = "RE"
+	// CountryCodeRo: Romania
+	CountryCodeRo CountryCode = "RO"
+	// CountryCodeRu: Russian Federation
+	CountryCodeRu CountryCode = "RU"
+	// CountryCodeRw: Rwanda
+	CountryCodeRw CountryCode = "RW"
+	// CountryCodeBl: Saint Barthélemy
+	CountryCodeBl CountryCode = "BL"
+	// CountryCodeSh: Saint Helena, Ascension and Tristan da Cunha
+	CountryCodeSh CountryCode = "SH"
+	// CountryCodeKn: Saint Kitts and Nevis
+	CountryCodeKn CountryCode = "KN"
+	// CountryCodeLc: Saint Lucia
+	CountryCodeLc CountryCode = "LC"
+	// CountryCodeMf: Saint Martin (French part)
+	CountryCodeMf CountryCode = "MF"
+	// CountryCodePm: Saint Pierre and Miquelon
+	CountryCodePm CountryCode = "PM"
+	// CountryCodeVc: Saint Vincent and the Grenadines
+	CountryCodeVc CountryCode = "VC"
+	// CountryCodeWs: Samoa
+	CountryCodeWs CountryCode = "WS"
+	// CountryCodeSm: San Marino
+	CountryCodeSm CountryCode = "SM"
+	// CountryCodeSt: Sao Tome and Principe
+	CountryCodeSt CountryCode = "ST"
+	// CountryCodeSa: Saudi Arabia
+	CountryCodeSa CountryCode = "SA"
+	// CountryCodeSn: Senegal
+	CountryCodeSn CountryCode = "SN"
+	// CountryCodeRs: Serbia
+	CountryCodeRs CountryCode = "RS"
+	// CountryCodeSc: Seychelles
+	CountryCodeSc CountryCode = "SC"
+	// CountryCodeSl: Sierra Leone
+	CountryCodeSl CountryCode = "SL"
+	// CountryCodeSg: Singapore
+	CountryCodeSg CountryCode = "SG"
+	// CountryCodeSx: Sint Maarten (Dutch part)
+	CountryCodeSx CountryCode = "SX"
+	// CountryCodeSk: Slovakia
+	CountryCodeSk CountryCode = "SK"
+	// CountryCodeSi: Slovenia
+	CountryCodeSi CountryCode = "SI"
+	// CountryCodeSb: Solomon Islands
+	CountryCodeSb CountryCode = "SB"
+	// CountryCodeSo: Somalia
+	CountryCodeSo CountryCode = "SO"
+	// CountryCodeZa: South Africa
+	CountryCodeZa CountryCode = "ZA"
+	// CountryCodeGs: South Georgia and the South Sandwich Islands
+	CountryCodeGs CountryCode = "GS"
+	// CountryCodeSs: South Sudan
+	CountryCodeSs CountryCode = "SS"
+	// CountryCodeEs: Spain
+	CountryCodeEs CountryCode = "ES"
+	// CountryCodeLk: Sri Lanka
+	CountryCodeLk CountryCode = "LK"
+	// CountryCodeSd: Sudan
+	CountryCodeSd CountryCode = "SD"
+	// CountryCodeSr: Suriname
+	CountryCodeSr CountryCode = "SR"
+	// CountryCodeSj: Svalbard and Jan Mayen
+	CountryCodeSj CountryCode = "SJ"
+	// CountryCodeSz: Swaziland
+	CountryCodeSz CountryCode = "SZ"
+	// CountryCodeSe: Sweden
+	CountryCodeSe CountryCode = "SE"
+	// CountryCodeCh: Switzerland
+	CountryCodeCh CountryCode = "CH"
+	// CountryCodeSy: Syrian Arab Republic
+	CountryCodeSy CountryCode = "SY"
+	// CountryCodeTw: Taiwan, Province of China
+	CountryCodeTw CountryCode = "TW"
+	// CountryCodeTj: Tajikistan
+	CountryCodeTj CountryCode = "TJ"
+	// CountryCodeTz: Tanzania, United Republic of
+	CountryCodeTz CountryCode = "TZ"
+	// CountryCodeTh: Thailand
+	CountryCodeTh CountryCode = "TH"
+	// CountryCodeTl: Timor-Leste
+	CountryCodeTl CountryCode = "TL"
+	// CountryCodeTg: Togo
+	CountryCodeTg CountryCode = "TG"
+	// CountryCodeTk: Tokelau
+	CountryCodeTk CountryCode = "TK"
+	// CountryCodeTo: Tonga
+	CountryCodeTo CountryCode = "TO"
+	// CountryCodeTt: Trinidad and Tobago
+	CountryCodeTt CountryCode = "TT"
+	// CountryCodeTn: Tunisia
+	CountryCodeTn CountryCode = "TN"
+	// CountryCodeTr: Turkey
+	CountryCodeTr CountryCode = "TR"
+	// CountryCodeTm: Turkmenistan
+	CountryCodeTm CountryCode = "TM"
+	// CountryCodeTc: Turks and Caicos Islands
+	CountryCodeTc CountryCode = "TC"
+	// CountryCodeTv: Tuvalu
+	CountryCodeTv CountryCode = "TV"
+	// CountryCodeUg: Uganda
+	CountryCodeUg CountryCode = "UG"
+	// CountryCodeUa: Ukraine
+	CountryCodeUa CountryCode = "UA"
+	// CountryCodeAe: United Arab Emirates
+	CountryCodeAe CountryCode = "AE"
+	// CountryCodeGb: United Kingdom of Great Britain and Northern Ireland
+	CountryCodeGb CountryCode = "GB"
+	// CountryCodeUs: United States of America
+	CountryCodeUs CountryCode = "US"
+	// CountryCodeUm: United States Minor Outlying Islands
+	CountryCodeUm CountryCode = "UM"
+	// CountryCodeUy: Uruguay
+	CountryCodeUy CountryCode = "UY"
+	// CountryCodeUz: Uzbekistan
+	CountryCodeUz CountryCode = "UZ"
+	// CountryCodeVu: Vanuatu
+	CountryCodeVu CountryCode = "VU"
+	// CountryCodeVe: Venezuela (Bolivarian Republic of)
+	CountryCodeVe CountryCode = "VE"
+	// CountryCodeVn: Viet Nam
+	CountryCodeVn CountryCode = "VN"
+	// CountryCodeVg: Virgin Islands (British)
+	CountryCodeVg CountryCode = "VG"
+	// CountryCodeVi: Virgin Islands (U.S.)
+	CountryCodeVi CountryCode = "VI"
+	// CountryCodeWf: Wallis and Futuna
+	CountryCodeWf CountryCode = "WF"
+	// CountryCodeEh: Western Sahara
+	CountryCodeEh CountryCode = "EH"
+	// CountryCodeYe: Yemen
+	CountryCodeYe CountryCode = "YE"
+	// CountryCodeZm: Zambia
+	CountryCodeZm CountryCode = "ZM"
+	// CountryCodeZw: Zimbabwe
+	CountryCodeZw CountryCode = "ZW"
 )
 
 // Coupon: The resource representing a Coupon.
@@ -1189,6 +1219,7 @@ type Coupon struct {
 }
 
 // CreatedAtSortMode: Supported set of sort modes for scanning by created_at only.
+//
 // Currently, we only support scanning in ascending order.
 type CreatedAtSortMode string
 
@@ -1200,6 +1231,7 @@ const (
 )
 
 // Currency: Currency is the list of supported currencies.
+//
 // This comes from the Stripe API docs: For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
 type Currency string
 
@@ -1513,6 +1545,7 @@ type Customer struct {
 }
 
 // CustomerBalance: A balance for a user.
+//
 // This holds information about the financial balance for the user.
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
@@ -1540,7 +1573,7 @@ type DeviceAccessTokenRequestForm struct {
 	// DeviceCode: The device code.
 	DeviceCode UUID `json:"device_code" yaml:"device_code" schema:"device_code,required"`
 	// GrantType: The grant type.
-	GrantType OAuth2GrantType `json:"grant_type" yaml:"grant_type" schema:"grant_type,required"`
+	GrantType Oauth2GrantType `json:"grant_type" yaml:"grant_type" schema:"grant_type,required"`
 }
 
 // DeviceAuthRequestForm: The request parameters for the OAuth 2.0 Device Authorization Grant flow.
@@ -1718,6 +1751,7 @@ type EmailAuthenticationForm struct {
 }
 
 // EngineMetadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type EngineMetadata struct {
 	// AsyncJobsRunning: If any async job is currently running.
@@ -1738,12 +1772,12 @@ type EngineMetadata struct {
 type Environment string
 
 const (
-	// EnvironmentDEVELOPMENT: The development environment. This is for running locally.
-	EnvironmentDEVELOPMENT Environment = "DEVELOPMENT"
-	// EnvironmentPREVIEW: The preview environment. This is when PRs are created and a service is deployed for testing.
-	EnvironmentPREVIEW Environment = "PREVIEW"
-	// EnvironmentPRODUCTION: The production environment.
-	EnvironmentPRODUCTION Environment = "PRODUCTION"
+	// EnvironmentDevelopment: The development environment. This is for running locally.
+	EnvironmentDevelopment Environment = "DEVELOPMENT"
+	// EnvironmentPreview: The preview environment. This is when PRs are created and a service is deployed for testing.
+	EnvironmentPreview Environment = "PREVIEW"
+	// EnvironmentProduction: The production environment.
+	EnvironmentProduction Environment = "PRODUCTION"
 )
 
 // Error: Error information from a response.
@@ -1757,6 +1791,7 @@ type Error struct {
 }
 
 // ExecutorMetadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type ExecutorMetadata struct {
 	// DockerInfo: Information about the docker daemon.
@@ -1768,6 +1803,7 @@ type ExecutorMetadata struct {
 }
 
 // ExtendedUser: Extended user information.
+//
 // This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Front
 type ExtendedUser struct {
 	// Company: The user's company.
@@ -1824,8 +1860,10 @@ type Extrude struct {
 
 // FileCenterOfMass: A file center of mass result.
 type FileCenterOfMass struct {
-	// CenterOfMass: The resulting center of mass.
-	CenterOfMass []float64 `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
+	// CenterOfMass: The resulting center of mass. This is deprecated and will be removed in a future release. Use `centers_of_mass` instead.
+	CenterOfMass Point3D `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
+	// CentersOfMass: The center of mass for each mesh in the file. The key of the hash map is the mesh name.
+	CentersOfMass map[string]Point3D `json:"centers_of_mass" yaml:"centers_of_mass" schema:"centers_of_mass"`
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -1836,6 +1874,8 @@ type FileCenterOfMass struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// OutputUnit: The output unit for the center of mass.
+	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
@@ -1888,7 +1928,9 @@ type FileDensity struct {
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Density: The resulting density.
+	// Densities: The density for each mesh in the file. The key of the hash map is the mesh name.
+	Densities map[string]float64 `json:"densities" yaml:"densities" schema:"densities"`
+	// Density: The resulting density. This is deprecated and will be removed in a future release, use `densities` instead.
 	Density float64 `json:"density" yaml:"density" schema:"density"`
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error" schema:"error"`
@@ -1898,6 +1940,10 @@ type FileDensity struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// MaterialMass: The material mass as denoted by the user.
 	MaterialMass float64 `json:"material_mass" yaml:"material_mass" schema:"material_mass"`
+	// MaterialMassUnit: The material mass unit.
+	MaterialMassUnit UnitMas `json:"material_mass_unit" yaml:"material_mass_unit" schema:"material_mass_unit,required"`
+	// OutputUnit: The output unit for the density.
+	OutputUnit UnitDensity `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
@@ -1916,8 +1962,6 @@ type FileExportFormat string
 const (
 	// FileExportFormatDae: The COLLADA/DAE file format. <https://en.wikipedia.org/wiki/COLLADA>
 	FileExportFormatDae FileExportFormat = "dae"
-	// FileExportFormatDxf: The DXF file format. <https://en.wikipedia.org/wiki/AutoCAD_DXF>
-	FileExportFormatDxf FileExportFormat = "dxf"
 	// FileExportFormatFbx: The FBX file format. <https://en.wikipedia.org/wiki/FBX>
 	FileExportFormatFbx FileExportFormat = "fbx"
 	// FileExportFormatFbxb: The FBX file format (in binary). <https://en.wikipedia.org/wiki/FBX>
@@ -1940,8 +1984,6 @@ type FileImportFormat string
 const (
 	// FileImportFormatDae: The COLLADA/DAE file format. <https://en.wikipedia.org/wiki/COLLADA>
 	FileImportFormatDae FileImportFormat = "dae"
-	// FileImportFormatDxf: The DXF file format. <https://en.wikipedia.org/wiki/AutoCAD_DXF>
-	FileImportFormatDxf FileImportFormat = "dxf"
 	// FileImportFormatFbx: The FBX file format. <https://en.wikipedia.org/wiki/FBX>
 	FileImportFormatFbx FileImportFormat = "fbx"
 	// FileImportFormatGltf: glTF 2.0.
@@ -1968,10 +2010,16 @@ type FileMass struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Mass: The resulting mass.
+	// Mass: The resulting mass. This is deprecated and will be removed in a future release, use `masses` instead.
 	Mass float64 `json:"mass" yaml:"mass" schema:"mass"`
+	// Masses: The mass for each mesh in the file. The key of the hash map is the mesh name.
+	Masses map[string]float64 `json:"masses" yaml:"masses" schema:"masses"`
 	// MaterialDensity: The material density as denoted by the user.
 	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density"`
+	// MaterialDensityUnit: The material density unit.
+	MaterialDensityUnit UnitDensity `json:"material_density_unit" yaml:"material_density_unit" schema:"material_density_unit,required"`
+	// OutputUnit: The output unit for the mass.
+	OutputUnit UnitMas `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
@@ -1996,14 +2044,18 @@ type FileSurfaceArea struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// OutputUnit: The output unit for the surface area.
+	OutputUnit UnitArea `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// SurfaceArea: The resulting surface area.
+	// SurfaceArea: The resulting surface area. This is deprecated and will be removed in a future release. Use `surface_areas` instead.
 	SurfaceArea float64 `json:"surface_area" yaml:"surface_area" schema:"surface_area"`
+	// SurfaceAreas: The surface area for each mesh in the file. The key of the hash map is the mesh name.
+	SurfaceAreas map[string]float64 `json:"surface_areas" yaml:"surface_areas" schema:"surface_areas"`
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
@@ -2011,6 +2063,7 @@ type FileSurfaceArea struct {
 }
 
 // FileSystemMetadata: Metadata about our file system.
+//
 // This is mostly used for internal purposes and debugging.
 type FileSystemMetadata struct {
 	// Ok: If the file system passed a sanity check.
@@ -2029,6 +2082,8 @@ type FileVolume struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// OutputUnit: The output unit for the volume.
+	OutputUnit UnitVolume `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 	// SrcFormat: The source format of the file.
 	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 	// StartedAt: The time and date the API call was started.
@@ -2039,8 +2094,10 @@ type FileVolume struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
-	// Volume: The resulting volume.
+	// Volume: The resulting volume. This is deprecated and will be removed in a future release. Use `volumes` instead.
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
+	// Volumes: The volumes for each mesh in the file. The key of the hash map is the mesh name.
+	Volumes map[string]float64 `json:"volumes" yaml:"volumes" schema:"volumes"`
 }
 
 // Gateway: Gateway information.
@@ -2097,6 +2154,22 @@ type InputFormatStep struct {
 	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Units: The units of the input data. This is very important for correct scaling and when calculating physics properties like mass, etc.
+	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
+}
+
+// InputFormatObj: *ST**ereo**L**ithography format.
+type InputFormatObj struct {
+	// Coords: Co-ordinate system of input data.
+	//
+	// Defaults to the [KittyCAD co-ordinate system].
+	//
+	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
+	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Units: The units of the input data. This is very important for correct scaling and when calculating physics properties like mass, etc.
+	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
 }
 
 // Invoice: An invoice.
@@ -2284,6 +2357,7 @@ type MetaClusterInfo struct {
 }
 
 // Metadata: Metadata about our currently running server.
+//
 // This is mostly used for internal purposes and debugging.
 type Metadata struct {
 	// Cache: Metadata about our cache.
@@ -2299,38 +2373,39 @@ type Metadata struct {
 	// GitHash: The git hash of the server.
 	GitHash string `json:"git_hash" yaml:"git_hash" schema:"git_hash,required"`
 	// PointE: Metadata about our point-e instance.
-	PointE PointEMetadata `json:"point_e" yaml:"point_e" schema:"point_e,required"`
+	PointE PointEmetadata `json:"point_e" yaml:"point_e" schema:"point_e,required"`
 	// Pubsub: Metadata about our pub-sub connection.
 	Pubsub Connection `json:"pubsub" yaml:"pubsub" schema:"pubsub,required"`
 }
 
 // Method: The Request Method (VERB)
+//
 // This type also contains constants for a number of common HTTP methods such as GET, POST, etc.
 //
 // Currently includes 8 variants representing the 8 methods defined in [RFC 7230](https://tools.ietf.org/html/rfc7231#section-4.1), plus PATCH, and an Extension variant for all extensions.
 type Method string
 
 const (
-	// MethodOPTIONS: The `OPTIONS` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.2.1).
-	MethodOPTIONS Method = "OPTIONS"
-	// MethodGET: The `GET` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1).
-	MethodGET Method = "GET"
-	// MethodPOST: The `POST` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1).
-	MethodPOST Method = "POST"
-	// MethodPUT: The `PUT` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1).
-	MethodPUT Method = "PUT"
-	// MethodDELETE: The `DELETE` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.5).
-	MethodDELETE Method = "DELETE"
-	// MethodHEAD: The `HEAD` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.2).
-	MethodHEAD Method = "HEAD"
-	// MethodTRACE: The `TRACE` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3).
-	MethodTRACE Method = "TRACE"
-	// MethodCONNECT: The `CONNECT` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.6).
-	MethodCONNECT Method = "CONNECT"
-	// MethodPATCH: The `PATCH` method as defined in [RFC 5789](https://tools.ietf.org/html/rfc5789).
-	MethodPATCH Method = "PATCH"
-	// MethodEXTENSION: A catch all.
-	MethodEXTENSION Method = "EXTENSION"
+	// MethodOptions: The `OPTIONS` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.2.1).
+	MethodOptions Method = "OPTIONS"
+	// MethodGet: The `GET` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1).
+	MethodGet Method = "GET"
+	// MethodPost: The `POST` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1).
+	MethodPost Method = "POST"
+	// MethodPut: The `PUT` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.1).
+	MethodPut Method = "PUT"
+	// MethodDelete: The `DELETE` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.5).
+	MethodDelete Method = "DELETE"
+	// MethodHead: The `HEAD` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.2).
+	MethodHead Method = "HEAD"
+	// MethodTrace: The `TRACE` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3).
+	MethodTrace Method = "TRACE"
+	// MethodConnect: The `CONNECT` method as defined in [RFC 7231](https://tools.ietf.org/html/rfc7231#section-4.3.6).
+	MethodConnect Method = "CONNECT"
+	// MethodPatch: The `PATCH` method as defined in [RFC 5789](https://tools.ietf.org/html/rfc5789).
+	MethodPatch Method = "PATCH"
+	// MethodExtension: A catch all.
+	MethodExtension Method = "EXTENSION"
 )
 
 // StartPath: Start a path.
@@ -2431,6 +2506,62 @@ type ModelingCmdCameraDragEnd struct {
 	CameraDragEnd CameraDragEnd `json:"CameraDragEnd" yaml:"CameraDragEnd" schema:"CameraDragEnd,required"`
 }
 
+// DefaultCameraLookAt is the type definition for a DefaultCameraLookAt.
+type DefaultCameraLookAt struct {
+	// Center: What the camera is looking at. Center of the camera's field of vision
+	Center Point3D `json:"center" yaml:"center" schema:"center,required"`
+	// Up: Which way is "up", from the camera's point of view.
+	Up Point3D `json:"up" yaml:"up" schema:"up,required"`
+	// Vantage: Where the camera is positioned
+	Vantage Point3D `json:"vantage" yaml:"vantage" schema:"vantage,required"`
+}
+
+// ModelingCmdDefaultCameraLookAt: Change what the default camera is looking at.
+type ModelingCmdDefaultCameraLookAt struct {
+	// DefaultCameraLookAt:
+	DefaultCameraLookAt DefaultCameraLookAt `json:"DefaultCameraLookAt" yaml:"DefaultCameraLookAt" schema:"DefaultCameraLookAt,required"`
+}
+
+// DefaultCameraEnableSketchMode is the type definition for a DefaultCameraEnableSketchMode.
+type DefaultCameraEnableSketchMode struct {
+	// DistanceToPlane: How far to the sketching plane?
+	DistanceToPlane float64 `json:"distance_to_plane" yaml:"distance_to_plane" schema:"distance_to_plane,required"`
+	// Origin: What's the origin of the sketching plane?
+	Origin Point3D `json:"origin" yaml:"origin" schema:"origin,required"`
+	// Ortho: Should the camera use orthographic projection? In other words, should an object's size in the rendered image stay constant regardless of its distance from the camera.
+	Ortho bool `json:"ortho" yaml:"ortho" schema:"ortho,required"`
+	// XAxis: Which 3D axis of the scene should be the X axis of the sketching plane?
+	XAxis Point3D `json:"x_axis" yaml:"x_axis" schema:"x_axis,required"`
+	// YAxis: Which 3D axis of the scene should be the Y axis of the sketching plane?
+	YAxis Point3D `json:"y_axis" yaml:"y_axis" schema:"y_axis,required"`
+}
+
+// ModelingCmdDefaultCameraEnableSketchMode: Enable sketch mode, where users can sketch 2D geometry. Users choose a plane to sketch on.
+type ModelingCmdDefaultCameraEnableSketchMode struct {
+	// DefaultCameraEnableSketchMode:
+	DefaultCameraEnableSketchMode DefaultCameraEnableSketchMode `json:"DefaultCameraEnableSketchMode" yaml:"DefaultCameraEnableSketchMode" schema:"DefaultCameraEnableSketchMode,required"`
+}
+
+// DefaultCameraDisableSketchMode: Disable sketch mode, from the default camera.
+type DefaultCameraDisableSketchMode string
+
+const (
+	// DefaultCameraDisableSketchModeDefaultCameraDisableSketchMode represents the DefaultCameraDisableSketchMode `"DefaultCameraDisableSketchMode"`.
+	DefaultCameraDisableSketchModeDefaultCameraDisableSketchMode DefaultCameraDisableSketchMode = "DefaultCameraDisableSketchMode"
+)
+
+// Export is the type definition for a Export.
+type Export struct {
+	// Format: The file format to export to.
+	Format any `json:"format" yaml:"format" schema:"format,required"`
+}
+
+// ModelingCmdExport: Export the scene to a file.
+type ModelingCmdExport struct {
+	// Export:
+	Export Export `json:"Export" yaml:"Export" schema:"Export,required"`
+}
+
 // ModelingCmdReq: A graphics command submitted to the KittyCAD engine via the Modeling API.
 type ModelingCmdReq struct {
 	// Cmd: Which command to submit to the Kittycad engine.
@@ -2509,8 +2640,8 @@ type NewAddress struct {
 	Zip string `json:"zip" yaml:"zip" schema:"zip"`
 }
 
-// OAuth2ClientInfo: Information about an OAuth 2.0 client.
-type OAuth2ClientInfo struct {
+// Oauth2ClientInfo: Information about an OAuth 2.0 client.
+type Oauth2ClientInfo struct {
 	// CsrfToken: Value used for [CSRF](https://tools.ietf.org/html/rfc6749#section-10.12) protection via the `state` parameter.
 	CsrfToken string `json:"csrf_token" yaml:"csrf_token" schema:"csrf_token"`
 	// PkceCodeVerifier: Code Verifier used for [PKCE]((https://tools.ietf.org/html/rfc7636)) protection via the `code_verifier` parameter. The value must have a minimum length of 43 characters and a maximum length of 128 characters.  Each character must be ASCII alphanumeric or one of the characters "-" / "." / "_" / "~".
@@ -2519,12 +2650,12 @@ type OAuth2ClientInfo struct {
 	Url string `json:"url" yaml:"url" schema:"url"`
 }
 
-// OAuth2GrantType: An OAuth 2.0 Grant Type. These are documented here: <https://oauth.net/2/grant-types/>.
-type OAuth2GrantType string
+// Oauth2GrantType: An OAuth 2.0 Grant Type. These are documented here: <https://oauth.net/2/grant-types/>.
+type Oauth2GrantType string
 
 const (
-	// OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode: An OAuth 2.0 Device Authorization Grant.
-	OAuth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode OAuth2GrantType = "urn:ietf:params:oauth:grant-type:device_code"
+	// Oauth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode: An OAuth 2.0 Device Authorization Grant.
+	Oauth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode Oauth2GrantType = "urn:ietf:params:oauth:grant-type:device_code"
 )
 
 // Onboarding: Onboarding details
@@ -2565,19 +2696,7 @@ type OutputFormatGltf struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OutputFormatCoords: ISO 10303-21 (STEP) format.
-type OutputFormatCoords struct {
-	// Coords: Co-ordinate system of output data.
-	//
-	// Defaults to the [KittyCAD co-ordinate system].
-	//
-	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
-	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// OutputFormatObj: *ST**ereo**L**ithography format.
+// OutputFormatObj: ISO 10303-21 (STEP) format.
 type OutputFormatObj struct {
 	// Coords: Co-ordinate system of output data.
 	//
@@ -2585,8 +2704,6 @@ type OutputFormatObj struct {
 	//
 	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
 	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
-	// Storage: Export storage.
-	Storage Storage `json:"storage" yaml:"storage" schema:"storage,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2753,8 +2870,8 @@ const (
 	PhysicsConstantNameMuB PhysicsConstantName = "mu_B"
 	// PhysicsConstantNameBohrMagneton: Bohr magneton. <https://en.wikipedia.org/wiki/Bohr_magneton>
 	PhysicsConstantNameBohrMagneton PhysicsConstantName = "bohr_magneton"
-	// PhysicsConstantNameNA: NA - Avogadro's Number. <https://en.wikipedia.org/wiki/Avogadro_constant>
-	PhysicsConstantNameNA PhysicsConstantName = "NA"
+	// PhysicsConstantNameNa: NA - Avogadro's Number. <https://en.wikipedia.org/wiki/Avogadro_constant>
+	PhysicsConstantNameNa PhysicsConstantName = "NA"
 	// PhysicsConstantNameAvogadroNum: Avogadro's Number. <https://en.wikipedia.org/wiki/Avogadro_constant>
 	PhysicsConstantNameAvogadroNum PhysicsConstantName = "avogadro_num"
 	// PhysicsConstantNameR: R - Molar Gas constant. <https://en.wikipedia.org/wiki/Gas_constant>
@@ -2776,6 +2893,7 @@ const (
 )
 
 // PluginsInfo: Available plugins per type.
+//
 // **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
 type PluginsInfo struct {
 	// Authorization: Names of available authorization plugins.
@@ -2806,9 +2924,10 @@ type Point3D struct {
 	Z float64 `json:"z" yaml:"z" schema:"z,required"`
 }
 
-// PointEMetadata: Metadata about our point-e instance.
+// PointEmetadata: Metadata about our point-e instance.
+//
 // This is mostly used for internal purposes and debugging.
-type PointEMetadata struct {
+type PointEmetadata struct {
 	// Ok: If the point-e service returned an ok response from ping.
 	Ok bool `json:"ok" yaml:"ok" schema:"ok,required"`
 }
@@ -2848,6 +2967,7 @@ type Runtime struct {
 }
 
 // Session: An authentication session.
+//
 // For our UIs, these are automatically created by Next.js.
 type Session struct {
 	// CreatedAt: The date and time the session was created.
@@ -2885,6 +3005,7 @@ const (
 )
 
 // System: Co-ordinate system definition.
+//
 // The `up` axis must be orthogonal to the `forward` axis.
 //
 // See [cglearn.eu] for background reading.
@@ -2989,34 +3110,22 @@ type UnitAngleConversion struct {
 type UnitArea string
 
 const (
-	// UnitAreaAcres: Acres <https://en.wikipedia.org/wiki/Acre>
-	UnitAreaAcres UnitArea = "acres"
-	// UnitAreaHectares: Hectares <https://en.wikipedia.org/wiki/Hectare>
-	UnitAreaHectares UnitArea = "hectares"
-	// UnitAreaSquareCentimetres: Square centimetres <https://en.wikipedia.org/wiki/Square_centimetre>
-	UnitAreaSquareCentimetres UnitArea = "square_centimetres"
-	// UnitAreaSquareDecimetres: Square decimetres <https://en.wikipedia.org/wiki/Square_decimetre>
-	UnitAreaSquareDecimetres UnitArea = "square_decimetres"
-	// UnitAreaSquareFeet: Square feet <https://en.wikipedia.org/wiki/Square_foot>
-	UnitAreaSquareFeet UnitArea = "square_feet"
-	// UnitAreaSquareHectometres: Square hectometres <https://en.wikipedia.org/wiki/Square_hectometre>
-	UnitAreaSquareHectometres UnitArea = "square_hectometres"
-	// UnitAreaSquareInches: Square inches <https://en.wikipedia.org/wiki/Square_inch>
-	UnitAreaSquareInches UnitArea = "square_inches"
-	// UnitAreaSquareKilometres: Square kilometres <https://en.wikipedia.org/wiki/Square_kilometre>
-	UnitAreaSquareKilometres UnitArea = "square_kilometres"
-	// UnitAreaSquareMetres: Square metres <https://en.wikipedia.org/wiki/Square_metre>
-	UnitAreaSquareMetres UnitArea = "square_metres"
-	// UnitAreaSquareMicrometres: Square micrometres <https://en.wikipedia.org/wiki/Square_micrometre>
-	UnitAreaSquareMicrometres UnitArea = "square_micrometres"
-	// UnitAreaSquareMiles: Square miles <https://en.wikipedia.org/wiki/Square_mile>
-	UnitAreaSquareMiles UnitArea = "square_miles"
-	// UnitAreaSquareMillimetres: Square millimetres <https://en.wikipedia.org/wiki/Square_millimetre>
-	UnitAreaSquareMillimetres UnitArea = "square_millimetres"
-	// UnitAreaSquareNanometres: Square nanometres <https://en.wikipedia.org/wiki/Square_nanometre>
-	UnitAreaSquareNanometres UnitArea = "square_nanometres"
-	// UnitAreaSquareYards: Square yards <https://en.wikipedia.org/wiki/Square_mile>
-	UnitAreaSquareYards UnitArea = "square_yards"
+	// UnitAreaCm2: Square centimetres <https://en.wikipedia.org/wiki/Square_centimetre>
+	UnitAreaCm2 UnitArea = "cm2"
+	// UnitAreaDm2: Square decimetres <https://en.wikipedia.org/wiki/Square_decimetre>
+	UnitAreaDm2 UnitArea = "dm2"
+	// UnitAreaFt2: Square feet <https://en.wikipedia.org/wiki/Square_foot>
+	UnitAreaFt2 UnitArea = "ft2"
+	// UnitAreaIn2: Square inches <https://en.wikipedia.org/wiki/Square_inch>
+	UnitAreaIn2 UnitArea = "in2"
+	// UnitAreaKm2: Square kilometres <https://en.wikipedia.org/wiki/Square_kilometre>
+	UnitAreaKm2 UnitArea = "km2"
+	// UnitAreaM2: Square metres <https://en.wikipedia.org/wiki/Square_metre>
+	UnitAreaM2 UnitArea = "m2"
+	// UnitAreaMm2: Square millimetres <https://en.wikipedia.org/wiki/Square_millimetre>
+	UnitAreaMm2 UnitArea = "mm2"
+	// UnitAreaYd2: Square yards <https://en.wikipedia.org/wiki/Square_mile>
+	UnitAreaYd2 UnitArea = "yd2"
 )
 
 // UnitAreaConversion: Result of converting between units.
@@ -3092,6 +3201,16 @@ type UnitCurrentConversion struct {
 	// UserID: The user ID of the user who created the API call.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
+
+// UnitDensity: The valid types for density units.
+type UnitDensity string
+
+const (
+	// UnitDensityLbft3: Pounds per cubic feet.
+	UnitDensityLbft3 UnitDensity = "lb:ft3"
+	// UnitDensityKgm3: Kilograms per cubic meter.
+	UnitDensityKgm3 UnitDensity = "kg:m3"
+)
 
 // UnitEnergy: The valid types of energy units.
 type UnitEnergy string
@@ -3247,32 +3366,18 @@ type UnitFrequencyConversion struct {
 type UnitLength string
 
 const (
-	// UnitLengthCentimetres: Centimetres <https://en.wikipedia.org/wiki/Centimetre>
-	UnitLengthCentimetres UnitLength = "centimetres"
-	// UnitLengthDecimetres: Decimetres <https://en.wikipedia.org/wiki/Decimetre>
-	UnitLengthDecimetres UnitLength = "decimetres"
-	// UnitLengthFeet: Feet <https://en.wikipedia.org/wiki/Foot_(unit)>
-	UnitLengthFeet UnitLength = "feet"
-	// UnitLengthFurlongs: Furlongs <https://en.wikipedia.org/wiki/Furlong>
-	UnitLengthFurlongs UnitLength = "furlongs"
-	// UnitLengthHectometres: Hectometres <https://en.wikipedia.org/wiki/Hectometre>
-	UnitLengthHectometres UnitLength = "hectometres"
-	// UnitLengthInches: Inches <https://en.wikipedia.org/wiki/Inch>
-	UnitLengthInches UnitLength = "inches"
-	// UnitLengthKilometres: Kilometres <https://en.wikipedia.org/wiki/Kilometre>
-	UnitLengthKilometres UnitLength = "kilometres"
-	// UnitLengthMetres: Metres <https://en.wikipedia.org/wiki/Metre>
-	UnitLengthMetres UnitLength = "metres"
-	// UnitLengthMicrometres: Micrometres <https://en.wikipedia.org/wiki/Micrometre>
-	UnitLengthMicrometres UnitLength = "micrometres"
-	// UnitLengthMiles: Miles <https://en.wikipedia.org/wiki/Mile>
-	UnitLengthMiles UnitLength = "miles"
-	// UnitLengthMillimetres: Millimetres <https://en.wikipedia.org/wiki/Millimetre>
-	UnitLengthMillimetres UnitLength = "millimetres"
-	// UnitLengthNanometres: Nanometres <https://en.wikipedia.org/wiki/Nanometre>
-	UnitLengthNanometres UnitLength = "nanometres"
-	// UnitLengthYards: Yards <https://en.wikipedia.org/wiki/Yard>
-	UnitLengthYards UnitLength = "yards"
+	// UnitLengthCm: Centimetres <https://en.wikipedia.org/wiki/Centimetre>
+	UnitLengthCm UnitLength = "cm"
+	// UnitLengthFt: Feet <https://en.wikipedia.org/wiki/Foot_(unit)>
+	UnitLengthFt UnitLength = "ft"
+	// UnitLengthIn: Inches <https://en.wikipedia.org/wiki/Inch>
+	UnitLengthIn UnitLength = "in"
+	// UnitLengthM: Metres <https://en.wikipedia.org/wiki/Metre>
+	UnitLengthM UnitLength = "m"
+	// UnitLengthMm: Millimetres <https://en.wikipedia.org/wiki/Millimetre>
+	UnitLengthMm UnitLength = "mm"
+	// UnitLengthYd: Yards <https://en.wikipedia.org/wiki/Yard>
+	UnitLengthYd UnitLength = "yd"
 )
 
 // UnitLengthConversion: Result of converting between units.
@@ -3309,36 +3414,12 @@ type UnitLengthConversion struct {
 type UnitMas string
 
 const (
-	// UnitMasCarats: Carats <https://en.wikipedia.org/wiki/Carat_(mass)>
-	UnitMasCarats UnitMas = "carats"
-	// UnitMasGrains: Grains <https://en.wikipedia.org/wiki/Grain_(unit)>
-	UnitMasGrains UnitMas = "grains"
-	// UnitMasGrams: Grams <https://en.wikipedia.org/wiki/Gram>
-	UnitMasGrams UnitMas = "grams"
-	// UnitMasKilograms: Kilograms <https://en.wikipedia.org/wiki/Kilogram>
-	UnitMasKilograms UnitMas = "kilograms"
-	// UnitMasLongTons: Long tons <https://en.wikipedia.org/wiki/Long_ton>
-	UnitMasLongTons UnitMas = "long_tons"
-	// UnitMasMetricTons: Metric tons <https://en.wikipedia.org/wiki/Tonne>
-	UnitMasMetricTons UnitMas = "metric_tons"
-	// UnitMasMicrograms: Micrograms <https://en.wikipedia.org/wiki/Microgram>
-	UnitMasMicrograms UnitMas = "micrograms"
-	// UnitMasMilligrams: Milligrams <https://en.wikipedia.org/wiki/Milligram>
-	UnitMasMilligrams UnitMas = "milligrams"
-	// UnitMasOunces: Ounces <https://en.wikipedia.org/wiki/Ounce>
-	UnitMasOunces UnitMas = "ounces"
-	// UnitMasPennyweights: Pennyweights <https://en.wikipedia.org/wiki/Pennyweight>
-	UnitMasPennyweights UnitMas = "pennyweights"
-	// UnitMasPounds: Pounds <https://en.wikipedia.org/wiki/Pound_(mass)>
-	UnitMasPounds UnitMas = "pounds"
-	// UnitMasShortTons: Short tons <https://en.wikipedia.org/wiki/Short_ton>
-	UnitMasShortTons UnitMas = "short_tons"
-	// UnitMasStones: Stones <https://en.wikipedia.org/wiki/Stone_(unit)>
-	UnitMasStones UnitMas = "stones"
-	// UnitMasTroyOunces: Troy ounces <https://en.wikipedia.org/wiki/Troy_ounce>
-	UnitMasTroyOunces UnitMas = "troy_ounces"
-	// UnitMasTroyPounds: Troy pounds <https://en.wikipedia.org/wiki/Troy_pound>
-	UnitMasTroyPounds UnitMas = "troy_pounds"
+	// UnitMasG: Grams <https://en.wikipedia.org/wiki/Gram>
+	UnitMasG UnitMas = "g"
+	// UnitMasKg: Kilograms <https://en.wikipedia.org/wiki/Kilogram>
+	UnitMasKg UnitMas = "kg"
+	// UnitMasLb: Pounds <https://en.wikipedia.org/wiki/Pound_(mass)>
+	UnitMasLb UnitMas = "lb"
 )
 
 // UnitMassConversion: Result of converting between units.
@@ -3559,44 +3640,24 @@ type UnitTorqueConversion struct {
 type UnitVolume string
 
 const (
-	// UnitVolumeCubicCentimetres: Cubic centimeters (cc or cm³) <https://en.wikipedia.org/wiki/Cubic_centimetre>
-	UnitVolumeCubicCentimetres UnitVolume = "cubic_centimetres"
-	// UnitVolumeCubicFeet: Cubic feet (ft³) <https://en.wikipedia.org/wiki/Cubic_foot>
-	UnitVolumeCubicFeet UnitVolume = "cubic_feet"
-	// UnitVolumeCubicInches: Cubic inches (cu in or in³) <https://en.wikipedia.org/wiki/Cubic_inch>
-	UnitVolumeCubicInches UnitVolume = "cubic_inches"
-	// UnitVolumeCubicMetres: Cubic metres (m³) <https://en.wikipedia.org/wiki/Cubic_metre>
-	UnitVolumeCubicMetres UnitVolume = "cubic_metres"
-	// UnitVolumeCubicYards: Cubic yards (yd³) <https://en.wikipedia.org/wiki/Cubic_yard>
-	UnitVolumeCubicYards UnitVolume = "cubic_yards"
-	// UnitVolumeCups: Cups <https://en.wikipedia.org/wiki/Cup_(unit)>
-	UnitVolumeCups UnitVolume = "cups"
-	// UnitVolumeDrams: Drams <https://en.wikipedia.org/wiki/Fluid_dram>
-	UnitVolumeDrams UnitVolume = "drams"
-	// UnitVolumeDrops: Drops <https://en.wikipedia.org/wiki/Minim_(unit)>
-	UnitVolumeDrops UnitVolume = "drops"
-	// UnitVolumeFluidOunces: US Fluid Ounces (fl oz) <https://en.wikipedia.org/wiki/Fluid_ounce>
-	UnitVolumeFluidOunces UnitVolume = "fluid_ounces"
-	// UnitVolumeFluidOuncesUk: UK Fluid Ounces (fl oz) <https://en.wikipedia.org/wiki/Fluid_ounce>
-	UnitVolumeFluidOuncesUk UnitVolume = "fluid_ounces_uk"
-	// UnitVolumeGallons: US Gallons (gal US) <https://en.wikipedia.org/wiki/Gallon>
-	UnitVolumeGallons UnitVolume = "gallons"
-	// UnitVolumeGallonsUk: UK/Imperial Gallons (gal) <https://en.wikipedia.org/wiki/Gallon>
-	UnitVolumeGallonsUk UnitVolume = "gallons_uk"
-	// UnitVolumeLitres: Liters (l) <https://en.wikipedia.org/wiki/Litre>
-	UnitVolumeLitres UnitVolume = "litres"
-	// UnitVolumeMillilitres: Milliliters (ml) <https://en.wikipedia.org/wiki/Litre>
-	UnitVolumeMillilitres UnitVolume = "millilitres"
-	// UnitVolumePints: Pints <https://en.wikipedia.org/wiki/Pint>
-	UnitVolumePints UnitVolume = "pints"
-	// UnitVolumePintsUk: Pints in the United Kingdom (UK) <https://en.wikipedia.org/wiki/Pint>
-	UnitVolumePintsUk UnitVolume = "pints_uk"
-	// UnitVolumeQuarts: Quarts <https://en.wikipedia.org/wiki/Quart>
-	UnitVolumeQuarts UnitVolume = "quarts"
-	// UnitVolumeTablespoons: Tablespoons (tbsp) <https://en.wikipedia.org/wiki/Tablespoon>
-	UnitVolumeTablespoons UnitVolume = "tablespoons"
-	// UnitVolumeTeaspoons: Teaspoons (tsp) <https://en.wikipedia.org/wiki/Teaspoon>
-	UnitVolumeTeaspoons UnitVolume = "teaspoons"
+	// UnitVolumeCm3: Cubic centimetres (cc or cm³) <https://en.wikipedia.org/wiki/Cubic_centimetre>
+	UnitVolumeCm3 UnitVolume = "cm3"
+	// UnitVolumeFt3: Cubic feet (ft³) <https://en.wikipedia.org/wiki/Cubic_foot>
+	UnitVolumeFt3 UnitVolume = "ft3"
+	// UnitVolumeIn3: Cubic inches (cu in or in³) <https://en.wikipedia.org/wiki/Cubic_inch>
+	UnitVolumeIn3 UnitVolume = "in3"
+	// UnitVolumeM3: Cubic metres (m³) <https://en.wikipedia.org/wiki/Cubic_metre>
+	UnitVolumeM3 UnitVolume = "m3"
+	// UnitVolumeYd3: Cubic yards (yd³) <https://en.wikipedia.org/wiki/Cubic_yard>
+	UnitVolumeYd3 UnitVolume = "yd3"
+	// UnitVolumeUsfloz: US Fluid Ounces (fl oz) <https://en.wikipedia.org/wiki/Fluid_ounce>
+	UnitVolumeUsfloz UnitVolume = "usfloz"
+	// UnitVolumeUsgal: US Gallons (gal US) <https://en.wikipedia.org/wiki/Gallon>
+	UnitVolumeUsgal UnitVolume = "usgal"
+	// UnitVolumeL: Liters (l) <https://en.wikipedia.org/wiki/Litre>
+	UnitVolumeL UnitVolume = "l"
+	// UnitVolumeMl: Milliliters (ml) <https://en.wikipedia.org/wiki/Litre>
+	UnitVolumeMl UnitVolume = "ml"
 )
 
 // UnitVolumeConversion: Result of converting between units.
@@ -3684,6 +3745,7 @@ type UserResultsPage struct {
 }
 
 // VerificationToken: A verification token for a user.
+//
 // This is typically used to verify a user's email address.
 type VerificationToken struct {
 	// CreatedAt: The date and time the verification token was created.

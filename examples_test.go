@@ -295,7 +295,7 @@ func ExampleFileService_CreateCenterOfMass() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateCenterOfMass("", []byte("some-binary"))
+	result, err := client.File.CreateCenterOfMass("", "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -327,7 +327,7 @@ func ExampleFileService_CreateDensity() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateDensity(123.45, "", []byte("some-binary"))
+	result, err := client.File.CreateDensity(123.45, "", "", "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -359,7 +359,7 @@ func ExampleFileService_CreateMass() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateMass(123.45, "", []byte("some-binary"))
+	result, err := client.File.CreateMass(123.45, "", "", "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -375,7 +375,7 @@ func ExampleFileService_CreateSurfaceArea() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateSurfaceArea("", []byte("some-binary"))
+	result, err := client.File.CreateSurfaceArea("", "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -391,7 +391,7 @@ func ExampleFileService_CreateVolume() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateVolume("", []byte("some-binary"))
+	result, err := client.File.CreateVolume("", "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}

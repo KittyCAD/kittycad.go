@@ -319,7 +319,8 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 	}
 
 	for index, oneOf := range s.OneOf {
-		if types[index] == "InputFormat coords" {
+		// We should have a better way of avoiding duplicates. This is a hot fix, but does not scale.
+		if types[index] == "InputFormat coords" || types[index] == "OutputFormat coords" {
 			continue
 		}
 
@@ -542,6 +543,8 @@ func printProperty(p string) string {
 	}
 
 	c = strings.ReplaceAll(c, "Api", "API")
+	c = strings.ReplaceAll(c, "APIcall", "APICall")
+	c = strings.ReplaceAll(c, "APItoken", "APIToken")
 
 	return c
 }
