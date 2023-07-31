@@ -4,7 +4,6 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,6 +15,7 @@ import (
 )
 
 // Embed our go code files.
+//
 //go:embed *.go
 var goCodeFiles embed.FS
 
@@ -124,7 +124,7 @@ func run() error {
 	}
 
 	diffFile := filepath.Join(wd, "kittycad.go.patch.json")
-	if err := ioutil.WriteFile(diffFile, patchJSON, 0644); err != nil {
+	if err := os.WriteFile(diffFile, patchJSON, 0644); err != nil {
 		return fmt.Errorf("error writing openAPI spec patch to %s: %v", diffFile, err)
 	}
 
@@ -182,7 +182,7 @@ func generateSourceFiles(data Data) error {
 		}
 		contentsString := strings.Replace(string(contents), "package main", fmt.Sprintf("package %s", data.PackageName), 1)
 		// Write the source file to the current directory.
-		if err := ioutil.WriteFile(filepath.Join(data.WorkingDirectory, sourceFile), []byte(contentsString), 0644); err != nil {
+		if err := os.WriteFile(filepath.Join(data.WorkingDirectory, sourceFile), []byte(contentsString), 0644); err != nil {
 			return fmt.Errorf("error writing file %s: %v", sourceFile, err)
 		}
 	}

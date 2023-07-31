@@ -14,6 +14,7 @@ import (
 )
 
 // Embed the template files.
+//
 //go:embed tmpl/*.tmpl
 var templateFiles embed.FS
 

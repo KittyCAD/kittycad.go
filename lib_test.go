@@ -1,7 +1,6 @@
 package kittycad
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -47,7 +46,7 @@ func TestFileConversion(t *testing.T) {
 	}
 
 	file := filepath.Join(cwd, "assets", "testing.stl")
-	body, err := ioutil.ReadFile(file)
+	body, err := os.ReadFile(file)
 	if err != nil {
 		t.Fatalf("reading the test file %q failed: %v", file, err)
 	}
