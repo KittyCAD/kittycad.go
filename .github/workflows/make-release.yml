@@ -22,6 +22,7 @@ jobs:
         run: |
           if [[ `git status --porcelain` ]]; then
             echo "Files changed, exiting";
+            git status
             exit 1;
           else
             # No changes
