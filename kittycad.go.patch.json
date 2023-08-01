@@ -1,53 +1,5 @@
 [
  {
-  "op": "remove",
-  "path": "/components/schemas/AsyncApiCallOutput/oneOf/0/properties/type"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/AsyncApiCallOutput/oneOf/1/properties/type"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/AsyncApiCallOutput/oneOf/2/properties/type"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/AsyncApiCallOutput/oneOf/3/properties/type"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/AsyncApiCallOutput/oneOf/4/properties/type"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/AsyncApiCallOutput/oneOf/5/properties/type"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/InputFormat/oneOf/0/properties"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/InputFormat/oneOf/2/properties/type"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/InputFormat/oneOf/4/properties/type"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/OutputFormat/oneOf/0/properties/type"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/OutputFormat/oneOf/1/properties/type"
- },
- {
-  "op": "remove",
-  "path": "/components/schemas/OutputFormat/oneOf/3/properties/type"
- },
- {
   "value": {
    "client": "// Create a client with your token.\nfunc ExampleNewClient() {\n\tclient, err := kittycad.NewClient(\"$TOKEN\", \"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\t// Call the client's methods.\n\tresult, err := client.Meta.Ping()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Println(result)\n}\n\n// - OR -\n\n// Create a new client with your token parsed from the environment\n// variable: `KITTYCAD_API_TOKEN`.\nfunc ExampleNewClientFromEnv() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\t// Call the client's methods.\n\tresult, err := client.Meta.Ping()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n}\n",
    "install": "go get github.com/kittycad/kittycad.go"

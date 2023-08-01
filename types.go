@@ -260,6 +260,8 @@ type AsyncAPICallOutputCompletedAt struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Output: The converted file (if single file conversion), if completed, base64 encoded. This field is deprecated, and will be removed in a future release. Use `outputs` instead.
+	//
+	// Deprecated: Output is deprecated.
 	Output Base64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
 	OutputFormat FileExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
@@ -286,6 +288,8 @@ type AsyncAPICallOutputCompletedAt struct {
 // AsyncAPICallOutputCreatedAt: File center of mass.
 type AsyncAPICallOutputCreatedAt struct {
 	// CenterOfMass: The resulting center of mass. This is deprecated and will be removed in a future release. Use `centers_of_mass` instead.
+	//
+	// Deprecated: CenterOfMass is deprecated.
 	CenterOfMass Point3D `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
 	// CentersOfMass: The center of mass for each mesh in the file. The key of the hash map is the mesh name.
 	CentersOfMass map[string]Point3D `json:"centers_of_mass" yaml:"centers_of_mass" schema:"centers_of_mass"`
@@ -328,6 +332,8 @@ type AsyncAPICallOutputError struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Mass: The resulting mass. This is deprecated and will be removed in a future release, use `masses` instead.
+	//
+	// Deprecated: Mass is deprecated.
 	Mass float64 `json:"mass" yaml:"mass" schema:"mass"`
 	// Masses: The mass for each mesh in the file. The key of the hash map is the mesh name.
 	Masses map[string]float64 `json:"masses" yaml:"masses" schema:"masses"`
@@ -378,6 +384,8 @@ type AsyncAPICallOutputID struct {
 	// UserID: The user ID of the user who created the API call.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 	// Volume: The resulting volume. This is deprecated and will be removed in a future release. Use `volumes` instead.
+	//
+	// Deprecated: Volume is deprecated.
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
 	// Volumes: The volumes for each mesh in the file. The key of the hash map is the mesh name.
 	Volumes map[string]float64 `json:"volumes" yaml:"volumes" schema:"volumes"`
@@ -392,6 +400,8 @@ type AsyncAPICallOutputOutput struct {
 	// Densities: The density for each mesh in the file. The key of the hash map is the mesh name.
 	Densities map[string]float64 `json:"densities" yaml:"densities" schema:"densities"`
 	// Density: The resulting density. This is deprecated and will be removed in a future release, use `densities` instead.
+	//
+	// Deprecated: Density is deprecated.
 	Density float64 `json:"density" yaml:"density" schema:"density"`
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error" schema:"error"`
@@ -440,6 +450,8 @@ type AsyncAPICallOutputOutputFormat struct {
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// SurfaceArea: The resulting surface area. This is deprecated and will be removed in a future release. Use `surface_areas` instead.
+	//
+	// Deprecated: SurfaceArea is deprecated.
 	SurfaceArea float64 `json:"surface_area" yaml:"surface_area" schema:"surface_area"`
 	// SurfaceAreas: The surface area for each mesh in the file. The key of the hash map is the mesh name.
 	SurfaceAreas map[string]float64 `json:"surface_areas" yaml:"surface_areas" schema:"surface_areas"`
@@ -1849,6 +1861,8 @@ type Extrude struct {
 // FileCenterOfMass: A file center of mass result.
 type FileCenterOfMass struct {
 	// CenterOfMass: The resulting center of mass. This is deprecated and will be removed in a future release. Use `centers_of_mass` instead.
+	//
+	// Deprecated: CenterOfMass is deprecated.
 	CenterOfMass Point3D `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
 	// CentersOfMass: The center of mass for each mesh in the file. The key of the hash map is the mesh name.
 	CentersOfMass map[string]Point3D `json:"centers_of_mass" yaml:"centers_of_mass" schema:"centers_of_mass"`
@@ -1889,6 +1903,8 @@ type FileConversion struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Output: The converted file (if single file conversion), if completed, base64 encoded. This field is deprecated, and will be removed in a future release. Use `outputs` instead.
+	//
+	// Deprecated: Output is deprecated.
 	Output Base64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
 	OutputFormat FileExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
@@ -1919,6 +1935,8 @@ type FileDensity struct {
 	// Densities: The density for each mesh in the file. The key of the hash map is the mesh name.
 	Densities map[string]float64 `json:"densities" yaml:"densities" schema:"densities"`
 	// Density: The resulting density. This is deprecated and will be removed in a future release, use `densities` instead.
+	//
+	// Deprecated: Density is deprecated.
 	Density float64 `json:"density" yaml:"density" schema:"density"`
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error" schema:"error"`
@@ -1999,6 +2017,8 @@ type FileMass struct {
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Mass: The resulting mass. This is deprecated and will be removed in a future release, use `masses` instead.
+	//
+	// Deprecated: Mass is deprecated.
 	Mass float64 `json:"mass" yaml:"mass" schema:"mass"`
 	// Masses: The mass for each mesh in the file. The key of the hash map is the mesh name.
 	Masses map[string]float64 `json:"masses" yaml:"masses" schema:"masses"`
@@ -2041,6 +2061,8 @@ type FileSurfaceArea struct {
 	// Status: The status of the API call.
 	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
 	// SurfaceArea: The resulting surface area. This is deprecated and will be removed in a future release. Use `surface_areas` instead.
+	//
+	// Deprecated: SurfaceArea is deprecated.
 	SurfaceArea float64 `json:"surface_area" yaml:"surface_area" schema:"surface_area"`
 	// SurfaceAreas: The surface area for each mesh in the file. The key of the hash map is the mesh name.
 	SurfaceAreas map[string]float64 `json:"surface_areas" yaml:"surface_areas" schema:"surface_areas"`
@@ -2082,6 +2104,8 @@ type FileVolume struct {
 	// UserID: The user ID of the user who created the API call.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 	// Volume: The resulting volume. This is deprecated and will be removed in a future release. Use `volumes` instead.
+	//
+	// Deprecated: Volume is deprecated.
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
 	// Volumes: The volumes for each mesh in the file. The key of the hash map is the mesh name.
 	Volumes map[string]float64 `json:"volumes" yaml:"volumes" schema:"volumes"`

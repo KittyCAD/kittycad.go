@@ -118,7 +118,16 @@ func run() error {
 	if err != nil {
 		logrus.Errorf("error comparing old and new openAPI spec: %v", err)
 	}
-	patchJSON, err := json.MarshalIndent(patch, "", " ")
+
+	// Make sure we are not doing any "Remove" operations.
+	newPatch := jsondiff.Patch{}
+	for i, d := range patch {
+		if d.Type != jsondiff.OperationRemove {
+			newPatch = append(newPatch, patch[i])
+		}
+	}
+
+	patchJSON, err := json.MarshalIndent(newPatch, "", " ")
 	if err != nil {
 		return fmt.Errorf("error marshalling openAPI spec: %v", err)
 	}
