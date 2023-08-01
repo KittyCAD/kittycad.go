@@ -4,8 +4,13 @@ package kittycad_test
 
 import (
 	"fmt"
+	"log"
 	"net/url"
+	"os"
+	"os/signal"
+	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/kittycad/kittycad.go"
 )
 
@@ -1193,28 +1198,134 @@ func ExampleAPICallService_ListForUser() {
 
 }
 
-// Create a client with your token.
+// CreateTerm: Create a terminal.
+// Attach to a docker container to create an interactive terminal.
 func ExampleExecutorService_CreateTerm() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.Executor.CreateTerm(); err != nil {
+	// Create the websocket connection.
+	ws, err := client.Executor.CreateTerm()
+	if err != nil {
 		panic(err)
+	}
+
+	defer ws.Close()
+
+	done := make(chan struct{})
+
+	go func() {
+		defer close(done)
+		for {
+			_, message, err := ws.ReadMessage()
+			if err != nil {
+				log.Println("read:", err)
+				return
+			}
+			log.Printf("recv: %s", message)
+		}
+	}()
+
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+
+	for {
+		select {
+		case <-done:
+			return
+		case t := <-ticker.C:
+			err := ws.WriteMessage(websocket.TextMessage, []byte(t.String()))
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
+		case <-interrupt:
+			log.Println("interrupt")
+
+			// Cleanly close the connection by sending a close message and then
+			// waiting (with timeout) for the server to close the connection.
+			err := ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+			if err != nil {
+				log.Println("write close:", err)
+				return
+			}
+			select {
+			case <-done:
+			case <-time.After(time.Second):
+			}
+			return
+		}
 	}
 
 }
 
-// Create a client with your token.
+// CommandsWs: Open a websocket which accepts modeling commands.
+// Pass those commands to the engine via websocket, and pass responses back to the client. Basically, this is a websocket proxy between the frontend/client and the engine.
 func ExampleModelingService_CommandsWs() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.Modeling.CommandsWs(); err != nil {
+	// Create the websocket connection.
+	ws, err := client.Modeling.CommandsWs()
+	if err != nil {
 		panic(err)
+	}
+
+	defer ws.Close()
+
+	done := make(chan struct{})
+
+	go func() {
+		defer close(done)
+		for {
+			_, message, err := ws.ReadMessage()
+			if err != nil {
+				log.Println("read:", err)
+				return
+			}
+			log.Printf("recv: %s", message)
+		}
+	}()
+
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+
+	for {
+		select {
+		case <-done:
+			return
+		case t := <-ticker.C:
+			err := ws.WriteMessage(websocket.TextMessage, []byte(t.String()))
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
+		case <-interrupt:
+			log.Println("interrupt")
+
+			// Cleanly close the connection by sending a close message and then
+			// waiting (with timeout) for the server to close the connection.
+			err := ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+			if err != nil {
+				log.Println("write close:", err)
+				return
+			}
+			select {
+			case <-done:
+			case <-time.After(time.Second):
+			}
+			return
+		}
 	}
 
 }

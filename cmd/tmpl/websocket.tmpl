@@ -1,0 +1,16 @@
+// {{.Description}}
+func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -}}{{if .RequestBody}}body {{.RequestBody.Type}}{{end}}) (*websocket.Conn, error) {
+	// Create the url.
+    path := "{{.Path}}"
+	uri := resolveRelative(s.client.server, path)
+
+    headers := http.Header{}
+	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
+
+    conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(uri, "https://", "wss://"), headers)
+	if err != nil {
+        return nil, err
+	}
+
+    return conn, nil
+}

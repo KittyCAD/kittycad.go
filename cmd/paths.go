@@ -267,15 +267,25 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 	// Now we can get the description since we have filled in everything else.
 	function.Description = function.getDescription(operation)
 
+	exampleTemplatePath := "function-example.tmpl"
+	if _, ok := operation.Extensions["x-dropshot-websocket"]; ok {
+		exampleTemplatePath = "function-example-ws.tmpl"
+	}
+
 	// Build the example function.
-	example, err := templateToString("function-example.tmpl", function)
+	example, err := templateToString(exampleTemplatePath, function)
 	if err != nil {
 		return err
 	}
 	data.Examples = append(data.Examples, example)
 
+	templatePath := "path.tmpl"
+	if _, ok := operation.Extensions["x-dropshot-websocket"]; ok {
+		templatePath = "websocket.tmpl"
+	}
+
 	// Print the template for the function.
-	f, err := templateToString("path.tmpl", function)
+	f, err := templateToString(templatePath, function)
 	if err != nil {
 		return err
 	}
