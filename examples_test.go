@@ -49,7 +49,7 @@ func ExampleNewClientFromEnv() {
 	fmt.Printf("%#v", result)
 }
 
-// Create a client with your token.
+// GetSchema: Get OpenAPI schema.
 func ExampleMetaService_GetSchema() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -62,7 +62,7 @@ func ExampleMetaService_GetSchema() {
 
 }
 
-// Create a client with your token.
+// GetAiPluginManifest: Get AI plugin manifest.
 func ExampleMetaService_GetAiPluginManifest() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -78,7 +78,9 @@ func ExampleMetaService_GetAiPluginManifest() {
 
 }
 
-// Create a client with your token.
+// Getdata: Get the metadata about our currently running server.
+// This includes information on any of our other distributed systems it is connected to.
+// You must be a KittyCAD employee to perform this request.
 func ExampleMetaService_Getdata() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -94,7 +96,14 @@ func ExampleMetaService_Getdata() {
 
 }
 
-// Create a client with your token.
+// CreateImageTo3D: Generate a 3D model from an image.
+// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
+//
+// Parameters
+//
+//   - `inputFormat`: An enumeration.
+//   - `outputFormat`: The valid types of output file formats.
+//   - `body`
 func ExampleAiService_CreateImageTo3D() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -110,7 +119,13 @@ func ExampleAiService_CreateImageTo3D() {
 
 }
 
-// Create a client with your token.
+// CreateTextTo3D: Generate a 3D model from text.
+// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
+//
+// Parameters
+//
+//   - `outputFormat`: The valid types of output file formats.
+//   - `prompt`
 func ExampleAiService_CreateTextTo3D() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -126,7 +141,12 @@ func ExampleAiService_CreateTextTo3D() {
 
 }
 
-// Create a client with your token.
+// GetMetrics: Get API call metrics.
+// This endpoint requires authentication by a KittyCAD employee. The API calls are grouped by the parameter passed.
+//
+// Parameters
+//
+//   - `groupBy`: The field of an API call to group by.
 func ExampleAPICallService_GetMetrics() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -142,7 +162,18 @@ func ExampleAPICallService_GetMetrics() {
 
 }
 
-// Create a client with your token.
+// List: List API calls.
+// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
 func ExampleAPICallService_List() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -158,7 +189,14 @@ func ExampleAPICallService_List() {
 
 }
 
-// Create a client with your token.
+// Get: Get details of an API call.
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
+// If the user is not authenticated to view the specified API call, then it is not returned.
+// Only KittyCAD employees can view API calls for other users.
+//
+// Parameters
+//
+//   - `id`
 func ExampleAPICallService_Get() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -174,7 +212,13 @@ func ExampleAPICallService_Get() {
 
 }
 
-// Create a client with your token.
+// GithubCallback: Listen for callbacks to GitHub app authentication.
+// This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
+// The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
+//
+// Parameters
+//
+//   - `body`
 func ExampleAppService_GithubCallback() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -187,7 +231,9 @@ func ExampleAppService_GithubCallback() {
 
 }
 
-// Create a client with your token.
+// GithubConsent: Get the consent URL for GitHub app authentication.
+// This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
+// The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 func ExampleAppService_GithubConsent() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -203,7 +249,12 @@ func ExampleAppService_GithubConsent() {
 
 }
 
-// Create a client with your token.
+// GithubWebhook: Listen for GitHub webhooks.
+// These come from the GitHub app.
+//
+// Parameters
+//
+//   - `body`
 func ExampleAppService_GithubWebhook() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -216,7 +267,21 @@ func ExampleAppService_GithubWebhook() {
 
 }
 
-// Create a client with your token.
+// ListAsyncOperations: List async operations.
+// For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
+// This endpoint requires authentication by a KittyCAD employee.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+//
+//   - `status`: The status of an async API call.
 func ExampleAPICallService_ListAsyncOperations() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -232,7 +297,15 @@ func ExampleAPICallService_ListAsyncOperations() {
 
 }
 
-// Create a client with your token.
+// GetAsyncOperation: Get an async operation.
+// Get the status and output of an async operation.
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested async operation for the user.
+// If the user is not authenticated to view the specified async operation, then it is not returned.
+// Only KittyCAD employees with the proper access can view async operations for other users.
+//
+// Parameters
+//
+//   - `id`
 func ExampleAPICallService_GetAsyncOperation() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -248,7 +321,10 @@ func ExampleAPICallService_GetAsyncOperation() {
 
 }
 
-// Create a client with your token.
+// AuthEmail: Create an email verification request for a user.
+// Parameters
+//
+//   - `body`: The body of the form for email authentication.
 func ExampleHiddenService_AuthEmail() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -264,7 +340,12 @@ func ExampleHiddenService_AuthEmail() {
 
 }
 
-// Create a client with your token.
+// AuthEmailCallback: Listen for callbacks for email verification for users.
+// Parameters
+//
+//   - `callbackUrl`
+//   - `email`
+//   - `token`
 func ExampleHiddenService_AuthEmailCallback() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -277,7 +358,10 @@ func ExampleHiddenService_AuthEmailCallback() {
 
 }
 
-// Create a client with your token.
+// GetPhysics: Get a physics constant.
+// Parameters
+//
+//   - `constant`: The valid types of phys constant names.
 func ExampleConstantService_GetPhysics() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -293,7 +377,18 @@ func ExampleConstantService_GetPhysics() {
 
 }
 
-// Create a client with your token.
+// CreateCenterOfMass: Get CAD file center of mass.
+// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+// Currently, this endpoint returns the cartesian co-ordinate in world space measure units.
+// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+// Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `outputUnit`: The valid types of length units.
+//   - `srcFormat`: The valid types of source file formats.
+//   - `body`
 func ExampleFileService_CreateCenterOfMass() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -309,7 +404,17 @@ func ExampleFileService_CreateCenterOfMass() {
 
 }
 
-// Create a client with your token.
+// CreateConversion: Convert CAD file with defaults.
+// If you wish to specify the conversion options, use the `/file/conversion` endpoint instead.
+// Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
+// If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `outputFormat`: The valid types of output file formats.
+//   - `srcFormat`: The valid types of source file formats.
+//   - `body`
 func ExampleFileService_CreateConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -325,7 +430,20 @@ func ExampleFileService_CreateConversion() {
 
 }
 
-// Create a client with your token.
+// CreateDensity: Get CAD file density.
+// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+// Currently, this endpoint assumes if you are giving a material mass in a specific mass units, we return a density in mass unit per cubic measure unit.
+// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+// Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `materialMass`
+//   - `materialMassUnit`: The valid types of mass units.
+//   - `outputUnit`: The valid types for density units.
+//   - `srcFormat`: The valid types of source file formats.
+//   - `body`
 func ExampleFileService_CreateDensity() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -341,7 +459,12 @@ func ExampleFileService_CreateDensity() {
 
 }
 
-// Create a client with your token.
+// CreateFileExecution: Execute a KittyCAD program in a specific language.
+// Parameters
+//
+//   - `lang`: The language code is written in.
+//   - `output`
+//   - `body`
 func ExampleExecutorService_CreateFileExecution() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -357,7 +480,20 @@ func ExampleExecutorService_CreateFileExecution() {
 
 }
 
-// Create a client with your token.
+// CreateMass: Get CAD file mass.
+// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+// Currently, this endpoint assumes if you are giving a material density in a specific mass unit per cubic measure unit, we return a mass in mass units. The same mass units as passed in the material density.
+// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+// Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `materialDensity`
+//   - `materialDensityUnit`: The valid types for density units.
+//   - `outputUnit`: The valid types of mass units.
+//   - `srcFormat`: The valid types of source file formats.
+//   - `body`
 func ExampleFileService_CreateMass() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -373,7 +509,18 @@ func ExampleFileService_CreateMass() {
 
 }
 
-// Create a client with your token.
+// CreateSurfaceArea: Get CAD file surface area.
+// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+// Currently, this endpoint returns the square measure units.
+// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+// Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `outputUnit`: The valid types of area units.
+//   - `srcFormat`: The valid types of source file formats.
+//   - `body`
 func ExampleFileService_CreateSurfaceArea() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -389,7 +536,18 @@ func ExampleFileService_CreateSurfaceArea() {
 
 }
 
-// Create a client with your token.
+// CreateVolume: Get CAD file volume.
+// We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+// Currently, this endpoint returns the cubic measure units.
+// In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+// Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+// If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `outputUnit`: The valid types of volume units.
+//   - `srcFormat`: The valid types of source file formats.
+//   - `body`
 func ExampleFileService_CreateVolume() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -405,7 +563,8 @@ func ExampleFileService_CreateVolume() {
 
 }
 
-// Create a client with your token.
+// Logout: This endpoint removes the session cookie for a user.
+// This is used in logout scenarios.
 func ExampleHiddenService_Logout() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -418,7 +577,12 @@ func ExampleHiddenService_Logout() {
 
 }
 
-// Create a client with your token.
+// Cmd: Submit one modeling operation.
+// Response depends on which command was submitted, so unfortunately the OpenAPI schema can't generate the right response type.
+//
+// Parameters
+//
+//   - `body`: A graphics command submitted to the KittyCAD engine via the Modeling API.
 func ExampleModelingService_Cmd() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -431,7 +595,10 @@ func ExampleModelingService_Cmd() {
 
 }
 
-// Create a client with your token.
+// CmdBatch: Submit many modeling operations.
+// Parameters
+//
+//   - `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Modeling API.
 func ExampleModelingService_CmdBatch() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -447,7 +614,12 @@ func ExampleModelingService_CmdBatch() {
 
 }
 
-// Create a client with your token.
+// DeviceAuthRequest: Start an OAuth 2.0 Device Authorization Grant.
+// This endpoint is designed to be accessed from an *unauthenticated* API client. It generates and records a `device_code` and `user_code` which must be verified and confirmed prior to a token being granted.
+//
+// Parameters
+//
+//   - `body`: The request parameters for the OAuth 2.0 Device Authorization Grant flow.
 func ExampleOauth2Service_DeviceAuthRequest() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -460,7 +632,12 @@ func ExampleOauth2Service_DeviceAuthRequest() {
 
 }
 
-// Create a client with your token.
+// DeviceAuthConfirm: Confirm an OAuth 2.0 Device Authorization Grant.
+// This endpoint is designed to be accessed by the user agent (browser), not the client requesting the token. So we do not actually return the token here; it will be returned in response to the poll on `/oauth2/device/token`.
+//
+// Parameters
+//
+//   - `body`: The request parameters to verify the `user_code` for the OAuth 2.0 Device Authorization Grant.
 func ExampleOauth2Service_DeviceAuthConfirm() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -473,7 +650,12 @@ func ExampleOauth2Service_DeviceAuthConfirm() {
 
 }
 
-// Create a client with your token.
+// DeviceAccessToken: Request a device access token.
+// This endpoint should be polled by the client until the user code is verified and the grant is confirmed.
+//
+// Parameters
+//
+//   - `body`: The form for a device access token request.
 func ExampleOauth2Service_DeviceAccessToken() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -486,7 +668,12 @@ func ExampleOauth2Service_DeviceAccessToken() {
 
 }
 
-// Create a client with your token.
+// DeviceAuthVerify: Verify an OAuth 2.0 Device Authorization Grant.
+// This endpoint should be accessed in a full user agent (e.g., a browser). If the user is not logged in, we redirect them to the login page and use the `callback_url` parameter to get them to the UI verification form upon logging in. If they are logged in, we redirect them to the UI verification form on the website.
+//
+// Parameters
+//
+//   - `userCode`
 func ExampleOauth2Service_DeviceAuthVerify() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -499,7 +686,12 @@ func ExampleOauth2Service_DeviceAuthVerify() {
 
 }
 
-// Create a client with your token.
+// ProviderCallback: Listen for callbacks for the OAuth 2.0 provider.
+// Parameters
+//
+//   - `provider`: An account provider.
+//   - `code`
+//   - `state`
 func ExampleOauth2Service_ProviderCallback() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -512,7 +704,11 @@ func ExampleOauth2Service_ProviderCallback() {
 
 }
 
-// Create a client with your token.
+// ProviderConsent: Get the consent URL and other information for the OAuth 2.0 provider.
+// Parameters
+//
+//   - `provider`: An account provider.
+//   - `callbackUrl`
 func ExampleOauth2Service_ProviderConsent() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -528,7 +724,8 @@ func ExampleOauth2Service_ProviderConsent() {
 
 }
 
-// Create a client with your token.
+// GetOpenaiSchema: Get AI plugin OpenAPI schema.
+// This is the same as the OpenAPI schema, BUT it has some modifications to make it compatible with OpenAI. For example, descriptions must be < 300 chars.
 func ExampleMetaService_GetOpenaiSchema() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -541,7 +738,7 @@ func ExampleMetaService_GetOpenaiSchema() {
 
 }
 
-// Create a client with your token.
+// Ping: Return pong.
 func ExampleMetaService_Ping() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -557,7 +754,14 @@ func ExampleMetaService_Ping() {
 
 }
 
-// Create a client with your token.
+// GetAngleConversion: Convert angle units.
+// Convert an angle unit value to another angle unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of angle formats.
+//   - `outputUnit`: The valid types of angle formats.
+//   - `value`
 func ExampleUnitService_GetAngleConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -573,7 +777,14 @@ func ExampleUnitService_GetAngleConversion() {
 
 }
 
-// Create a client with your token.
+// GetAreaConversion: Convert area units.
+// Convert an area unit value to another area unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of area units.
+//   - `outputUnit`: The valid types of area units.
+//   - `value`
 func ExampleUnitService_GetAreaConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -589,7 +800,14 @@ func ExampleUnitService_GetAreaConversion() {
 
 }
 
-// Create a client with your token.
+// GetCurrentConversion: Convert current units.
+// Convert a current unit value to another current unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of current units.
+//   - `outputUnit`: The valid types of current units.
+//   - `value`
 func ExampleUnitService_GetCurrentConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -605,7 +823,14 @@ func ExampleUnitService_GetCurrentConversion() {
 
 }
 
-// Create a client with your token.
+// GetEnergyConversion: Convert energy units.
+// Convert a energy unit value to another energy unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of energy units.
+//   - `outputUnit`: The valid types of energy units.
+//   - `value`
 func ExampleUnitService_GetEnergyConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -621,7 +846,14 @@ func ExampleUnitService_GetEnergyConversion() {
 
 }
 
-// Create a client with your token.
+// GetForceConversion: Convert force units.
+// Convert a force unit value to another force unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of force units.
+//   - `outputUnit`: The valid types of force units.
+//   - `value`
 func ExampleUnitService_GetForceConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -637,7 +869,14 @@ func ExampleUnitService_GetForceConversion() {
 
 }
 
-// Create a client with your token.
+// GetFrequencyConversion: Convert frequency units.
+// Convert a frequency unit value to another frequency unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of frequency units.
+//   - `outputUnit`: The valid types of frequency units.
+//   - `value`
 func ExampleUnitService_GetFrequencyConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -653,7 +892,14 @@ func ExampleUnitService_GetFrequencyConversion() {
 
 }
 
-// Create a client with your token.
+// GetLengthConversion: Convert length units.
+// Convert a length unit value to another length unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of length units.
+//   - `outputUnit`: The valid types of length units.
+//   - `value`
 func ExampleUnitService_GetLengthConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -669,7 +915,14 @@ func ExampleUnitService_GetLengthConversion() {
 
 }
 
-// Create a client with your token.
+// GetMassConversion: Convert mass units.
+// Convert a mass unit value to another mass unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of mass units.
+//   - `outputUnit`: The valid types of mass units.
+//   - `value`
 func ExampleUnitService_GetMassConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -685,7 +938,14 @@ func ExampleUnitService_GetMassConversion() {
 
 }
 
-// Create a client with your token.
+// GetPowerConversion: Convert power units.
+// Convert a power unit value to another power unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of power units.
+//   - `outputUnit`: The valid types of power units.
+//   - `value`
 func ExampleUnitService_GetPowerConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -701,7 +961,14 @@ func ExampleUnitService_GetPowerConversion() {
 
 }
 
-// Create a client with your token.
+// GetPressureConversion: Convert pressure units.
+// Convert a pressure unit value to another pressure unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of pressure units.
+//   - `outputUnit`: The valid types of pressure units.
+//   - `value`
 func ExampleUnitService_GetPressureConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -717,7 +984,14 @@ func ExampleUnitService_GetPressureConversion() {
 
 }
 
-// Create a client with your token.
+// GetTemperatureConversion: Convert temperature units.
+// Convert a temperature unit value to another temperature unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of temperature units.
+//   - `outputUnit`: The valid types of temperature units.
+//   - `value`
 func ExampleUnitService_GetTemperatureConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -733,7 +1007,14 @@ func ExampleUnitService_GetTemperatureConversion() {
 
 }
 
-// Create a client with your token.
+// GetTorqueConversion: Convert torque units.
+// Convert a torque unit value to another torque unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of torque units.
+//   - `outputUnit`: The valid types of torque units.
+//   - `value`
 func ExampleUnitService_GetTorqueConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -749,7 +1030,14 @@ func ExampleUnitService_GetTorqueConversion() {
 
 }
 
-// Create a client with your token.
+// GetVolumeConversion: Convert volume units.
+// Convert a volume unit value to another volume unit value. This is a nice endpoint to use for helper functions.
+//
+// Parameters
+//
+//   - `inputUnit`: The valid types of volume units.
+//   - `outputUnit`: The valid types of volume units.
+//   - `value`
 func ExampleUnitService_GetVolumeConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -765,7 +1053,9 @@ func ExampleUnitService_GetVolumeConversion() {
 
 }
 
-// Create a client with your token.
+// GetSelf: Get your user.
+// Get the user information for the authenticated user.
+// Alternatively, you can also use the `/users/me` endpoint.
 func ExampleUserService_GetSelf() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -781,7 +1071,12 @@ func ExampleUserService_GetSelf() {
 
 }
 
-// Create a client with your token.
+// UpdateSelf: Update your user.
+// This endpoint requires authentication by any KittyCAD user. It updates information about the authenticated user.
+//
+// Parameters
+//
+//   - `body`: The user-modifiable parts of a User.
 func ExampleUserService_UpdateSelf() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -797,7 +1092,9 @@ func ExampleUserService_UpdateSelf() {
 
 }
 
-// Create a client with your token.
+// DeleteSelf: Delete your user.
+// This endpoint requires authentication by any KittyCAD user. It deletes the authenticated user from KittyCAD's database.
+// This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.
 func ExampleUserService_DeleteSelf() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -810,7 +1107,19 @@ func ExampleUserService_DeleteSelf() {
 
 }
 
-// Create a client with your token.
+// UserList: List API calls for your user.
+// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.
+// The API calls are returned in order of creation, with the most recently created API calls first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
 func ExampleAPICallService_UserList() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -826,7 +1135,12 @@ func ExampleAPICallService_UserList() {
 
 }
 
-// Create a client with your token.
+// GetForUser: Get an API call for a user.
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
+//
+// Parameters
+//
+//   - `id`
 func ExampleAPICallService_GetForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -842,7 +1156,19 @@ func ExampleAPICallService_GetForUser() {
 
 }
 
-// Create a client with your token.
+// ListForUser: List API tokens for your user.
+// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
+// The API tokens are returned in order of creation, with the most recently created API tokens first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
 func ExampleAPITokenService_ListForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -858,7 +1184,8 @@ func ExampleAPITokenService_ListForUser() {
 
 }
 
-// Create a client with your token.
+// CreateForUser: Create a new API token for your user.
+// This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.
 func ExampleAPITokenService_CreateForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -874,7 +1201,12 @@ func ExampleAPITokenService_CreateForUser() {
 
 }
 
-// Create a client with your token.
+// GetForUser: Get an API token for your user.
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
+//
+// Parameters
+//
+//   - `token`
 func ExampleAPITokenService_GetForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -890,7 +1222,13 @@ func ExampleAPITokenService_GetForUser() {
 
 }
 
-// Create a client with your token.
+// DeleteForUser: Delete an API token for your user.
+// This endpoint requires authentication by any KittyCAD user. It deletes the requested API token for the user.
+// This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.
+//
+// Parameters
+//
+//   - `token`
 func ExampleAPITokenService_DeleteForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -903,7 +1241,9 @@ func ExampleAPITokenService_DeleteForUser() {
 
 }
 
-// Create a client with your token.
+// GetSelfExtended: Get extended information about your user.
+// Get the user information for the authenticated user.
+// Alternatively, you can also use the `/users-extended/me` endpoint.
 func ExampleUserService_GetSelfExtended() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -919,7 +1259,8 @@ func ExampleUserService_GetSelfExtended() {
 
 }
 
-// Create a client with your token.
+// GetFrontHashSelf: Get your user's front verification hash.
+// This info is sent to front when initialing the front chat, it prevents impersonations using js hacks in the browser
 func ExampleUserService_GetFrontHashSelf() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -935,7 +1276,8 @@ func ExampleUserService_GetFrontHashSelf() {
 
 }
 
-// Create a client with your token.
+// GetOnboardingSelf: Get your user's onboarding status.
+// Checks key part of their api usage to determine their onboarding progress
 func ExampleUserService_GetOnboardingSelf() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -951,7 +1293,9 @@ func ExampleUserService_GetOnboardingSelf() {
 
 }
 
-// Create a client with your token.
+// GetInformationForUser: Get payment info about your user.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by any KittyCAD user. It gets the payment information for the authenticated user.
 func ExamplePaymentService_GetInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -967,7 +1311,13 @@ func ExamplePaymentService_GetInformationForUser() {
 
 }
 
-// Create a client with your token.
+// CreateInformationForUser: Create payment info for your user.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by any KittyCAD user. It creates the payment information for the authenticated user.
+//
+// Parameters
+//
+//   - `body`: The billing information for payments.
 func ExamplePaymentService_CreateInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -983,7 +1333,13 @@ func ExamplePaymentService_CreateInformationForUser() {
 
 }
 
-// Create a client with your token.
+// UpdateInformationForUser: Update payment info for your user.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by any KittyCAD user. It updates the payment information for the authenticated user.
+//
+// Parameters
+//
+//   - `body`: The billing information for payments.
 func ExamplePaymentService_UpdateInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -999,7 +1355,9 @@ func ExamplePaymentService_UpdateInformationForUser() {
 
 }
 
-// Create a client with your token.
+// DeleteInformationForUser: Delete payment info for your user.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by any KittyCAD user. It deletes the payment information for the authenticated user.
 func ExamplePaymentService_DeleteInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1012,7 +1370,8 @@ func ExamplePaymentService_DeleteInformationForUser() {
 
 }
 
-// Create a client with your token.
+// GetBalanceForUser: Get balance for your user.
+// This endpoint requires authentication by any KittyCAD user. It gets the balance information for the authenticated user.
 func ExamplePaymentService_GetBalanceForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1028,7 +1387,8 @@ func ExamplePaymentService_GetBalanceForUser() {
 
 }
 
-// Create a client with your token.
+// CreateIntentForUser: Create a payment intent for your user.
+// This endpoint requires authentication by any KittyCAD user. It creates a new payment intent for the authenticated user.
 func ExamplePaymentService_CreateIntentForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1044,7 +1404,8 @@ func ExamplePaymentService_CreateIntentForUser() {
 
 }
 
-// Create a client with your token.
+// ListInvoicesForUser: List invoices for your user.
+// This endpoint requires authentication by any KittyCAD user. It lists invoices for the authenticated user.
 func ExamplePaymentService_ListInvoicesForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1060,7 +1421,8 @@ func ExamplePaymentService_ListInvoicesForUser() {
 
 }
 
-// Create a client with your token.
+// ListMethodsForUser: List payment methods for your user.
+// This endpoint requires authentication by any KittyCAD user. It lists payment methods for the authenticated user.
 func ExamplePaymentService_ListMethodsForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1076,7 +1438,12 @@ func ExamplePaymentService_ListMethodsForUser() {
 
 }
 
-// Create a client with your token.
+// DeleteMethodForUser: Delete a payment method for your user.
+// This endpoint requires authentication by any KittyCAD user. It deletes the specified payment method for the authenticated user.
+//
+// Parameters
+//
+//   - `id`
 func ExamplePaymentService_DeleteMethodForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1089,7 +1456,8 @@ func ExamplePaymentService_DeleteMethodForUser() {
 
 }
 
-// Create a client with your token.
+// ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.
+// This endpoint requires authentication by any KittyCAD user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
 func ExamplePaymentService_ValidateCustomerTaxInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1102,7 +1470,12 @@ func ExamplePaymentService_ValidateCustomerTaxInformationForUser() {
 
 }
 
-// Create a client with your token.
+// GetSessionFor: Get a session for your user.
+// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
+//
+// Parameters
+//
+//   - `token`
 func ExampleUserService_GetSessionFor() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1118,7 +1491,18 @@ func ExampleUserService_GetSessionFor() {
 
 }
 
-// Create a client with your token.
+// List: List users.
+// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
 func ExampleUserService_List() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1134,7 +1518,18 @@ func ExampleUserService_List() {
 
 }
 
-// Create a client with your token.
+// ListExtended: List users with extended information.
+// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
 func ExampleUserService_ListExtended() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1150,7 +1545,14 @@ func ExampleUserService_ListExtended() {
 
 }
 
-// Create a client with your token.
+// GetExtended: Get extended information about a user.
+// To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
+// Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
+// To get information about any KittyCAD user, you must be a KittyCAD employee.
+//
+// Parameters
+//
+//   - `id`
 func ExampleUserService_GetExtended() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1166,7 +1568,14 @@ func ExampleUserService_GetExtended() {
 
 }
 
-// Create a client with your token.
+// Get: Get a user.
+// To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.
+// Alternatively, to get information about the authenticated user, use `/user` endpoint.
+// To get information about any KittyCAD user, you must be a KittyCAD employee.
+//
+// Parameters
+//
+//   - `id`
 func ExampleUserService_Get() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1182,7 +1591,23 @@ func ExampleUserService_Get() {
 
 }
 
-// Create a client with your token.
+// ListForUser: List API calls for a user.
+// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if "me" is passed as the user id.
+// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.
+// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.
+// The API calls are returned in order of creation, with the most recently created API calls first.
+//
+// Parameters
+//
+//   - `id`
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
 func ExampleAPICallService_ListForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
