@@ -239,6 +239,11 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 			}
 		}
 
+		if v.Value.Deprecated {
+			objectValue.Description += "\n//\n// Deprecated: " + printProperty(k) + " is deprecated."
+
+		}
+
 		object.Values[k] = objectValue
 
 		// If this property is an object, we need to generate it as well.

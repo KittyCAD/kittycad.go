@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/schema"
+	"github.com/gorilla/websocket"
 )
 
 // GetSchema: Get OpenAPI schema.
@@ -3648,60 +3649,36 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 
 // CreateTerm: Create a terminal.
 // Attach to a docker container to create an interactive terminal.
-func (s *ExecutorService) CreateTerm() error {
+func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/executor/term"
 	uri := resolveRelative(s.client.server, path)
 
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	headers := http.Header{}
+	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
+
+	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(uri, "https://", "wss://"), headers)
 	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
+		return nil, err
 	}
 
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-
-	// Return.
-	return nil
-
+	return conn, nil
 }
 
 // CommandsWs: Open a websocket which accepts modeling commands.
 // Pass those commands to the engine via websocket, and pass responses back to the client. Basically, this is a websocket proxy between the frontend/client and the engine.
-func (s *ModelingService) CommandsWs() error {
+func (s *ModelingService) CommandsWs() (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
 	uri := resolveRelative(s.client.server, path)
 
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	headers := http.Header{}
+	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
+
+	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(uri, "https://", "wss://"), headers)
 	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
+		return nil, err
 	}
 
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-
-	// Return.
-	return nil
-
+	return conn, nil
 }
