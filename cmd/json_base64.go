@@ -17,7 +17,7 @@ func (u Base64) MarshalJSON() ([]byte, error) {
 		return []byte("null"), nil
 	}
 
-	return []byte(`"` + base64.StdEncoding.EncodeToString(u.Inner) + `"`), nil
+	return []byte(`"` + base64.RawStdEncoding.EncodeToString(u.Inner) + `"`), nil
 }
 
 func (u Base64) String() string {
@@ -25,7 +25,7 @@ func (u Base64) String() string {
 		return ""
 	}
 
-	return base64.StdEncoding.EncodeToString(u.Inner)
+	return base64.RawStdEncoding.EncodeToString(u.Inner)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
@@ -45,7 +45,7 @@ func (u *Base64) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	// Fractional seconds are handled implicitly by Parse.
-	uu, err := base64.StdEncoding.DecodeString(strings.Trim(string(data), `"`))
+	uu, err := base64.RawStdEncoding.DecodeString(strings.Trim(string(data), `"`))
 	if err != nil {
 		return err
 	}
