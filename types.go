@@ -2048,12 +2048,6 @@ type FileDensity struct {
 type FileExportFormat string
 
 const (
-	// FileExportFormatDae: The COLLADA/DAE file format. <https://en.wikipedia.org/wiki/COLLADA>
-	FileExportFormatDae FileExportFormat = "dae"
-	// FileExportFormatFbx: The FBX file format. <https://en.wikipedia.org/wiki/FBX>
-	FileExportFormatFbx FileExportFormat = "fbx"
-	// FileExportFormatFbxb: The FBX file format (in binary). <https://en.wikipedia.org/wiki/FBX>
-	FileExportFormatFbxb FileExportFormat = "fbxb"
 	// FileExportFormatGltf: glTF 2.0. We refer to this as glTF since that is how our customers refer to it, although by default it will be in binary format and thus technically (glb).
 	FileExportFormatGltf FileExportFormat = "gltf"
 	// FileExportFormatObj: The OBJ file format. <https://en.wikipedia.org/wiki/Wavefront_.obj_file> It may or may not have an an attached material (mtl // mtllib) within the file, but we interact with it as if it does not.
@@ -2070,10 +2064,6 @@ const (
 type FileImportFormat string
 
 const (
-	// FileImportFormatDae: The COLLADA/DAE file format. <https://en.wikipedia.org/wiki/COLLADA>
-	FileImportFormatDae FileImportFormat = "dae"
-	// FileImportFormatFbx: The FBX file format. <https://en.wikipedia.org/wiki/FBX>
-	FileImportFormatFbx FileImportFormat = "fbx"
 	// FileImportFormatGltf: glTF 2.0.
 	FileImportFormatGltf FileImportFormat = "gltf"
 	// FileImportFormatObj: The OBJ file format. <https://en.wikipedia.org/wiki/Wavefront_.obj_file> It may or may not have an an attached material (mtl // mtllib) within the file, but we interact with it as if it does not.
