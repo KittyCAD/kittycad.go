@@ -250,7 +250,11 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 		if v.Value.Type == "object" && v.Value.Properties != nil && len(v.Value.Properties) > 0 {
 			// Check if we already have a schema for this one of.
 			if _, ok := spec.Components.Schemas[k]; !ok {
-				if err := data.generateObjectType(k, v.Value, spec); err != nil {
+				n := printProperty(k)
+				if n == "Error" {
+					n = name + "Error"
+				}
+				if err := data.generateObjectType(n, v.Value, spec); err != nil {
 					return err
 				}
 			}
@@ -325,7 +329,7 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 
 	for index, oneOf := range s.OneOf {
 		// We should have a better way of avoiding duplicates. This is a hot fix, but does not scale.
-		if types[index] == "InputFormat coords" || types[index] == "OutputFormat coords" {
+		if types[index] == "InputFormat coords" || types[index] == "OutputFormat coords" || types[index] == "ModelingCmd path" || types[index] == "ModelingCmd interaction" || types[index] == "ModelingCmd window" || types[index] == "OkModelingCmdResponse entity_id" {
 			continue
 		}
 
