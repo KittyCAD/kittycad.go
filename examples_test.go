@@ -358,28 +358,9 @@ func ExampleHiddenService_AuthEmailCallback() {
 
 }
 
-// GetPhysics: Get a physics constant.
-// Parameters
-//
-//   - `constant`: The valid types of phys constant names.
-func ExampleConstantService_GetPhysics() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Constant.GetPhysics("")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // CreateCenterOfMass: Get CAD file center of mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// Currently, this endpoint returns the cartesian co-ordinate in world space measure units.
+// This endpoint returns the cartesian co-ordinate in world space measure units.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -432,7 +413,7 @@ func ExampleFileService_CreateConversion() {
 
 // CreateDensity: Get CAD file density.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// Currently, this endpoint assumes if you are giving a material mass in a specific mass units, we return a density in mass unit per cubic measure unit.
+// This endpoint assumes if you are giving a material mass in a specific mass units, we return a density in mass unit per cubic measure unit.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -482,7 +463,7 @@ func ExampleExecutorService_CreateFileExecution() {
 
 // CreateMass: Get CAD file mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// Currently, this endpoint assumes if you are giving a material density in a specific mass unit per cubic measure unit, we return a mass in mass units. The same mass units as passed in the material density.
+// This endpoint assumes if you are giving a material density in a specific mass unit per cubic measure unit, we return a mass in mass units. The same mass units as passed in the material density.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -511,7 +492,7 @@ func ExampleFileService_CreateMass() {
 
 // CreateSurfaceArea: Get CAD file surface area.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// Currently, this endpoint returns the square measure units.
+// This endpoint returns the square measure units.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -538,7 +519,7 @@ func ExampleFileService_CreateSurfaceArea() {
 
 // CreateVolume: Get CAD file volume.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// Currently, this endpoint returns the cubic measure units.
+// This endpoint returns the cubic measure units.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -589,7 +570,7 @@ func ExampleModelingService_Cmd() {
 		panic(err)
 	}
 
-	if err := client.Modeling.Cmd(kittycad.ModelingCmdReq{Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), FileID: "some-string"}); err != nil {
+	if err := client.Modeling.Cmd(kittycad.ModelingCmdReq{Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")}); err != nil {
 		panic(err)
 	}
 
@@ -605,7 +586,7 @@ func ExampleModelingService_CmdBatch() {
 		panic(err)
 	}
 
-	result, err := client.Modeling.CmdBatch(kittycad.ModelingCmdReqBatch{Cmds: map[string]kittycad.ModelingCmdReq{"example": {Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), FileID: "some-string"}}, FileID: "some-string"})
+	result, err := client.Modeling.CmdBatch(kittycad.ModelingCmdReqBatch{Cmds: map[string]kittycad.ModelingCmdReq{"example": {Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")}}})
 	if err != nil {
 		panic(err)
 	}
@@ -1691,6 +1672,13 @@ func ExampleExecutorService_CreateTerm() {
 
 // CommandsWs: Open a websocket which accepts modeling commands.
 // Pass those commands to the engine via websocket, and pass responses back to the client. Basically, this is a websocket proxy between the frontend/client and the engine.
+//
+// Parameters
+//
+//   - `fps`
+//   - `unlockedFramerate`
+//   - `videoResHeight`
+//   - `videoResWidth`
 func ExampleModelingService_CommandsWs() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1698,7 +1686,7 @@ func ExampleModelingService_CommandsWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Modeling.CommandsWs()
+	ws, err := client.Modeling.CommandsWs(123, true, 123, 123)
 	if err != nil {
 		panic(err)
 	}

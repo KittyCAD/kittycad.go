@@ -724,57 +724,9 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 
 }
 
-// GetPhysics: Get a physics constant.
-// Parameters
-//
-//   - `constant`: The valid types of phys constant names.
-func (s *ConstantService) GetPhysics(constant PhysicsConstantName) (*PhysicsConstant, error) {
-	// Create the url.
-	path := "/constant/physics/{{.constant}}"
-	uri := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"constant": string(constant),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded PhysicsConstant
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // CreateCenterOfMass: Get CAD file center of mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// Currently, this endpoint returns the cartesian co-ordinate in world space measure units.
+// This endpoint returns the cartesian co-ordinate in world space measure units.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -897,7 +849,7 @@ func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat 
 
 // CreateDensity: Get CAD file density.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// Currently, this endpoint assumes if you are giving a material mass in a specific mass units, we return a density in mass unit per cubic measure unit.
+// This endpoint assumes if you are giving a material mass in a specific mass units, we return a density in mass unit per cubic measure unit.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -1019,7 +971,7 @@ func (s *ExecutorService) CreateFileExecution(lang CodeLanguage, output string, 
 
 // CreateMass: Get CAD file mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// Currently, this endpoint assumes if you are giving a material density in a specific mass unit per cubic measure unit, we return a mass in mass units. The same mass units as passed in the material density.
+// This endpoint assumes if you are giving a material density in a specific mass unit per cubic measure unit, we return a mass in mass units. The same mass units as passed in the material density.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -1085,7 +1037,7 @@ func (s *FileService) CreateMass(materialDensity float64, materialDensityUnit Un
 
 // CreateSurfaceArea: Get CAD file surface area.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// Currently, this endpoint returns the square measure units.
+// This endpoint returns the square measure units.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -1147,7 +1099,7 @@ func (s *FileService) CreateSurfaceArea(outputUnit UnitArea, srcFormat FileImpor
 
 // CreateVolume: Get CAD file volume.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// Currently, this endpoint returns the cubic measure units.
+// This endpoint returns the cubic measure units.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -3667,7 +3619,14 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 
 // CommandsWs: Open a websocket which accepts modeling commands.
 // Pass those commands to the engine via websocket, and pass responses back to the client. Basically, this is a websocket proxy between the frontend/client and the engine.
-func (s *ModelingService) CommandsWs() (*websocket.Conn, error) {
+//
+// Parameters
+//
+//   - `fps`
+//   - `unlockedFramerate`
+//   - `videoResHeight`
+//   - `videoResWidth`
+func (s *ModelingService) CommandsWs(fps int, unlockedFramerate bool, videoResHeight int, videoResWidth int) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
 	uri := resolveRelative(s.client.server, path)
