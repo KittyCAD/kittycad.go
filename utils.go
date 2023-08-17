@@ -59,6 +59,8 @@ func expandURL(u *url.URL, expansions map[string]string) error {
 
 	// Set the path parameters
 	u.RawQuery = values.Encode()
+	// We want colons in the query string to be unescaped.
+	u.RawQuery = strings.Replace(u.RawQuery, "%253A", ":", -1)
 
 	return nil
 }

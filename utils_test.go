@@ -39,6 +39,14 @@ func TestExpandURL(t *testing.T) {
 			},
 			testServerURL + "/file/convert?outputFormat=obj&srcFormat=step",
 		},
+		// Path params added as extras.
+		{
+			"file/mass",
+			map[string]string{
+				"unit": "kg:m3",
+			},
+			testServerURL + "/file/mass?unit=kg:m3",
+		},
 	}
 
 	for i, test := range expandTests {
