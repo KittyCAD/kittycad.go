@@ -78,7 +78,7 @@ func TestFileConversion(t *testing.T) {
 	}
 }
 
-/*func TestAsyncOperationStatus(t *testing.T) {
+func TestAsyncOperationStatus(t *testing.T) {
 	client := getClient(t)
 
 	result, err := client.APICall.GetAsyncOperation("23a9759f-ee9b-47de-9a55-deb1ed035793")
@@ -87,4 +87,4 @@ func TestFileConversion(t *testing.T) {
 	}
 
 	t.Logf("%#v", result)
-}*/
+}
