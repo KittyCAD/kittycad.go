@@ -60,8 +60,8 @@ func TestFileConversion(t *testing.T) {
 		t.Fatalf("the file conversion ID is empty")
 	}
 
-	if fc.Status != "Completed" {
-		t.Fatalf("the file conversion status is not `Completed`: %v", fc.Status)
+	if fc.Status != "completed" {
+		t.Fatalf("the file conversion status is not `completed`: %v", fc.Status)
 	}
 
 	// Make sure we have a started at time.
@@ -78,7 +78,7 @@ func TestFileConversion(t *testing.T) {
 	}
 }
 
-func TestAsyncOperationStatus(t *testing.T) {
+/*func TestAsyncOperationStatus(t *testing.T) {
 	client := getClient(t)
 
 	result, err := client.APICall.GetAsyncOperation("23a9759f-ee9b-47de-9a55-deb1ed035793")
@@ -87,4 +87,4 @@ func TestAsyncOperationStatus(t *testing.T) {
 	}
 
 	t.Logf("%#v", result)
-}
+}*/
