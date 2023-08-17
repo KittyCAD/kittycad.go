@@ -1823,6 +1823,14 @@ type EmailAuthenticationForm struct {
 	Email string `json:"email" yaml:"email" schema:"email,required"`
 }
 
+// EngineError: An error.
+type EngineError struct {
+	// ErrorCode: The error code.
+	ErrorCode ErrorCode `json:"error_code" yaml:"error_code" schema:"error_code,required"`
+	// Message: The error message.
+	Message string `json:"message" yaml:"message" schema:"message,required"`
+}
+
 // EngineMetadata: Metadata about our currently running server.
 // This is mostly used for internal purposes and debugging.
 type EngineMetadata struct {
@@ -1874,12 +1882,14 @@ const (
 	EnvironmentProduction Environment = "PRODUCTION"
 )
 
-// Error: An error.
+// Error: Error information from a response.
 type Error struct {
-	// Code: The error code.
-	Code ErrorCode `json:"code" yaml:"code" schema:"code,required"`
-	// Message: The error message.
+	// ErrorCode:
+	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code"`
+	// Message:
 	Message string `json:"message" yaml:"message" schema:"message,required"`
+	// RequestID:
+	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id,required"`
 }
 
 // ErrorCode: The type of errorcode.
@@ -1895,7 +1905,7 @@ const (
 // ErrorResponse: The error response.
 type ErrorResponse struct {
 	// Errors: A list of errors.
-	Errors []Error `json:"errors" yaml:"errors" schema:"errors,required"`
+	Errors []EngineError `json:"errors" yaml:"errors" schema:"errors,required"`
 }
 
 // ExecutorMetadata: Metadata about our currently running server.
@@ -3299,7 +3309,7 @@ type SnakeCaseResultOk struct {
 // Err: The error response.
 type Err struct {
 	// Errors: A list of errors.
-	Errors []Error `json:"errors" yaml:"errors" schema:"errors,required"`
+	Errors []EngineError `json:"errors" yaml:"errors" schema:"errors,required"`
 }
 
 // SnakeCaseResultErr: The result is Err.
@@ -4150,10 +4160,12 @@ type WebSocketResponsesIceServers struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ResponseError: An error.
+// ResponseError: Error information from a response.
 type ResponseError struct {
-	// Code: The error code.
-	Code ErrorCode `json:"code" yaml:"code" schema:"code,required"`
-	// Message: The error message.
+	// ErrorCode:
+	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code"`
+	// Message:
 	Message string `json:"message" yaml:"message" schema:"message,required"`
+	// RequestID:
+	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id,required"`
 }
