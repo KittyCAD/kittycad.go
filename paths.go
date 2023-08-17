@@ -1238,7 +1238,7 @@ func (s *ModelingService) Cmd(body ModelingCmdReq) error {
 //   - `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Modeling API.
 func (s *ModelingService) CmdBatch(body ModelingCmdReqBatch) (*ModelingOutcomes, error) {
 	// Create the url.
-	path := "/modeling/cmd_batch"
+	path := "/modeling/cmd-batch"
 	uri := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
