@@ -205,7 +205,7 @@
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ModelingService.CmdBatch"
   },
   "op": "add",
-  "path": "/paths/~1modeling~1cmd_batch/post/x-go"
+  "path": "/paths/~1modeling~1cmd-batch/post/x-go"
  },
  {
   "value": {

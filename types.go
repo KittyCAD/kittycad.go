@@ -196,15 +196,15 @@ type APICallStatus string
 
 const (
 	// APICallStatusQueued: The async API call is queued.
-	APICallStatusQueued APICallStatus = "Queued"
+	APICallStatusQueued APICallStatus = "queued"
 	// APICallStatusUploaded: The async API call was uploaded to be converted.
-	APICallStatusUploaded APICallStatus = "Uploaded"
+	APICallStatusUploaded APICallStatus = "uploaded"
 	// APICallStatusInProgress: The async API call is in progress.
-	APICallStatusInProgress APICallStatus = "In Progress"
+	APICallStatusInProgress APICallStatus = "in_progress"
 	// APICallStatusCompleted: The async API call has completed.
-	APICallStatusCompleted APICallStatus = "Completed"
+	APICallStatusCompleted APICallStatus = "completed"
 	// APICallStatusFailed: The async API call has failed.
-	APICallStatusFailed APICallStatus = "Failed"
+	APICallStatusFailed APICallStatus = "failed"
 )
 
 // APICallWithPrice: An API call with the price.
@@ -534,17 +534,17 @@ type AsyncAPICallType string
 
 const (
 	// AsyncAPICallTypeFileConversion: File conversion.
-	AsyncAPICallTypeFileConversion AsyncAPICallType = "FileConversion"
+	AsyncAPICallTypeFileConversion AsyncAPICallType = "file_conversion"
 	// AsyncAPICallTypeFileVolume: File volume.
-	AsyncAPICallTypeFileVolume AsyncAPICallType = "FileVolume"
+	AsyncAPICallTypeFileVolume AsyncAPICallType = "file_volume"
 	// AsyncAPICallTypeFileCenterOfMass: File center of mass.
-	AsyncAPICallTypeFileCenterOfMass AsyncAPICallType = "FileCenterOfMass"
+	AsyncAPICallTypeFileCenterOfMass AsyncAPICallType = "file_center_of_mass"
 	// AsyncAPICallTypeFileMass: File mass.
-	AsyncAPICallTypeFileMass AsyncAPICallType = "FileMass"
+	AsyncAPICallTypeFileMass AsyncAPICallType = "file_mass"
 	// AsyncAPICallTypeFileDensity: File density.
-	AsyncAPICallTypeFileDensity AsyncAPICallType = "FileDensity"
+	AsyncAPICallTypeFileDensity AsyncAPICallType = "file_density"
 	// AsyncAPICallTypeFileSurfaceArea: File surface area.
-	AsyncAPICallTypeFileSurfaceArea AsyncAPICallType = "FileSurfaceArea"
+	AsyncAPICallTypeFileSurfaceArea AsyncAPICallType = "file_surface_area"
 )
 
 // Axi: Co-ordinate axis specifier.
@@ -1299,10 +1299,10 @@ type Coupon struct {
 type CreatedAtSortMode string
 
 const (
-	// CreatedAtSortModeCreatedAtAscending: sort in increasing order of "created_at"
-	CreatedAtSortModeCreatedAtAscending CreatedAtSortMode = "created-at-ascending"
-	// CreatedAtSortModeCreatedAtDescending: sort in decreasing order of "created_at"
-	CreatedAtSortModeCreatedAtDescending CreatedAtSortMode = "created-at-descending"
+	// CreatedAtSortModeCreatedAtAscending: Sort in increasing order of "created_at".
+	CreatedAtSortModeCreatedAtAscending CreatedAtSortMode = "created_at_ascending"
+	// CreatedAtSortModeCreatedAtDescending: Sort in decreasing order of "created_at".
+	CreatedAtSortModeCreatedAtDescending CreatedAtSortMode = "created_at_descending"
 )
 
 // Currency: Currency is the list of supported currencies.
@@ -1874,14 +1874,28 @@ const (
 	EnvironmentProduction Environment = "PRODUCTION"
 )
 
-// Error: Error information from a response.
+// Error: An error.
 type Error struct {
-	// ErrorCode:
-	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code"`
-	// Message:
+	// Code: The error code.
+	Code ErrorCode `json:"code" yaml:"code" schema:"code,required"`
+	// Message: The error message.
 	Message string `json:"message" yaml:"message" schema:"message,required"`
-	// RequestID:
-	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id,required"`
+}
+
+// ErrorCode: The type of errorcode.
+type ErrorCode string
+
+const (
+	// ErrorCodeBadRequest: User requested something impossible or invalid
+	ErrorCodeBadRequest ErrorCode = "bad_request"
+	// ErrorCodeInternalEngine: Engine failed to complete request, consider retrying
+	ErrorCodeInternalEngine ErrorCode = "internal_engine"
+)
+
+// ErrorResponse: The error response.
+type ErrorResponse struct {
+	// Errors: A list of errors.
+	Errors []Error `json:"errors" yaml:"errors" schema:"errors,required"`
 }
 
 // ExecutorMetadata: Metadata about our currently running server.
@@ -2183,6 +2197,16 @@ type Gateway struct {
 	Port int `json:"port" yaml:"port" schema:"port"`
 	// TlsTimeout: The TLS timeout for the gateway.
 	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
+}
+
+// IceServer: Representation of an ICE server used for STUN/TURN Used to initiate WebRTC connections based on <https://developer.mozilla.org/en-US/docs/Web/API/RTCIceServer>
+type IceServer struct {
+	// Credential: Credentials for a given TURN server.
+	Credential string `json:"credential" yaml:"credential" schema:"credential"`
+	// Urls: URLs for a given STUN/TURN server. IceServer urls can either be a string or an array of strings But, we choose to always convert to an array of strings for consistency
+	Urls []string `json:"urls" yaml:"urls" schema:"urls,required"`
+	// Username: Username for a given TURN server.
+	Username string `json:"username" yaml:"username" schema:"username"`
 }
 
 // ImageType: An enumeration.
@@ -2721,8 +2745,8 @@ type ModelingCmdDefaultCameraEnableSketchMode struct {
 type ModelingCmdXAxis struct {
 	// EdgeID: Which edge you want the opposite of.
 	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
-	// FaceUuid: Which face is used to figure out the opposite edge?
-	FaceUuid UUID `json:"face_uuid" yaml:"face_uuid" schema:"face_uuid,required"`
+	// FaceID: Which face is used to figure out the opposite edge?
+	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id,required"`
 	// ObjectID: Which object is being queried.
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Type:
@@ -2733,8 +2757,8 @@ type ModelingCmdXAxis struct {
 type ModelingCmdYAxis struct {
 	// EdgeID: Which edge you want the opposite of.
 	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
-	// FaceUuid: Which face is used to figure out the opposite edge?
-	FaceUuid UUID `json:"face_uuid" yaml:"face_uuid" schema:"face_uuid,required"`
+	// FaceID: Which face is used to figure out the opposite edge?
+	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id,required"`
 	// ObjectID: Which object is being queried.
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Type:
@@ -2745,8 +2769,8 @@ type ModelingCmdYAxis struct {
 type ModelingCmdDefaultCameraDisableSketchMode struct {
 	// EdgeID: Which edge you want the opposite of.
 	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
-	// FaceUuid: Which face is used to figure out the opposite edge?
-	FaceUuid UUID `json:"face_uuid" yaml:"face_uuid" schema:"face_uuid,required"`
+	// FaceID: Which face is used to figure out the opposite edge?
+	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id,required"`
 	// ObjectID: Which object is being queried.
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Type:
@@ -3111,6 +3135,14 @@ type Pong struct {
 	Message string `json:"message" yaml:"message" schema:"message,required"`
 }
 
+// RawFile: A raw file with unencoded contents to be passed over binary websockets.
+type RawFile struct {
+	// Contents: The contents of the file.
+	Contents []int `json:"contents" yaml:"contents" schema:"contents,required"`
+	// Name: The name of the file.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
+}
+
 // RegistryServiceConfig: RegistryServiceConfig stores daemon registry services configuration.
 type RegistryServiceConfig struct {
 	// AllowNondistributableArtifactsCidRs: List of IP ranges to which nondistributable artifacts can be pushed, using the CIDR syntax [RFC 4632](https://tools.ietf.org/html/4632).  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior, and enables the daemon to push nondistributable artifacts to all registries whose resolved IP address is within the subnet described by the CIDR syntax.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.
@@ -3129,6 +3161,96 @@ type RegistryServiceConfig struct {
 	InsecureRegistryCidRs []string `json:"insecure_registry_cid_rs" yaml:"insecure_registry_cid_rs" schema:"insecure_registry_cid_rs"`
 	// Mirrors: List of registry URLs that act as a mirror for the official (`docker.io`) registry.
 	Mirrors []string `json:"mirrors" yaml:"mirrors" schema:"mirrors"`
+}
+
+// RtcIceCandidate: ICECandidate represents a ice candidate
+type RtcIceCandidate struct {
+	// Address: The address of the candidate.
+	Address string `json:"address" yaml:"address" schema:"address,required"`
+	// Component: The component of the candidate.
+	Component int `json:"component" yaml:"component" schema:"component,required"`
+	// Foundation: The foundation for the address.
+	Foundation string `json:"foundation" yaml:"foundation" schema:"foundation,required"`
+	// Port: The port used for the candidate.
+	Port int `json:"port" yaml:"port" schema:"port,required"`
+	// Priority: The priority of the candidate.
+	Priority int `json:"priority" yaml:"priority" schema:"priority,required"`
+	// Protocol: The protocol used for the candidate.
+	Protocol RtcIceProtocol `json:"protocol" yaml:"protocol" schema:"protocol,required"`
+	// RelatedAddress: The related address of the candidate.
+	RelatedAddress string `json:"related_address" yaml:"related_address" schema:"related_address,required"`
+	// RelatedPort: The related port of the candidate.
+	RelatedPort int `json:"related_port" yaml:"related_port" schema:"related_port,required"`
+	// StatsID: The stats ID.
+	StatsID string `json:"stats_id" yaml:"stats_id" schema:"stats_id,required"`
+	// TcpType: The TCP type of the candidate.
+	TcpType string `json:"tcp_type" yaml:"tcp_type" schema:"tcp_type,required"`
+	// Typ: The type of the candidate.
+	Typ RtcIceCandidateType `json:"typ" yaml:"typ" schema:"typ,required"`
+}
+
+// RtcIceCandidateInit: ICECandidateInit is used to serialize ice candidates
+type RtcIceCandidateInit struct {
+	// Candidate: The candidate string associated with the object.
+	Candidate string `json:"candidate" yaml:"candidate" schema:"candidate,required"`
+	// SdpMlineIndex: The index (starting at zero) of the m-line in the SDP this candidate is associated with.
+	SdpMlineIndex int `json:"sdpMLineIndex" yaml:"sdpMLineIndex" schema:"sdpMLineIndex"`
+	// SdpMid: The identifier of the "media stream identification" as defined in [RFC 8841](https://tools.ietf.org/html/rfc8841).
+	SdpMid string `json:"sdpMid" yaml:"sdpMid" schema:"sdpMid"`
+	// UsernameFragment: The username fragment (as defined in [RFC 8445](https://tools.ietf.org/html/rfc8445#section-5.2.1)) associated with the object.
+	UsernameFragment string `json:"usernameFragment" yaml:"usernameFragment" schema:"usernameFragment"`
+}
+
+// RtcIceCandidateType: ICECandidateType represents the type of the ICE candidate used.
+type RtcIceCandidateType string
+
+const (
+	// RtcIceCandidateTypeUnspecified: Unspecified indicates that the candidate type is unspecified.
+	RtcIceCandidateTypeUnspecified RtcIceCandidateType = "unspecified"
+	// RtcIceCandidateTypeHost: ICECandidateTypeHost indicates that the candidate is of Host type as described in <https://tools.ietf.org/html/rfc8445#section-5.1.1.1>. A candidate obtained by binding to a specific port from an IP address on the host. This includes IP addresses on physical interfaces and logical ones, such as ones obtained through VPNs.
+	RtcIceCandidateTypeHost RtcIceCandidateType = "host"
+	// RtcIceCandidateTypeSrflx: ICECandidateTypeSrflx indicates the the candidate is of Server Reflexive type as described <https://tools.ietf.org/html/rfc8445#section-5.1.1.2>. A candidate type whose IP address and port are a binding allocated by a NAT for an ICE agent after it sends a packet through the NAT to a server, such as a STUN server.
+	RtcIceCandidateTypeSrflx RtcIceCandidateType = "srflx"
+	// RtcIceCandidateTypePrflx: ICECandidateTypePrflx indicates that the candidate is of Peer Reflexive type. A candidate type whose IP address and port are a binding allocated by a NAT for an ICE agent after it sends a packet through the NAT to its peer.
+	RtcIceCandidateTypePrflx RtcIceCandidateType = "prflx"
+	// RtcIceCandidateTypeRelay: ICECandidateTypeRelay indicates the the candidate is of Relay type as described in <https://tools.ietf.org/html/rfc8445#section-5.1.1.2>. A candidate type obtained from a relay server, such as a TURN server.
+	RtcIceCandidateTypeRelay RtcIceCandidateType = "relay"
+)
+
+// RtcIceProtocol: ICEProtocol indicates the transport protocol type that is used in the ice.URL structure.
+type RtcIceProtocol string
+
+const (
+	// RtcIceProtocolUnspecified: Unspecified indicates that the protocol is unspecified.
+	RtcIceProtocolUnspecified RtcIceProtocol = "unspecified"
+	// RtcIceProtocolUdp: UDP indicates the URL uses a UDP transport.
+	RtcIceProtocolUdp RtcIceProtocol = "udp"
+	// RtcIceProtocolTcp: TCP indicates the URL uses a TCP transport.
+	RtcIceProtocolTcp RtcIceProtocol = "tcp"
+)
+
+// RtcSdpType: SDPType describes the type of an SessionDescription.
+type RtcSdpType string
+
+const (
+	// RtcSdpTypeUnspecified: Unspecified indicates that the type is unspecified.
+	RtcSdpTypeUnspecified RtcSdpType = "unspecified"
+	// RtcSdpTypeOffer: indicates that a description MUST be treated as an SDP offer.
+	RtcSdpTypeOffer RtcSdpType = "offer"
+	// RtcSdpTypePranswer: indicates that a description MUST be treated as an SDP answer, but not a final answer. A description used as an SDP pranswer may be applied as a response to an SDP offer, or an update to a previously sent SDP pranswer.
+	RtcSdpTypePranswer RtcSdpType = "pranswer"
+	// RtcSdpTypeAnswer: indicates that a description MUST be treated as an SDP final answer, and the offer-answer exchange MUST be considered complete. A description used as an SDP answer may be applied as a response to an SDP offer or as an update to a previously sent SDP pranswer.
+	RtcSdpTypeAnswer RtcSdpType = "answer"
+	// RtcSdpTypeRollback: indicates that a description MUST be treated as canceling the current SDP negotiation and moving the SDP offer and answer back to what it was in the previous stable state. Note the local or remote SDP descriptions in the previous stable state could be null if there has not yet been a successful offer-answer negotiation.
+	RtcSdpTypeRollback RtcSdpType = "rollback"
+)
+
+// RtcSessionDescription: SessionDescription is used to expose local and remote session descriptions.
+type RtcSessionDescription struct {
+	// Sdp: SDP string.
+	Sdp string `json:"sdp" yaml:"sdp" schema:"sdp,required"`
+	// Type: SDP type.
+	Type RtcSdpType `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // Runtime: Runtime describes an [OCI compliant](https://github.com/opencontainers/runtime-spec) runtime.  The runtime is invoked by the daemon via the `containerd` daemon. OCI runtimes act as an interface to the Linux kernel namespaces, cgroups, and SELinux.
@@ -3166,6 +3288,24 @@ type Session struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user that the session belongs to.
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+}
+
+// SnakeCaseResultOk: The result is Ok.
+type SnakeCaseResultOk struct {
+	// Ok: A successful response from a modeling command. This can be one of several types of responses, depending on the command.
+	Ok any `json:"ok" yaml:"ok" schema:"ok,required"`
+}
+
+// Err: The error response.
+type Err struct {
+	// Errors: A list of errors.
+	Errors []Error `json:"errors" yaml:"errors" schema:"errors,required"`
+}
+
+// SnakeCaseResultErr: The result is Err.
+type SnakeCaseResultErr struct {
+	// Err: The error response.
+	Err ErrorResponse `json:"err" yaml:"err" schema:"err,required"`
 }
 
 // Storage: Describes the storage format of a glTF 2.0 scene.
@@ -3942,12 +4082,78 @@ type VerificationToken struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
-// ResponseError: Error information from a response.
+// WebSocketMessagesCandidate: The trickle ICE candidate request.
+type WebSocketMessagesCandidate struct {
+	// Candidate: Information about the ICE candidate.
+	Candidate RtcIceCandidateInit `json:"candidate" yaml:"candidate" schema:"candidate,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// WebSocketMessagesTrickleIce: The SDP offer request.
+type WebSocketMessagesTrickleIce struct {
+	// Offer: The session description.
+	Offer RtcSessionDescription `json:"offer" yaml:"offer" schema:"offer,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// WebSocketMessagesOffer: The modeling command request.
+type WebSocketMessagesOffer struct {
+	// Cmd: Which command to submit to the Kittycad engine.
+	Cmd any `json:"cmd" yaml:"cmd" schema:"cmd,required"`
+	// CmdID: ID of command being submitted.
+	CmdID UUID `json:"cmd_id" yaml:"cmd_id" schema:"cmd_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// WebSocketResponsesCandidate: The trickle ICE candidate response.
+type WebSocketResponsesCandidate struct {
+	// Candidate: Information about the ICE candidate.
+	Candidate RtcIceCandidate `json:"candidate" yaml:"candidate" schema:"candidate,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// WebSocketResponsesTrickleIce: The SDP answer response.
+type WebSocketResponsesTrickleIce struct {
+	// Answer: The session description.
+	Answer RtcSessionDescription `json:"answer" yaml:"answer" schema:"answer,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// WebSocketResponsesAnswer: The ICE server info response.
+type WebSocketResponsesAnswer struct {
+	// IceServers: Information about the ICE servers.
+	IceServers []IceServer `json:"ice_servers" yaml:"ice_servers" schema:"ice_servers,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// WebSocketResponsesSdpAnswer: The modeling command response.
+type WebSocketResponsesSdpAnswer struct {
+	// CmdID: The ID of the command.
+	CmdID UUID `json:"cmd_id" yaml:"cmd_id" schema:"cmd_id,required"`
+	// Result: The result of the command.
+	Result any `json:"result" yaml:"result" schema:"result,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// WebSocketResponsesIceServers: The export command response, this is sent as binary.
+type WebSocketResponsesIceServers struct {
+	// Files: The exported files.
+	Files []RawFile `json:"files" yaml:"files" schema:"files,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ResponseError: An error.
 type ResponseError struct {
-	// ErrorCode:
-	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code"`
-	// Message:
+	// Code: The error code.
+	Code ErrorCode `json:"code" yaml:"code" schema:"code,required"`
+	// Message: The error message.
 	Message string `json:"message" yaml:"message" schema:"message,required"`
-	// RequestID:
-	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id,required"`
 }
