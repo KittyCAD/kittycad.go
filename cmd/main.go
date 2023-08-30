@@ -58,7 +58,7 @@ func run() error {
 		Tags:             []Tag{},
 		Examples:         []string{},
 		Paths:            []string{},
-		Types:            []string{},
+		Types:            map[string]string{},
 		WorkingDirectory: wd,
 	}
 	// Format the tags for our data.

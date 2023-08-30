@@ -570,9 +570,12 @@ func ExampleModelingService_Cmd() {
 		panic(err)
 	}
 
-	if err := client.Modeling.Cmd(kittycad.ModelingCmdReq{Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")}); err != nil {
+	result, err := client.Modeling.Cmd(kittycad.ModelingCmdReq{Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")})
+	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("%#v", result)
 
 }
 
@@ -1679,6 +1682,7 @@ func ExampleExecutorService_CreateTerm() {
 //   - `unlockedFramerate`
 //   - `videoResHeight`
 //   - `videoResWidth`
+//   - `webrtc`
 func ExampleModelingService_CommandsWs() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1686,7 +1690,7 @@ func ExampleModelingService_CommandsWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Modeling.CommandsWs(123, true, 123, 123)
+	ws, err := client.Modeling.CommandsWs(123, true, 123, 123, true)
 	if err != nil {
 		panic(err)
 	}

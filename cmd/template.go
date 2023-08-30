@@ -27,7 +27,7 @@ type Data struct {
 	WorkingDirectory string
 	Examples         []string
 	Paths            []string
-	Types            []string
+	Types            map[string]string
 }
 
 // Tag holds information about tags.

@@ -1195,7 +1195,7 @@ func (s *HiddenService) Logout() error {
 // Parameters
 //
 //   - `body`: A graphics command submitted to the KittyCAD engine via the Modeling API.
-func (s *ModelingService) Cmd(body ModelingCmdReq) error {
+func (s *ModelingService) Cmd(body ModelingCmdReq) (*any, error) {
 	// Create the url.
 	path := "/modeling/cmd"
 	uri := resolveRelative(s.client.server, path)
@@ -1203,13 +1203,13 @@ func (s *ModelingService) Cmd(body ModelingCmdReq) error {
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
 	if err := json.NewEncoder(b).Encode(body); err != nil {
-		return fmt.Errorf("encoding json body request failed: %v", err)
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
 	}
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
 	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
+		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
@@ -1218,17 +1218,26 @@ func (s *ModelingService) Cmd(body ModelingCmdReq) error {
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
+		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return err
+		return nil, err
 	}
 
-	// Return.
-	return nil
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded any
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
 
 }
 
@@ -3626,7 +3635,8 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 //   - `unlockedFramerate`
 //   - `videoResHeight`
 //   - `videoResWidth`
-func (s *ModelingService) CommandsWs(fps int, unlockedFramerate bool, videoResHeight int, videoResWidth int) (*websocket.Conn, error) {
+//   - `webrtc`
+func (s *ModelingService) CommandsWs(fps int, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
 	uri := resolveRelative(s.client.server, path)
