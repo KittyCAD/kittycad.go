@@ -177,7 +177,7 @@ func (data *Data) generateEnumType(name string, s *openapi3.Schema, additionalDo
 	}
 
 	// Add the type to our types.
-	data.Types = append(data.Types, enumString)
+	data.Types[enum.Name] = enumString
 
 	return nil
 }
@@ -268,7 +268,7 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 	}
 
 	// Add the type to our types.
-	data.Types = append(data.Types, objectString)
+	data.Types[object.Name] = objectString
 
 	return nil
 }
@@ -328,15 +328,17 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 	}
 
 	for index, oneOf := range s.OneOf {
-		// We should have a better way of avoiding duplicates. This is a hot fix, but does not scale.
-		if types[index] == "InputFormat coords" || types[index] == "OutputFormat coords" || types[index] == "ModelingCmd path" || types[index] == "ModelingCmd interaction" || types[index] == "ModelingCmd window" || types[index] == "OkModelingCmdResponse entity_id" {
-			continue
+		// Check if we already have this type defined.
+		iname := printProperty(types[index])
+		if _, ok := data.Types[iname]; ok {
+			// We should name the type after the one of.
+			iname = printProperty(name + " " + types[index])
 		}
 
 		// Check if we already have a schema for this one of.
 		reference, ok := spec.Components.Schemas[types[index]]
 		if !ok {
-			if err := data.generateSchemaType(types[index], oneOf.Value, spec); err != nil {
+			if err := data.generateSchemaType(iname, oneOf.Value, spec); err != nil {
 				return err
 			}
 		}
