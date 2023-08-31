@@ -2200,6 +2200,8 @@ const (
 	FileImportFormatObj FileImportFormat = "obj"
 	// FileImportFormatPly: The PLY file format. <https://en.wikipedia.org/wiki/PLY_(file_format)>
 	FileImportFormatPly FileImportFormat = "ply"
+	// FileImportFormatSldprt: SolidWorks part (SLDPRT) format.
+	FileImportFormatSldprt FileImportFormat = "sldprt"
 	// FileImportFormatStep: The STEP file format. <https://en.wikipedia.org/wiki/ISO_10303-21>
 	FileImportFormatStep FileImportFormat = "step"
 	// FileImportFormatStl: The STL file format. <https://en.wikipedia.org/wiki/STL_(file_format)>
@@ -2431,6 +2433,12 @@ type InputFormatGltf struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// InputFormatInputFormatCoords: ISO 10303-21 (STEP) format.
+type InputFormatInputFormatCoords struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // InputFormatObj: The PLY Polygon File Format.
 type InputFormatObj struct {
 	// Coords: Co-ordinate system of input data.
@@ -2445,14 +2453,8 @@ type InputFormatObj struct {
 	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
 }
 
-// InputFormatStep: ISO 10303-21 (STEP) format.
-type InputFormatStep struct {
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// InputFormatUnits: *ST**ereo**L**ithography format.
-type InputFormatUnits struct {
+// InputFormatPly: *ST**ereo**L**ithography format.
+type InputFormatPly struct {
 	// Coords: Co-ordinate system of input data.
 	//
 	// Defaults to the [KittyCAD co-ordinate system].
@@ -2463,6 +2465,12 @@ type InputFormatUnits struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Units: The units of the input data. This is very important for correct scaling and when calculating physics properties like mass, etc.
 	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
+}
+
+// InputFormatUnits: SolidWorks part (SLDPRT) format.
+type InputFormatUnits struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // Invoice: An invoice.
@@ -3091,6 +3099,8 @@ type ModelingCmdSegment struct {
 
 // ModelingCmdSelectedAtWindow: Continue dragging mouse.
 type ModelingCmdSelectedAtWindow struct {
+	// Sequence: Logical timestamp. The client should increment this with every event in the current mouse drag. That way, if the events are being sent over an unordered channel, the API can ignore the older events.
+	Sequence int `json:"sequence" yaml:"sequence" schema:"sequence"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Window: The mouse position.
