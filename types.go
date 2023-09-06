@@ -345,10 +345,6 @@ type AsyncAPICallOutputCompletedAt struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Output: The converted file (if single file conversion), if completed, base64 encoded. This field is deprecated, and will be removed in a future release. Use `outputs` instead.
-	//
-	// Deprecated: Output is deprecated.
-	Output Base64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
 	OutputFormat FileExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// OutputFormatOptions: The output format options of the file conversion.
@@ -465,8 +461,8 @@ type AsyncAPICallOutputID struct {
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
 }
 
-// AsyncAPICallOutputOutput: A file density.
-type AsyncAPICallOutputOutput struct {
+// AsyncAPICallOutputOutputFormat: A file density.
+type AsyncAPICallOutputOutputFormat struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -499,8 +495,8 @@ type AsyncAPICallOutputOutput struct {
 	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
 }
 
-// AsyncAPICallOutputOutputFormat: A file surface area.
-type AsyncAPICallOutputOutputFormat struct {
+// AsyncAPICallOutputOutputFormatOptions: A file surface area.
+type AsyncAPICallOutputOutputFormatOptions struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the API call was created.
@@ -2102,10 +2098,6 @@ type FileConversion struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Output: The converted file (if single file conversion), if completed, base64 encoded. This field is deprecated, and will be removed in a future release. Use `outputs` instead.
-	//
-	// Deprecated: Output is deprecated.
-	Output Base64 `json:"output" yaml:"output" schema:"output"`
 	// OutputFormat: The output format of the file conversion.
 	OutputFormat FileExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
 	// OutputFormatOptions: The output format options of the file conversion.
@@ -3095,6 +3087,14 @@ type ModelingCmdSegment struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Window: The initial mouse position.
 	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
+}
+
+// ModelingCmdSelectWithPoint: Remove scene objects.
+type ModelingCmdSelectWithPoint struct {
+	// ObjectIds: Objects to remove.
+	ObjectIds []UUID `json:"object_ids" yaml:"object_ids" schema:"object_ids,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // ModelingCmdSelectedAtWindow: Continue dragging mouse.
