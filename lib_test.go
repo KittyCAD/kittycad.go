@@ -73,8 +73,14 @@ func TestFileConversion(t *testing.T) {
 		t.Fatalf("the file conversion completed at time is zero")
 	}
 
-	if len(fc.Output.Inner) == 0 {
+	if len(fc.Outputs) == 0 {
 		t.Fatalf("the file conversion output is empty")
+	}
+
+	for _, output := range fc.Outputs {
+		if len(output.Inner) == 0 {
+			t.Fatalf("the file conversion output body is empty")
+		}
 	}
 }
 
