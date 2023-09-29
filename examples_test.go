@@ -558,46 +558,6 @@ func ExampleHiddenService_Logout() {
 
 }
 
-// Cmd: Submit one modeling operation.
-// Response depends on which command was submitted, so unfortunately the OpenAPI schema can't generate the right response type.
-//
-// Parameters
-//
-//   - `body`: A graphics command submitted to the KittyCAD engine via the Modeling API.
-func ExampleModelingService_Cmd() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Modeling.Cmd(kittycad.ModelingCmdReq{Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// CmdBatch: Submit many modeling operations.
-// Parameters
-//
-//   - `body`: A batch set of graphics commands submitted to the KittyCAD engine via the Modeling API.
-func ExampleModelingService_CmdBatch() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Modeling.CmdBatch(kittycad.ModelingCmdReqBatch{Cmds: map[string]kittycad.ModelingCmdReq{"example": {Cmd: "", CmdID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")}}})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // DeviceAuthRequest: Start an OAuth 2.0 Device Authorization Grant.
 // This endpoint is designed to be accessed from an *unauthenticated* API client. It generates and records a `device_code` and `user_code` which must be verified and confirmed prior to a token being granted.
 //
@@ -1308,7 +1268,7 @@ func ExamplePaymentService_CreateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1330,7 +1290,7 @@ func ExamplePaymentService_UpdateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}

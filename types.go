@@ -70,7 +70,7 @@ type APICallWithPrice struct {
 	// Origin: The origin of the API call.
 	Origin string `json:"origin" yaml:"origin" schema:"origin"`
 	// Price: The price of the API call.
-	Price float64 `json:"price" yaml:"price" schema:"price"`
+	Price string `json:"price" yaml:"price" schema:"price"`
 	// RequestBody: The request body sent by the API call.
 	RequestBody string `json:"request_body" yaml:"request_body" schema:"request_body"`
 	// RequestQueryParams: The request query params sent by the API call.
@@ -217,6 +217,14 @@ type AiPluginManifest struct {
 	NameForModel string `json:"name_for_model" yaml:"name_for_model" schema:"name_for_model"`
 	// SchemaVersion: Manifest schema version.
 	SchemaVersion string `json:"schema_version" yaml:"schema_version" schema:"schema_version"`
+}
+
+// Angle: An angle, with a specific unit.
+type Angle struct {
+	// Unit: What unit is the measurement?
+	Unit UnitAngle `json:"unit" yaml:"unit" schema:"unit,required"`
+	// Value: The size of the angle, measured in the chosen unit.
+	Value float64 `json:"value" yaml:"value" schema:"value,required"`
 }
 
 // AnnotationLineEnd: Annotation line end type
@@ -601,12 +609,6 @@ const (
 	CameraDragInteractionTypeZoom CameraDragInteractionType = "zoom"
 )
 
-// Cancelled is the type definition for a Cancelled.
-type Cancelled struct {
-	// WhatFailed: The ID of the command that failed, cancelling this command.
-	WhatFailed UUID `json:"what_failed" yaml:"what_failed" schema:"what_failed,required"`
-}
-
 // CardDetails: The card details of a payment method.
 type CardDetails struct {
 	// Brand: Card brand.
@@ -629,6 +631,34 @@ type CardDetails struct {
 	Funding string `json:"funding" yaml:"funding" schema:"funding"`
 	// Last4: The last four digits of the card.
 	Last4 string `json:"last4" yaml:"last4" schema:"last4"`
+}
+
+// CenterOfMass: The center of mass response.
+type CenterOfMass struct {
+	// CenterOfMass: The center of mass.
+	CenterOfMass Point3D `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass,required"`
+	// OutputUnit: The output unit for the center of mass.
+	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+}
+
+// ClientMetrics: ClientMetrics contains information regarding the state of the peer.
+type ClientMetrics struct {
+	// RtcFramesDecoded: Counter of the number of WebRTC frames that the client has decoded during this session.
+	RtcFramesDecoded int `json:"rtc_frames_decoded" yaml:"rtc_frames_decoded" schema:"rtc_frames_decoded,required"`
+	// RtcFramesDropped: Counter of the number of WebRTC frames the client has dropped during this session.
+	RtcFramesDropped int `json:"rtc_frames_dropped" yaml:"rtc_frames_dropped" schema:"rtc_frames_dropped,required"`
+	// RtcFramesPerSecond: Current number of frames being rendered per second. A good target is 60 frames per second, but it can fluctuate depending on network conditions.
+	RtcFramesPerSecond int `json:"rtc_frames_per_second" yaml:"rtc_frames_per_second" schema:"rtc_frames_per_second,required"`
+	// RtcFramesReceived: Counter of the number of WebRTC frames that the client has received during this session.
+	RtcFramesReceived int `json:"rtc_frames_received" yaml:"rtc_frames_received" schema:"rtc_frames_received,required"`
+	// RtcFreezeCount: Number of times the WebRTC playback has frozen. This is usually due to network conditions.
+	RtcFreezeCount int `json:"rtc_freeze_count" yaml:"rtc_freeze_count" schema:"rtc_freeze_count,required"`
+	// RtcJitterSec: Amount of "jitter" in the WebRTC session. Network latency is the time it takes a packet to traverse the network. The amount that the latency varies is the jitter. Video latency is the time it takes to render a frame sent by the server (including network latency). A low jitter means the video latency can be reduced without impacting smooth playback. High jitter means clients will increase video latency to ensure smooth playback.
+	RtcJitterSec float64 `json:"rtc_jitter_sec" yaml:"rtc_jitter_sec" schema:"rtc_jitter_sec,required"`
+	// RtcKeyframesDecoded: Number of "key frames" decoded in the underlying h.264 stream. A key frame is an expensive (bandwidth-wise) "full image" of the video frame. Data after the keyframe become -- effectively -- "diff" operations on that key frame. The Engine will only send a keyframe if required, which is an indication that some of the "diffs" have been lost, usually an indication of poor network conditions. We like this metric to understand times when the connection has had to recover.
+	RtcKeyframesDecoded int `json:"rtc_keyframes_decoded" yaml:"rtc_keyframes_decoded" schema:"rtc_keyframes_decoded,required"`
+	// RtcTotalFreezesDurationSec: Number of seconds of frozen video the user has been subjected to.
+	RtcTotalFreezesDurationSec float64 `json:"rtc_total_freezes_duration_sec" yaml:"rtc_total_freezes_duration_sec" schema:"rtc_total_freezes_duration_sec,required"`
 }
 
 // Cluster: Cluster information.
@@ -681,14 +711,6 @@ type Color struct {
 	R float64 `json:"r" yaml:"r" schema:"r,required"`
 }
 
-// Commit: Commit holds the Git-commit (SHA1) that a binary was built from, as reported in the version-string of external tools, such as `containerd`, or `runC`.
-type Commit struct {
-	// Expected: Commit ID of external tool expected by dockerd as set at build time.
-	Expected string `json:"expected" yaml:"expected" schema:"expected"`
-	// ID: Actual commit ID of external tool.
-	ID string `json:"id" yaml:"id" schema:"id"`
-}
-
 // Connection: Metadata about a pub-sub connection.
 // This is mostly used for internal purposes and debugging.
 type Connection struct {
@@ -702,7 +724,7 @@ type Connection struct {
 	Connections int `json:"connections" yaml:"connections" schema:"connections"`
 	// Cores: The CPU core usage of the server.
 	Cores int `json:"cores" yaml:"cores" schema:"cores"`
-	// Cpu:
+	// Cpu: The CPU usage of the server.
 	Cpu float64 `json:"cpu" yaml:"cpu" schema:"cpu"`
 	// Gateway: Information about the gateway.
 	Gateway Gateway `json:"gateway" yaml:"gateway" schema:"gateway"`
@@ -720,7 +742,7 @@ type Connection struct {
 	HttpHost string `json:"http_host" yaml:"http_host" schema:"http_host"`
 	// HttpPort: The http port of the server.
 	HttpPort int `json:"http_port" yaml:"http_port" schema:"http_port"`
-	// HttpReqStats:
+	// HttpReqStats: HTTP request statistics.
 	HttpReqStats map[string]int `json:"http_req_stats" yaml:"http_req_stats" schema:"http_req_stats,required"`
 	// HttpsPort: The https port of the server.
 	HttpsPort int `json:"https_port" yaml:"https_port" schema:"https_port"`
@@ -786,514 +808,10 @@ type Connection struct {
 	WriteDeadline int `json:"write_deadline" yaml:"write_deadline" schema:"write_deadline"`
 }
 
-// CountryCode: An enumeration of all ISO-3166 alpha-2 country codes.
-type CountryCode string
-
-const (
-	// CountryCodeAf: Afghanistan
-	CountryCodeAf CountryCode = "AF"
-	// CountryCodeAx: Åland Islands
-	CountryCodeAx CountryCode = "AX"
-	// CountryCodeAl: Albania
-	CountryCodeAl CountryCode = "AL"
-	// CountryCodeDz: Algeria
-	CountryCodeDz CountryCode = "DZ"
-	// CountryCodeAs: American Samoa
-	CountryCodeAs CountryCode = "AS"
-	// CountryCodeAd: Andorra
-	CountryCodeAd CountryCode = "AD"
-	// CountryCodeAo: Angola
-	CountryCodeAo CountryCode = "AO"
-	// CountryCodeAi: Anguilla
-	CountryCodeAi CountryCode = "AI"
-	// CountryCodeAq: Antarctica
-	CountryCodeAq CountryCode = "AQ"
-	// CountryCodeAg: Antigua and Barbuda
-	CountryCodeAg CountryCode = "AG"
-	// CountryCodeAr: Argentina
-	CountryCodeAr CountryCode = "AR"
-	// CountryCodeAm: Armenia
-	CountryCodeAm CountryCode = "AM"
-	// CountryCodeAw: Aruba
-	CountryCodeAw CountryCode = "AW"
-	// CountryCodeAu: Australia
-	CountryCodeAu CountryCode = "AU"
-	// CountryCodeAt: Austria
-	CountryCodeAt CountryCode = "AT"
-	// CountryCodeAz: Azerbaijan
-	CountryCodeAz CountryCode = "AZ"
-	// CountryCodeBs: Bahamas
-	CountryCodeBs CountryCode = "BS"
-	// CountryCodeBh: Bahrain
-	CountryCodeBh CountryCode = "BH"
-	// CountryCodeBd: Bangladesh
-	CountryCodeBd CountryCode = "BD"
-	// CountryCodeBb: Barbados
-	CountryCodeBb CountryCode = "BB"
-	// CountryCodeBy: Belarus
-	CountryCodeBy CountryCode = "BY"
-	// CountryCodeBe: Belgium
-	CountryCodeBe CountryCode = "BE"
-	// CountryCodeBz: Belize
-	CountryCodeBz CountryCode = "BZ"
-	// CountryCodeBj: Benin
-	CountryCodeBj CountryCode = "BJ"
-	// CountryCodeBm: Bermuda
-	CountryCodeBm CountryCode = "BM"
-	// CountryCodeBt: Bhutan
-	CountryCodeBt CountryCode = "BT"
-	// CountryCodeBo: Bolivia (Plurinational State of)
-	CountryCodeBo CountryCode = "BO"
-	// CountryCodeBq: Bonaire, Sint Eustatius and Saba
-	CountryCodeBq CountryCode = "BQ"
-	// CountryCodeBa: Bosnia and Herzegovina
-	CountryCodeBa CountryCode = "BA"
-	// CountryCodeBw: Botswana
-	CountryCodeBw CountryCode = "BW"
-	// CountryCodeBv: Bouvet Island
-	CountryCodeBv CountryCode = "BV"
-	// CountryCodeBr: Brazil
-	CountryCodeBr CountryCode = "BR"
-	// CountryCodeIo: British Indian Ocean Territory
-	CountryCodeIo CountryCode = "IO"
-	// CountryCodeBn: Brunei Darussalam
-	CountryCodeBn CountryCode = "BN"
-	// CountryCodeBg: Bulgaria
-	CountryCodeBg CountryCode = "BG"
-	// CountryCodeBf: Burkina Faso
-	CountryCodeBf CountryCode = "BF"
-	// CountryCodeBi: Burundi
-	CountryCodeBi CountryCode = "BI"
-	// CountryCodeCv: Cabo Verde
-	CountryCodeCv CountryCode = "CV"
-	// CountryCodeKh: Cambodia
-	CountryCodeKh CountryCode = "KH"
-	// CountryCodeCm: Cameroon
-	CountryCodeCm CountryCode = "CM"
-	// CountryCodeCa: Canada
-	CountryCodeCa CountryCode = "CA"
-	// CountryCodeKy: Cayman Islands
-	CountryCodeKy CountryCode = "KY"
-	// CountryCodeCf: Central African Republic
-	CountryCodeCf CountryCode = "CF"
-	// CountryCodeTd: Chad
-	CountryCodeTd CountryCode = "TD"
-	// CountryCodeCl: Chile
-	CountryCodeCl CountryCode = "CL"
-	// CountryCodeCn: China
-	CountryCodeCn CountryCode = "CN"
-	// CountryCodeCx: Christmas Island
-	CountryCodeCx CountryCode = "CX"
-	// CountryCodeCc: Cocos (Keeling) Islands
-	CountryCodeCc CountryCode = "CC"
-	// CountryCodeCo: Colombia
-	CountryCodeCo CountryCode = "CO"
-	// CountryCodeKm: Comoros
-	CountryCodeKm CountryCode = "KM"
-	// CountryCodeCg: Congo
-	CountryCodeCg CountryCode = "CG"
-	// CountryCodeCd: Congo (Democratic Republic of the)
-	CountryCodeCd CountryCode = "CD"
-	// CountryCodeCk: Cook Islands
-	CountryCodeCk CountryCode = "CK"
-	// CountryCodeCr: Costa Rica
-	CountryCodeCr CountryCode = "CR"
-	// CountryCodeCi: Côte d'Ivoire
-	CountryCodeCi CountryCode = "CI"
-	// CountryCodeHr: Croatia
-	CountryCodeHr CountryCode = "HR"
-	// CountryCodeCu: Cuba
-	CountryCodeCu CountryCode = "CU"
-	// CountryCodeCw: Curaçao
-	CountryCodeCw CountryCode = "CW"
-	// CountryCodeCy: Cyprus
-	CountryCodeCy CountryCode = "CY"
-	// CountryCodeCz: Czechia
-	CountryCodeCz CountryCode = "CZ"
-	// CountryCodeDk: Denmark
-	CountryCodeDk CountryCode = "DK"
-	// CountryCodeDj: Djibouti
-	CountryCodeDj CountryCode = "DJ"
-	// CountryCodeDm: Dominica
-	CountryCodeDm CountryCode = "DM"
-	// CountryCodeDo: Dominican Republic
-	CountryCodeDo CountryCode = "DO"
-	// CountryCodeEc: Ecuador
-	CountryCodeEc CountryCode = "EC"
-	// CountryCodeEg: Egypt
-	CountryCodeEg CountryCode = "EG"
-	// CountryCodeSv: El Salvador
-	CountryCodeSv CountryCode = "SV"
-	// CountryCodeGq: Equatorial Guinea
-	CountryCodeGq CountryCode = "GQ"
-	// CountryCodeEr: Eritrea
-	CountryCodeEr CountryCode = "ER"
-	// CountryCodeEe: Estonia
-	CountryCodeEe CountryCode = "EE"
-	// CountryCodeEt: Ethiopia
-	CountryCodeEt CountryCode = "ET"
-	// CountryCodeFk: Falkland Islands (Malvinas)
-	CountryCodeFk CountryCode = "FK"
-	// CountryCodeFo: Faroe Islands
-	CountryCodeFo CountryCode = "FO"
-	// CountryCodeFj: Fiji
-	CountryCodeFj CountryCode = "FJ"
-	// CountryCodeFi: Finland
-	CountryCodeFi CountryCode = "FI"
-	// CountryCodeFr: France
-	CountryCodeFr CountryCode = "FR"
-	// CountryCodeGf: French Guiana
-	CountryCodeGf CountryCode = "GF"
-	// CountryCodePf: French Polynesia
-	CountryCodePf CountryCode = "PF"
-	// CountryCodeTf: French Southern Territories
-	CountryCodeTf CountryCode = "TF"
-	// CountryCodeGa: Gabon
-	CountryCodeGa CountryCode = "GA"
-	// CountryCodeGm: Gambia
-	CountryCodeGm CountryCode = "GM"
-	// CountryCodeGe: Georgia
-	CountryCodeGe CountryCode = "GE"
-	// CountryCodeDe: Germany
-	CountryCodeDe CountryCode = "DE"
-	// CountryCodeGh: Ghana
-	CountryCodeGh CountryCode = "GH"
-	// CountryCodeGi: Gibraltar
-	CountryCodeGi CountryCode = "GI"
-	// CountryCodeGr: Greece
-	CountryCodeGr CountryCode = "GR"
-	// CountryCodeGl: Greenland
-	CountryCodeGl CountryCode = "GL"
-	// CountryCodeGd: Grenada
-	CountryCodeGd CountryCode = "GD"
-	// CountryCodeGp: Guadeloupe
-	CountryCodeGp CountryCode = "GP"
-	// CountryCodeGu: Guam
-	CountryCodeGu CountryCode = "GU"
-	// CountryCodeGt: Guatemala
-	CountryCodeGt CountryCode = "GT"
-	// CountryCodeGg: Guernsey
-	CountryCodeGg CountryCode = "GG"
-	// CountryCodeGn: Guinea
-	CountryCodeGn CountryCode = "GN"
-	// CountryCodeGw: Guinea-Bissau
-	CountryCodeGw CountryCode = "GW"
-	// CountryCodeGy: Guyana
-	CountryCodeGy CountryCode = "GY"
-	// CountryCodeHt: Haiti
-	CountryCodeHt CountryCode = "HT"
-	// CountryCodeHm: Heard Island and McDonald Islands
-	CountryCodeHm CountryCode = "HM"
-	// CountryCodeVa: Holy See
-	CountryCodeVa CountryCode = "VA"
-	// CountryCodeHn: Honduras
-	CountryCodeHn CountryCode = "HN"
-	// CountryCodeHk: Hong Kong
-	CountryCodeHk CountryCode = "HK"
-	// CountryCodeHu: Hungary
-	CountryCodeHu CountryCode = "HU"
-	// CountryCodeIs: Iceland
-	CountryCodeIs CountryCode = "IS"
-	// CountryCodeIn: India
-	CountryCodeIn CountryCode = "IN"
-	// CountryCodeID: Indonesia
-	CountryCodeID CountryCode = "ID"
-	// CountryCodeIr: Iran (Islamic Republic of)
-	CountryCodeIr CountryCode = "IR"
-	// CountryCodeIq: Iraq
-	CountryCodeIq CountryCode = "IQ"
-	// CountryCodeIe: Ireland
-	CountryCodeIe CountryCode = "IE"
-	// CountryCodeIm: Isle of Man
-	CountryCodeIm CountryCode = "IM"
-	// CountryCodeIl: Israel
-	CountryCodeIl CountryCode = "IL"
-	// CountryCodeIt: Italy
-	CountryCodeIt CountryCode = "IT"
-	// CountryCodeJm: Jamaica
-	CountryCodeJm CountryCode = "JM"
-	// CountryCodeJp: Japan
-	CountryCodeJp CountryCode = "JP"
-	// CountryCodeJe: Jersey
-	CountryCodeJe CountryCode = "JE"
-	// CountryCodeJo: Jordan
-	CountryCodeJo CountryCode = "JO"
-	// CountryCodeKz: Kazakhstan
-	CountryCodeKz CountryCode = "KZ"
-	// CountryCodeKe: Kenya
-	CountryCodeKe CountryCode = "KE"
-	// CountryCodeKi: Kiribati
-	CountryCodeKi CountryCode = "KI"
-	// CountryCodeKp: Korea (Democratic People's Republic of)
-	CountryCodeKp CountryCode = "KP"
-	// CountryCodeKr: Korea (Republic of)
-	CountryCodeKr CountryCode = "KR"
-	// CountryCodeKw: Kuwait
-	CountryCodeKw CountryCode = "KW"
-	// CountryCodeKg: Kyrgyzstan
-	CountryCodeKg CountryCode = "KG"
-	// CountryCodeLa: Lao People's Democratic Republic
-	CountryCodeLa CountryCode = "LA"
-	// CountryCodeLv: Latvia
-	CountryCodeLv CountryCode = "LV"
-	// CountryCodeLb: Lebanon
-	CountryCodeLb CountryCode = "LB"
-	// CountryCodeLs: Lesotho
-	CountryCodeLs CountryCode = "LS"
-	// CountryCodeLr: Liberia
-	CountryCodeLr CountryCode = "LR"
-	// CountryCodeLy: Libya
-	CountryCodeLy CountryCode = "LY"
-	// CountryCodeLi: Liechtenstein
-	CountryCodeLi CountryCode = "LI"
-	// CountryCodeLt: Lithuania
-	CountryCodeLt CountryCode = "LT"
-	// CountryCodeLu: Luxembourg
-	CountryCodeLu CountryCode = "LU"
-	// CountryCodeMo: Macao
-	CountryCodeMo CountryCode = "MO"
-	// CountryCodeMk: Macedonia (the former Yugoslav Republic of)
-	CountryCodeMk CountryCode = "MK"
-	// CountryCodeMg: Madagascar
-	CountryCodeMg CountryCode = "MG"
-	// CountryCodeMw: Malawi
-	CountryCodeMw CountryCode = "MW"
-	// CountryCodeMy: Malaysia
-	CountryCodeMy CountryCode = "MY"
-	// CountryCodeMv: Maldives
-	CountryCodeMv CountryCode = "MV"
-	// CountryCodeMl: Mali
-	CountryCodeMl CountryCode = "ML"
-	// CountryCodeMt: Malta
-	CountryCodeMt CountryCode = "MT"
-	// CountryCodeMh: Marshall Islands
-	CountryCodeMh CountryCode = "MH"
-	// CountryCodeMq: Martinique
-	CountryCodeMq CountryCode = "MQ"
-	// CountryCodeMr: Mauritania
-	CountryCodeMr CountryCode = "MR"
-	// CountryCodeMu: Mauritius
-	CountryCodeMu CountryCode = "MU"
-	// CountryCodeYt: Mayotte
-	CountryCodeYt CountryCode = "YT"
-	// CountryCodeMx: Mexico
-	CountryCodeMx CountryCode = "MX"
-	// CountryCodeFm: Micronesia (Federated States of)
-	CountryCodeFm CountryCode = "FM"
-	// CountryCodeMd: Moldova (Republic of)
-	CountryCodeMd CountryCode = "MD"
-	// CountryCodeMc: Monaco
-	CountryCodeMc CountryCode = "MC"
-	// CountryCodeMn: Mongolia
-	CountryCodeMn CountryCode = "MN"
-	// CountryCodeMe: Montenegro
-	CountryCodeMe CountryCode = "ME"
-	// CountryCodeMs: Montserrat
-	CountryCodeMs CountryCode = "MS"
-	// CountryCodeMa: Morocco
-	CountryCodeMa CountryCode = "MA"
-	// CountryCodeMz: Mozambique
-	CountryCodeMz CountryCode = "MZ"
-	// CountryCodeMm: Myanmar
-	CountryCodeMm CountryCode = "MM"
-	// CountryCodeNa: Namibia
-	CountryCodeNa CountryCode = "NA"
-	// CountryCodeNr: Nauru
-	CountryCodeNr CountryCode = "NR"
-	// CountryCodeNp: Nepal
-	CountryCodeNp CountryCode = "NP"
-	// CountryCodeNl: Netherlands
-	CountryCodeNl CountryCode = "NL"
-	// CountryCodeNc: New Caledonia
-	CountryCodeNc CountryCode = "NC"
-	// CountryCodeNz: New Zealand
-	CountryCodeNz CountryCode = "NZ"
-	// CountryCodeNi: Nicaragua
-	CountryCodeNi CountryCode = "NI"
-	// CountryCodeNe: Niger
-	CountryCodeNe CountryCode = "NE"
-	// CountryCodeNg: Nigeria
-	CountryCodeNg CountryCode = "NG"
-	// CountryCodeNu: Niue
-	CountryCodeNu CountryCode = "NU"
-	// CountryCodeNf: Norfolk Island
-	CountryCodeNf CountryCode = "NF"
-	// CountryCodeMp: Northern Mariana Islands
-	CountryCodeMp CountryCode = "MP"
-	// CountryCodeNo: Norway
-	CountryCodeNo CountryCode = "NO"
-	// CountryCodeOm: Oman
-	CountryCodeOm CountryCode = "OM"
-	// CountryCodePk: Pakistan
-	CountryCodePk CountryCode = "PK"
-	// CountryCodePw: Palau
-	CountryCodePw CountryCode = "PW"
-	// CountryCodePs: Palestine, State of
-	CountryCodePs CountryCode = "PS"
-	// CountryCodePa: Panama
-	CountryCodePa CountryCode = "PA"
-	// CountryCodePg: Papua New Guinea
-	CountryCodePg CountryCode = "PG"
-	// CountryCodePy: Paraguay
-	CountryCodePy CountryCode = "PY"
-	// CountryCodePe: Peru
-	CountryCodePe CountryCode = "PE"
-	// CountryCodePh: Philippines
-	CountryCodePh CountryCode = "PH"
-	// CountryCodePn: Pitcairn
-	CountryCodePn CountryCode = "PN"
-	// CountryCodePl: Poland
-	CountryCodePl CountryCode = "PL"
-	// CountryCodePt: Portugal
-	CountryCodePt CountryCode = "PT"
-	// CountryCodePr: Puerto Rico
-	CountryCodePr CountryCode = "PR"
-	// CountryCodeQa: Qatar
-	CountryCodeQa CountryCode = "QA"
-	// CountryCodeRe: Réunion
-	CountryCodeRe CountryCode = "RE"
-	// CountryCodeRo: Romania
-	CountryCodeRo CountryCode = "RO"
-	// CountryCodeRu: Russian Federation
-	CountryCodeRu CountryCode = "RU"
-	// CountryCodeRw: Rwanda
-	CountryCodeRw CountryCode = "RW"
-	// CountryCodeBl: Saint Barthélemy
-	CountryCodeBl CountryCode = "BL"
-	// CountryCodeSh: Saint Helena, Ascension and Tristan da Cunha
-	CountryCodeSh CountryCode = "SH"
-	// CountryCodeKn: Saint Kitts and Nevis
-	CountryCodeKn CountryCode = "KN"
-	// CountryCodeLc: Saint Lucia
-	CountryCodeLc CountryCode = "LC"
-	// CountryCodeMf: Saint Martin (French part)
-	CountryCodeMf CountryCode = "MF"
-	// CountryCodePm: Saint Pierre and Miquelon
-	CountryCodePm CountryCode = "PM"
-	// CountryCodeVc: Saint Vincent and the Grenadines
-	CountryCodeVc CountryCode = "VC"
-	// CountryCodeWs: Samoa
-	CountryCodeWs CountryCode = "WS"
-	// CountryCodeSm: San Marino
-	CountryCodeSm CountryCode = "SM"
-	// CountryCodeSt: Sao Tome and Principe
-	CountryCodeSt CountryCode = "ST"
-	// CountryCodeSa: Saudi Arabia
-	CountryCodeSa CountryCode = "SA"
-	// CountryCodeSn: Senegal
-	CountryCodeSn CountryCode = "SN"
-	// CountryCodeRs: Serbia
-	CountryCodeRs CountryCode = "RS"
-	// CountryCodeSc: Seychelles
-	CountryCodeSc CountryCode = "SC"
-	// CountryCodeSl: Sierra Leone
-	CountryCodeSl CountryCode = "SL"
-	// CountryCodeSg: Singapore
-	CountryCodeSg CountryCode = "SG"
-	// CountryCodeSx: Sint Maarten (Dutch part)
-	CountryCodeSx CountryCode = "SX"
-	// CountryCodeSk: Slovakia
-	CountryCodeSk CountryCode = "SK"
-	// CountryCodeSi: Slovenia
-	CountryCodeSi CountryCode = "SI"
-	// CountryCodeSb: Solomon Islands
-	CountryCodeSb CountryCode = "SB"
-	// CountryCodeSo: Somalia
-	CountryCodeSo CountryCode = "SO"
-	// CountryCodeZa: South Africa
-	CountryCodeZa CountryCode = "ZA"
-	// CountryCodeGs: South Georgia and the South Sandwich Islands
-	CountryCodeGs CountryCode = "GS"
-	// CountryCodeSs: South Sudan
-	CountryCodeSs CountryCode = "SS"
-	// CountryCodeEs: Spain
-	CountryCodeEs CountryCode = "ES"
-	// CountryCodeLk: Sri Lanka
-	CountryCodeLk CountryCode = "LK"
-	// CountryCodeSd: Sudan
-	CountryCodeSd CountryCode = "SD"
-	// CountryCodeSr: Suriname
-	CountryCodeSr CountryCode = "SR"
-	// CountryCodeSj: Svalbard and Jan Mayen
-	CountryCodeSj CountryCode = "SJ"
-	// CountryCodeSz: Swaziland
-	CountryCodeSz CountryCode = "SZ"
-	// CountryCodeSe: Sweden
-	CountryCodeSe CountryCode = "SE"
-	// CountryCodeCh: Switzerland
-	CountryCodeCh CountryCode = "CH"
-	// CountryCodeSy: Syrian Arab Republic
-	CountryCodeSy CountryCode = "SY"
-	// CountryCodeTw: Taiwan, Province of China
-	CountryCodeTw CountryCode = "TW"
-	// CountryCodeTj: Tajikistan
-	CountryCodeTj CountryCode = "TJ"
-	// CountryCodeTz: Tanzania, United Republic of
-	CountryCodeTz CountryCode = "TZ"
-	// CountryCodeTh: Thailand
-	CountryCodeTh CountryCode = "TH"
-	// CountryCodeTl: Timor-Leste
-	CountryCodeTl CountryCode = "TL"
-	// CountryCodeTg: Togo
-	CountryCodeTg CountryCode = "TG"
-	// CountryCodeTk: Tokelau
-	CountryCodeTk CountryCode = "TK"
-	// CountryCodeTo: Tonga
-	CountryCodeTo CountryCode = "TO"
-	// CountryCodeTt: Trinidad and Tobago
-	CountryCodeTt CountryCode = "TT"
-	// CountryCodeTn: Tunisia
-	CountryCodeTn CountryCode = "TN"
-	// CountryCodeTr: Turkey
-	CountryCodeTr CountryCode = "TR"
-	// CountryCodeTm: Turkmenistan
-	CountryCodeTm CountryCode = "TM"
-	// CountryCodeTc: Turks and Caicos Islands
-	CountryCodeTc CountryCode = "TC"
-	// CountryCodeTv: Tuvalu
-	CountryCodeTv CountryCode = "TV"
-	// CountryCodeUg: Uganda
-	CountryCodeUg CountryCode = "UG"
-	// CountryCodeUa: Ukraine
-	CountryCodeUa CountryCode = "UA"
-	// CountryCodeAe: United Arab Emirates
-	CountryCodeAe CountryCode = "AE"
-	// CountryCodeGb: United Kingdom of Great Britain and Northern Ireland
-	CountryCodeGb CountryCode = "GB"
-	// CountryCodeUs: United States of America
-	CountryCodeUs CountryCode = "US"
-	// CountryCodeUm: United States Minor Outlying Islands
-	CountryCodeUm CountryCode = "UM"
-	// CountryCodeUy: Uruguay
-	CountryCodeUy CountryCode = "UY"
-	// CountryCodeUz: Uzbekistan
-	CountryCodeUz CountryCode = "UZ"
-	// CountryCodeVu: Vanuatu
-	CountryCodeVu CountryCode = "VU"
-	// CountryCodeVe: Venezuela (Bolivarian Republic of)
-	CountryCodeVe CountryCode = "VE"
-	// CountryCodeVn: Viet Nam
-	CountryCodeVn CountryCode = "VN"
-	// CountryCodeVg: Virgin Islands (British)
-	CountryCodeVg CountryCode = "VG"
-	// CountryCodeVi: Virgin Islands (U.S.)
-	CountryCodeVi CountryCode = "VI"
-	// CountryCodeWf: Wallis and Futuna
-	CountryCodeWf CountryCode = "WF"
-	// CountryCodeEh: Western Sahara
-	CountryCodeEh CountryCode = "EH"
-	// CountryCodeYe: Yemen
-	CountryCodeYe CountryCode = "YE"
-	// CountryCodeZm: Zambia
-	CountryCodeZm CountryCode = "ZM"
-	// CountryCodeZw: Zimbabwe
-	CountryCodeZw CountryCode = "ZW"
-)
-
 // Coupon: The resource representing a Coupon.
 type Coupon struct {
 	// AmountOff: Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
-	AmountOff float64 `json:"amount_off" yaml:"amount_off" schema:"amount_off"`
+	AmountOff string `json:"amount_off" yaml:"amount_off" schema:"amount_off"`
 	// Deleted: Always true for a deleted object.
 	Deleted bool `json:"deleted" yaml:"deleted" schema:"deleted"`
 	// ID: Unique identifier for the object.
@@ -1315,295 +833,18 @@ const (
 	CreatedAtSortModeCreatedAtDescending CreatedAtSortMode = "created_at_descending"
 )
 
-// Currency: Currency is the list of supported currencies.
-// This comes from the Stripe API docs: For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
-type Currency string
-
-const (
-	// CurrencyAed: United Arab Emirates Dirham
-	CurrencyAed Currency = "aed"
-	// CurrencyAfn: Afghan Afghani
-	CurrencyAfn Currency = "afn"
-	// CurrencyAll: Albanian Lek
-	CurrencyAll Currency = "all"
-	// CurrencyAmd: Armenian Dram
-	CurrencyAmd Currency = "amd"
-	// CurrencyAng: Netherlands Antillean Gulden
-	CurrencyAng Currency = "ang"
-	// CurrencyAoa: Angolan Kwanza
-	CurrencyAoa Currency = "aoa"
-	// CurrencyArs: Argentine Peso
-	CurrencyArs Currency = "ars"
-	// CurrencyAud: Australian Dollar
-	CurrencyAud Currency = "aud"
-	// CurrencyAwg: Aruban Florin
-	CurrencyAwg Currency = "awg"
-	// CurrencyAzn: Azerbaijani Manat
-	CurrencyAzn Currency = "azn"
-	// CurrencyBam: Bosnia & Herzegovina Convertible Mark
-	CurrencyBam Currency = "bam"
-	// CurrencyBbd: Barbadian Dollar
-	CurrencyBbd Currency = "bbd"
-	// CurrencyBdt: Bangladeshi Taka
-	CurrencyBdt Currency = "bdt"
-	// CurrencyBgn: Bulgarian Lev
-	CurrencyBgn Currency = "bgn"
-	// CurrencyBif: Burundian Franc
-	CurrencyBif Currency = "bif"
-	// CurrencyBmd: Bermudian Dollar
-	CurrencyBmd Currency = "bmd"
-	// CurrencyBnd: Brunei Dollar
-	CurrencyBnd Currency = "bnd"
-	// CurrencyBob: Bolivian Boliviano
-	CurrencyBob Currency = "bob"
-	// CurrencyBrl: Brazilian Real
-	CurrencyBrl Currency = "brl"
-	// CurrencyBsd: Bahamian Dollar
-	CurrencyBsd Currency = "bsd"
-	// CurrencyBwp: Botswana Pula
-	CurrencyBwp Currency = "bwp"
-	// CurrencyBzd: Belize Dollar
-	CurrencyBzd Currency = "bzd"
-	// CurrencyCad: Canadian Dollar
-	CurrencyCad Currency = "cad"
-	// CurrencyCdf: Congolese Franc
-	CurrencyCdf Currency = "cdf"
-	// CurrencyChf: Swiss Franc
-	CurrencyChf Currency = "chf"
-	// CurrencyClp: Chilean Peso
-	CurrencyClp Currency = "clp"
-	// CurrencyCny: Chinese Renminbi Yuan
-	CurrencyCny Currency = "cny"
-	// CurrencyCop: Colombian Peso
-	CurrencyCop Currency = "cop"
-	// CurrencyCrc: Costa Rican Colón
-	CurrencyCrc Currency = "crc"
-	// CurrencyCve: Cape Verdean Escudo
-	CurrencyCve Currency = "cve"
-	// CurrencyCzk: Czech Koruna
-	CurrencyCzk Currency = "czk"
-	// CurrencyDjf: Djiboutian Franc
-	CurrencyDjf Currency = "djf"
-	// CurrencyDkk: Danish Krone
-	CurrencyDkk Currency = "dkk"
-	// CurrencyDop: Dominican Peso
-	CurrencyDop Currency = "dop"
-	// CurrencyDzd: Algerian Dinar
-	CurrencyDzd Currency = "dzd"
-	// CurrencyEek: Estonian Kroon
-	CurrencyEek Currency = "eek"
-	// CurrencyEgp: Egyptian Pound
-	CurrencyEgp Currency = "egp"
-	// CurrencyEtb: Ethiopian Birr
-	CurrencyEtb Currency = "etb"
-	// CurrencyEur: Euro
-	CurrencyEur Currency = "eur"
-	// CurrencyFjd: Fijian Dollar
-	CurrencyFjd Currency = "fjd"
-	// CurrencyFkp: Falkland Islands Pound
-	CurrencyFkp Currency = "fkp"
-	// CurrencyGbp: British Pound
-	CurrencyGbp Currency = "gbp"
-	// CurrencyGel: Georgian Lari
-	CurrencyGel Currency = "gel"
-	// CurrencyGip: Gibraltar Pound
-	CurrencyGip Currency = "gip"
-	// CurrencyGmd: Gambian Dalasi
-	CurrencyGmd Currency = "gmd"
-	// CurrencyGnf: Guinean Franc
-	CurrencyGnf Currency = "gnf"
-	// CurrencyGtq: Guatemalan Quetzal
-	CurrencyGtq Currency = "gtq"
-	// CurrencyGyd: Guyanese Dollar
-	CurrencyGyd Currency = "gyd"
-	// CurrencyHkd: Hong Kong Dollar
-	CurrencyHkd Currency = "hkd"
-	// CurrencyHnl: Honduran Lempira
-	CurrencyHnl Currency = "hnl"
-	// CurrencyHrk: Croatian Kuna
-	CurrencyHrk Currency = "hrk"
-	// CurrencyHtg: Haitian Gourde
-	CurrencyHtg Currency = "htg"
-	// CurrencyHuf: Hungarian Forint
-	CurrencyHuf Currency = "huf"
-	// CurrencyIdr: Indonesian Rupiah
-	CurrencyIdr Currency = "idr"
-	// CurrencyIls: Israeli New Sheqel
-	CurrencyIls Currency = "ils"
-	// CurrencyInr: Indian Rupee
-	CurrencyInr Currency = "inr"
-	// CurrencyIsk: Icelandic Króna
-	CurrencyIsk Currency = "isk"
-	// CurrencyJmd: Jamaican Dollar
-	CurrencyJmd Currency = "jmd"
-	// CurrencyJpy: Japanese Yen
-	CurrencyJpy Currency = "jpy"
-	// CurrencyKes: Kenyan Shilling
-	CurrencyKes Currency = "kes"
-	// CurrencyKgs: Kyrgyzstani Som
-	CurrencyKgs Currency = "kgs"
-	// CurrencyKhr: Cambodian Riel
-	CurrencyKhr Currency = "khr"
-	// CurrencyKmf: Comorian Franc
-	CurrencyKmf Currency = "kmf"
-	// CurrencyKrw: South Korean Won
-	CurrencyKrw Currency = "krw"
-	// CurrencyKyd: Cayman Islands Dollar
-	CurrencyKyd Currency = "kyd"
-	// CurrencyKzt: Kazakhstani Tenge
-	CurrencyKzt Currency = "kzt"
-	// CurrencyLak: Lao Kip
-	CurrencyLak Currency = "lak"
-	// CurrencyLbp: Lebanese Pound
-	CurrencyLbp Currency = "lbp"
-	// CurrencyLkr: Sri Lankan Rupee
-	CurrencyLkr Currency = "lkr"
-	// CurrencyLrd: Liberian Dollar
-	CurrencyLrd Currency = "lrd"
-	// CurrencyLsl: Lesotho Loti
-	CurrencyLsl Currency = "lsl"
-	// CurrencyLtl: Lithuanian Litas
-	CurrencyLtl Currency = "ltl"
-	// CurrencyLvl: Latvian Lats
-	CurrencyLvl Currency = "lvl"
-	// CurrencyMad: Moroccan Dirham
-	CurrencyMad Currency = "mad"
-	// CurrencyMdl: Moldovan Leu
-	CurrencyMdl Currency = "mdl"
-	// CurrencyMga: Malagasy Ariary
-	CurrencyMga Currency = "mga"
-	// CurrencyMkd: Macedonian Denar
-	CurrencyMkd Currency = "mkd"
-	// CurrencyMnt: Mongolian Tögrög
-	CurrencyMnt Currency = "mnt"
-	// CurrencyMop: Macanese Pataca
-	CurrencyMop Currency = "mop"
-	// CurrencyMro: Mauritanian Ouguiya
-	CurrencyMro Currency = "mro"
-	// CurrencyMur: Mauritian Rupee
-	CurrencyMur Currency = "mur"
-	// CurrencyMvr: Maldivian Rufiyaa
-	CurrencyMvr Currency = "mvr"
-	// CurrencyMwk: Malawian Kwacha
-	CurrencyMwk Currency = "mwk"
-	// CurrencyMxn: Mexican Peso
-	CurrencyMxn Currency = "mxn"
-	// CurrencyMyr: Malaysian Ringgit
-	CurrencyMyr Currency = "myr"
-	// CurrencyMzn: Mozambican Metical
-	CurrencyMzn Currency = "mzn"
-	// CurrencyNad: Namibian Dollar
-	CurrencyNad Currency = "nad"
-	// CurrencyNgn: Nigerian Naira
-	CurrencyNgn Currency = "ngn"
-	// CurrencyNio: Nicaraguan Córdoba
-	CurrencyNio Currency = "nio"
-	// CurrencyNok: Norwegian Krone
-	CurrencyNok Currency = "nok"
-	// CurrencyNpr: Nepalese Rupee
-	CurrencyNpr Currency = "npr"
-	// CurrencyNzd: New Zealand Dollar
-	CurrencyNzd Currency = "nzd"
-	// CurrencyPab: Panamanian Balboa
-	CurrencyPab Currency = "pab"
-	// CurrencyPen: Peruvian Nuevo Sol
-	CurrencyPen Currency = "pen"
-	// CurrencyPgk: Papua New Guinean Kina
-	CurrencyPgk Currency = "pgk"
-	// CurrencyPhp: Philippine Peso
-	CurrencyPhp Currency = "php"
-	// CurrencyPkr: Pakistani Rupee
-	CurrencyPkr Currency = "pkr"
-	// CurrencyPln: Polish Złoty
-	CurrencyPln Currency = "pln"
-	// CurrencyPyg: Paraguayan Guaraní
-	CurrencyPyg Currency = "pyg"
-	// CurrencyQar: Qatari Riyal
-	CurrencyQar Currency = "qar"
-	// CurrencyRon: Romanian Leu
-	CurrencyRon Currency = "ron"
-	// CurrencyRsd: Serbian Dinar
-	CurrencyRsd Currency = "rsd"
-	// CurrencyRub: Russian Ruble
-	CurrencyRub Currency = "rub"
-	// CurrencyRwf: Rwandan Franc
-	CurrencyRwf Currency = "rwf"
-	// CurrencySar: Saudi Riyal
-	CurrencySar Currency = "sar"
-	// CurrencySbd: Solomon Islands Dollar
-	CurrencySbd Currency = "sbd"
-	// CurrencyScr: Seychellois Rupee
-	CurrencyScr Currency = "scr"
-	// CurrencySek: Swedish Krona
-	CurrencySek Currency = "sek"
-	// CurrencySgd: Singapore Dollar
-	CurrencySgd Currency = "sgd"
-	// CurrencyShp: Saint Helenian Pound
-	CurrencyShp Currency = "shp"
-	// CurrencySll: Sierra Leonean Leone
-	CurrencySll Currency = "sll"
-	// CurrencySos: Somali Shilling
-	CurrencySos Currency = "sos"
-	// CurrencySrd: Surinamese Dollar
-	CurrencySrd Currency = "srd"
-	// CurrencyStd: São Tomé and Príncipe Dobra
-	CurrencyStd Currency = "std"
-	// CurrencySvc: Salvadoran Colón
-	CurrencySvc Currency = "svc"
-	// CurrencySzl: Swazi Lilangeni
-	CurrencySzl Currency = "szl"
-	// CurrencyThb: Thai Baht
-	CurrencyThb Currency = "thb"
-	// CurrencyTjs: Tajikistani Somoni
-	CurrencyTjs Currency = "tjs"
-	// CurrencyTop: Tongan Paʻanga
-	CurrencyTop Currency = "top"
-	// CurrencyTry: Turkish Lira
-	CurrencyTry Currency = "try"
-	// CurrencyTtd: Trinidad and Tobago Dollar
-	CurrencyTtd Currency = "ttd"
-	// CurrencyTwd: New Taiwan Dollar
-	CurrencyTwd Currency = "twd"
-	// CurrencyTzs: Tanzanian Shilling
-	CurrencyTzs Currency = "tzs"
-	// CurrencyUah: Ukrainian Hryvnia
-	CurrencyUah Currency = "uah"
-	// CurrencyUgx: Ugandan Shilling
-	CurrencyUgx Currency = "ugx"
-	// CurrencyUsd: United States Dollar
-	CurrencyUsd Currency = "usd"
-	// CurrencyUyu: Uruguayan Peso
-	CurrencyUyu Currency = "uyu"
-	// CurrencyUzs: Uzbekistani Som
-	CurrencyUzs Currency = "uzs"
-	// CurrencyVef: Venezuelan Bolívar
-	CurrencyVef Currency = "vef"
-	// CurrencyVnd: Vietnamese Đồng
-	CurrencyVnd Currency = "vnd"
-	// CurrencyVuv: Vanuatu Vatu
-	CurrencyVuv Currency = "vuv"
-	// CurrencyWst: Samoan Tala
-	CurrencyWst Currency = "wst"
-	// CurrencyXaf: Central African Cfa Franc
-	CurrencyXaf Currency = "xaf"
-	// CurrencyXcd: East Caribbean Dollar
-	CurrencyXcd Currency = "xcd"
-	// CurrencyXof: West African Cfa Franc
-	CurrencyXof Currency = "xof"
-	// CurrencyXpf: Cfp Franc
-	CurrencyXpf Currency = "xpf"
-	// CurrencyYer: Yemeni Rial
-	CurrencyYer Currency = "yer"
-	// CurrencyZar: South African Rand
-	CurrencyZar Currency = "zar"
-	// CurrencyZmw: Zambian Kwacha
-	CurrencyZmw Currency = "zmw"
-)
-
 // CurveGetControlPoints: The response from the `CurveGetControlPoints` command.
 type CurveGetControlPoints struct {
 	// ControlPoints: Control points in the curve.
 	ControlPoints []Point3D `json:"control_points" yaml:"control_points" schema:"control_points,required"`
+}
+
+// CurveGetEndPoints: Endpoints of a curve
+type CurveGetEndPoints struct {
+	// End: End
+	End Point3D `json:"end" yaml:"end" schema:"end,required"`
+	// Start: Start
+	Start Point3D `json:"start" yaml:"start" schema:"start,required"`
 }
 
 // CurveGetType: The response from the `CurveGetType` command.
@@ -1618,6 +859,8 @@ type CurveType string
 const (
 	// CurveTypeLine represents the CurveType `"line"`.
 	CurveTypeLine CurveType = "line"
+	// CurveTypeArc represents the CurveType `"arc"`.
+	CurveTypeArc CurveType = "arc"
 	// CurveTypeNurbs represents the CurveType `"nurbs"`.
 	CurveTypeNurbs CurveType = "nurbs"
 )
@@ -1629,11 +872,11 @@ type Customer struct {
 	// Balance: Current balance, if any, being stored on the customer in the payments service.
 	//
 	// If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.
-	Balance float64 `json:"balance" yaml:"balance" schema:"balance"`
+	Balance string `json:"balance" yaml:"balance" schema:"balance"`
 	// CreatedAt: Time at which the object was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Currency: Three-letter ISO code for the currency the customer can be charged in for recurring billing purposes.
-	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
+	Currency string `json:"currency" yaml:"currency" schema:"currency"`
 	// Delinquent: When the customer's latest invoice is billed by charging automatically, `delinquent` is `true` if the invoice's latest charge failed.
 	//
 	// When the customer's latest invoice is billed by sending an invoice, `delinquent` is `true` if the invoice isn't paid by its due date.  If an invoice is marked uncollectible by dunning, `delinquent` doesn't get reset to `false`.
@@ -1658,13 +901,13 @@ type CustomerBalance struct {
 	// ID: The unique identifier for the balance.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// MonthlyCreditsRemaining: The monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the user per month.
-	MonthlyCreditsRemaining float64 `json:"monthly_credits_remaining" yaml:"monthly_credits_remaining" schema:"monthly_credits_remaining,required"`
+	MonthlyCreditsRemaining string `json:"monthly_credits_remaining" yaml:"monthly_credits_remaining" schema:"monthly_credits_remaining,required"`
 	// PrePayCashRemaining: The amount of pre-pay cash remaining in the balance. This number goes down as the user uses their pre-paid credits. The reason we track this amount is if a user ever wants to withdraw their pre-pay cash, we can use this amount to determine how much to give them. Say a user has $100 in pre-paid cash, their bill is worth, $50 after subtracting any other credits (like monthly etc.) Their bill is $50, their pre-pay cash remaining will be subtracted by 50 to pay the bill and their `pre_pay_credits_remaining` will be subtracted by 50 to pay the bill. This way if they want to withdraw money after, they can only withdraw $50 since that is the amount of cash they have remaining.
-	PrePayCashRemaining float64 `json:"pre_pay_cash_remaining" yaml:"pre_pay_cash_remaining" schema:"pre_pay_cash_remaining,required"`
+	PrePayCashRemaining string `json:"pre_pay_cash_remaining" yaml:"pre_pay_cash_remaining" schema:"pre_pay_cash_remaining,required"`
 	// PrePayCreditsRemaining: The amount of credits remaining in the balance. This is typically the amount of cash * some multiplier they get for pre-paying their account. This number lowers every time a bill is paid with the balance. This number increases every time a user adds funds to their balance. This may be through a subscription or a one off payment.
-	PrePayCreditsRemaining float64 `json:"pre_pay_credits_remaining" yaml:"pre_pay_credits_remaining" schema:"pre_pay_credits_remaining,required"`
+	PrePayCreditsRemaining string `json:"pre_pay_credits_remaining" yaml:"pre_pay_credits_remaining" schema:"pre_pay_credits_remaining,required"`
 	// TotalDue: This includes any outstanding, draft, or open invoices and any pending invoice items. This does not include any credits the user has on their account.
-	TotalDue float64 `json:"total_due" yaml:"total_due" schema:"total_due,required"`
+	TotalDue string `json:"total_due" yaml:"total_due" schema:"total_due,required"`
 	// UpdatedAt: The date and time the balance was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID the balance belongs to.
@@ -1675,6 +918,14 @@ type CustomerBalance struct {
 type Data struct {
 	// Files: The exported files
 	Files []RawFile `json:"files" yaml:"files" schema:"files,required"`
+}
+
+// Density: The density response.
+type Density struct {
+	// Density: The density.
+	Density float64 `json:"density" yaml:"density" schema:"density,required"`
+	// OutputUnit: The output unit for the density.
+	OutputUnit UnitDensity `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
 }
 
 // DeviceAccessTokenRequestForm: The form for a device access token request.
@@ -1715,167 +966,12 @@ type Discount struct {
 	Coupon Coupon `json:"coupon" yaml:"coupon" schema:"coupon,required"`
 }
 
-// DockerSystemInfo: Docker system info.
-type DockerSystemInfo struct {
-	// Architecture: Hardware architecture of the host, as returned by the Go runtime (`GOARCH`).  A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
-	Architecture string `json:"architecture" yaml:"architecture" schema:"architecture"`
-	// BridgeNfIp6Tables: Indicates if `bridge-nf-call-ip6tables` is available on the host.
-	BridgeNfIp6Tables bool `json:"bridge_nf_ip6tables" yaml:"bridge_nf_ip6tables" schema:"bridge_nf_ip6tables"`
-	// BridgeNfIptables: Indicates if `bridge-nf-call-iptables` is available on the host.
-	BridgeNfIptables bool `json:"bridge_nf_iptables" yaml:"bridge_nf_iptables" schema:"bridge_nf_iptables"`
-	// CgroupDriver: The driver to use for managing cgroups.
-	CgroupDriver SystemInfoCgroupDriverEnum `json:"cgroup_driver" yaml:"cgroup_driver" schema:"cgroup_driver"`
-	// CgroupVersion: The version of the cgroup.
-	CgroupVersion SystemInfoCgroupVersionEnum `json:"cgroup_version" yaml:"cgroup_version" schema:"cgroup_version"`
-	// ClusterAdvertise: The network endpoint that the Engine advertises for the purpose of node discovery. ClusterAdvertise is a `host:port` combination on which the daemon is reachable by other hosts.
-	//
-	// **Deprecated**: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store. Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
-	ClusterAdvertise string `json:"cluster_advertise" yaml:"cluster_advertise" schema:"cluster_advertise"`
-	// ClusterStore: URL of the distributed storage backend.   The storage backend is used for multihost networking (to store network and endpoint information) and by the node discovery mechanism.
-	//
-	// **Deprecated**: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store. Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
-	ClusterStore string `json:"cluster_store" yaml:"cluster_store" schema:"cluster_store"`
-	// ContainerdCommit:
-	ContainerdCommit Commit `json:"containerd_commit" yaml:"containerd_commit" schema:"containerd_commit"`
-	// Containers: Total number of containers on the host.
-	Containers int `json:"containers" yaml:"containers" schema:"containers"`
-	// ContainersPaused: Number of containers with status `\"paused\"`.
-	ContainersPaused int `json:"containers_paused" yaml:"containers_paused" schema:"containers_paused"`
-	// ContainersRunning: Number of containers with status `\"running\"`.
-	ContainersRunning int `json:"containers_running" yaml:"containers_running" schema:"containers_running"`
-	// ContainersStopped: Number of containers with status `\"stopped\"`.
-	ContainersStopped int `json:"containers_stopped" yaml:"containers_stopped" schema:"containers_stopped"`
-	// CpuCfsPeriod: Indicates if CPU CFS(Completely Fair Scheduler) period is supported by the host.
-	CpuCfsPeriod bool `json:"cpu_cfs_period" yaml:"cpu_cfs_period" schema:"cpu_cfs_period"`
-	// CpuCfsQuota: Indicates if CPU CFS(Completely Fair Scheduler) quota is supported by the host.
-	CpuCfsQuota bool `json:"cpu_cfs_quota" yaml:"cpu_cfs_quota" schema:"cpu_cfs_quota"`
-	// CpuSet: Indicates if CPUsets (cpuset.cpus, cpuset.mems) are supported by the host.  See [cpuset(7)](https://www.kernel.org/doc/Documentation/cgroup-v1/cpusets.txt)
-	CpuSet bool `json:"cpu_set" yaml:"cpu_set" schema:"cpu_set"`
-	// CpuShares: Indicates if CPU Shares limiting is supported by the host.
-	CpuShares bool `json:"cpu_shares" yaml:"cpu_shares" schema:"cpu_shares"`
-	// Debug: Indicates if the daemon is running in debug-mode / with debug-level logging enabled.
-	Debug bool `json:"debug" yaml:"debug" schema:"debug"`
-	// DefaultAddressPools: List of custom default address pools for local networks, which can be specified in the daemon.json file or dockerd option.  Example: a Base \"10.10.0.0/16\" with Size 24 will define the set of 256 10.10.[0-255].0/24 address pools.
-	DefaultAddressPools []SystemInfoDefaultAddressPools `json:"default_address_pools" yaml:"default_address_pools" schema:"default_address_pools"`
-	// DefaultRuntime: Name of the default OCI runtime that is used when starting containers.  The default can be overridden per-container at create time.
-	DefaultRuntime string `json:"default_runtime" yaml:"default_runtime" schema:"default_runtime"`
-	// DockerRootDir: Root directory of persistent Docker state.  Defaults to `/var/lib/docker` on Linux, and `C:\\ProgramData\\docker` on Windows.
-	DockerRootDir string `json:"docker_root_dir" yaml:"docker_root_dir" schema:"docker_root_dir"`
-	// Driver: Name of the storage driver in use.
-	Driver string `json:"driver" yaml:"driver" schema:"driver"`
-	// DriverStatus: Information specific to the storage driver, provided as \"label\" / \"value\" pairs.  This information is provided by the storage driver, and formatted in a way consistent with the output of `docker info` on the command line.
-	//
-	// **Note**: The information returned in this field, including the formatting of values and labels, should not be considered stable, and may change without notice.
-	DriverStatus [][]string `json:"driver_status" yaml:"driver_status" schema:"driver_status"`
-	// ExperimentalBuild: Indicates if experimental features are enabled on the daemon.
-	ExperimentalBuild bool `json:"experimental_build" yaml:"experimental_build" schema:"experimental_build"`
-	// HttpProxy: HTTP-proxy configured for the daemon. This value is obtained from the [`HTTP_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration.
-	HttpProxy string `json:"http_proxy" yaml:"http_proxy" schema:"http_proxy"`
-	// HttpsProxy: HTTPS-proxy configured for the daemon. This value is obtained from the [`HTTPS_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration.
-	HttpsProxy string `json:"https_proxy" yaml:"https_proxy" schema:"https_proxy"`
-	// ID: Unique identifier of the daemon.
-	//
-	// **Note**: The format of the ID itself is not part of the API, and should not be considered stable.
-	ID string `json:"id" yaml:"id" schema:"id"`
-	// Images: Total number of images on the host. Both _tagged_ and _untagged_ (dangling) images are counted.
-	Images int `json:"images" yaml:"images" schema:"images"`
-	// IndexServerAddress: Address / URL of the index server that is used for image search, and as a default for user authentication for Docker Hub and Docker Cloud.
-	IndexServerAddress string `json:"index_server_address" yaml:"index_server_address" schema:"index_server_address"`
-	// InitBinary: Name and, optional, path of the `docker-init` binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result.
-	InitBinary string `json:"init_binary" yaml:"init_binary" schema:"init_binary"`
-	// InitCommit:
-	InitCommit Commit `json:"init_commit" yaml:"init_commit" schema:"init_commit"`
-	// Ipv4Forwarding: Indicates IPv4 forwarding is enabled.
-	Ipv4Forwarding bool `json:"ipv4_forwarding" yaml:"ipv4_forwarding" schema:"ipv4_forwarding"`
-	// Isolation: Represents the isolation technology to use as a default for containers. The supported values are platform-specific.  If no isolation value is specified on daemon start, on Windows client, the default is `hyperv`, and on Windows server, the default is `process`.  This option is currently not used on other platforms.
-	Isolation SystemInfoIsolationEnum `json:"isolation" yaml:"isolation" schema:"isolation"`
-	// KernelMemory: Indicates if the host has kernel memory limit support enabled.
-	//
-	// **Deprecated**: This field is deprecated as the kernel 5.4 deprecated `kmem.limit_in_bytes`.
-	KernelMemory bool `json:"kernel_memory" yaml:"kernel_memory" schema:"kernel_memory"`
-	// KernelMemoryTcp: Indicates if the host has kernel memory TCP limit support enabled.  Kernel memory TCP limits are not supported when using cgroups v2, which does not support the corresponding `memory.kmem.tcp.limit_in_bytes` cgroup.
-	KernelMemoryTcp bool `json:"kernel_memory_tcp" yaml:"kernel_memory_tcp" schema:"kernel_memory_tcp"`
-	// KernelVersion: Kernel version of the host.  On Linux, this information obtained from `uname`. On Windows this information is queried from the <kbd>HKEY_LOCAL_MACHINE\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\</kbd> registry value, for example _\"10.0 14393 (14393.1198.amd64fre.rs1_release_sec.170427-1353)\"_.
-	KernelVersion string `json:"kernel_version" yaml:"kernel_version" schema:"kernel_version"`
-	// Labels: User-defined labels (key/value metadata) as set on the daemon.
-	//
-	// **Note**: When part of a Swarm, nodes can both have _daemon_ labels, set through the daemon configuration, and _node_ labels, set from a manager node in the Swarm. Node labels are not included in this field. Node labels can be retrieved using the `/nodes/(id)` endpoint on a manager node in the Swarm.
-	Labels []string `json:"labels" yaml:"labels" schema:"labels"`
-	// LiveRestoreEnabled: Indicates if live restore is enabled.  If enabled, containers are kept running when the daemon is shutdown or upon daemon start if running containers are detected.
-	LiveRestoreEnabled bool `json:"live_restore_enabled" yaml:"live_restore_enabled" schema:"live_restore_enabled"`
-	// LoggingDriver: The logging driver to use as a default for new containers.
-	LoggingDriver string `json:"logging_driver" yaml:"logging_driver" schema:"logging_driver"`
-	// MemTotal: Total amount of physical memory available on the host, in bytes.
-	MemTotal int `json:"mem_total" yaml:"mem_total" schema:"mem_total"`
-	// MemoryLimit: Indicates if the host has memory limit support enabled.
-	MemoryLimit bool `json:"memory_limit" yaml:"memory_limit" schema:"memory_limit"`
-	// NEventsListener: Number of event listeners subscribed.
-	NEventsListener int `json:"n_events_listener" yaml:"n_events_listener" schema:"n_events_listener"`
-	// NFd: The total number of file Descriptors in use by the daemon process.  This information is only returned if debug-mode is enabled.
-	NFd int `json:"n_fd" yaml:"n_fd" schema:"n_fd"`
-	// Name: Hostname of the host.
-	Name string `json:"name" yaml:"name" schema:"name"`
-	// Ncpu: The number of logical CPUs usable by the daemon.  The number of available CPUs is checked by querying the operating system when the daemon starts. Changes to operating system CPU allocation after the daemon is started are not reflected.
-	Ncpu int `json:"ncpu" yaml:"ncpu" schema:"ncpu"`
-	// NoProxy: Comma-separated list of domain extensions for which no proxy should be used. This value is obtained from the [`NO_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable.  Containers do not automatically inherit this configuration.
-	NoProxy string `json:"no_proxy" yaml:"no_proxy" schema:"no_proxy"`
-	// OomKillDisable: Indicates if OOM killer disable is supported on the host.
-	OomKillDisable bool `json:"oom_kill_disable" yaml:"oom_kill_disable" schema:"oom_kill_disable"`
-	// OperatingSystem: Name of the host's operating system, for example: \"Ubuntu 16.04.2 LTS\" or \"Windows Server 2016 Datacenter\"
-	OperatingSystem string `json:"operating_system" yaml:"operating_system" schema:"operating_system"`
-	// OsType: Generic type of the operating system of the host, as returned by the Go runtime (`GOOS`).  Currently returned values are \"linux\" and \"windows\". A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
-	OsType string `json:"os_type" yaml:"os_type" schema:"os_type"`
-	// OsVersion: Version of the host's operating system
-	//
-	// **Note**: The information returned in this field, including its very existence, and the formatting of values, should not be considered stable, and may change without notice.
-	OsVersion string `json:"os_version" yaml:"os_version" schema:"os_version"`
-	// PidsLimit: Indicates if the host kernel has PID limit support enabled.
-	PidsLimit bool `json:"pids_limit" yaml:"pids_limit" schema:"pids_limit"`
-	// Plugins:
-	Plugins PluginsInfo `json:"plugins" yaml:"plugins" schema:"plugins"`
-	// ProductLicense: Reports a summary of the product license on the daemon.  If a commercial license has been applied to the daemon, information such as number of nodes, and expiration are included.
-	ProductLicense string `json:"product_license" yaml:"product_license" schema:"product_license"`
-	// RegistryConfig:
-	RegistryConfig RegistryServiceConfig `json:"registry_config" yaml:"registry_config" schema:"registry_config"`
-	// RuncCommit:
-	RuncCommit Commit `json:"runc_commit" yaml:"runc_commit" schema:"runc_commit"`
-	// Runtimes:
-	Runtimes map[string]Runtime `json:"runtimes" yaml:"runtimes" schema:"runtimes"`
-	// SecurityOptions: List of security features that are enabled on the daemon, such as apparmor, seccomp, SELinux, user-namespaces (userns), and rootless.  Additional configuration options for each security feature may be present, and are included as a comma-separated list of key/value pairs.
-	SecurityOptions []string `json:"security_options" yaml:"security_options" schema:"security_options"`
-	// ServerVersion: Version string of the daemon. **Note**: the [standalone Swarm API](https://docs.docker.com/swarm/swarm-api/) returns the Swarm version instead of the daemon  version, for example `swarm/1.2.8`.
-	ServerVersion string `json:"server_version" yaml:"server_version" schema:"server_version"`
-	// SwapLimit: Indicates if the host has memory swap limit support enabled.
-	SwapLimit bool `json:"swap_limit" yaml:"swap_limit" schema:"swap_limit"`
-	// SystemTime: The  number of goroutines that currently exist.  This information is only returned if debug-mode is enabled.
-	SystemTime string `json:"system_time" yaml:"system_time" schema:"system_time"`
-	// Warnings: List of warnings / informational messages about missing features, or issues related to the daemon configuration.  These messages can be printed by the client as information to the user.
-	Warnings []string `json:"warnings" yaml:"warnings" schema:"warnings"`
-}
-
 // EmailAuthenticationForm: The body of the form for email authentication.
 type EmailAuthenticationForm struct {
 	// CallbackUrl: The URL to redirect back to after we have authenticated.
 	CallbackUrl URL `json:"callback_url" yaml:"callback_url" schema:"callback_url"`
 	// Email: The user's email.
 	Email string `json:"email" yaml:"email" schema:"email,required"`
-}
-
-// EngineMetadata: Metadata about our currently running server.
-// This is mostly used for internal purposes and debugging.
-type EngineMetadata struct {
-	// AsyncJobsRunning: If any async job is currently running.
-	AsyncJobsRunning bool `json:"async_jobs_running" yaml:"async_jobs_running" schema:"async_jobs_running,required"`
-	// Cache: Metadata about our cache.
-	Cache CacheMetadata `json:"cache" yaml:"cache" schema:"cache,required"`
-	// Environment: The environment we are running in.
-	Environment Environment `json:"environment" yaml:"environment" schema:"environment,required"`
-	// Fs: Metadata about our file system.
-	Fs FileSystemMetadata `json:"fs" yaml:"fs" schema:"fs,required"`
-	// GitHash: The git hash of the server.
-	GitHash string `json:"git_hash" yaml:"git_hash" schema:"git_hash,required"`
-	// Pubsub: Metadata about our pub-sub connection.
-	Pubsub Connection `json:"pubsub" yaml:"pubsub" schema:"pubsub,required"`
 }
 
 // EntityGetAllChildUuids: The response from the `EntityGetAllChildUuids` command.
@@ -1960,6 +1056,10 @@ const (
 	ErrorCodeBadRequest ErrorCode = "bad_request"
 	// ErrorCodeInvalidJson: Client sent invalid JSON.
 	ErrorCodeInvalidJson ErrorCode = "invalid_json"
+	// ErrorCodeInvalidBson: Client sent invalid BSON.
+	ErrorCodeInvalidBson ErrorCode = "invalid_bson"
+	// ErrorCodeWrongProtocol: Client sent a message which is not accepted over this protocol.
+	ErrorCodeWrongProtocol ErrorCode = "wrong_protocol"
 	// ErrorCodeConnectionProblem: Problem sending data between client and KittyCAD API.
 	ErrorCodeConnectionProblem ErrorCode = "connection_problem"
 	// ErrorCodeMessageTypeNotAccepted: Client sent a Websocket message type which the KittyCAD API does not handle.
@@ -1967,17 +1067,6 @@ const (
 	// ErrorCodeMessageTypeNotAcceptedForWebRTC: Client sent a Websocket message intended for WebRTC but it was configured as a WebRTC connection.
 	ErrorCodeMessageTypeNotAcceptedForWebRTC ErrorCode = "message_type_not_accepted_for_web_r_t_c"
 )
-
-// ExecutorMetadata: Metadata about our currently running server.
-// This is mostly used for internal purposes and debugging.
-type ExecutorMetadata struct {
-	// DockerInfo: Information about the docker daemon.
-	DockerInfo DockerSystemInfo `json:"docker_info" yaml:"docker_info" schema:"docker_info,required"`
-	// Environment: The environment we are running in.
-	Environment Environment `json:"environment" yaml:"environment" schema:"environment,required"`
-	// GitHash: The git hash of the server.
-	GitHash string `json:"git_hash" yaml:"git_hash" schema:"git_hash,required"`
-}
 
 // Export: The response from the `Export` endpoint.
 type Export struct {
@@ -2385,18 +1474,18 @@ const (
 	ImageTypeJpg ImageType = "jpg"
 )
 
-// IndexInfo: IndexInfo contains information about a registry.
-type IndexInfo struct {
-	// Mirrors: List of mirrors, expressed as URIs.
-	Mirrors []string `json:"mirrors" yaml:"mirrors" schema:"mirrors"`
-	// Name: Name of the registry, such as \"docker.io\".
-	Name string `json:"name" yaml:"name" schema:"name"`
-	// Official: Indicates whether this is an official registry (i.e., Docker Hub / docker.io)
-	Official bool `json:"official" yaml:"official" schema:"official"`
-	// Secure: Indicates if the registry is part of the list of insecure registries.  If `false`, the registry is insecure. Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.
-	//
-	// **Warning**: Insecure registries can be useful when running a local registry. However, because its use creates security vulnerabilities it should ONLY be enabled for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
-	Secure bool `json:"secure" yaml:"secure" schema:"secure"`
+// ImportFile: File to import into the current model
+type ImportFile struct {
+	// Data: The raw bytes of the file
+	Data []int `json:"data" yaml:"data" schema:"data,required"`
+	// Path: The file's full path, including file extension.
+	Path string `json:"path" yaml:"path" schema:"path,required"`
+}
+
+// ImportFiles: Data from importing the files
+type ImportFiles struct {
+	// ObjectID: ID of the imported 3D models within the scene.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 }
 
 // InputFormatCoords: Wavefront OBJ format.
@@ -2410,6 +1499,8 @@ type InputFormatCoords struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Units: The units of the input data. This is very important for correct scaling and when calculating physics properties like mass, etc.
+	//
+	// Defaults to meters.
 	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
 }
 
@@ -2470,11 +1561,11 @@ type Invoice struct {
 	// AmountDue: Final amount due at this time for this invoice.
 	//
 	// If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the `amount_due` may be 0. If there is a positive `starting_balance` for the invoice (the customer owes money), the `amount_due` will also take that into account. The charge that gets generated for the invoice will be for the amount specified in `amount_due`.
-	AmountDue float64 `json:"amount_due" yaml:"amount_due" schema:"amount_due"`
+	AmountDue string `json:"amount_due" yaml:"amount_due" schema:"amount_due"`
 	// AmountPaid: The amount, in USD, that was paid.
-	AmountPaid float64 `json:"amount_paid" yaml:"amount_paid" schema:"amount_paid"`
+	AmountPaid string `json:"amount_paid" yaml:"amount_paid" schema:"amount_paid"`
 	// AmountRemaining: The amount remaining, in USD, that is due.
-	AmountRemaining float64 `json:"amount_remaining" yaml:"amount_remaining" schema:"amount_remaining"`
+	AmountRemaining string `json:"amount_remaining" yaml:"amount_remaining" schema:"amount_remaining"`
 	// AttemptCount: Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
 	//
 	// Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count. In other words, manual payment attempts after the first attempt do not affect the retry schedule.
@@ -2486,7 +1577,7 @@ type Invoice struct {
 	// CreatedAt: Time at which the object was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
+	Currency string `json:"currency" yaml:"currency" schema:"currency"`
 	// CustomerEmail: The email address for the customer. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated.
 	CustomerEmail string `json:"customer_email" yaml:"customer_email" schema:"customer_email"`
 	// CustomerID: Customer ID. The unique identifier for the customer this invoice belongs to. This is the customer ID in the payments service, not our database customer ID.
@@ -2524,13 +1615,13 @@ type Invoice struct {
 	// Subtotal: Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.
 	//
 	// Item discounts are already incorporated.
-	Subtotal float64 `json:"subtotal" yaml:"subtotal" schema:"subtotal"`
+	Subtotal string `json:"subtotal" yaml:"subtotal" schema:"subtotal"`
 	// Tax: The amount of tax on this invoice.
 	//
 	// This is the sum of all the tax amounts on this invoice.
-	Tax float64 `json:"tax" yaml:"tax" schema:"tax"`
+	Tax string `json:"tax" yaml:"tax" schema:"tax"`
 	// Total: Total after discounts and taxes.
-	Total float64 `json:"total" yaml:"total" schema:"total"`
+	Total string `json:"total" yaml:"total" schema:"total"`
 	// Url: The URL for the hosted invoice page, which allows customers to view and pay an invoice.
 	Url URL `json:"url" yaml:"url" schema:"url"`
 }
@@ -2538,9 +1629,9 @@ type Invoice struct {
 // InvoiceLineItem: An invoice line item.
 type InvoiceLineItem struct {
 	// Amount: The amount, in USD.
-	Amount float64 `json:"amount" yaml:"amount" schema:"amount"`
+	Amount string `json:"amount" yaml:"amount" schema:"amount"`
 	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-	Currency Currency `json:"currency" yaml:"currency" schema:"currency"`
+	Currency string `json:"currency" yaml:"currency" schema:"currency"`
 	// Description: The description.
 	Description string `json:"description" yaml:"description" schema:"description"`
 	// ID: Unique identifier for the object.
@@ -2633,6 +1724,14 @@ type LeafNode struct {
 	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
 }
 
+// Mass: The mass response.
+type Mass struct {
+	// Mass: The mass.
+	Mass float64 `json:"mass" yaml:"mass" schema:"mass,required"`
+	// OutputUnit: The output unit for the mass.
+	OutputUnit UnitMas `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+}
+
 // Mesh is the type definition for a Mesh.
 type Mesh struct {
 	// Mesh:
@@ -2654,12 +1753,8 @@ type MetaClusterInfo struct {
 type Metadata struct {
 	// Cache: Metadata about our cache.
 	Cache CacheMetadata `json:"cache" yaml:"cache" schema:"cache,required"`
-	// Engine: Metadata about our engine API connection.
-	Engine EngineMetadata `json:"engine" yaml:"engine" schema:"engine,required"`
 	// Environment: The environment we are running in.
 	Environment Environment `json:"environment" yaml:"environment" schema:"environment,required"`
-	// Executor: Metadata about our executor API connection.
-	Executor ExecutorMetadata `json:"executor" yaml:"executor" schema:"executor,required"`
 	// Fs: Metadata about our file system.
 	Fs FileSystemMetadata `json:"fs" yaml:"fs" schema:"fs,required"`
 	// GitHash: The git hash of the server.
@@ -2749,14 +1844,8 @@ type ModelingCmdCenter struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdChildIndex: Enable sketch mode on the given plane.
+// ModelingCmdChildIndex: Disable sketch mode.
 type ModelingCmdChildIndex struct {
-	// Animated: Animate the transition to sketch mode.
-	Animated bool `json:"animated" yaml:"animated" schema:"animated,required"`
-	// Ortho: Use an orthographic camera.
-	Ortho bool `json:"ortho" yaml:"ortho" schema:"ortho,required"`
-	// PlaneID: Sketch on this plane.
-	PlaneID UUID `json:"plane_id" yaml:"plane_id" schema:"plane_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2767,6 +1856,10 @@ type ModelingCmdClosePath struct {
 	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
 	// Format: The file format to export to.
 	Format any `json:"format" yaml:"format" schema:"format,required"`
+	// SourceUnit: Select the unit interpretation of exported objects.
+	//
+	// This is not the same as the export units. Setting export units is part of the format options.
+	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2829,12 +1922,14 @@ type ModelingCmdDistanceToPlane struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEditModeEnter: Query the given path
+// ModelingCmdEditModeEnter: Get curves for vertices within a path
 type ModelingCmdEditModeEnter struct {
 	// PathID: Which path to query
 	PathID UUID `json:"path_id" yaml:"path_id" schema:"path_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// VertexIds: IDs of the vertices for which to obtain curve ids from
+	VertexIds []UUID `json:"vertex_ids" yaml:"vertex_ids" schema:"vertex_ids,required"`
 }
 
 // ModelingCmdEditModeExit: Start dragging mouse.
@@ -2845,15 +1940,25 @@ type ModelingCmdEditModeExit struct {
 	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
 }
 
-// ModelingCmdEntityGetAllChildUuids: Take a snapshot.
-type ModelingCmdEntityGetAllChildUuids struct {
-	// Format: What image format to return.
-	Format ImageFormat `json:"format" yaml:"format" schema:"format,required"`
+// ModelingCmdEntities: Find the start and end of a curve.
+type ModelingCmdEntities struct {
+	// CurveID: ID of the curve being queried.
+	CurveID UUID `json:"curve_id" yaml:"curve_id" schema:"curve_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityGetChildUuid: Get type of a given curve.
+// ModelingCmdEntityGetAllChildUuids: Add a gizmo showing the axes.
+type ModelingCmdEntityGetAllChildUuids struct {
+	// Clobber: If true, any existing drawables within the obj will be replaced (the object will be reset)
+	Clobber bool `json:"clobber" yaml:"clobber" schema:"clobber,required"`
+	// GizmoMode: If true, axes gizmo will be placed in the corner of the screen. If false, it will be placed at the origin of the scene.
+	GizmoMode bool `json:"gizmo_mode" yaml:"gizmo_mode" schema:"gizmo_mode,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdEntityGetChildUuid: Get control points of a given curve.
 type ModelingCmdEntityGetChildUuid struct {
 	// CurveID: Which curve to query.
 	CurveID UUID `json:"curve_id" yaml:"curve_id" schema:"curve_id,required"`
@@ -2861,28 +1966,32 @@ type ModelingCmdEntityGetChildUuid struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityGetNumChildren: Send a mouse click event. Updates modified/selected entities.
+// ModelingCmdEntityGetNumChildren: Enable sketch mode on the given plane.
 type ModelingCmdEntityGetNumChildren struct {
+	// Animated: Animate the transition to sketch mode.
+	Animated bool `json:"animated" yaml:"animated" schema:"animated,required"`
+	// Ortho: Use an orthographic camera.
+	Ortho bool `json:"ortho" yaml:"ortho" schema:"ortho,required"`
+	// PlaneID: Sketch on this plane.
+	PlaneID UUID `json:"plane_id" yaml:"plane_id" schema:"plane_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdEntityGetParentID: Send a mouse move event.
+type ModelingCmdEntityGetParentID struct {
+	// Sequence: Logical timestamp. The client should increment this with every event in the current mouse drag. That way, if the events are being sent over an unordered channel, the API can ignore the older events.
+	Sequence int `json:"sequence" yaml:"sequence" schema:"sequence"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Window: Where the mouse is
 	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
 }
 
-// ModelingCmdEntityGetParentID: Set the active tool.
-type ModelingCmdEntityGetParentID struct {
+// ModelingCmdEntityID: Set the active tool.
+type ModelingCmdEntityID struct {
 	// Tool: What tool should be active.
 	Tool SceneToolType `json:"tool" yaml:"tool" schema:"tool,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdEntityID: Set the plane's color.
-type ModelingCmdEntityID struct {
-	// Color: What color it should be.
-	Color Color `json:"color" yaml:"color" schema:"color,required"`
-	// PlaneID: Which plane is being changed.
-	PlaneID UUID `json:"plane_id" yaml:"plane_id" schema:"plane_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2897,20 +2006,14 @@ type ModelingCmdEntityIds struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdExport: Make a plane.
+// ModelingCmdExport: Set the plane's color.
 type ModelingCmdExport struct {
-	// Clobber: If true, any existing drawables within the obj will be replaced (the object will be reset)
-	Clobber bool `json:"clobber" yaml:"clobber" schema:"clobber,required"`
-	// Origin: Origin of the plane
-	Origin Point3D `json:"origin" yaml:"origin" schema:"origin,required"`
-	// Size: What should the plane's span/extent? When rendered visually, this is both the width and height along X and Y axis respectively.
-	Size float64 `json:"size" yaml:"size" schema:"size,required"`
+	// Color: What color it should be.
+	Color Color `json:"color" yaml:"color" schema:"color,required"`
+	// PlaneID: Which plane is being changed.
+	PlaneID UUID `json:"plane_id" yaml:"plane_id" schema:"plane_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
-	// XAxis: What should the plane's X axis be?
-	XAxis Point3D `json:"x_axis" yaml:"x_axis" schema:"x_axis,required"`
-	// YAxis: What should the plane's Y axis be?
-	YAxis Point3D `json:"y_axis" yaml:"y_axis" schema:"y_axis,required"`
 }
 
 // ModelingCmdExtendPath: Camera drag continued.
@@ -2975,10 +2078,26 @@ type ModelingCmdMagnitude struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdEntityID: Get control points of a given curve.
+// ModelingCmdModelingCmdEntities: Get the density of entities in the scene or the default scene.
+type ModelingCmdModelingCmdEntities struct {
+	// EntityIds: IDs of the entities to get the density of. If this is empty, then the default scene is included in the density.
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// MaterialMass: The material mass.
+	MaterialMass float64 `json:"material_mass" yaml:"material_mass" schema:"material_mass,required"`
+	// MaterialMassUnit: The material mass unit.
+	MaterialMassUnit UnitMas `json:"material_mass_unit" yaml:"material_mass_unit" schema:"material_mass_unit,required"`
+	// OutputUnit: The output unit for the density.
+	OutputUnit UnitDensity `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// SourceUnit: Select the unit interpretation of distances in the scene.
+	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdModelingCmdEntityID: Take a snapshot.
 type ModelingCmdModelingCmdEntityID struct {
-	// CurveID: Which curve to query.
-	CurveID UUID `json:"curve_id" yaml:"curve_id" schema:"curve_id,required"`
+	// Format: What image format to return.
+	Format ImageFormat `json:"format" yaml:"format" schema:"format,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2997,12 +2116,22 @@ type ModelingCmdModelingCmdPath struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdTarget: Add a gizmo showing the axes.
+// ModelingCmdModelingCmdSelectedAtWindow: Get the surface area of entities in the scene or the default scene.
+type ModelingCmdModelingCmdSelectedAtWindow struct {
+	// EntityIds: IDs of the entities to get the surface area of. If this is empty, then the default scene is included in the surface area.
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// OutputUnit: The output unit for the surface area.
+	OutputUnit UnitArea `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// SourceUnit: Select the unit interpretation of distances in the scene.
+	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdModelingCmdTarget: Query the given path
 type ModelingCmdModelingCmdTarget struct {
-	// Clobber: If true, any existing drawables within the obj will be replaced (the object will be reset)
-	Clobber bool `json:"clobber" yaml:"clobber" schema:"clobber,required"`
-	// GizmoMode: If true, axes gizmo will be placed in the corner of the screen. If false, it will be placed at the origin of the scene.
-	GizmoMode bool `json:"gizmo_mode" yaml:"gizmo_mode" schema:"gizmo_mode,required"`
+	// PathID: Which path to query
+	PathID UUID `json:"path_id" yaml:"path_id" schema:"path_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3065,20 +2194,6 @@ type ModelingCmdPathID struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdReq: A graphics command submitted to the KittyCAD engine via the Modeling API.
-type ModelingCmdReq struct {
-	// Cmd: Which command to submit to the Kittycad engine.
-	Cmd any `json:"cmd" yaml:"cmd" schema:"cmd,required"`
-	// CmdID: ID of command being submitted.
-	CmdID UUID `json:"cmd_id" yaml:"cmd_id" schema:"cmd_id,required"`
-}
-
-// ModelingCmdReqBatch: A batch set of graphics commands submitted to the KittyCAD engine via the Modeling API.
-type ModelingCmdReqBatch struct {
-	// Cmds:
-	Cmds map[string]ModelingCmdReq `json:"cmds" yaml:"cmds" schema:"cmds,required"`
-}
-
 // ModelingCmdSegment: Camera drag started.
 type ModelingCmdSegment struct {
 	// Interaction: The type of camera drag interaction.
@@ -3087,6 +2202,68 @@ type ModelingCmdSegment struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Window: The initial mouse position.
 	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
+}
+
+// ModelingCmdSelectAdd: Reconfigure the stream.
+type ModelingCmdSelectAdd struct {
+	// Fps: Frames per second.
+	Fps int `json:"fps" yaml:"fps" schema:"fps,required"`
+	// Height: Height of the stream.
+	Height int `json:"height" yaml:"height" schema:"height,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Width: Width of the stream.
+	Width int `json:"width" yaml:"width" schema:"width,required"`
+}
+
+// ModelingCmdSelectClear: Utility method. Performs both a ray cast and projection to plane-local coordinates. Returns the plane coordinates for the given window coordinates.
+type ModelingCmdSelectClear struct {
+	// PlaneID: The plane you're intersecting against.
+	PlaneID UUID `json:"plane_id" yaml:"plane_id" schema:"plane_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Window: Window coordinates where the ray cast should be aimed.
+	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
+}
+
+// ModelingCmdSelectGet: Get the center of mass of entities in the scene or the default scene.
+type ModelingCmdSelectGet struct {
+	// EntityIds: IDs of the entities to get the center of mass of. If this is empty, then the default scene is included in the center of mass.
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// OutputUnit: The output unit for the center of mass.
+	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// SourceUnit: Select the unit interpretation of distances in the scene.
+	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdSelectRemove: Get the mass of entities in the scene or the default scene.
+type ModelingCmdSelectRemove struct {
+	// EntityIds: IDs of the entities to get the mass of. If this is empty, then the default scene is included in the mass.
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// MaterialDensity: The material density.
+	MaterialDensity float64 `json:"material_density" yaml:"material_density" schema:"material_density,required"`
+	// MaterialDensityUnit: The material density unit.
+	MaterialDensityUnit UnitDensity `json:"material_density_unit" yaml:"material_density_unit" schema:"material_density_unit,required"`
+	// OutputUnit: The output unit for the mass.
+	OutputUnit UnitMas `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// SourceUnit: Select the unit interpretation of distances in the scene.
+	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdSelectReplace: Get the volume of entities in the scene or the default scene.
+type ModelingCmdSelectReplace struct {
+	// EntityIds: IDs of the entities to get the volume of. If this is empty, then the default scene is included in the volume.
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// OutputUnit: The output unit for the volume.
+	OutputUnit UnitVolume `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// SourceUnit: Select the unit interpretation of distances in the scene.
+	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // ModelingCmdSelectWithPoint: Remove scene objects.
@@ -3121,6 +2298,22 @@ type ModelingCmdSequence struct {
 	Target UUID `json:"target" yaml:"target" schema:"target,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdSourceUnit: Make a plane.
+type ModelingCmdSourceUnit struct {
+	// Clobber: If true, any existing drawables within the obj will be replaced (the object will be reset)
+	Clobber bool `json:"clobber" yaml:"clobber" schema:"clobber,required"`
+	// Origin: Origin of the plane
+	Origin Point3D `json:"origin" yaml:"origin" schema:"origin,required"`
+	// Size: What should the plane's span/extent? When rendered visually, this is both the width and height along X and Y axis respectively.
+	Size float64 `json:"size" yaml:"size" schema:"size,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// XAxis: What should the plane's X axis be?
+	XAxis Point3D `json:"x_axis" yaml:"x_axis" schema:"x_axis,required"`
+	// YAxis: What should the plane's Y axis be?
+	YAxis Point3D `json:"y_axis" yaml:"y_axis" schema:"y_axis,required"`
 }
 
 // ModelingCmdStartPath: Start a path.
@@ -3199,54 +2392,6 @@ type ModelingCmdYaxis struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingError: Why a command submitted to the Modeling API failed.
-type ModelingError struct {
-	// ErrorCode: A string error code which refers to a family of errors. E.g. "InvalidInput".
-	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code,required"`
-	// ExternalMessage: Describe the specific error which occurred. Will be shown to users, not logged.
-	ExternalMessage string `json:"external_message" yaml:"external_message" schema:"external_message,required"`
-	// InternalMessage: Describe the specific error which occurred. Will be logged, not shown to users.
-	InternalMessage string `json:"internal_message" yaml:"internal_message" schema:"internal_message,required"`
-	// StatusCode: A HTTP status code.
-	StatusCode int `json:"status_code" yaml:"status_code" schema:"status_code,required"`
-}
-
-// ModelingOutcomeCancelled: Cancelled because it required the output of a previous command, which failed.
-type ModelingOutcomeCancelled struct {
-	// Cancelled:
-	Cancelled Cancelled `json:"cancelled" yaml:"cancelled" schema:"cancelled,required"`
-}
-
-// ModelingOutcomeError: It failed. Why? See 'struct Error' above.
-type ModelingOutcomeError struct {
-	// Error: Why a command submitted to the Modeling API failed.
-	Error ModelingError `json:"error" yaml:"error" schema:"error,required"`
-}
-
-// ModelingOutcomeErrorError: Why a command submitted to the Modeling API failed.
-type ModelingOutcomeErrorError struct {
-	// ErrorCode: A string error code which refers to a family of errors. E.g. "InvalidInput".
-	ErrorCode string `json:"error_code" yaml:"error_code" schema:"error_code,required"`
-	// ExternalMessage: Describe the specific error which occurred. Will be shown to users, not logged.
-	ExternalMessage string `json:"external_message" yaml:"external_message" schema:"external_message,required"`
-	// InternalMessage: Describe the specific error which occurred. Will be logged, not shown to users.
-	InternalMessage string `json:"internal_message" yaml:"internal_message" schema:"internal_message,required"`
-	// StatusCode: A HTTP status code.
-	StatusCode int `json:"status_code" yaml:"status_code" schema:"status_code,required"`
-}
-
-// ModelingOutcomeSuccess: Each successful command has some result.
-type ModelingOutcomeSuccess struct {
-	// Success: A successful response from a modeling command. This can be one of several types of responses, depending on the command.
-	Success any `json:"success" yaml:"success" schema:"success,required"`
-}
-
-// ModelingOutcomes: The result from a batch of modeling commands.
-type ModelingOutcomes struct {
-	// Outcomes:
-	Outcomes map[string]any `json:"outcomes" yaml:"outcomes" schema:"outcomes,required"`
-}
-
 // MouseClick: The response from the `MouseClick` command.
 type MouseClick struct {
 	// EntitiesModified: Entities that are modified.
@@ -3260,7 +2405,7 @@ type NewAddress struct {
 	// City: The city component.
 	City string `json:"city" yaml:"city" schema:"city"`
 	// Country: The country component. This is a two-letter ISO country code.
-	Country CountryCode `json:"country" yaml:"country" schema:"country,required"`
+	Country string `json:"country" yaml:"country" schema:"country,required"`
 	// State: The state component.
 	State string `json:"state" yaml:"state" schema:"state"`
 	// Street1: The first street component.
@@ -3361,10 +2506,10 @@ type OkModelingCmdResponseHighlightSetEntity struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseOkModelingCmdResponseData: The response from the `Path Get Info` command.
+// OkModelingCmdResponseOkModelingCmdResponseData: The response from the `SurfaceArea` command.
 type OkModelingCmdResponseOkModelingCmdResponseData struct {
-	// Data: The response from the `PathGetInfo` command.
-	Data PathGetInfo `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The surface area response.
+	Data SurfaceArea `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3381,6 +2526,46 @@ type OkModelingCmdResponseSelectGet struct {
 type OkModelingCmdResponseSelectWithPoint struct {
 	// Data: The response from the `EntityGetChildUuid` command.
 	Data EntityGetChildUuid `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseSolid3DgetAllEdgeFaces: The response from the `Path Get Curve UUIDs for Vertices` command.
+type OkModelingCmdResponseSolid3DgetAllEdgeFaces struct {
+	// Data: The response from the `PathGetCurveUuidsForVertices` command.
+	Data PathGetCurveUuidsForVertices `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseSolid3DgetAllOppositeEdges: The response from the `CurveGetEndPoints` command.
+type OkModelingCmdResponseSolid3DgetAllOppositeEdges struct {
+	// Data: Endpoints of a curve
+	Data CurveGetEndPoints `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseSolid3DgetNextAdjacentEdge: The response from the `CenterOfMass` command.
+type OkModelingCmdResponseSolid3DgetNextAdjacentEdge struct {
+	// Data: The center of mass response.
+	Data CenterOfMass `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseSolid3DgetOppositeEdge: The response from the `Mass` command.
+type OkModelingCmdResponseSolid3DgetOppositeEdge struct {
+	// Data: The mass response.
+	Data Mass `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseSolid3DgetPrevAdjacentEdge: The response from the `Density` command.
+type OkModelingCmdResponseSolid3DgetPrevAdjacentEdge struct {
+	// Data: The density response.
+	Data Density `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3403,6 +2588,14 @@ type OkWebSocketResponseDataIceServerInfo struct {
 
 // OkWebSocketResponseDataOkWebSocketResponseDataData: The exported files.
 type OkWebSocketResponseDataOkWebSocketResponseDataData struct {
+	// Data:
+	Data Data `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkWebSocketResponseDataSdpAnswer: Request a collection of metrics, to include WebRTC.
+type OkWebSocketResponseDataSdpAnswer struct {
 	// Data:
 	Data Data `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
@@ -3447,6 +2640,10 @@ type OutputFormatCoords struct {
 	Storage StlStorage `json:"storage" yaml:"storage" schema:"storage,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Units: Export length unit.
+	//
+	// Defaults to meters.
+	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
 }
 
 // OutputFormatFbx: glTF 2.0. We refer to this as glTF since that is how our customers refer to it, although by default it will be in binary format and thus technically (glb). If you prefer ascii output, you can set that option for the export.
@@ -3495,6 +2692,10 @@ type OutputFormatPresentation struct {
 	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Units: Export length unit.
+	//
+	// Defaults to meters.
+	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
 }
 
 // OutputFormatStorage: Autodesk Filmbox (FBX) format.
@@ -3521,20 +2722,34 @@ const (
 	PathCommandAddArc PathCommand = "add_arc"
 )
 
+// PathGetCurveUuidsForVertices: The response from the `PathGetCurveUuidsForVertices` command.
+type PathGetCurveUuidsForVertices struct {
+	// CurveIds: The UUIDs of the curve entities.
+	CurveIds []UUID `json:"curve_ids" yaml:"curve_ids" schema:"curve_ids,required"`
+}
+
 // PathGetInfo: The response from the `PathGetInfo` command.
 type PathGetInfo struct {
 	// Segments: All segments in the path, in the order they were added.
 	Segments []PathSegmentInfo `json:"segments" yaml:"segments" schema:"segments,required"`
 }
 
-// PathSegmentAngleEnd: A cubic bezier curve segment. Start at the end of the current line, go through control point 1 and 2, then end at a given point.
+// PathSegmentAngleEnd: Adds a tangent arc from current pen position with the given radius and angle.
 type PathSegmentAngleEnd struct {
-	// Control1: First control point.
-	Control1 Point3D `json:"control1" yaml:"control1" schema:"control1,required"`
-	// Control2: Second control point.
-	Control2 Point3D `json:"control2" yaml:"control2" schema:"control2,required"`
-	// End: Final control point.
-	End Point3D `json:"end" yaml:"end" schema:"end,required"`
+	// Offset: Offset of the arc.
+	Offset Angle `json:"offset" yaml:"offset" schema:"offset,required"`
+	// Radius: Radius of the arc. Not to be confused with Raiders of the Lost Ark.
+	Radius float64 `json:"radius" yaml:"radius" schema:"radius,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// PathSegmentAngleStart: Adds a tangent arc from current pen position to the new position.
+type PathSegmentAngleStart struct {
+	// AngleSnapIncrement: 0 will be interpreted as none/null.
+	AngleSnapIncrement Angle `json:"angle_snap_increment" yaml:"angle_snap_increment" schema:"angle_snap_increment"`
+	// To: Where the arc should end. Must lie in the same plane as the current path pen position. Must not be colinear with current path pen position.
+	To Point3D `json:"to" yaml:"to" schema:"to,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3543,6 +2758,8 @@ type PathSegmentAngleEnd struct {
 type PathSegmentEnd struct {
 	// End: End point of the line.
 	End Point3D `json:"end" yaml:"end" schema:"end,required"`
+	// Relative: Whether or not this line is a relative offset
+	Relative bool `json:"relative" yaml:"relative" schema:"relative,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3553,10 +2770,26 @@ type PathSegmentInfo struct {
 	Command PathCommand `json:"command" yaml:"command" schema:"command,required"`
 	// CommandID: Which command created this path? This field is absent if the path command is not actually creating a path segment, e.g. moving the pen doesn't create a path segment.
 	CommandID UUID `json:"command_id" yaml:"command_id" schema:"command_id"`
+	// Relative: Whether or not this segment is a relative offset
+	Relative bool `json:"relative" yaml:"relative" schema:"relative,required"`
 }
 
-// PathSegmentLine: A circular arc segment.
+// PathSegmentLine: A cubic bezier curve segment. Start at the end of the current line, go through control point 1 and 2, then end at a given point.
 type PathSegmentLine struct {
+	// Control1: First control point.
+	Control1 Point3D `json:"control1" yaml:"control1" schema:"control1,required"`
+	// Control2: Second control point.
+	Control2 Point3D `json:"control2" yaml:"control2" schema:"control2,required"`
+	// End: Final control point.
+	End Point3D `json:"end" yaml:"end" schema:"end,required"`
+	// Relative: Whether or not this bezier is a relative offset
+	Relative bool `json:"relative" yaml:"relative" schema:"relative,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// PathSegmentRelative: A circular arc segment.
+type PathSegmentRelative struct {
 	// AngleEnd: Start of the arc along circle's perimeter.
 	AngleEnd float64 `json:"angle_end" yaml:"angle_end" schema:"angle_end,required"`
 	// AngleStart: Start of the arc along circle's perimeter.
@@ -3565,6 +2798,8 @@ type PathSegmentLine struct {
 	Center Point2D `json:"center" yaml:"center" schema:"center,required"`
 	// Radius: Radius of the circle
 	Radius float64 `json:"radius" yaml:"radius" schema:"radius,required"`
+	// Relative: Whether or not this arc is a relative offset
+	Relative bool `json:"relative" yaml:"relative" schema:"relative,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3609,17 +2844,10 @@ const (
 	PaymentMethodTypeCard PaymentMethodType = "card"
 )
 
-// PluginsInfo: Available plugins per type.
-// **Note**: Only unmanaged (V1) plugins are included in this list. V1 plugins are \"lazily\" loaded, and are not returned in this list if there is no resource using the plugin.
-type PluginsInfo struct {
-	// Authorization: Names of available authorization plugins.
-	Authorization []string `json:"authorization" yaml:"authorization" schema:"authorization"`
-	// Log: Names of available logging-drivers, and logging-driver plugins.
-	Log []string `json:"log" yaml:"log" schema:"log"`
-	// Network: Names of available network-drivers, and network-driver plugins.
-	Network []string `json:"network" yaml:"network" schema:"network"`
-	// Volume: Names of available volume-drivers, and network-driver plugins.
-	Volume []string `json:"volume" yaml:"volume" schema:"volume"`
+// PlaneIntersectAndProject: Corresponding coordinates of given window coordinates, intersected on given plane.
+type PlaneIntersectAndProject struct {
+	// PlaneCoordinates: Corresponding coordinates of given window coordinates, intersected on given plane.
+	PlaneCoordinates Point2D `json:"plane_coordinates" yaml:"plane_coordinates" schema:"plane_coordinates"`
 }
 
 // PlyStorage: The storage for the output PLY file.
@@ -3673,26 +2901,6 @@ type RawFile struct {
 	Name string `json:"name" yaml:"name" schema:"name,required"`
 }
 
-// RegistryServiceConfig: RegistryServiceConfig stores daemon registry services configuration.
-type RegistryServiceConfig struct {
-	// AllowNondistributableArtifactsCidRs: List of IP ranges to which nondistributable artifacts can be pushed, using the CIDR syntax [RFC 4632](https://tools.ietf.org/html/4632).  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior, and enables the daemon to push nondistributable artifacts to all registries whose resolved IP address is within the subnet described by the CIDR syntax.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.
-	//
-	// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
-	AllowNondistributableArtifactsCidRs []string `json:"allow_nondistributable_artifacts_cid_rs" yaml:"allow_nondistributable_artifacts_cid_rs" schema:"allow_nondistributable_artifacts_cid_rs"`
-	// AllowNondistributableArtifactsHostnames: List of registry hostnames to which nondistributable artifacts can be pushed, using the format `<hostname>[:<port>]` or `<IP address>[:<port>]`.  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior for the specified registries.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.
-	//
-	// **Warning**: Nondistributable artifacts typically have restrictions on how and where they can be distributed and shared. Only use this feature to push artifacts to private registries and ensure that you are in compliance with any terms that cover redistributing nondistributable artifacts.
-	AllowNondistributableArtifactsHostnames []string `json:"allow_nondistributable_artifacts_hostnames" yaml:"allow_nondistributable_artifacts_hostnames" schema:"allow_nondistributable_artifacts_hostnames"`
-	// IndexConfigs:
-	IndexConfigs map[string]IndexInfo `json:"index_configs" yaml:"index_configs" schema:"index_configs"`
-	// InsecureRegistryCidRs: List of IP ranges of insecure registries, using the CIDR syntax ([RFC 4632](https://tools.ietf.org/html/4632)). Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.  By default, local registries (`127.0.0.0/8`) are configured as insecure. All other registries are secure. Communicating with an insecure registry is not possible if the daemon assumes that registry is secure.  This configuration override this behavior, insecure communication with registries whose resolved IP address is within the subnet described by the CIDR syntax.  Registries can also be marked insecure by hostname. Those registries are listed under `IndexConfigs` and have their `Secure` field set to `false`.
-	//
-	// **Warning**: Using this option can be useful when running a local  registry, but introduces security vulnerabilities. This option should therefore ONLY be used for testing purposes. For increased security, users should add their CA to their system's list of trusted CAs instead of enabling this option.
-	InsecureRegistryCidRs []string `json:"insecure_registry_cid_rs" yaml:"insecure_registry_cid_rs" schema:"insecure_registry_cid_rs"`
-	// Mirrors: List of registry URLs that act as a mirror for the official (`docker.io`) registry.
-	Mirrors []string `json:"mirrors" yaml:"mirrors" schema:"mirrors"`
-}
-
 // ResponseError: Error information from a response.
 type ResponseError struct {
 	// ErrorCode:
@@ -3737,14 +2945,6 @@ type RtcSessionDescription struct {
 	Sdp string `json:"sdp" yaml:"sdp" schema:"sdp,required"`
 	// Type: SDP type.
 	Type RtcSdpType `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// Runtime: Runtime describes an [OCI compliant](https://github.com/opencontainers/runtime-spec) runtime.  The runtime is invoked by the daemon via the `containerd` daemon. OCI runtimes act as an interface to the Linux kernel namespaces, cgroups, and SELinux.
-type Runtime struct {
-	// Path: Name and, optional, path, of the OCI executable binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result.
-	Path string `json:"path" yaml:"path" schema:"path"`
-	// RuntimeArgs: List of command-line arguments to pass to the runtime when invoked.
-	RuntimeArgs []string `json:"runtime_args" yaml:"runtime_args" schema:"runtime_args"`
 }
 
 // SceneSelectionType: The type of scene selection change
@@ -3858,6 +3058,14 @@ type SuccessWebSocketResponse struct {
 	Success bool `json:"success" yaml:"success" schema:"success,required"`
 }
 
+// SurfaceArea: The surface area response.
+type SurfaceArea struct {
+	// OutputUnit: The output unit for the surface area.
+	OutputUnit UnitArea `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// SurfaceArea: The surface area.
+	SurfaceArea float64 `json:"surface_area" yaml:"surface_area" schema:"surface_area,required"`
+}
+
 // System: Co-ordinate system definition.
 // The `up` axis must be orthogonal to the `forward` axis.
 //
@@ -3870,54 +3078,6 @@ type System struct {
 	// Up: Axis pointing up and away from a model.
 	Up AxisDirectionPair `json:"up" yaml:"up" schema:"up,required"`
 }
-
-// SystemInfoCgroupDriverEnum is the type definition for a SystemInfoCgroupDriverEnum.
-type SystemInfoCgroupDriverEnum string
-
-const (
-	// SystemInfoCgroupDriverEnumEmpty represents the SystemInfoCgroupDriverEnum `""`.
-	SystemInfoCgroupDriverEnumEmpty SystemInfoCgroupDriverEnum = ""
-	// SystemInfoCgroupDriverEnumCgroupfs represents the SystemInfoCgroupDriverEnum `"cgroupfs"`.
-	SystemInfoCgroupDriverEnumCgroupfs SystemInfoCgroupDriverEnum = "cgroupfs"
-	// SystemInfoCgroupDriverEnumSystemd represents the SystemInfoCgroupDriverEnum `"systemd"`.
-	SystemInfoCgroupDriverEnumSystemd SystemInfoCgroupDriverEnum = "systemd"
-	// SystemInfoCgroupDriverEnumNone represents the SystemInfoCgroupDriverEnum `"none"`.
-	SystemInfoCgroupDriverEnumNone SystemInfoCgroupDriverEnum = "none"
-)
-
-// SystemInfoCgroupVersionEnum is the type definition for a SystemInfoCgroupVersionEnum.
-type SystemInfoCgroupVersionEnum string
-
-const (
-	// SystemInfoCgroupVersionEnumEmpty represents the SystemInfoCgroupVersionEnum `""`.
-	SystemInfoCgroupVersionEnumEmpty SystemInfoCgroupVersionEnum = ""
-	// SystemInfoCgroupVersionEnum1 represents the SystemInfoCgroupVersionEnum `"1"`.
-	SystemInfoCgroupVersionEnum1 SystemInfoCgroupVersionEnum = "1"
-	// SystemInfoCgroupVersionEnum2 represents the SystemInfoCgroupVersionEnum `"2"`.
-	SystemInfoCgroupVersionEnum2 SystemInfoCgroupVersionEnum = "2"
-)
-
-// SystemInfoDefaultAddressPools is the type definition for a SystemInfoDefaultAddressPools.
-type SystemInfoDefaultAddressPools struct {
-	// Base: The network address in CIDR format
-	Base string `json:"base" yaml:"base" schema:"base"`
-	// Size: The network pool size
-	Size int `json:"size" yaml:"size" schema:"size"`
-}
-
-// SystemInfoIsolationEnum is the type definition for a SystemInfoIsolationEnum.
-type SystemInfoIsolationEnum string
-
-const (
-	// SystemInfoIsolationEnumEmpty represents the SystemInfoIsolationEnum `""`.
-	SystemInfoIsolationEnumEmpty SystemInfoIsolationEnum = ""
-	// SystemInfoIsolationEnumDefault represents the SystemInfoIsolationEnum `"default"`.
-	SystemInfoIsolationEnumDefault SystemInfoIsolationEnum = "default"
-	// SystemInfoIsolationEnumHyperv represents the SystemInfoIsolationEnum `"hyperv"`.
-	SystemInfoIsolationEnumHyperv SystemInfoIsolationEnum = "hyperv"
-	// SystemInfoIsolationEnumProcess represents the SystemInfoIsolationEnum `"process"`.
-	SystemInfoIsolationEnumProcess SystemInfoIsolationEnum = "process"
-)
 
 // TakeSnapshot: The response from the `TakeSnapshot` command.
 type TakeSnapshot struct {
@@ -3969,19 +3129,19 @@ type UnitAngleConversion struct {
 type UnitArea string
 
 const (
-	// UnitAreaCm2: Square centimetres <https://en.wikipedia.org/wiki/Square_centimetre>
+	// UnitAreaCm2: Square centimeters <https://en.wikipedia.org/wiki/Square_centimeter>
 	UnitAreaCm2 UnitArea = "cm2"
-	// UnitAreaDm2: Square decimetres <https://en.wikipedia.org/wiki/Square_decimetre>
+	// UnitAreaDm2: Square decimeters <https://en.wikipedia.org/wiki/Square_decimeter>
 	UnitAreaDm2 UnitArea = "dm2"
 	// UnitAreaFt2: Square feet <https://en.wikipedia.org/wiki/Square_foot>
 	UnitAreaFt2 UnitArea = "ft2"
 	// UnitAreaIn2: Square inches <https://en.wikipedia.org/wiki/Square_inch>
 	UnitAreaIn2 UnitArea = "in2"
-	// UnitAreaKm2: Square kilometres <https://en.wikipedia.org/wiki/Square_kilometre>
+	// UnitAreaKm2: Square kilometers <https://en.wikipedia.org/wiki/Square_kilometer>
 	UnitAreaKm2 UnitArea = "km2"
-	// UnitAreaM2: Square metres <https://en.wikipedia.org/wiki/Square_metre>
+	// UnitAreaM2: Square meters <https://en.wikipedia.org/wiki/Square_meter>
 	UnitAreaM2 UnitArea = "m2"
-	// UnitAreaMm2: Square millimetres <https://en.wikipedia.org/wiki/Square_millimetre>
+	// UnitAreaMm2: Square millimeters <https://en.wikipedia.org/wiki/Square_millimeter>
 	UnitAreaMm2 UnitArea = "mm2"
 	// UnitAreaYd2: Square yards <https://en.wikipedia.org/wiki/Square_mile>
 	UnitAreaYd2 UnitArea = "yd2"
@@ -4225,15 +3385,15 @@ type UnitFrequencyConversion struct {
 type UnitLength string
 
 const (
-	// UnitLengthCm: Centimetres <https://en.wikipedia.org/wiki/Centimetre>
+	// UnitLengthCm: Centimeters <https://en.wikipedia.org/wiki/Centimeter>
 	UnitLengthCm UnitLength = "cm"
 	// UnitLengthFt: Feet <https://en.wikipedia.org/wiki/Foot_(unit)>
 	UnitLengthFt UnitLength = "ft"
 	// UnitLengthIn: Inches <https://en.wikipedia.org/wiki/Inch>
 	UnitLengthIn UnitLength = "in"
-	// UnitLengthM: Metres <https://en.wikipedia.org/wiki/Metre>
+	// UnitLengthM: Meters <https://en.wikipedia.org/wiki/Meter>
 	UnitLengthM UnitLength = "m"
-	// UnitLengthMm: Millimetres <https://en.wikipedia.org/wiki/Millimetre>
+	// UnitLengthMm: Millimeters <https://en.wikipedia.org/wiki/Millimeter>
 	UnitLengthMm UnitLength = "mm"
 	// UnitLengthYd: Yards <https://en.wikipedia.org/wiki/Yard>
 	UnitLengthYd UnitLength = "yd"
@@ -4499,13 +3659,13 @@ type UnitTorqueConversion struct {
 type UnitVolume string
 
 const (
-	// UnitVolumeCm3: Cubic centimetres (cc or cm³) <https://en.wikipedia.org/wiki/Cubic_centimetre>
+	// UnitVolumeCm3: Cubic centimeters (cc or cm³) <https://en.wikipedia.org/wiki/Cubic_centimeter>
 	UnitVolumeCm3 UnitVolume = "cm3"
 	// UnitVolumeFt3: Cubic feet (ft³) <https://en.wikipedia.org/wiki/Cubic_foot>
 	UnitVolumeFt3 UnitVolume = "ft3"
 	// UnitVolumeIn3: Cubic inches (cu in or in³) <https://en.wikipedia.org/wiki/Cubic_inch>
 	UnitVolumeIn3 UnitVolume = "in3"
-	// UnitVolumeM3: Cubic metres (m³) <https://en.wikipedia.org/wiki/Cubic_metre>
+	// UnitVolumeM3: Cubic meters (m³) <https://en.wikipedia.org/wiki/Cubic_meter>
 	UnitVolumeM3 UnitVolume = "m3"
 	// UnitVolumeYd3: Cubic yards (yd³) <https://en.wikipedia.org/wiki/Cubic_yard>
 	UnitVolumeYd3 UnitVolume = "yd3"
@@ -4618,10 +3778,26 @@ type VerificationToken struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
+// Volume: The volume response.
+type Volume struct {
+	// OutputUnit: The output unit for the volume.
+	OutputUnit UnitVolume `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// Volume: The volume.
+	Volume float64 `json:"volume" yaml:"volume" schema:"volume,required"`
+}
+
 // WebSocketRequestCandidate: The trickle ICE candidate request.
 type WebSocketRequestCandidate struct {
 	// Candidate: Information about the ICE candidate.
 	Candidate RtcIceCandidateInit `json:"candidate" yaml:"candidate" schema:"candidate,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// WebSocketRequestCmd: The response to a metrics collection request from the server.
+type WebSocketRequestCmd struct {
+	// Metrics: Collected metrics from the Client's end of the engine connection.
+	Metrics ClientMetrics `json:"metrics" yaml:"metrics" schema:"metrics,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
