@@ -123,20 +123,24 @@ func (s *MetaService) Getdata() (*Metadata, error) {
 
 }
 
-// CreateImageTo3D: Generate a 3D model from an image.
+// CreateTextToCad: Generate a CAD model from text.
+// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 // This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
 //
 // Parameters
 //
-//   - `inputFormat`: An enumeration.
 //   - `outputFormat`: The valid types of output file formats.
-//   - `body`
-func (s *AiService) CreateImageTo3D(inputFormat ImageType, outputFormat FileExportFormat, body []byte) (*Mesh, error) {
+//   - `body`: Body for generating models from text.
+func (s *AiService) CreateTextToCad(outputFormat FileExportFormat, body TextToCadCreateBody) (*TextToCad, error) {
 	// Create the url.
-	path := "/ai/image-to-3d/{{.input_format}}/{{.output_format}}"
+	path := "/ai/text-to-cad/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
 
-	b := bytes.NewReader(body)
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
 
 	// Create the request.
 	req, err := http.NewRequest("POST", uri, b)
@@ -145,11 +149,10 @@ func (s *AiService) CreateImageTo3D(inputFormat ImageType, outputFormat FileExpo
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "application/octet-stream")
+	req.Header.Add("Content-Type", "application/json")
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"input_format":  string(inputFormat),
 		"output_format": string(outputFormat),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
@@ -171,59 +174,7 @@ func (s *AiService) CreateImageTo3D(inputFormat ImageType, outputFormat FileExpo
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded Mesh
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
-// CreateTextTo3D: Generate a 3D model from text.
-// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
-//
-// Parameters
-//
-//   - `outputFormat`: The valid types of output file formats.
-//   - `prompt`
-func (s *AiService) CreateTextTo3D(outputFormat FileExportFormat, prompt string) (*Mesh, error) {
-	// Create the url.
-	path := "/ai/text-to-3d/{{.output_format}}"
-	uri := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"output_format": string(outputFormat),
-		"prompt":        prompt,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded Mesh
+	var decoded TextToCad
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -3222,6 +3173,108 @@ func (s *UserService) GetSessionFor(token UUID) (*Session, error) {
 
 }
 
+// ListTextToCadModelsForUser: List text-to-CAD models you've generated.
+// This endpoint requires authentication by any KittyCAD user. It returns the text-to-CAD models for the authenticated user.
+// The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *AiService) ListTextToCadModelsForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*TextToCadResultsPage, error) {
+	// Create the url.
+	path := "/user/text-to-cad"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded TextToCadResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateTextToCadModelFeedback: Give feedback to a specific text-to-CAD response.
+// This endpoint requires authentication by any KittyCAD user. The user must be the owner of the text-to-CAD model, in order to give feedback.
+//
+// Parameters
+//
+//   - `id`
+//   - `feedback`: Human feedback on an AI response.
+func (s *AiService) CreateTextToCadModelFeedback(id UUID, feedback AiFeedback) error {
+	// Create the url.
+	path := "/user/text-to-cad/{{.id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":       id.String(),
+		"feedback": string(feedback),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // List: List users.
 // This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
 //
@@ -3534,7 +3587,8 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 //   - `videoResHeight`
 //   - `videoResWidth`
 //   - `webrtc`
-func (s *ModelingService) CommandsWs(fps int, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool) (*websocket.Conn, error) {
+//   - `body`: The websocket messages the server receives.
+func (s *ModelingService) CommandsWs(fps int, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
 	uri := resolveRelative(s.client.server, path)
