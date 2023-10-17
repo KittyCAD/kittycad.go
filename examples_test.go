@@ -96,43 +96,21 @@ func ExampleMetaService_Getdata() {
 
 }
 
-// CreateImageTo3D: Generate a 3D model from an image.
-// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
-//
-// Parameters
-//
-//   - `inputFormat`: An enumeration.
-//   - `outputFormat`: The valid types of output file formats.
-//   - `body`
-func ExampleAiService_CreateImageTo3D() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Ai.CreateImageTo3D(kittycad.ImageTypePng, "", []byte("some-binary"))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// CreateTextTo3D: Generate a 3D model from text.
+// CreateTextToCad: Generate a CAD model from text.
+// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 // This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
 //
 // Parameters
 //
 //   - `outputFormat`: The valid types of output file formats.
-//   - `prompt`
-func ExampleAiService_CreateTextTo3D() {
+//   - `body`: Body for generating models from text.
+func ExampleAiService_CreateTextToCad() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ai.CreateTextTo3D("", "some-string")
+	result, err := client.Ai.CreateTextToCad("", kittycad.TextToCadCreateBody{Prompt: "some-string"})
 	if err != nil {
 		panic(err)
 	}
@@ -1435,6 +1413,53 @@ func ExampleUserService_GetSessionFor() {
 
 }
 
+// ListTextToCadModelsForUser: List text-to-CAD models you've generated.
+// This endpoint requires authentication by any KittyCAD user. It returns the text-to-CAD models for the authenticated user.
+// The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleAiService_ListTextToCadModelsForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ai.ListTextToCadModelsForUser(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateTextToCadModelFeedback: Give feedback to a specific text-to-CAD response.
+// This endpoint requires authentication by any KittyCAD user. The user must be the owner of the text-to-CAD model, in order to give feedback.
+//
+// Parameters
+//
+//   - `id`
+//   - `feedback`: Human feedback on an AI response.
+func ExampleAiService_CreateTextToCadModelFeedback() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Ai.CreateTextToCadModelFeedback(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ""); err != nil {
+		panic(err)
+	}
+
+}
+
 // List: List users.
 // This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
 //
@@ -1643,6 +1668,7 @@ func ExampleExecutorService_CreateTerm() {
 //   - `videoResHeight`
 //   - `videoResWidth`
 //   - `webrtc`
+//   - `body`: The websocket messages the server receives.
 func ExampleModelingService_CommandsWs() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1650,7 +1676,7 @@ func ExampleModelingService_CommandsWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Modeling.CommandsWs(123, true, 123, 123, true)
+	ws, err := client.Modeling.CommandsWs(123, true, 123, 123, true, "")
 	if err != nil {
 		panic(err)
 	}
