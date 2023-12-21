@@ -85,7 +85,7 @@ func (s *MetaService) GetAiPluginManifest() (*AiPluginManifest, error) {
 
 // Getdata: Get the metadata about our currently running server.
 // This includes information on any of our other distributed systems it is connected to.
-// You must be a KittyCAD employee to perform this request.
+// You must be a Zoo employee to perform this request.
 func (s *MetaService) Getdata() (*Metadata, error) {
 	// Create the url.
 	path := "/_meta/info"
@@ -123,8 +123,120 @@ func (s *MetaService) Getdata() (*Metadata, error) {
 
 }
 
+// ListPrompts: List all AI prompts.
+// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
+// This endpoint requires authentication by a Zoo employee.
+// The AI prompts are returned in order of creation, with the most recently created AI prompts first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *AiService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSortMode) (*AiPromptResultsPage, error) {
+	// Create the url.
+	path := "/ai-prompts"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AiPromptResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetPrompt: Get an AI prompt.
+// This endpoint requires authentication by a Zoo employee.
+//
+// Parameters
+//
+//   - `id`
+func (s *AiService) GetPrompt(id UUID) (*AiPrompt, error) {
+	// Create the url.
+	path := "/ai-prompts/{{.id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AiPrompt
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateTextToCad: Generate a CAD model from text.
+// Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+// One thing to note, if you hit the cache, this endpoint will return right away. So you only have to wait if the status is not `Completed` or `Failed`.
 // This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
 //
 // Parameters
@@ -185,7 +297,7 @@ func (s *AiService) CreateTextToCad(outputFormat FileExportFormat, body TextToCa
 }
 
 // GetMetrics: Get API call metrics.
-// This endpoint requires authentication by a KittyCAD employee. The API calls are grouped by the parameter passed.
+// This endpoint requires authentication by a Zoo employee. The API calls are grouped by the parameter passed.
 //
 // Parameters
 //
@@ -235,7 +347,7 @@ func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQuer
 }
 
 // List: List API calls.
-// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.
+// This endpoint requires authentication by a Zoo employee. The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters
 //
@@ -293,14 +405,14 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 }
 
 // Get: Get details of an API call.
-// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
+// This endpoint requires authentication by any Zoo user. It returns details of the requested API call for the user.
 // If the user is not authenticated to view the specified API call, then it is not returned.
-// Only KittyCAD employees can view API calls for other users.
+// Only Zoo employees can view API calls for other users.
 //
 // Parameters
 //
 //   - `id`
-func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
+func (s *APICallService) Get(id UUID) (*APICallWithPrice, error) {
 	// Create the url.
 	path := "/api-calls/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -313,7 +425,7 @@ func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id,
+		"id": id.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -345,8 +457,8 @@ func (s *APICallService) Get(id string) (*APICallWithPrice, error) {
 }
 
 // GithubCallback: Listen for callbacks to GitHub app authentication.
-// This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
-// The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
+// This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.
+// The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 //
 // Parameters
 //
@@ -389,8 +501,8 @@ func (s *AppService) GithubCallback(body any) error {
 }
 
 // GithubConsent: Get the consent URL for GitHub app authentication.
-// This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
-// The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
+// This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.
+// The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 func (s *AppService) GithubConsent() (*AppClientInfo, error) {
 	// Create the url.
 	path := "/apps/github/consent"
@@ -469,7 +581,7 @@ func (s *AppService) GithubWebhook(body []byte) error {
 
 // ListAsyncOperations: List async operations.
 // For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
-// This endpoint requires authentication by a KittyCAD employee.
+// This endpoint requires authentication by a Zoo employee.
 //
 // Parameters
 //
@@ -531,9 +643,9 @@ func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy
 
 // GetAsyncOperation: Get an async operation.
 // Get the status and output of an async operation.
-// This endpoint requires authentication by any KittyCAD user. It returns details of the requested async operation for the user.
+// This endpoint requires authentication by any Zoo user. It returns details of the requested async operation for the user.
 // If the user is not authenticated to view the specified async operation, then it is not returned.
-// Only KittyCAD employees with the proper access can view async operations for other users.
+// Only Zoo employees with the proper access can view async operations for other users.
 //
 // Parameters
 //
@@ -677,7 +789,7 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 
 // CreateCenterOfMass: Get CAD file center of mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// This endpoint returns the cartesian co-ordinate in world space measure units.
+// This endpoint returns the cartesian coordinate in world space measure units.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -864,7 +976,7 @@ func (s *FileService) CreateDensity(materialMass float64, materialMassUnit UnitM
 
 }
 
-// CreateFileExecution: Execute a KittyCAD program in a specific language.
+// CreateFileExecution: Execute a Zoo program in a specific language.
 // Parameters
 //
 //   - `lang`: The language code is written in.
@@ -1101,6 +1213,57 @@ func (s *FileService) CreateVolume(outputUnit UnitVolume, srcFormat FileImportFo
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded FileVolume
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// InternalGetAPITokenForDiscordUser: Get an API token for a user by their discord id.
+// This endpoint allows us to run API calls from our discord bot on behalf of a user. The user must have a discord account linked to their Zoo Account via oauth2 for this to work.
+// You must be a Zoo employee to use this endpoint.
+//
+// Parameters
+//
+//   - `discordId`
+func (s *MetaService) InternalGetAPITokenForDiscordUser(discordId string) (*APIToken, error) {
+	// Create the url.
+	path := "/internal/discord/api-token/{{.discord_id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"discord_id": discordId,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded APIToken
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -2220,7 +2383,7 @@ func (s *UserService) GetSelf() (*User, error) {
 }
 
 // UpdateSelf: Update your user.
-// This endpoint requires authentication by any KittyCAD user. It updates information about the authenticated user.
+// This endpoint requires authentication by any Zoo user. It updates information about the authenticated user.
 //
 // Parameters
 //
@@ -2272,7 +2435,7 @@ func (s *UserService) UpdateSelf(body UpdateUser) (*User, error) {
 }
 
 // DeleteSelf: Delete your user.
-// This endpoint requires authentication by any KittyCAD user. It deletes the authenticated user from KittyCAD's database.
+// This endpoint requires authentication by any Zoo user. It deletes the authenticated user from Zoo's database.
 // This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.
 func (s *UserService) DeleteSelf() error {
 	// Create the url.
@@ -2303,7 +2466,7 @@ func (s *UserService) DeleteSelf() error {
 }
 
 // UserList: List API calls for your user.
-// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user.
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters
@@ -2362,12 +2525,12 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 }
 
 // GetForUser: Get an API call for a user.
-// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
+// This endpoint requires authentication by any Zoo user. It returns details of the requested API call for the user.
 //
 // Parameters
 //
 //   - `id`
-func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
+func (s *APICallService) GetForUser(id UUID) (*APICallWithPrice, error) {
 	// Create the url.
 	path := "/user/api-calls/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -2380,7 +2543,7 @@ func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id,
+		"id": id.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -2412,7 +2575,7 @@ func (s *APICallService) GetForUser(id string) (*APICallWithPrice, error) {
 }
 
 // ListForUser: List API tokens for your user.
-// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It returns the API tokens for the authenticated user.
 // The API tokens are returned in order of creation, with the most recently created API tokens first.
 //
 // Parameters
@@ -2471,7 +2634,7 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 }
 
 // CreateForUser: Create a new API token for your user.
-// This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It creates a new API token for the authenticated user.
 func (s *APITokenService) CreateForUser() (*APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens"
@@ -2510,7 +2673,7 @@ func (s *APITokenService) CreateForUser() (*APIToken, error) {
 }
 
 // GetForUser: Get an API token for your user.
-// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
+// This endpoint requires authentication by any Zoo user. It returns details of the requested API token for the user.
 //
 // Parameters
 //
@@ -2560,7 +2723,7 @@ func (s *APITokenService) GetForUser(token UUID) (*APIToken, error) {
 }
 
 // DeleteForUser: Delete an API token for your user.
-// This endpoint requires authentication by any KittyCAD user. It deletes the requested API token for the user.
+// This endpoint requires authentication by any Zoo user. It deletes the requested API token for the user.
 // This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.
 //
 // Parameters
@@ -2641,45 +2804,6 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 
 }
 
-// GetFrontHashSelf: Get your user's front verification hash.
-// This info is sent to front when initialing the front chat, it prevents impersonations using js hacks in the browser
-func (s *UserService) GetFrontHashSelf() (*string, error) {
-	// Create the url.
-	path := "/user/front-hash"
-	uri := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded string
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // GetOnboardingSelf: Get your user's onboarding status.
 // Checks key part of their api usage to determine their onboarding progress
 func (s *UserService) GetOnboardingSelf() (*Onboarding, error) {
@@ -2721,7 +2845,7 @@ func (s *UserService) GetOnboardingSelf() (*Onboarding, error) {
 
 // GetInformationForUser: Get payment info about your user.
 // This includes billing address, phone, and name.
-// This endpoint requires authentication by any KittyCAD user. It gets the payment information for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It gets the payment information for the authenticated user.
 func (s *PaymentService) GetInformationForUser() (*Customer, error) {
 	// Create the url.
 	path := "/user/payment"
@@ -2761,7 +2885,7 @@ func (s *PaymentService) GetInformationForUser() (*Customer, error) {
 
 // CreateInformationForUser: Create payment info for your user.
 // This includes billing address, phone, and name.
-// This endpoint requires authentication by any KittyCAD user. It creates the payment information for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It creates the payment information for the authenticated user.
 //
 // Parameters
 //
@@ -2814,7 +2938,7 @@ func (s *PaymentService) CreateInformationForUser(body BillingInfo) (*Customer, 
 
 // UpdateInformationForUser: Update payment info for your user.
 // This includes billing address, phone, and name.
-// This endpoint requires authentication by any KittyCAD user. It updates the payment information for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It updates the payment information for the authenticated user.
 //
 // Parameters
 //
@@ -2867,7 +2991,7 @@ func (s *PaymentService) UpdateInformationForUser(body BillingInfo) (*Customer, 
 
 // DeleteInformationForUser: Delete payment info for your user.
 // This includes billing address, phone, and name.
-// This endpoint requires authentication by any KittyCAD user. It deletes the payment information for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It deletes the payment information for the authenticated user.
 func (s *PaymentService) DeleteInformationForUser() error {
 	// Create the url.
 	path := "/user/payment"
@@ -2897,7 +3021,7 @@ func (s *PaymentService) DeleteInformationForUser() error {
 }
 
 // GetBalanceForUser: Get balance for your user.
-// This endpoint requires authentication by any KittyCAD user. It gets the balance information for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It gets the balance information for the authenticated user.
 func (s *PaymentService) GetBalanceForUser() (*CustomerBalance, error) {
 	// Create the url.
 	path := "/user/payment/balance"
@@ -2936,7 +3060,7 @@ func (s *PaymentService) GetBalanceForUser() (*CustomerBalance, error) {
 }
 
 // CreateIntentForUser: Create a payment intent for your user.
-// This endpoint requires authentication by any KittyCAD user. It creates a new payment intent for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It creates a new payment intent for the authenticated user.
 func (s *PaymentService) CreateIntentForUser() (*PaymentIntent, error) {
 	// Create the url.
 	path := "/user/payment/intent"
@@ -2975,7 +3099,7 @@ func (s *PaymentService) CreateIntentForUser() (*PaymentIntent, error) {
 }
 
 // ListInvoicesForUser: List invoices for your user.
-// This endpoint requires authentication by any KittyCAD user. It lists invoices for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It lists invoices for the authenticated user.
 func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
 	// Create the url.
 	path := "/user/payment/invoices"
@@ -3014,7 +3138,7 @@ func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
 }
 
 // ListMethodsForUser: List payment methods for your user.
-// This endpoint requires authentication by any KittyCAD user. It lists payment methods for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It lists payment methods for the authenticated user.
 func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
 	// Create the url.
 	path := "/user/payment/methods"
@@ -3053,7 +3177,7 @@ func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
 }
 
 // DeleteMethodForUser: Delete a payment method for your user.
-// This endpoint requires authentication by any KittyCAD user. It deletes the specified payment method for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It deletes the specified payment method for the authenticated user.
 //
 // Parameters
 //
@@ -3094,7 +3218,7 @@ func (s *PaymentService) DeleteMethodForUser(id string) error {
 }
 
 // ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.
-// This endpoint requires authentication by any KittyCAD user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
+// This endpoint requires authentication by any Zoo user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
 func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
 	// Create the url.
 	path := "/user/payment/tax"
@@ -3124,7 +3248,7 @@ func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
 }
 
 // GetSessionFor: Get a session for your user.
-// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
+// This endpoint requires authentication by any Zoo user. It returns details of the requested API token for the user.
 //
 // Parameters
 //
@@ -3174,7 +3298,8 @@ func (s *UserService) GetSessionFor(token UUID) (*Session, error) {
 }
 
 // ListTextToCadModelsForUser: List text-to-CAD models you've generated.
-// This endpoint requires authentication by any KittyCAD user. It returns the text-to-CAD models for the authenticated user.
+// This will always return the STEP file contents as well as the format the user originally requested.
+// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.
 // The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.
 //
 // Parameters
@@ -3232,8 +3357,58 @@ func (s *AiService) ListTextToCadModelsForUser(limit int, pageToken string, sort
 
 }
 
+// GetTextToCadModelForUser: Get a text-to-CAD response.
+// This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model.
+//
+// Parameters
+//
+//   - `id`
+func (s *AiService) GetTextToCadModelForUser(id UUID) (*TextToCad, error) {
+	// Create the url.
+	path := "/user/text-to-cad/{{.id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded TextToCad
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateTextToCadModelFeedback: Give feedback to a specific text-to-CAD response.
-// This endpoint requires authentication by any KittyCAD user. The user must be the owner of the text-to-CAD model, in order to give feedback.
+// This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model, in order to give feedback.
 //
 // Parameters
 //
@@ -3276,7 +3451,7 @@ func (s *AiService) CreateTextToCadModelFeedback(id UUID, feedback AiFeedback) e
 }
 
 // List: List users.
-// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
+// This endpoint required authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
 //
 // Parameters
 //
@@ -3334,7 +3509,7 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 }
 
 // ListExtended: List users with extended information.
-// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
+// This endpoint required authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
 //
 // Parameters
 //
@@ -3394,7 +3569,7 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 // GetExtended: Get extended information about a user.
 // To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
-// To get information about any KittyCAD user, you must be a KittyCAD employee.
+// To get information about any Zoo user, you must be a Zoo employee.
 //
 // Parameters
 //
@@ -3446,7 +3621,7 @@ func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 // Get: Get a user.
 // To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 // Alternatively, to get information about the authenticated user, use `/user` endpoint.
-// To get information about any KittyCAD user, you must be a KittyCAD employee.
+// To get information about any Zoo user, you must be a Zoo employee.
 //
 // Parameters
 //
@@ -3496,9 +3671,9 @@ func (s *UserService) Get(id string) (*User, error) {
 }
 
 // ListForUser: List API calls for a user.
-// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if "me" is passed as the user id.
+// This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user if "me" is passed as the user id.
 // Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.
-// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.
+// If the authenticated user is a Zoo employee, then the API calls are returned for the user specified by the user id.
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters

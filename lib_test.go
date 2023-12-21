@@ -16,12 +16,9 @@ func getClient(t *testing.T) *Client {
 
 func TestGetSession(t *testing.T) {
 	client := getClient(t)
-	session, err := client.User.GetSelf()
+	_, err := client.User.GetSelf()
 	if err != nil {
 		t.Fatalf("getting the session failed: %v", err)
-	}
-	if session.ID == "" {
-		t.Fatalf("the session ID is empty")
 	}
 }
 

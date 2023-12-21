@@ -80,7 +80,7 @@ func ExampleMetaService_GetAiPluginManifest() {
 
 // Getdata: Get the metadata about our currently running server.
 // This includes information on any of our other distributed systems it is connected to.
-// You must be a KittyCAD employee to perform this request.
+// You must be a Zoo employee to perform this request.
 func ExampleMetaService_Getdata() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -96,8 +96,60 @@ func ExampleMetaService_Getdata() {
 
 }
 
+// ListPrompts: List all AI prompts.
+// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
+// This endpoint requires authentication by a Zoo employee.
+// The AI prompts are returned in order of creation, with the most recently created AI prompts first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleAiService_ListPrompts() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ai.ListPrompts(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetPrompt: Get an AI prompt.
+// This endpoint requires authentication by a Zoo employee.
+//
+// Parameters
+//
+//   - `id`
+func ExampleAiService_GetPrompt() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ai.GetPrompt(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateTextToCad: Generate a CAD model from text.
+// Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+// One thing to note, if you hit the cache, this endpoint will return right away. So you only have to wait if the status is not `Completed` or `Failed`.
 // This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
 //
 // Parameters
@@ -120,7 +172,7 @@ func ExampleAiService_CreateTextToCad() {
 }
 
 // GetMetrics: Get API call metrics.
-// This endpoint requires authentication by a KittyCAD employee. The API calls are grouped by the parameter passed.
+// This endpoint requires authentication by a Zoo employee. The API calls are grouped by the parameter passed.
 //
 // Parameters
 //
@@ -141,7 +193,7 @@ func ExampleAPICallService_GetMetrics() {
 }
 
 // List: List API calls.
-// This endpoint requires authentication by a KittyCAD employee. The API calls are returned in order of creation, with the most recently created API calls first.
+// This endpoint requires authentication by a Zoo employee. The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters
 //
@@ -168,9 +220,9 @@ func ExampleAPICallService_List() {
 }
 
 // Get: Get details of an API call.
-// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
+// This endpoint requires authentication by any Zoo user. It returns details of the requested API call for the user.
 // If the user is not authenticated to view the specified API call, then it is not returned.
-// Only KittyCAD employees can view API calls for other users.
+// Only Zoo employees can view API calls for other users.
 //
 // Parameters
 //
@@ -181,7 +233,7 @@ func ExampleAPICallService_Get() {
 		panic(err)
 	}
 
-	result, err := client.APICall.Get("some-string")
+	result, err := client.APICall.Get(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -191,8 +243,8 @@ func ExampleAPICallService_Get() {
 }
 
 // GithubCallback: Listen for callbacks to GitHub app authentication.
-// This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
-// The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
+// This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.
+// The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 //
 // Parameters
 //
@@ -210,8 +262,8 @@ func ExampleAppService_GithubCallback() {
 }
 
 // GithubConsent: Get the consent URL for GitHub app authentication.
-// This is different than OAuth 2.0 authentication for users. This endpoint grants access for KittyCAD to access user's repos.
-// The user doesn't need KittyCAD OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
+// This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.
+// The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 func ExampleAppService_GithubConsent() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -247,7 +299,7 @@ func ExampleAppService_GithubWebhook() {
 
 // ListAsyncOperations: List async operations.
 // For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
-// This endpoint requires authentication by a KittyCAD employee.
+// This endpoint requires authentication by a Zoo employee.
 //
 // Parameters
 //
@@ -277,9 +329,9 @@ func ExampleAPICallService_ListAsyncOperations() {
 
 // GetAsyncOperation: Get an async operation.
 // Get the status and output of an async operation.
-// This endpoint requires authentication by any KittyCAD user. It returns details of the requested async operation for the user.
+// This endpoint requires authentication by any Zoo user. It returns details of the requested async operation for the user.
 // If the user is not authenticated to view the specified async operation, then it is not returned.
-// Only KittyCAD employees with the proper access can view async operations for other users.
+// Only Zoo employees with the proper access can view async operations for other users.
 //
 // Parameters
 //
@@ -338,7 +390,7 @@ func ExampleHiddenService_AuthEmailCallback() {
 
 // CreateCenterOfMass: Get CAD file center of mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
-// This endpoint returns the cartesian co-ordinate in world space measure units.
+// This endpoint returns the cartesian coordinate in world space measure units.
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 // Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -418,7 +470,7 @@ func ExampleFileService_CreateDensity() {
 
 }
 
-// CreateFileExecution: Execute a KittyCAD program in a specific language.
+// CreateFileExecution: Execute a Zoo program in a specific language.
 // Parameters
 //
 //   - `lang`: The language code is written in.
@@ -514,6 +566,28 @@ func ExampleFileService_CreateVolume() {
 	}
 
 	result, err := client.File.CreateVolume("", "", []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// InternalGetAPITokenForDiscordUser: Get an API token for a user by their discord id.
+// This endpoint allows us to run API calls from our discord bot on behalf of a user. The user must have a discord account linked to their Zoo Account via oauth2 for this to work.
+// You must be a Zoo employee to use this endpoint.
+//
+// Parameters
+//
+//   - `discordId`
+func ExampleMetaService_InternalGetAPITokenForDiscordUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Meta.InternalGetAPITokenForDiscordUser("some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -994,7 +1068,7 @@ func ExampleUserService_GetSelf() {
 }
 
 // UpdateSelf: Update your user.
-// This endpoint requires authentication by any KittyCAD user. It updates information about the authenticated user.
+// This endpoint requires authentication by any Zoo user. It updates information about the authenticated user.
 //
 // Parameters
 //
@@ -1015,7 +1089,7 @@ func ExampleUserService_UpdateSelf() {
 }
 
 // DeleteSelf: Delete your user.
-// This endpoint requires authentication by any KittyCAD user. It deletes the authenticated user from KittyCAD's database.
+// This endpoint requires authentication by any Zoo user. It deletes the authenticated user from Zoo's database.
 // This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.
 func ExampleUserService_DeleteSelf() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -1030,7 +1104,7 @@ func ExampleUserService_DeleteSelf() {
 }
 
 // UserList: List API calls for your user.
-// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user.
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters
@@ -1058,7 +1132,7 @@ func ExampleAPICallService_UserList() {
 }
 
 // GetForUser: Get an API call for a user.
-// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API call for the user.
+// This endpoint requires authentication by any Zoo user. It returns details of the requested API call for the user.
 //
 // Parameters
 //
@@ -1069,7 +1143,7 @@ func ExampleAPICallService_GetForUser() {
 		panic(err)
 	}
 
-	result, err := client.APICall.GetForUser("some-string")
+	result, err := client.APICall.GetForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -1079,7 +1153,7 @@ func ExampleAPICallService_GetForUser() {
 }
 
 // ListForUser: List API tokens for your user.
-// This endpoint requires authentication by any KittyCAD user. It returns the API tokens for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It returns the API tokens for the authenticated user.
 // The API tokens are returned in order of creation, with the most recently created API tokens first.
 //
 // Parameters
@@ -1107,7 +1181,7 @@ func ExampleAPITokenService_ListForUser() {
 }
 
 // CreateForUser: Create a new API token for your user.
-// This endpoint requires authentication by any KittyCAD user. It creates a new API token for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It creates a new API token for the authenticated user.
 func ExampleAPITokenService_CreateForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1124,7 +1198,7 @@ func ExampleAPITokenService_CreateForUser() {
 }
 
 // GetForUser: Get an API token for your user.
-// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
+// This endpoint requires authentication by any Zoo user. It returns details of the requested API token for the user.
 //
 // Parameters
 //
@@ -1145,7 +1219,7 @@ func ExampleAPITokenService_GetForUser() {
 }
 
 // DeleteForUser: Delete an API token for your user.
-// This endpoint requires authentication by any KittyCAD user. It deletes the requested API token for the user.
+// This endpoint requires authentication by any Zoo user. It deletes the requested API token for the user.
 // This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.
 //
 // Parameters
@@ -1181,23 +1255,6 @@ func ExampleUserService_GetSelfExtended() {
 
 }
 
-// GetFrontHashSelf: Get your user's front verification hash.
-// This info is sent to front when initialing the front chat, it prevents impersonations using js hacks in the browser
-func ExampleUserService_GetFrontHashSelf() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.User.GetFrontHashSelf()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // GetOnboardingSelf: Get your user's onboarding status.
 // Checks key part of their api usage to determine their onboarding progress
 func ExampleUserService_GetOnboardingSelf() {
@@ -1217,7 +1274,7 @@ func ExampleUserService_GetOnboardingSelf() {
 
 // GetInformationForUser: Get payment info about your user.
 // This includes billing address, phone, and name.
-// This endpoint requires authentication by any KittyCAD user. It gets the payment information for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It gets the payment information for the authenticated user.
 func ExamplePaymentService_GetInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1235,7 +1292,7 @@ func ExamplePaymentService_GetInformationForUser() {
 
 // CreateInformationForUser: Create payment info for your user.
 // This includes billing address, phone, and name.
-// This endpoint requires authentication by any KittyCAD user. It creates the payment information for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It creates the payment information for the authenticated user.
 //
 // Parameters
 //
@@ -1246,7 +1303,7 @@ func ExamplePaymentService_CreateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1257,7 +1314,7 @@ func ExamplePaymentService_CreateInformationForUser() {
 
 // UpdateInformationForUser: Update payment info for your user.
 // This includes billing address, phone, and name.
-// This endpoint requires authentication by any KittyCAD user. It updates the payment information for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It updates the payment information for the authenticated user.
 //
 // Parameters
 //
@@ -1268,7 +1325,7 @@ func ExamplePaymentService_UpdateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1279,7 +1336,7 @@ func ExamplePaymentService_UpdateInformationForUser() {
 
 // DeleteInformationForUser: Delete payment info for your user.
 // This includes billing address, phone, and name.
-// This endpoint requires authentication by any KittyCAD user. It deletes the payment information for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It deletes the payment information for the authenticated user.
 func ExamplePaymentService_DeleteInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1293,7 +1350,7 @@ func ExamplePaymentService_DeleteInformationForUser() {
 }
 
 // GetBalanceForUser: Get balance for your user.
-// This endpoint requires authentication by any KittyCAD user. It gets the balance information for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It gets the balance information for the authenticated user.
 func ExamplePaymentService_GetBalanceForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1310,7 +1367,7 @@ func ExamplePaymentService_GetBalanceForUser() {
 }
 
 // CreateIntentForUser: Create a payment intent for your user.
-// This endpoint requires authentication by any KittyCAD user. It creates a new payment intent for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It creates a new payment intent for the authenticated user.
 func ExamplePaymentService_CreateIntentForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1327,7 +1384,7 @@ func ExamplePaymentService_CreateIntentForUser() {
 }
 
 // ListInvoicesForUser: List invoices for your user.
-// This endpoint requires authentication by any KittyCAD user. It lists invoices for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It lists invoices for the authenticated user.
 func ExamplePaymentService_ListInvoicesForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1344,7 +1401,7 @@ func ExamplePaymentService_ListInvoicesForUser() {
 }
 
 // ListMethodsForUser: List payment methods for your user.
-// This endpoint requires authentication by any KittyCAD user. It lists payment methods for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It lists payment methods for the authenticated user.
 func ExamplePaymentService_ListMethodsForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1361,7 +1418,7 @@ func ExamplePaymentService_ListMethodsForUser() {
 }
 
 // DeleteMethodForUser: Delete a payment method for your user.
-// This endpoint requires authentication by any KittyCAD user. It deletes the specified payment method for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It deletes the specified payment method for the authenticated user.
 //
 // Parameters
 //
@@ -1379,7 +1436,7 @@ func ExamplePaymentService_DeleteMethodForUser() {
 }
 
 // ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.
-// This endpoint requires authentication by any KittyCAD user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
+// This endpoint requires authentication by any Zoo user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
 func ExamplePaymentService_ValidateCustomerTaxInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1393,7 +1450,7 @@ func ExamplePaymentService_ValidateCustomerTaxInformationForUser() {
 }
 
 // GetSessionFor: Get a session for your user.
-// This endpoint requires authentication by any KittyCAD user. It returns details of the requested API token for the user.
+// This endpoint requires authentication by any Zoo user. It returns details of the requested API token for the user.
 //
 // Parameters
 //
@@ -1414,7 +1471,8 @@ func ExampleUserService_GetSessionFor() {
 }
 
 // ListTextToCadModelsForUser: List text-to-CAD models you've generated.
-// This endpoint requires authentication by any KittyCAD user. It returns the text-to-CAD models for the authenticated user.
+// This will always return the STEP file contents as well as the format the user originally requested.
+// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.
 // The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.
 //
 // Parameters
@@ -1441,8 +1499,29 @@ func ExampleAiService_ListTextToCadModelsForUser() {
 
 }
 
+// GetTextToCadModelForUser: Get a text-to-CAD response.
+// This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model.
+//
+// Parameters
+//
+//   - `id`
+func ExampleAiService_GetTextToCadModelForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ai.GetTextToCadModelForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateTextToCadModelFeedback: Give feedback to a specific text-to-CAD response.
-// This endpoint requires authentication by any KittyCAD user. The user must be the owner of the text-to-CAD model, in order to give feedback.
+// This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model, in order to give feedback.
 //
 // Parameters
 //
@@ -1461,7 +1540,7 @@ func ExampleAiService_CreateTextToCadModelFeedback() {
 }
 
 // List: List users.
-// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
+// This endpoint required authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
 //
 // Parameters
 //
@@ -1488,7 +1567,7 @@ func ExampleUserService_List() {
 }
 
 // ListExtended: List users with extended information.
-// This endpoint required authentication by a KittyCAD employee. The users are returned in order of creation, with the most recently created users first.
+// This endpoint required authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
 //
 // Parameters
 //
@@ -1517,7 +1596,7 @@ func ExampleUserService_ListExtended() {
 // GetExtended: Get extended information about a user.
 // To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
-// To get information about any KittyCAD user, you must be a KittyCAD employee.
+// To get information about any Zoo user, you must be a Zoo employee.
 //
 // Parameters
 //
@@ -1540,7 +1619,7 @@ func ExampleUserService_GetExtended() {
 // Get: Get a user.
 // To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 // Alternatively, to get information about the authenticated user, use `/user` endpoint.
-// To get information about any KittyCAD user, you must be a KittyCAD employee.
+// To get information about any Zoo user, you must be a Zoo employee.
 //
 // Parameters
 //
@@ -1561,9 +1640,9 @@ func ExampleUserService_Get() {
 }
 
 // ListForUser: List API calls for a user.
-// This endpoint requires authentication by any KittyCAD user. It returns the API calls for the authenticated user if "me" is passed as the user id.
+// This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user if "me" is passed as the user id.
 // Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.
-// If the authenticated user is a KittyCAD employee, then the API calls are returned for the user specified by the user id.
+// If the authenticated user is a Zoo employee, then the API calls are returned for the user specified by the user id.
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters

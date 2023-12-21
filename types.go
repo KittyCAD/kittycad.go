@@ -63,7 +63,7 @@ type APICallWithPrice struct {
 	IPAddress IP `json:"ip_address" yaml:"ip_address" schema:"ip_address"`
 	// Litterbox: If the API call was spawned from the litterbox or not.
 	Litterbox bool `json:"litterbox" yaml:"litterbox" schema:"litterbox"`
-	// Method: The HTTP method requsted by the API call.
+	// Method: The HTTP method requested by the API call.
 	Method Method `json:"method" yaml:"method" schema:"method,required"`
 	// Minutes: The number of minutes the API call was billed for.
 	Minutes int `json:"minutes" yaml:"minutes" schema:"minutes"`
@@ -90,7 +90,7 @@ type APICallWithPrice struct {
 	// UserAgent: The user agent of the request.
 	UserAgent string `json:"user_agent" yaml:"user_agent" schema:"user_agent,required"`
 	// UserID: The ID of the user that made the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // APICallWithPriceResultsPage: A single page of results
@@ -115,7 +115,7 @@ type APIToken struct {
 	// CreatedAt: The date and time the API token was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// ID: The unique identifier for the API token.
-	ID string `json:"id" yaml:"id" schema:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// IsValid: If the token is valid. We never delete API tokens, but we can mark them as invalid. We save them for ever to preserve the history of the API token.
 	IsValid bool `json:"is_valid" yaml:"is_valid" schema:"is_valid,required"`
 	// Token: The API token itself.
@@ -123,7 +123,7 @@ type APIToken struct {
 	// UpdatedAt: The date and time the API token was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The ID of the user that owns the API token.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // APITokenResultsPage: A single page of results
@@ -138,6 +138,8 @@ type APITokenResultsPage struct {
 type AccountProvider string
 
 const (
+	// AccountProviderDiscord: The Discord account provider.
+	AccountProviderDiscord AccountProvider = "discord"
 	// AccountProviderGoogle: The Google account provider.
 	AccountProviderGoogle AccountProvider = "google"
 	// AccountProviderGithub: The GitHub account provider.
@@ -229,6 +231,54 @@ type AiPluginManifest struct {
 	SchemaVersion string `json:"schema_version" yaml:"schema_version" schema:"schema_version"`
 }
 
+// AiPrompt: An AI prompt.
+type AiPrompt struct {
+	// CompletedAt: When the prompt was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The date and time the AI prompt was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error message if the prompt failed.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// Feedback: Feedback from the user, if any.
+	Feedback AiFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
+	// ID: The unique identifier for the AI Prompt.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Metadata: The metadata for the prompt.
+	Metadata any `json:"metadata" yaml:"metadata" schema:"metadata"`
+	// ModelVersion: The version of the model.
+	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
+	// OutputFile: The output file. In the case of TextToCad this is a link to a file in a GCP bucket.
+	OutputFile string `json:"output_file" yaml:"output_file" schema:"output_file"`
+	// Prompt: The prompt.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
+	// StartedAt: When the prompt was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the prompt.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type: The type of prompt.
+	Type AiPromptType `json:"type" yaml:"type" schema:"type,required"`
+	// UpdatedAt: The date and time the AI prompt was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the AI Prompt.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// AiPromptResultsPage: A single page of results
+type AiPromptResultsPage struct {
+	// Items: list of items on this page of results
+	Items []AiPrompt `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// AiPromptType: A type of AI prompt.
+type AiPromptType string
+
+const (
+	// AiPromptTypeTextToCad: Text to CAD.
+	AiPromptTypeTextToCad AiPromptType = "text_to_cad"
+)
+
 // Angle: An angle, with a specific unit.
 type Angle struct {
 	// Unit: What unit is the measurement?
@@ -269,7 +319,7 @@ type AnnotationOptions struct {
 	Text AnnotationTextOptions `json:"text" yaml:"text" schema:"text"`
 }
 
-// AnnotationTextAlignmentX: Horizontal Text aligment
+// AnnotationTextAlignmentX: Horizontal Text alignment
 type AnnotationTextAlignmentX string
 
 const (
@@ -281,7 +331,7 @@ const (
 	AnnotationTextAlignmentXRight AnnotationTextAlignmentX = "right"
 )
 
-// AnnotationTextAlignmentY: Vertical Text aligment
+// AnnotationTextAlignmentY: Vertical Text alignment
 type AnnotationTextAlignmentY string
 
 const (
@@ -346,7 +396,7 @@ type AsyncAPICall struct {
 	// UpdatedAt: The time and date the async API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the async API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 	// Worker: The worker node that is performing or performed the async API call.
 	Worker string `json:"worker" yaml:"worker" schema:"worker"`
 }
@@ -382,7 +432,7 @@ type AsyncAPICallOutputCompletedAt struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // AsyncAPICallOutputCreatedAt: File center of mass.
@@ -412,7 +462,7 @@ type AsyncAPICallOutputCreatedAt struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // AsyncAPICallOutputError: A file mass.
@@ -446,7 +496,7 @@ type AsyncAPICallOutputError struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // AsyncAPICallOutputID: A file volume.
@@ -474,7 +524,7 @@ type AsyncAPICallOutputID struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 	// Volume: The resulting volume.
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
 }
@@ -510,7 +560,7 @@ type AsyncAPICallOutputOutputFormat struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // AsyncAPICallOutputOutputFormatOptions: A file surface area.
@@ -540,7 +590,7 @@ type AsyncAPICallOutputOutputFormatOptions struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // AsyncAPICallOutputOutputs: Text to CAD.
@@ -574,7 +624,7 @@ type AsyncAPICallOutputOutputs struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // AsyncAPICallResultsPage: A single page of results
@@ -957,7 +1007,7 @@ type CustomerBalance struct {
 	// UpdatedAt: The date and time the balance was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID the balance belongs to.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // Data is the type definition for a Data.
@@ -1012,6 +1062,20 @@ type Discount struct {
 	Coupon Coupon `json:"coupon" yaml:"coupon" schema:"coupon,required"`
 }
 
+// DistanceTypeAxis: The distance between objects along the specified axis
+type DistanceTypeAxis struct {
+	// Axis: Global axis
+	Axis GlobalAxi `json:"axis" yaml:"axis" schema:"axis,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// DistanceTypeEuclidean: Euclidean Distance.
+type DistanceTypeEuclidean struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // EmailAuthenticationForm: The body of the form for email authentication.
 type EmailAuthenticationForm struct {
 	// CallbackUrl: The URL to redirect back to after we have authenticated.
@@ -1032,6 +1096,14 @@ type EntityGetChildUuid struct {
 	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
 }
 
+// EntityGetDistance: The response from the `EntitiesGetDistance` command.
+type EntityGetDistance struct {
+	// MaxDistance: The maximum distance between the input entities.
+	MaxDistance float64 `json:"max_distance" yaml:"max_distance" schema:"max_distance,required"`
+	// MinDistance: The minimum distance between the input entities.
+	MinDistance float64 `json:"min_distance" yaml:"min_distance" schema:"min_distance,required"`
+}
+
 // EntityGetNumChildren: The response from the `EntityGetNumChildren` command.
 type EntityGetNumChildren struct {
 	// Num: The number of children the entity has.
@@ -1042,6 +1114,12 @@ type EntityGetNumChildren struct {
 type EntityGetParentID struct {
 	// EntityID: The UUID of the parent entity.
 	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
+}
+
+// EntityLinearPattern: The response from the `EntityLinearPattern` command.
+type EntityLinearPattern struct {
+	// EntityIds: The UUIDs of the entities that were created.
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
 }
 
 // EntityType: The type of entity
@@ -1148,7 +1226,7 @@ type ExtendedUser struct {
 	// Github: The user's GitHub handle.
 	Github string `json:"github" yaml:"github" schema:"github"`
 	// ID: The unique identifier for the user.
-	ID string `json:"id" yaml:"id" schema:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Image: The image avatar for the user. This is a URL.
 	Image URL `json:"image" yaml:"image" schema:"image,required"`
 	// LastName: The user's last name.
@@ -1218,7 +1296,7 @@ type FileCenterOfMass struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // FileConversion: A file conversion.
@@ -1250,7 +1328,7 @@ type FileConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // FileDensity: A file density result.
@@ -1282,7 +1360,7 @@ type FileDensity struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // FileExportFormat: The valid types of output file formats.
@@ -1364,7 +1442,7 @@ type FileMass struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // FileSurfaceArea: A file surface area result.
@@ -1392,7 +1470,7 @@ type FileSurfaceArea struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // FileSystemMetadata: Metadata about our file system.
@@ -1425,7 +1503,7 @@ type FileVolume struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 	// Volume: The resulting volume.
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
 }
@@ -1459,6 +1537,18 @@ type GetSketchModePlane struct {
 	// ZAxis: The z axis (normal).
 	ZAxis Point3D `json:"z_axis" yaml:"z_axis" schema:"z_axis,required"`
 }
+
+// GlobalAxi: An enum that contains the three global axes.
+type GlobalAxi string
+
+const (
+	// GlobalAxiX: The X axis
+	GlobalAxiX GlobalAxi = "x"
+	// GlobalAxiY: The Y axis
+	GlobalAxiY GlobalAxi = "y"
+	// GlobalAxiZ: The Z axis
+	GlobalAxiZ GlobalAxi = "z"
+)
 
 // GltfPresentation: Describes the presentation style of the glTF JSON.
 type GltfPresentation string
@@ -1520,7 +1610,7 @@ const (
 	ImageFormatJpeg ImageFormat = "jpeg"
 )
 
-// ImportFile: File to import into the current model
+// ImportFile: File to import into the current model If you are sending binary data for a file, be sure to send the WebSocketRequest as binary/bson, not text/json.
 type ImportFile struct {
 	// Data: The raw bytes of the file
 	Data []int `json:"data" yaml:"data" schema:"data,required"`
@@ -1832,31 +1922,43 @@ const (
 	MethodExtension Method = "EXTENSION"
 )
 
-// ModelingCmdAnimated: Hide or show an object
+// ModelingCmdAnimated: Update an annotation
 type ModelingCmdAnimated struct {
-	// Hidden: Whether or not the object should be hidden.
-	Hidden bool `json:"hidden" yaml:"hidden" schema:"hidden,required"`
-	// ObjectID: Which object to change
-	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// AnnotationID: Which annotation to update
+	AnnotationID UUID `json:"annotation_id" yaml:"annotation_id" schema:"annotation_id,required"`
+	// Options: If any of these fields are set, they will overwrite the previous options for the annotation.
+	Options AnnotationOptions `json:"options" yaml:"options" schema:"options,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdCameraDragEnd: Adds one or more entities (by UUID) to the selection.
+// ModelingCmdAnnotationType: Sketch on some entity (e.g. a plane, a face)
+type ModelingCmdAnnotationType struct {
+	// Animated: Should we animate or snap for the camera transition?
+	Animated bool `json:"animated" yaml:"animated" schema:"animated,required"`
+	// EntityID: Which entity to sketch on.
+	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
+	// Ortho: Should the camera use orthographic projection? In other words, should an object's size in the rendered image stay constant regardless of its distance from the camera.
+	Ortho bool `json:"ortho" yaml:"ortho" schema:"ortho,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdCameraDragEnd: Clear the selection
 type ModelingCmdCameraDragEnd struct {
-	// Entities: Which entities to select
-	Entities []UUID `json:"entities" yaml:"entities" schema:"entities,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdCameraDragMove: Exit edit mode
+// ModelingCmdCameraDragMove: Enter edit mode
 type ModelingCmdCameraDragMove struct {
+	// Target: The edit target
+	Target UUID `json:"target" yaml:"target" schema:"target,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdCameraDragStart: How many children does the entity have?
+// ModelingCmdCameraDragStart: What is this entity's parent?
 type ModelingCmdCameraDragStart struct {
 	// EntityID: ID of the entity being queried.
 	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
@@ -1874,37 +1976,53 @@ type ModelingCmdCap struct {
 	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
 }
 
-// ModelingCmdCenter: Replaces the current selection with these new entities (by UUID). Equivalent to doing SelectClear then SelectAdd.
+// ModelingCmdCenter: Removes one or more entities (by UUID) from the selection.
 type ModelingCmdCenter struct {
-	// Entities: Which entities to select
+	// Entities: Which entities to unselect
 	Entities []UUID `json:"entities" yaml:"entities" schema:"entities,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdChildIndex: Send a mouse click event. Updates modified/selected entities.
+// ModelingCmdChildIndex: Enable sketch mode on the given plane.
 type ModelingCmdChildIndex struct {
+	// Animated: Animate the transition to sketch mode.
+	Animated bool `json:"animated" yaml:"animated" schema:"animated,required"`
+	// DisableCameraWithPlane: Disable the camera entirely for sketch mode and sketch on a plane (this would be the normal of that plane).
+	DisableCameraWithPlane Point3D `json:"disable_camera_with_plane" yaml:"disable_camera_with_plane" schema:"disable_camera_with_plane"`
+	// Ortho: Use an orthographic camera.
+	Ortho bool `json:"ortho" yaml:"ortho" schema:"ortho,required"`
+	// PlaneID: Sketch on this plane.
+	PlaneID UUID `json:"plane_id" yaml:"plane_id" schema:"plane_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
-	// Window: Where the mouse is
-	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
 }
 
-// ModelingCmdClosePath: Export the scene to a file.
+// ModelingCmdClobber: Set the material properties of an object
+type ModelingCmdClobber struct {
+	// AmbientOcclusion: Ambient Occlusion of the new material
+	AmbientOcclusion float64 `json:"ambient_occlusion" yaml:"ambient_occlusion" schema:"ambient_occlusion,required"`
+	// Color: Color of the new material
+	Color Color `json:"color" yaml:"color" schema:"color,required"`
+	// Metalness: Metalness of the new material
+	Metalness float64 `json:"metalness" yaml:"metalness" schema:"metalness,required"`
+	// ObjectID: Which object to change
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// Roughness: Roughness of the new material
+	Roughness float64 `json:"roughness" yaml:"roughness" schema:"roughness,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdClosePath: Focus default camera on object.
 type ModelingCmdClosePath struct {
-	// EntityIds: IDs of the entities to be exported. If this is empty, then all entities are exported.
-	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
-	// Format: The file format to export to.
-	Format any `json:"format" yaml:"format" schema:"format,required"`
-	// SourceUnit: Select the unit interpretation of exported objects.
-	//
-	// This is not the same as the export units. Setting export units is part of the format options.
-	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Uuid: UUID of object to focus on.
+	Uuid UUID `json:"uuid" yaml:"uuid" schema:"uuid,required"`
 }
 
-// ModelingCmdDefaultCameraDisableSketchMode: Gets the next adjacent edge for the given edge, along the given face.
+// ModelingCmdDefaultCameraDisableSketchMode: Gets the edge opposite the given edge, along the given face.
 type ModelingCmdDefaultCameraDisableSketchMode struct {
 	// EdgeID: Which edge you want the opposite of.
 	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
@@ -1916,27 +2034,43 @@ type ModelingCmdDefaultCameraDisableSketchMode struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdDefaultCameraEnableSketchMode: Gets all faces which use the given edge.
+// ModelingCmdDefaultCameraEnableSketchMode: Add a hole to a Solid2d object before extruding it.
 type ModelingCmdDefaultCameraEnableSketchMode struct {
-	// EdgeID: Which edge you want the faces of.
+	// HoleID: The id of the path to use as the inner profile (hole).
+	HoleID UUID `json:"hole_id" yaml:"hole_id" schema:"hole_id,required"`
+	// ObjectID: Which object to add the hole to.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdDefaultCameraFocusOn: Gets the next adjacent edge for the given edge, along the given face.
+type ModelingCmdDefaultCameraFocusOn struct {
+	// EdgeID: Which edge you want the opposite of.
 	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
+	// FaceID: Which face is used to figure out the opposite edge?
+	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id,required"`
 	// ObjectID: Which object is being queried.
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdDefaultCameraLookAt: Find all IDs of selected entities
+// ModelingCmdDefaultCameraLookAt: Replaces the current selection with these new entities (by UUID). Equivalent to doing SelectClear then SelectAdd.
 type ModelingCmdDefaultCameraLookAt struct {
+	// Entities: Which entities to select
+	Entities []UUID `json:"entities" yaml:"entities" schema:"entities,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdDefaultCameraZoom: Update an annotation
+// ModelingCmdDefaultCameraZoom: Create a new annotation
 type ModelingCmdDefaultCameraZoom struct {
-	// AnnotationID: Which annotation to update
-	AnnotationID UUID `json:"annotation_id" yaml:"annotation_id" schema:"annotation_id,required"`
-	// Options: If any of these fields are set, they will overwrite the previous options for the annotation.
+	// AnnotationType: What type of annotation to create.
+	AnnotationType AnnotationType `json:"annotation_type" yaml:"annotation_type" schema:"annotation_type,required"`
+	// Clobber: If true, any existing drawables within the obj will be replaced (the object will be reset)
+	Clobber bool `json:"clobber" yaml:"clobber" schema:"clobber,required"`
+	// Options: What should the annotation contain?
 	Options AnnotationOptions `json:"options" yaml:"options" schema:"options,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
@@ -1954,66 +2088,76 @@ type ModelingCmdDistance struct {
 	Vantage Point3D `json:"vantage" yaml:"vantage" schema:"vantage,required"`
 }
 
-// ModelingCmdDistanceToPlane: Bring an object to the front of the scene
+// ModelingCmdDistanceToPlane: Hide or show an object
 type ModelingCmdDistanceToPlane struct {
+	// Hidden: Whether or not the object should be hidden.
+	Hidden bool `json:"hidden" yaml:"hidden" schema:"hidden,required"`
 	// ObjectID: Which object to change
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEditModeEnter: Add a gizmo showing the axes.
+// ModelingCmdEditModeEnter: Query the given path
 type ModelingCmdEditModeEnter struct {
-	// Clobber: If true, any existing drawables within the obj will be replaced (the object will be reset)
-	Clobber bool `json:"clobber" yaml:"clobber" schema:"clobber,required"`
-	// GizmoMode: If true, axes gizmo will be placed in the corner of the screen. If false, it will be placed at the origin of the scene.
-	GizmoMode bool `json:"gizmo_mode" yaml:"gizmo_mode" schema:"gizmo_mode,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdEditModeExit: Query the given path
-type ModelingCmdEditModeExit struct {
 	// PathID: Which path to query
 	PathID UUID `json:"path_id" yaml:"path_id" schema:"path_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntities: Stop dragging mouse.
-type ModelingCmdEntities struct {
+// ModelingCmdEditModeExit: Get curves for vertices within a path
+type ModelingCmdEditModeExit struct {
+	// PathID: Which path to query
+	PathID UUID `json:"path_id" yaml:"path_id" schema:"path_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
-	// Window: The mouse position.
-	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
+	// VertexIds: IDs of the vertices for which to obtain curve ids from
+	VertexIds []UUID `json:"vertex_ids" yaml:"vertex_ids" schema:"vertex_ids,required"`
 }
 
-// ModelingCmdEntityGetAllChildUuids: Get control points of a given curve.
+// ModelingCmdEntities: Remove scene objects.
+type ModelingCmdEntities struct {
+	// ObjectIds: Objects to remove.
+	ObjectIds []UUID `json:"object_ids" yaml:"object_ids" schema:"object_ids,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdEntityGetAllChildUuids: Take a snapshot.
 type ModelingCmdEntityGetAllChildUuids struct {
+	// Format: What image format to return.
+	Format ImageFormat `json:"format" yaml:"format" schema:"format,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdEntityGetChildUuid: Get type of a given curve.
+type ModelingCmdEntityGetChildUuid struct {
 	// CurveID: Which curve to query.
 	CurveID UUID `json:"curve_id" yaml:"curve_id" schema:"curve_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityGetChildUuid: Disable sketch mode.
-type ModelingCmdEntityGetChildUuid struct {
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdEntityGetNumChildren: Send a mouse move event.
+// ModelingCmdEntityGetNumChildren: Send a mouse click event. Updates modified/selected entities.
 type ModelingCmdEntityGetNumChildren struct {
-	// Sequence: Logical timestamp. The client should increment this with every event in the current mouse drag. That way, if the events are being sent over an unordered channel, the API can ignore the older events.
-	Sequence int `json:"sequence" yaml:"sequence" schema:"sequence"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Window: Where the mouse is
 	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
 }
 
-// ModelingCmdEntityGetParentID: Set the plane's color.
+// ModelingCmdEntityGetParentID: Set the active tool.
 type ModelingCmdEntityGetParentID struct {
+	// Tool: What tool should be active.
+	Tool SceneToolType `json:"tool" yaml:"tool" schema:"tool,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdEntityID: Set the plane's color.
+type ModelingCmdEntityID struct {
 	// Color: What color it should be.
 	Color Color `json:"color" yaml:"color" schema:"color,required"`
 	// PlaneID: Which plane is being changed.
@@ -2022,8 +2166,18 @@ type ModelingCmdEntityGetParentID struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityID: Make a plane.
-type ModelingCmdEntityID struct {
+// ModelingCmdEntityIds: Sends object to front or back.
+type ModelingCmdEntityIds struct {
+	// Front: Bring to front = true, send to back = false.
+	Front bool `json:"front" yaml:"front" schema:"front,required"`
+	// ObjectID: Which object is being changed.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdExport: Make a plane.
+type ModelingCmdExport struct {
 	// Clobber: If true, any existing drawables within the obj will be replaced (the object will be reset)
 	Clobber bool `json:"clobber" yaml:"clobber" schema:"clobber,required"`
 	// Hide: If true, the plane will be created but hidden initially.
@@ -2038,30 +2192,6 @@ type ModelingCmdEntityID struct {
 	XAxis Point3D `json:"x_axis" yaml:"x_axis" schema:"x_axis,required"`
 	// YAxis: What should the plane's Y axis be?
 	YAxis Point3D `json:"y_axis" yaml:"y_axis" schema:"y_axis,required"`
-}
-
-// ModelingCmdEntityIds: Gets the previous adjacent edge for the given edge, along the given face.
-type ModelingCmdEntityIds struct {
-	// EdgeID: Which edge you want the opposite of.
-	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
-	// FaceID: Which face is used to figure out the opposite edge?
-	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id,required"`
-	// ObjectID: Which object is being queried.
-	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdExport: Fade the entity in or out.
-type ModelingCmdExport struct {
-	// DurationSeconds: How many seconds the animation should take.
-	DurationSeconds float64 `json:"duration_seconds" yaml:"duration_seconds" schema:"duration_seconds"`
-	// EntityID: Which entity is being changed.
-	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
-	// FadeIn: Fade in = true, fade out = false.
-	FadeIn bool `json:"fade_in" yaml:"fade_in" schema:"fade_in,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // ModelingCmdExtendPath: Camera drag continued.
@@ -2094,56 +2224,30 @@ type ModelingCmdExtrude struct {
 	YAxis Point3D `json:"y_axis" yaml:"y_axis" schema:"y_axis,required"`
 }
 
-// ModelingCmdFormat: Sends object to front or back.
+// ModelingCmdFormat: Set opacity of the entity.
 type ModelingCmdFormat struct {
-	// Front: Bring to front = true, send to back = false.
-	Front bool `json:"front" yaml:"front" schema:"front,required"`
-	// ObjectID: Which object is being changed.
+	// EntityID: Which entity is being changed.
+	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
+	// Opacity: How transparent should it be? 0 or lower is totally transparent. 1 or greater is totally opaque.
+	Opacity float64 `json:"opacity" yaml:"opacity" schema:"opacity,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdHighlightSetEntities: Constrain a curve.
+type ModelingCmdHighlightSetEntities struct {
+	// ConstraintBound: Which constraint to apply.
+	ConstraintBound PathComponentConstraintBound `json:"constraint_bound" yaml:"constraint_bound" schema:"constraint_bound,required"`
+	// ConstraintType: What part of the curve should be constrained.
+	ConstraintType PathComponentConstraintType `json:"constraint_type" yaml:"constraint_type" schema:"constraint_type,required"`
+	// ObjectID: Which curve to constrain.
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdHighlightSetEntities: Get the plane of the sketch mode. This is useful for getting the normal of the plane after a user selects a plane.
-type ModelingCmdHighlightSetEntities struct {
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdHighlightSetEntity: Get the center of mass of entities in the scene or the default scene.
+// ModelingCmdHighlightSetEntity: Get the surface area of entities in the scene or the default scene.
 type ModelingCmdHighlightSetEntity struct {
-	// EntityIds: IDs of the entities to get the center of mass of. If this is empty, then the default scene is included in the center of mass.
-	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
-	// OutputUnit: The output unit for the center of mass.
-	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
-	// SourceUnit: Select the unit interpretation of distances in the scene.
-	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdInteraction: What is this entity's parent?
-type ModelingCmdInteraction struct {
-	// EntityID: ID of the entity being queried.
-	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdMagnitude: Create a new annotation
-type ModelingCmdMagnitude struct {
-	// AnnotationType: What type of annotation to create.
-	AnnotationType AnnotationType `json:"annotation_type" yaml:"annotation_type" schema:"annotation_type,required"`
-	// Clobber: If true, any existing drawables within the obj will be replaced (the object will be reset)
-	Clobber bool `json:"clobber" yaml:"clobber" schema:"clobber,required"`
-	// Options: What should the annotation contain?
-	Options AnnotationOptions `json:"options" yaml:"options" schema:"options,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdModelingCmdEntities: Get the surface area of entities in the scene or the default scene.
-type ModelingCmdModelingCmdEntities struct {
 	// EntityIds: IDs of the entities to get the surface area of. If this is empty, then the default scene is included in the surface area.
 	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
 	// OutputUnit: The output unit for the surface area.
@@ -2154,7 +2258,33 @@ type ModelingCmdModelingCmdEntities struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdEntityID: Get type of a given curve.
+// ModelingCmdInteraction: Export the scene to a file.
+type ModelingCmdInteraction struct {
+	// EntityIds: IDs of the entities to be exported. If this is empty, then all entities are exported.
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// Format: The file format to export to.
+	Format any `json:"format" yaml:"format" schema:"format,required"`
+	// SourceUnit: Select the unit interpretation of exported objects.
+	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdMagnitude: Changes the current highlighted entity to these entities.
+type ModelingCmdMagnitude struct {
+	// Entities: Highlight these entities.
+	Entities []UUID `json:"entities" yaml:"entities" schema:"entities,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdModelingCmdEntities: Get the plane of the sketch mode. This is useful for getting the normal of the plane after a user selects a plane.
+type ModelingCmdModelingCmdEntities struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdModelingCmdEntityID: Get control points of a given curve.
 type ModelingCmdModelingCmdEntityID struct {
 	// CurveID: Which curve to query.
 	CurveID UUID `json:"curve_id" yaml:"curve_id" schema:"curve_id,required"`
@@ -2162,8 +2292,12 @@ type ModelingCmdModelingCmdEntityID struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdInteraction: Clear the selection
+// ModelingCmdModelingCmdInteraction: Modifies the selection by simulating a "mouse click" at the given x,y window coordinate Returns ID of whatever was selected.
 type ModelingCmdModelingCmdInteraction struct {
+	// SelectedAtWindow: Where in the window was selected
+	SelectedAtWindow Point2D `json:"selected_at_window" yaml:"selected_at_window" schema:"selected_at_window,required"`
+	// SelectionType: What entity was selected?
+	SelectionType SceneSelectionType `json:"selection_type" yaml:"selection_type" schema:"selection_type,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2176,24 +2310,8 @@ type ModelingCmdModelingCmdPath struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdSelectedAtWindow: Get the density of entities in the scene or the default scene.
+// ModelingCmdModelingCmdSelectedAtWindow: Get the volume of entities in the scene or the default scene.
 type ModelingCmdModelingCmdSelectedAtWindow struct {
-	// EntityIds: IDs of the entities to get the density of. If this is empty, then the default scene is included in the density.
-	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
-	// MaterialMass: The material mass.
-	MaterialMass float64 `json:"material_mass" yaml:"material_mass" schema:"material_mass,required"`
-	// MaterialMassUnit: The material mass unit.
-	MaterialMassUnit UnitMas `json:"material_mass_unit" yaml:"material_mass_unit" schema:"material_mass_unit,required"`
-	// OutputUnit: The output unit for the density.
-	OutputUnit UnitDensity `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
-	// SourceUnit: Select the unit interpretation of distances in the scene.
-	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdModelingCmdSequence: Get the volume of entities in the scene or the default scene.
-type ModelingCmdModelingCmdSequence struct {
 	// EntityIds: IDs of the entities to get the volume of. If this is empty, then the default scene is included in the volume.
 	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
 	// OutputUnit: The output unit for the volume.
@@ -2204,17 +2322,31 @@ type ModelingCmdModelingCmdSequence struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdTarget: Take a snapshot.
-type ModelingCmdModelingCmdTarget struct {
-	// Format: What image format to return.
-	Format ImageFormat `json:"format" yaml:"format" schema:"format,required"`
+// ModelingCmdModelingCmdSequence: Get the center of mass of entities in the scene or the default scene.
+type ModelingCmdModelingCmdSequence struct {
+	// EntityIds: IDs of the entities to get the center of mass of. If this is empty, then the default scene is included in the center of mass.
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// OutputUnit: The output unit for the center of mass.
+	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// SourceUnit: Select the unit interpretation of distances in the scene.
+	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdWindow: Removes one or more entities (by UUID) from the selection.
+// ModelingCmdModelingCmdTarget: Add a gizmo showing the axes.
+type ModelingCmdModelingCmdTarget struct {
+	// Clobber: If true, any existing drawables within the obj will be replaced (the object will be reset)
+	Clobber bool `json:"clobber" yaml:"clobber" schema:"clobber,required"`
+	// GizmoMode: If true, axes gizmo will be placed in the corner of the screen. If false, it will be placed at the origin of the scene.
+	GizmoMode bool `json:"gizmo_mode" yaml:"gizmo_mode" schema:"gizmo_mode,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdModelingCmdWindow: Adds one or more entities (by UUID) to the selection.
 type ModelingCmdModelingCmdWindow struct {
-	// Entities: Which entities to unselect
+	// Entities: Which entities to select
 	Entities []UUID `json:"entities" yaml:"entities" schema:"entities,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
@@ -2232,20 +2364,44 @@ type ModelingCmdMovePathPen struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdOrigin: What type of entity is this?
-type ModelingCmdOrigin struct {
-	// EntityID: ID of the entity being queried.
+// ModelingCmdNewAnnotation: Duplicate the given entity, evenly spaced along the chosen axis.
+type ModelingCmdNewAnnotation struct {
+	// Axis: Axis along which to make the copites
+	Axis Point3D `json:"axis" yaml:"axis" schema:"axis,required"`
+	// EntityID: ID of the entity being copied.
 	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
+	// NumRepetitions: Number of repetitions to make.
+	NumRepetitions int `json:"num_repetitions" yaml:"num_repetitions" schema:"num_repetitions,required"`
+	// Spacing: Spacing between repetitions.
+	Spacing float64 `json:"spacing" yaml:"spacing" schema:"spacing,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdOrtho: Add a hole to a Solid2d object before extruding it.
-type ModelingCmdOrtho struct {
-	// HoleID: The id of the path to use as the inner profile (hole).
-	HoleID UUID `json:"hole_id" yaml:"hole_id" schema:"hole_id,required"`
-	// ObjectID: Which object to add the hole to.
+// ModelingCmdOptions: What is the distance between these two entities?
+type ModelingCmdOptions struct {
+	// DistanceType: Type of distance to be measured.
+	DistanceType any `json:"distance_type" yaml:"distance_type" schema:"distance_type,required"`
+	// EntityId1: ID of the first entity being queried.
+	EntityId1 UUID `json:"entity_id1" yaml:"entity_id1" schema:"entity_id1,required"`
+	// EntityId2: ID of the second entity being queried.
+	EntityId2 UUID `json:"entity_id2" yaml:"entity_id2" schema:"entity_id2,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdOrigin: Bring an object to the front of the scene
+type ModelingCmdOrigin struct {
+	// ObjectID: Which object to change
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdOrtho: What type of entity is this?
+type ModelingCmdOrtho struct {
+	// EntityID: ID of the entity being queried.
+	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2284,26 +2440,54 @@ type ModelingCmdSegment struct {
 	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
 }
 
-// ModelingCmdSelectAdd: Remove scene objects.
+// ModelingCmdSelectAdd: Utility method. Performs both a ray cast and projection to plane-local coordinates. Returns the plane coordinates for the given window coordinates.
 type ModelingCmdSelectAdd struct {
-	// ObjectIds: Objects to remove.
-	ObjectIds []UUID `json:"object_ids" yaml:"object_ids" schema:"object_ids,required"`
+	// PlaneID: The plane you're intersecting against.
+	PlaneID UUID `json:"plane_id" yaml:"plane_id" schema:"plane_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Window: Window coordinates where the ray cast should be aimed.
+	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
 }
 
-// ModelingCmdSelectClear: Continue dragging mouse.
+// ModelingCmdSelectClear: Stop dragging mouse.
 type ModelingCmdSelectClear struct {
-	// Sequence: Logical timestamp. The client should increment this with every event in the current mouse drag. That way, if the events are being sent over an unordered channel, the API can ignore the older events.
-	Sequence int `json:"sequence" yaml:"sequence" schema:"sequence"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Window: The mouse position.
 	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
 }
 
-// ModelingCmdSelectGet: Get the mass of entities in the scene or the default scene.
+// ModelingCmdSelectGet: Get the density of entities in the scene or the default scene.
 type ModelingCmdSelectGet struct {
+	// EntityIds: IDs of the entities to get the density of. If this is empty, then the default scene is included in the density.
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// MaterialMass: The material mass.
+	MaterialMass float64 `json:"material_mass" yaml:"material_mass" schema:"material_mass,required"`
+	// MaterialMassUnit: The material mass unit.
+	MaterialMassUnit UnitMas `json:"material_mass_unit" yaml:"material_mass_unit" schema:"material_mass_unit,required"`
+	// OutputUnit: The output unit for the density.
+	OutputUnit UnitDensity `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// SourceUnit: Select the unit interpretation of distances in the scene.
+	SourceUnit UnitLength `json:"source_unit" yaml:"source_unit" schema:"source_unit,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdSelectRemove: Reconfigure the stream.
+type ModelingCmdSelectRemove struct {
+	// Fps: Frames per second.
+	Fps int `json:"fps" yaml:"fps" schema:"fps,required"`
+	// Height: Height of the stream.
+	Height int `json:"height" yaml:"height" schema:"height,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Width: Width of the stream.
+	Width int `json:"width" yaml:"width" schema:"width,required"`
+}
+
+// ModelingCmdSelectReplace: Get the mass of entities in the scene or the default scene.
+type ModelingCmdSelectReplace struct {
 	// EntityIds: IDs of the entities to get the mass of. If this is empty, then the default scene is included in the mass.
 	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
 	// MaterialDensity: The material density.
@@ -2318,62 +2502,48 @@ type ModelingCmdSelectGet struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdSelectRemove: Find the start and end of a curve.
-type ModelingCmdSelectRemove struct {
-	// CurveID: ID of the curve being queried.
-	CurveID UUID `json:"curve_id" yaml:"curve_id" schema:"curve_id,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdSelectReplace: Import files to the current model.
-type ModelingCmdSelectReplace struct {
-	// Files: Files to import
-	Files []ImportFile `json:"files" yaml:"files" schema:"files,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdSelectWithPoint: Start dragging mouse.
+// ModelingCmdSelectWithPoint: Continue dragging mouse.
 type ModelingCmdSelectWithPoint struct {
+	// Sequence: Logical timestamp. The client should increment this with every event in the current mouse drag. That way, if the events are being sent over an unordered channel, the API can ignore the older events.
+	Sequence int `json:"sequence" yaml:"sequence" schema:"sequence"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Window: The mouse position.
 	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
 }
 
-// ModelingCmdSelectedAtWindow: Get curves for vertices within a path
+// ModelingCmdSelectedAtWindow: Get vertices within a path
 type ModelingCmdSelectedAtWindow struct {
 	// PathID: Which path to query
 	PathID UUID `json:"path_id" yaml:"path_id" schema:"path_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
-	// VertexIds: IDs of the vertices for which to obtain curve ids from
-	VertexIds []UUID `json:"vertex_ids" yaml:"vertex_ids" schema:"vertex_ids,required"`
 }
 
-// ModelingCmdSelectionType: Get vertices within a path
+// ModelingCmdSelectionType: Start dragging mouse.
 type ModelingCmdSelectionType struct {
-	// PathID: Which path to query
-	PathID UUID `json:"path_id" yaml:"path_id" schema:"path_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Window: The mouse position.
+	Window Point2D `json:"window" yaml:"window" schema:"window,required"`
 }
 
-// ModelingCmdSequence: Enter edit mode
+// ModelingCmdSequence: What are all UUIDs of this entity's children?
 type ModelingCmdSequence struct {
-	// Target: The edit target
-	Target UUID `json:"target" yaml:"target" schema:"target,required"`
+	// EntityID: ID of the entity being queried.
+	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdSourceUnit: Set opacity of the entity.
+// ModelingCmdSourceUnit: Fade the entity in or out.
 type ModelingCmdSourceUnit struct {
+	// DurationSeconds: How many seconds the animation should take.
+	DurationSeconds float64 `json:"duration_seconds" yaml:"duration_seconds" schema:"duration_seconds"`
 	// EntityID: Which entity is being changed.
 	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
-	// Opacity: How transparent should it be? 0 or lower is totally transparent. 1 or greater is totally opaque.
-	Opacity float64 `json:"opacity" yaml:"opacity" schema:"opacity,required"`
+	// FadeIn: Fade in = true, fade out = false.
+	FadeIn bool `json:"fade_in" yaml:"fade_in" schema:"fade_in,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2402,8 +2572,26 @@ type ModelingCmdTo struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdUp: Changes the current highlighted entity to whichever one is at the given window coordinate. If there's no entity at this location, clears the highlight.
+// ModelingCmdUp: Find all IDs of selected entities
 type ModelingCmdUp struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdUuid: Gets the previous adjacent edge for the given edge, along the given face.
+type ModelingCmdUuid struct {
+	// EdgeID: Which edge you want the opposite of.
+	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
+	// FaceID: Which face is used to figure out the opposite edge?
+	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id,required"`
+	// ObjectID: Which object is being queried.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdVantage: Changes the current highlighted entity to whichever one is at the given window coordinate. If there's no entity at this location, clears the highlight.
+type ModelingCmdVantage struct {
 	// SelectedAtWindow: Coordinates of the window being clicked
 	SelectedAtWindow Point2D `json:"selected_at_window" yaml:"selected_at_window" schema:"selected_at_window,required"`
 	// Sequence: Logical timestamp. The client should increment this with every event in the current mouse drag. That way, if the events are being sent over an unordered channel, the API can ignore the older events.
@@ -2412,29 +2600,17 @@ type ModelingCmdUp struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdVantage: Changes the current highlighted entity to these entities.
-type ModelingCmdVantage struct {
-	// Entities: Highlight these entities.
-	Entities []UUID `json:"entities" yaml:"entities" schema:"entities,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ModelingCmdWindow: What is the UUID of this entity's n-th child?
+// ModelingCmdWindow: How many children does the entity have?
 type ModelingCmdWindow struct {
-	// ChildIndex: Index into the entity's list of children.
-	ChildIndex int `json:"child_index" yaml:"child_index" schema:"child_index,required"`
 	// EntityID: ID of the entity being queried.
 	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdXaxis: Gets all edges which are opposite the given edge, across all possible faces.
+// ModelingCmdXaxis: Gets all faces which use the given edge.
 type ModelingCmdXaxis struct {
-	// AlongVector: If given, ohnly faces parallel to this vector will be considered.
-	AlongVector Point3D `json:"along_vector" yaml:"along_vector" schema:"along_vector"`
-	// EdgeID: Which edge you want the opposites of.
+	// EdgeID: Which edge you want the faces of.
 	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
 	// ObjectID: Which object is being queried.
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
@@ -2442,12 +2618,12 @@ type ModelingCmdXaxis struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdYaxis: Gets the edge opposite the given edge, along the given face.
+// ModelingCmdYaxis: Gets all edges which are opposite the given edge, across all possible faces.
 type ModelingCmdYaxis struct {
-	// EdgeID: Which edge you want the opposite of.
+	// AlongVector: If given, ohnly faces parallel to this vector will be considered.
+	AlongVector Point3D `json:"along_vector" yaml:"along_vector" schema:"along_vector"`
+	// EdgeID: Which edge you want the opposites of.
 	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
-	// FaceID: Which face is used to figure out the opposite edge?
-	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id,required"`
 	// ObjectID: Which object is being queried.
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Type:
@@ -2475,7 +2651,7 @@ type NewAddress struct {
 	// Street2: The second street component.
 	Street2 string `json:"street2" yaml:"street2" schema:"street2"`
 	// UserID: The user ID that this address belongs to.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 	// Zip: The zip component.
 	Zip string `json:"zip" yaml:"zip" schema:"zip"`
 }
@@ -2498,7 +2674,7 @@ const (
 	Oauth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode Oauth2GrantType = "urn:ietf:params:oauth:grant-type:device_code"
 )
 
-// OkModelingCmdResponseData: The response from the `Export` command. When this is being performed over a websocket, this is sent as binary not JSON. The binary data can be deserialized as `bincode` into a `Vec<ExportFile>`.
+// OkModelingCmdResponseData: The response from the ` ` command.
 type OkModelingCmdResponseData struct {
 	// Data: The response from the `Export` endpoint.
 	Data Export `json:"data" yaml:"data" schema:"data,required"`
@@ -2512,15 +2688,15 @@ type OkModelingCmdResponseEmpty struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseEntityGetAllChildUuids: The response from the `Solid3dGetNextAdjacentEdge` command.
+// OkModelingCmdResponseEntityGetAllChildUuids: The response from the ` ` command.
 type OkModelingCmdResponseEntityGetAllChildUuids struct {
-	// Data: The response from the `Solid3dGetNextAdjacentEdge` command.
-	Data Solid3DGetNextAdjacentEdge `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the `Solid3dGetOppositeEdge` command.
+	Data Solid3DGetOppositeEdge `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseEntityGetChildUuid: The response from the `SelectGet` command.
+// OkModelingCmdResponseEntityGetChildUuid: The response from the ` ` command.
 type OkModelingCmdResponseEntityGetChildUuid struct {
 	// Data: The response from the `SelectGet` command.
 	Data SelectGet `json:"data" yaml:"data" schema:"data,required"`
@@ -2528,23 +2704,39 @@ type OkModelingCmdResponseEntityGetChildUuid struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseEntityGetNumChildren: The response from the `Solid3dGetAllEdgeFaces` command.
+// OkModelingCmdResponseEntityGetDistance: The response from the ` ` command.
+type OkModelingCmdResponseEntityGetDistance struct {
+	// Data: The response from the `TakeSnapshot` command.
+	Data TakeSnapshot `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseEntityGetNumChildren: The response from the ` ` command.
 type OkModelingCmdResponseEntityGetNumChildren struct {
+	// Data: The response from the `EntitiesGetDistance` command.
+	Data EntityGetDistance `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseEntityGetParentID: The response from the ` ` command.
+type OkModelingCmdResponseEntityGetParentID struct {
 	// Data: The response from the `Solid3dGetAllEdgeFaces` command.
 	Data Solid3DGetAllEdgeFaces `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseEntityGetParentID: The response from the `Solid3dGetOppositeEdge` command.
-type OkModelingCmdResponseEntityGetParentID struct {
-	// Data: The response from the `Solid3dGetOppositeEdge` command.
-	Data Solid3DGetOppositeEdge `json:"data" yaml:"data" schema:"data,required"`
+// OkModelingCmdResponseEntityLinearPattern: The response from the ` ` command.
+type OkModelingCmdResponseEntityLinearPattern struct {
+	// Data: The response from the `PathGetCurveUuidsForVertices` command.
+	Data PathGetCurveUuidsForVertices `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseExport: The response from the `SelectWithPoint` command.
+// OkModelingCmdResponseExport: The response from the ` ` command.
 type OkModelingCmdResponseExport struct {
 	// Data: The response from the `SelectWithPoint` command.
 	Data SelectWithPoint `json:"data" yaml:"data" schema:"data,required"`
@@ -2552,15 +2744,15 @@ type OkModelingCmdResponseExport struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseGetEntityType: The response from the `Take Snapshot` command.
+// OkModelingCmdResponseGetEntityType: The response from the ` ` command.
 type OkModelingCmdResponseGetEntityType struct {
-	// Data: The response from the `TakeSnapshot` command.
-	Data TakeSnapshot `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the `CurveGetType` command.
+	Data CurveGetType `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseHighlightSetEntity: The response from the `EntityGetParentId` command.
+// OkModelingCmdResponseHighlightSetEntity: The response from the ` ` command.
 type OkModelingCmdResponseHighlightSetEntity struct {
 	// Data: The response from the `EntityGetParentId` command.
 	Data EntityGetParentID `json:"data" yaml:"data" schema:"data,required"`
@@ -2568,15 +2760,7 @@ type OkModelingCmdResponseHighlightSetEntity struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseMouseClick: The response from the `GetSketchModePlane` command.
-type OkModelingCmdResponseMouseClick struct {
-	// Data: The plane for sketch mode.
-	Data GetSketchModePlane `json:"data" yaml:"data" schema:"data,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// OkModelingCmdResponseOkModelingCmdResponseData: The response from the `CenterOfMass` command.
+// OkModelingCmdResponseOkModelingCmdResponseData: The response from the ` ` command.
 type OkModelingCmdResponseOkModelingCmdResponseData struct {
 	// Data: The center of mass response.
 	Data CenterOfMass `json:"data" yaml:"data" schema:"data,required"`
@@ -2584,15 +2768,15 @@ type OkModelingCmdResponseOkModelingCmdResponseData struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseSelectGet: The response from the `CurveGetType` command.
+// OkModelingCmdResponseSelectGet: The response from the ` ` command.
 type OkModelingCmdResponseSelectGet struct {
-	// Data: The response from the `CurveGetType` command.
-	Data CurveGetType `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the `Solid3dGetNextAdjacentEdge` command.
+	Data Solid3DGetNextAdjacentEdge `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseSelectWithPoint: The response from the `EntityGetChildUuid` command.
+// OkModelingCmdResponseSelectWithPoint: The response from the ` ` command.
 type OkModelingCmdResponseSelectWithPoint struct {
 	// Data: The response from the `EntityGetChildUuid` command.
 	Data EntityGetChildUuid `json:"data" yaml:"data" schema:"data,required"`
@@ -2600,42 +2784,42 @@ type OkModelingCmdResponseSelectWithPoint struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseSolid3DgetAllEdgeFaces: The response from the `Path Get Curve UUIDs for Vertices` command.
+// OkModelingCmdResponseSolid3DgetAllEdgeFaces: The response from the ` ` command.
 type OkModelingCmdResponseSolid3DgetAllEdgeFaces struct {
-	// Data: The response from the `PathGetCurveUuidsForVertices` command.
-	Data PathGetCurveUuidsForVertices `json:"data" yaml:"data" schema:"data,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// OkModelingCmdResponseSolid3DgetAllOppositeEdges: The response from the `PlaneIntersectAndProject` command.
-type OkModelingCmdResponseSolid3DgetAllOppositeEdges struct {
 	// Data: Corresponding coordinates of given window coordinates, intersected on given plane.
 	Data PlaneIntersectAndProject `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseSolid3DgetNextAdjacentEdge: The response from the `SurfaceArea` command.
-type OkModelingCmdResponseSolid3DgetNextAdjacentEdge struct {
-	// Data: The surface area response.
-	Data SurfaceArea `json:"data" yaml:"data" schema:"data,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// OkModelingCmdResponseSolid3DgetOppositeEdge: The response from the `ImportFiles` command.
-type OkModelingCmdResponseSolid3DgetOppositeEdge struct {
+// OkModelingCmdResponseSolid3DgetAllOppositeEdges: The response from the ` ` command.
+type OkModelingCmdResponseSolid3DgetAllOppositeEdges struct {
 	// Data: Data from importing the files
 	Data ImportFiles `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseSolid3DgetPrevAdjacentEdge: The response from the `Volume` command.
-type OkModelingCmdResponseSolid3DgetPrevAdjacentEdge struct {
+// OkModelingCmdResponseSolid3DgetNextAdjacentEdge: The response from the ` ` command.
+type OkModelingCmdResponseSolid3DgetNextAdjacentEdge struct {
+	// Data: The plane for sketch mode.
+	Data GetSketchModePlane `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseSolid3DgetOppositeEdge: The response from the ` ` command.
+type OkModelingCmdResponseSolid3DgetOppositeEdge struct {
 	// Data: The volume response.
 	Data Volume `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseSolid3DgetPrevAdjacentEdge: The response from the ` ` command.
+type OkModelingCmdResponseSolid3DgetPrevAdjacentEdge struct {
+	// Data: The surface area response.
+	Data SurfaceArea `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2682,11 +2866,15 @@ type OkWebSocketResponseDataTrickleIce struct {
 
 // Onboarding: Onboarding details
 type Onboarding struct {
-	// FirstCallFromTheirMachineDate: When the user first called an endpoint from their machine (i.e. not a litterbox execution)
+	// FirstCallFromModelingAppDate: When the user first used the modeling app.
+	FirstCallFromModelingAppDate string `json:"first_call_from_modeling_app_date" yaml:"first_call_from_modeling_app_date" schema:"first_call_from_modeling_app_date"`
+	// FirstCallFromTextToCadDate: When the user first used text-to-CAD.
+	FirstCallFromTextToCadDate string `json:"first_call_from_text_to_cad_date" yaml:"first_call_from_text_to_cad_date" schema:"first_call_from_text_to_cad_date"`
+	// FirstCallFromTheirMachineDate: When the user first called an endpoint from their machine (i.e. not a litterbox execution).
 	FirstCallFromTheirMachineDate string `json:"first_call_from_their_machine_date" yaml:"first_call_from_their_machine_date" schema:"first_call_from_their_machine_date"`
-	// FirstLitterboxExecuteDate: When the user first used the litterbox
+	// FirstLitterboxExecuteDate: When the user first used the litterbox.
 	FirstLitterboxExecuteDate string `json:"first_litterbox_execute_date" yaml:"first_litterbox_execute_date" schema:"first_litterbox_execute_date"`
-	// FirstTokenDate: When the user created their first token
+	// FirstTokenDate: When the user created their first token.
 	FirstTokenDate string `json:"first_token_date" yaml:"first_token_date" schema:"first_token_date"`
 }
 
@@ -2706,6 +2894,8 @@ type OutputFormatCoords struct {
 	//
 	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
 	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
+	// Selection: Export selection.
+	Selection any `json:"selection" yaml:"selection" schema:"selection,required"`
 	// Storage: Export storage.
 	Storage StlStorage `json:"storage" yaml:"storage" schema:"storage,required"`
 	// Type:
@@ -2716,7 +2906,7 @@ type OutputFormatCoords struct {
 	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
 }
 
-// OutputFormatFbx: glTF 2.0. We refer to this as glTF since that is how our customers refer to it, although by default it will be in binary format and thus technically (glb). If you prefer ascii output, you can set that option for the export.
+// OutputFormatFbx: glTF 2.0. We refer to this as glTF since that is how our customers refer to it, although by default it will be in binary format and thus technically (glb). If you prefer ASCII output, you can set that option for the export.
 type OutputFormatFbx struct {
 	// Presentation: Specifies how the JSON will be presented.
 	Presentation GltfPresentation `json:"presentation" yaml:"presentation" schema:"presentation,required"`
@@ -2746,10 +2936,16 @@ type OutputFormatOutputFormatStorage struct {
 	//
 	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
 	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
+	// Selection: Export selection.
+	Selection any `json:"selection" yaml:"selection" schema:"selection,required"`
 	// Storage: The storage for the output PLY file.
 	Storage PlyStorage `json:"storage" yaml:"storage" schema:"storage,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Units: Export length unit.
+	//
+	// Defaults to meters.
+	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
 }
 
 // OutputFormatPresentation: Wavefront OBJ format.
@@ -2792,6 +2988,36 @@ const (
 	PathCommandAddArc PathCommand = "add_arc"
 )
 
+// PathComponentConstraintBound: The path component constraint bounds type
+type PathComponentConstraintBound string
+
+const (
+	// PathComponentConstraintBoundUnconstrained represents the PathComponentConstraintBound `"unconstrained"`.
+	PathComponentConstraintBoundUnconstrained PathComponentConstraintBound = "unconstrained"
+	// PathComponentConstraintBoundPartiallyConstrained represents the PathComponentConstraintBound `"partially_constrained"`.
+	PathComponentConstraintBoundPartiallyConstrained PathComponentConstraintBound = "partially_constrained"
+	// PathComponentConstraintBoundFullyConstrained represents the PathComponentConstraintBound `"fully_constrained"`.
+	PathComponentConstraintBoundFullyConstrained PathComponentConstraintBound = "fully_constrained"
+)
+
+// PathComponentConstraintType: The path component constraint type
+type PathComponentConstraintType string
+
+const (
+	// PathComponentConstraintTypeUnconstrained represents the PathComponentConstraintType `"unconstrained"`.
+	PathComponentConstraintTypeUnconstrained PathComponentConstraintType = "unconstrained"
+	// PathComponentConstraintTypeVertical represents the PathComponentConstraintType `"vertical"`.
+	PathComponentConstraintTypeVertical PathComponentConstraintType = "vertical"
+	// PathComponentConstraintTypeHorizontal represents the PathComponentConstraintType `"horizontal"`.
+	PathComponentConstraintTypeHorizontal PathComponentConstraintType = "horizontal"
+	// PathComponentConstraintTypeEqualLength represents the PathComponentConstraintType `"equal_length"`.
+	PathComponentConstraintTypeEqualLength PathComponentConstraintType = "equal_length"
+	// PathComponentConstraintTypeParallel represents the PathComponentConstraintType `"parallel"`.
+	PathComponentConstraintTypeParallel PathComponentConstraintType = "parallel"
+	// PathComponentConstraintTypeAngleBetween represents the PathComponentConstraintType `"angle_between"`.
+	PathComponentConstraintTypeAngleBetween PathComponentConstraintType = "angle_between"
+)
+
 // PathGetCurveUuidsForVertices: The response from the `PathGetCurveUuidsForVertices` command.
 type PathGetCurveUuidsForVertices struct {
 	// CurveIds: The UUIDs of the curve entities.
@@ -2810,22 +3036,12 @@ type PathGetVertexUuids struct {
 	VertexIds []UUID `json:"vertex_ids" yaml:"vertex_ids" schema:"vertex_ids,required"`
 }
 
-// PathSegmentAngleEnd: Adds a tangent arc from current pen position with the given radius and angle.
-type PathSegmentAngleEnd struct {
+// PathSegmentCenter: Adds a tangent arc from current pen position with the given radius and angle.
+type PathSegmentCenter struct {
 	// Offset: Offset of the arc.
 	Offset Angle `json:"offset" yaml:"offset" schema:"offset,required"`
 	// Radius: Radius of the arc. Not to be confused with Raiders of the Lost Ark.
 	Radius float64 `json:"radius" yaml:"radius" schema:"radius,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// PathSegmentAngleStart: Adds a tangent arc from current pen position to the new position.
-type PathSegmentAngleStart struct {
-	// AngleSnapIncrement: 0 will be interpreted as none/null.
-	AngleSnapIncrement Angle `json:"angle_snap_increment" yaml:"angle_snap_increment" schema:"angle_snap_increment"`
-	// To: Where the arc should end. Must lie in the same plane as the current path pen position. Must not be colinear with current path pen position.
-	To Point3D `json:"to" yaml:"to" schema:"to,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2864,26 +3080,28 @@ type PathSegmentLine struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// PathSegmentPathSegmentEnd: Adds a tangent arc from current pen position to the new position.
+type PathSegmentPathSegmentEnd struct {
+	// AngleSnapIncrement: 0 will be interpreted as none/null.
+	AngleSnapIncrement Angle `json:"angle_snap_increment" yaml:"angle_snap_increment" schema:"angle_snap_increment"`
+	// To: Where the arc should end. Must lie in the same plane as the current path pen position. Must not be colinear with current path pen position.
+	To Point3D `json:"to" yaml:"to" schema:"to,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // PathSegmentRelative: A circular arc segment.
 type PathSegmentRelative struct {
-	// AngleEnd: End of the arc along circle's perimeter, in degrees. Deprecated: use `end` instead.
-	//
-	// Deprecated: AngleEnd is deprecated.
-	AngleEnd float64 `json:"angle_end" yaml:"angle_end" schema:"angle_end,required"`
-	// AngleStart: Start of the arc along circle's perimeter, in degrees. Deprecated: use `start` instead.
-	//
-	// Deprecated: AngleStart is deprecated.
-	AngleStart float64 `json:"angle_start" yaml:"angle_start" schema:"angle_start,required"`
 	// Center: Center of the circle
 	Center Point2D `json:"center" yaml:"center" schema:"center,required"`
-	// End: End of the arc along circle's perimeter. If not given, this will use `degrees_end` instead.
-	End Angle `json:"end" yaml:"end" schema:"end"`
+	// End: End of the arc along circle's perimeter.
+	End Angle `json:"end" yaml:"end" schema:"end,required"`
 	// Radius: Radius of the circle
 	Radius float64 `json:"radius" yaml:"radius" schema:"radius,required"`
 	// Relative: Whether or not this arc is a relative offset
 	Relative bool `json:"relative" yaml:"relative" schema:"relative,required"`
-	// Start: Start of the arc along circle's perimeter. If not given, this will use `degrees_start` instead.
-	Start Angle `json:"start" yaml:"start" schema:"start"`
+	// Start: Start of the arc along circle's perimeter.
+	Start Angle `json:"start" yaml:"start" schema:"start,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2970,7 +3188,7 @@ type Pong struct {
 	Message string `json:"message" yaml:"message" schema:"message,required"`
 }
 
-// RawFile: A raw file with unencoded contents to be passed over binary websockets.
+// RawFile: A raw file with unencoded contents to be passed over binary websockets. When raw files come back for exports it is sent as binary/bson, not text/json.
 type RawFile struct {
 	// Contents: The contents of the file.
 	Contents []int `json:"contents" yaml:"contents" schema:"contents,required"`
@@ -3068,6 +3286,44 @@ type SelectWithPoint struct {
 	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id"`
 }
 
+// SelectionDefaultScene: Visit the default scene.
+type SelectionDefaultScene struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// SelectionIndex: Visit the indexed scene.
+type SelectionIndex struct {
+	// Index: The index.
+	Index int `json:"index" yaml:"index" schema:"index,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// SelectionName: Visit the indexed mesh.
+type SelectionName struct {
+	// Index: The index.
+	Index int `json:"index" yaml:"index" schema:"index,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// SelectionSceneByIndex: Visit the first scene with the given name.
+type SelectionSceneByIndex struct {
+	// Name: The name.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// SelectionSceneByName: Visit the first mesh with the given name.
+type SelectionSceneByName struct {
+	// Name: The name.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // Session: An authentication session.
 // For our UIs, these are automatically created by Next.js.
 type Session struct {
@@ -3076,13 +3332,13 @@ type Session struct {
 	// Expires: The date and time the session expires.
 	Expires Time `json:"expires" yaml:"expires" schema:"expires,required"`
 	// ID: The unique identifier for the session.
-	ID string `json:"id" yaml:"id" schema:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// SessionToken: The session token.
 	SessionToken UUID `json:"session_token" yaml:"session_token" schema:"session_token,required"`
 	// UpdatedAt: The date and time the session was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user that the session belongs to.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // Solid3DGetAllEdgeFaces: The response from the `Solid3dGetAllEdgeFaces` command.
@@ -3193,7 +3449,7 @@ type TextToCad struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // TextToCadCreateBody: Body for generating models from text.
@@ -3247,7 +3503,7 @@ type UnitAngleConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitArea: The valid types of area units.
@@ -3299,7 +3555,7 @@ type UnitAreaConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitCurrent: The valid types of current units.
@@ -3343,7 +3599,7 @@ type UnitCurrentConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitDensity: The valid types for density units.
@@ -3401,7 +3657,7 @@ type UnitEnergyConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitForce: The valid types of force units.
@@ -3451,7 +3707,7 @@ type UnitForceConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitFrequency: The valid types of frequency units.
@@ -3503,7 +3759,7 @@ type UnitFrequencyConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitLength: The valid types of length units.
@@ -3551,7 +3807,7 @@ type UnitLengthConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitMas: The valid types of mass units.
@@ -3593,7 +3849,7 @@ type UnitMassConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitPower: The valid types of power units.
@@ -3643,7 +3899,7 @@ type UnitPowerConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitPressure: The valid types of pressure units.
@@ -3693,7 +3949,7 @@ type UnitPressureConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitTemperature: The valid types of temperature units.
@@ -3737,7 +3993,7 @@ type UnitTemperatureConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitTorque: The valid types of torque units.
@@ -3777,7 +4033,7 @@ type UnitTorqueConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UnitVolume: The valid types of volume units.
@@ -3831,7 +4087,7 @@ type UnitVolumeConversion struct {
 	// UpdatedAt: The time and date the API call was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
-	UserID string `json:"user_id" yaml:"user_id" schema:"user_id"`
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // UpdateUser: The user-modifiable parts of a User.
@@ -3867,7 +4123,7 @@ type User struct {
 	// Github: The user's GitHub handle.
 	Github string `json:"github" yaml:"github" schema:"github"`
 	// ID: The unique identifier for the user.
-	ID string `json:"id" yaml:"id" schema:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Image: The image avatar for the user. This is a URL.
 	Image URL `json:"image" yaml:"image" schema:"image,required"`
 	// LastName: The user's last name.
@@ -3896,7 +4152,7 @@ type VerificationToken struct {
 	// Expires: The date and time the verification token expires.
 	Expires Time `json:"expires" yaml:"expires" schema:"expires,required"`
 	// ID: The token used for verification. This is used as the id for the table since it is unique per record.
-	ID string `json:"id" yaml:"id" schema:"id"`
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Identifier: The identifier for the user. This is typically the user's email address since that is what we are verifying.
 	Identifier string `json:"identifier" yaml:"identifier" schema:"identifier"`
 	// UpdatedAt: The date and time the verification token was last updated.
