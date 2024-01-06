@@ -17,14 +17,6 @@
  },
  {
   "value": {
-   "example": "// GetAiPluginManifest: Get AI plugin manifest.\n// \n// GetAiPluginManifest: Get AI plugin manifest.\nfunc ExampleMetaService_GetAiPluginManifest() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Meta.GetAiPluginManifest()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.GetAiPluginManifest"
-  },
-  "op": "add",
-  "path": "/paths/~1.well-known~1ai-plugin.json/get/x-go"
- },
- {
-  "value": {
    "example": "// Getdata: Get the metadata about our currently running server.\n// \n// This includes information on any of our other distributed systems it is connected to.\n// You must be a Zoo employee to perform this request.\n// \n// Getdata: Get the metadata about our currently running server.\n// This includes information on any of our other distributed systems it is connected to.\n// You must be a Zoo employee to perform this request.\nfunc ExampleMetaService_Getdata() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Meta.Getdata()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.Getdata"
   },
@@ -254,14 +246,6 @@
   },
   "op": "add",
   "path": "/paths/~1oauth2~1provider~1{provider}~1consent/get/x-go"
- },
- {
-  "value": {
-   "example": "// GetOpenaiSchema: Get AI plugin OpenAPI schema.\n// \n// This is the same as the OpenAPI schema, BUT it has some modifications to make it compatible with OpenAI. For example, descriptions must be \u003c 300 chars.\n// \n// GetOpenaiSchema: Get AI plugin OpenAPI schema.\n// This is the same as the OpenAPI schema, BUT it has some modifications to make it compatible with OpenAI. For example, descriptions must be \u003c 300 chars.\nfunc ExampleMetaService_GetOpenaiSchema() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Meta.GetOpenaiSchema(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.GetOpenaiSchema"
-  },
-  "op": "add",
-  "path": "/paths/~1openai~1openapi.json/get/x-go"
  },
  {
   "value": {
@@ -553,7 +537,7 @@
  },
  {
   "value": {
-   "example": "// ListTextToCadModelsForUser: List text-to-CAD models you've generated.\n// \n// This will always return the STEP file contents as well as the format the user originally requested.\n// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.\n// The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListTextToCadModelsForUser: List text-to-CAD models you've generated.\n// This will always return the STEP file contents as well as the format the user originally requested.\n// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.\n// The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleAiService_ListTextToCadModelsForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.ListTextToCadModelsForUser(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListTextToCadModelsForUser: List text-to-CAD models you've generated.\n// \n// This will always return the STEP file contents as well as the format the user originally requested.\n// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.\n// The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \t- `noModels`\n// \n// ListTextToCadModelsForUser: List text-to-CAD models you've generated.\n// This will always return the STEP file contents as well as the format the user originally requested.\n// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.\n// The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\n//\n//   - `noModels`\nfunc ExampleAiService_ListTextToCadModelsForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ai.ListTextToCadModelsForUser(123, \"some-string\", \"\", true)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AiService.ListTextToCadModelsForUser"
   },
   "op": "add",

@@ -45,44 +45,6 @@ func (s *MetaService) GetSchema() error {
 
 }
 
-// GetAiPluginManifest: Get AI plugin manifest.
-func (s *MetaService) GetAiPluginManifest() (*AiPluginManifest, error) {
-	// Create the url.
-	path := "/.well-known/ai-plugin.json"
-	uri := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded AiPluginManifest
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // Getdata: Get the metadata about our currently running server.
 // This includes information on any of our other distributed systems it is connected to.
 // You must be a Zoo employee to perform this request.
@@ -1569,36 +1531,6 @@ func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl st
 
 	// Return the response.
 	return &decoded, nil
-
-}
-
-// GetOpenaiSchema: Get AI plugin OpenAPI schema.
-// This is the same as the OpenAPI schema, BUT it has some modifications to make it compatible with OpenAI. For example, descriptions must be < 300 chars.
-func (s *MetaService) GetOpenaiSchema() error {
-	// Create the url.
-	path := "/openai/openapi.json"
-	uri := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-
-	// Return.
-	return nil
 
 }
 
@@ -3311,7 +3243,9 @@ func (s *UserService) GetSessionFor(token UUID) (*Session, error) {
 //   - `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
 //     Currently, we only support scanning in ascending order.
-func (s *AiService) ListTextToCadModelsForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*TextToCadResultsPage, error) {
+//
+//   - `noModels`
+func (s *AiService) ListTextToCadModelsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, noModels bool) (*TextToCadResultsPage, error) {
 	// Create the url.
 	path := "/user/text-to-cad"
 	uri := resolveRelative(s.client.server, path)
@@ -3327,6 +3261,7 @@ func (s *AiService) ListTextToCadModelsForUser(limit int, pageToken string, sort
 		"limit":      strconv.Itoa(limit),
 		"page_token": pageToken,
 		"sort_by":    string(sortBy),
+		"no_models":  strconv.FormatBool(noModels),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}

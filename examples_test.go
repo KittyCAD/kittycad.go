@@ -62,22 +62,6 @@ func ExampleMetaService_GetSchema() {
 
 }
 
-// GetAiPluginManifest: Get AI plugin manifest.
-func ExampleMetaService_GetAiPluginManifest() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Meta.GetAiPluginManifest()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // Getdata: Get the metadata about our currently running server.
 // This includes information on any of our other distributed systems it is connected to.
 // You must be a Zoo employee to perform this request.
@@ -717,20 +701,6 @@ func ExampleOauth2Service_ProviderConsent() {
 	}
 
 	fmt.Printf("%#v", result)
-
-}
-
-// GetOpenaiSchema: Get AI plugin OpenAPI schema.
-// This is the same as the OpenAPI schema, BUT it has some modifications to make it compatible with OpenAI. For example, descriptions must be < 300 chars.
-func ExampleMetaService_GetOpenaiSchema() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	if err := client.Meta.GetOpenaiSchema(); err != nil {
-		panic(err)
-	}
 
 }
 
@@ -1484,13 +1454,15 @@ func ExampleUserService_GetSessionFor() {
 //   - `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
 //     Currently, we only support scanning in ascending order.
+//
+//   - `noModels`
 func ExampleAiService_ListTextToCadModelsForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ai.ListTextToCadModelsForUser(123, "some-string", "")
+	result, err := client.Ai.ListTextToCadModelsForUser(123, "some-string", "", true)
 	if err != nil {
 		panic(err)
 	}

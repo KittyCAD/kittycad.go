@@ -156,81 +156,6 @@ const (
 	AiFeedbackThumbsDown AiFeedback = "thumbs_down"
 )
 
-// AiPluginAPI: AI plugin api information.
-type AiPluginAPI struct {
-	// IsUserAuthenticated: If the API is authenticated.
-	IsUserAuthenticated bool `json:"is_user_authenticated" yaml:"is_user_authenticated" schema:"is_user_authenticated"`
-	// Type: The type of API.
-	Type AiPluginAPIType `json:"type" yaml:"type" schema:"type"`
-	// Url: The url to the API's schema.
-	Url URL `json:"url" yaml:"url" schema:"url,required"`
-}
-
-// AiPluginAPIType: AI plugin api type.
-type AiPluginAPIType string
-
-const (
-	// AiPluginAPItypeOpenapi: An OpenAPI specification.
-	AiPluginAPItypeOpenapi AiPluginAPIType = "openapi"
-)
-
-// AiPluginAuth: AI plugin auth information.
-type AiPluginAuth struct {
-	// AuthorizationType: The type of http authorization.
-	AuthorizationType AiPluginHttpAuthType `json:"authorization_type" yaml:"authorization_type" schema:"authorization_type"`
-	// Type: The type of authentication.
-	Type AiPluginAuthType `json:"type" yaml:"type" schema:"type"`
-}
-
-// AiPluginAuthType: AI plugin auth type.
-type AiPluginAuthType string
-
-const (
-	// AiPluginAuthTypeNone: None.
-	AiPluginAuthTypeNone AiPluginAuthType = "none"
-	// AiPluginAuthTypeUserHttp: User http.
-	AiPluginAuthTypeUserHttp AiPluginAuthType = "user_http"
-	// AiPluginAuthTypeServiceHttp: Service http.
-	AiPluginAuthTypeServiceHttp AiPluginAuthType = "service_http"
-	// AiPluginAuthTypeOauth: OAuth.
-	AiPluginAuthTypeOauth AiPluginAuthType = "oauth"
-)
-
-// AiPluginHttpAuthType: AI plugin http auth type.
-type AiPluginHttpAuthType string
-
-const (
-	// AiPluginHttpAuthTypeBasic: Basic.
-	AiPluginHttpAuthTypeBasic AiPluginHttpAuthType = "basic"
-	// AiPluginHttpAuthTypeBearer: Bearer.
-	AiPluginHttpAuthTypeBearer AiPluginHttpAuthType = "bearer"
-)
-
-// AiPluginManifest: AI plugin manifest.
-// This is used for OpenAI's ChatGPT plugins. You can read more about them [here](https://platform.openai.com/docs/plugins/getting-started/plugin-manifest).
-type AiPluginManifest struct {
-	// API: API specification.
-	API AiPluginAPI `json:"api" yaml:"api" schema:"api,required"`
-	// Auth: Authentication schema.
-	Auth AiPluginAuth `json:"auth" yaml:"auth" schema:"auth,required"`
-	// ContactEmail: Email contact for safety/moderation reachout, support, and deactivation.
-	ContactEmail string `json:"contact_email" yaml:"contact_email" schema:"contact_email"`
-	// DescriptionForHuman: Human-readable description of the plugin.
-	DescriptionForHuman string `json:"description_for_human" yaml:"description_for_human" schema:"description_for_human"`
-	// DescriptionForModel: Description better tailored to the model, such as token context length considerations or keyword usage for improved plugin prompting.
-	DescriptionForModel string `json:"description_for_model" yaml:"description_for_model" schema:"description_for_model"`
-	// LegalInfoUrl: Redirect URL for users to view plugin information.
-	LegalInfoUrl URL `json:"legal_info_url" yaml:"legal_info_url" schema:"legal_info_url,required"`
-	// LogoUrl: URL used to fetch the plugin's logo.
-	LogoUrl URL `json:"logo_url" yaml:"logo_url" schema:"logo_url,required"`
-	// NameForHuman: Human-readable name, such as the full company name.
-	NameForHuman string `json:"name_for_human" yaml:"name_for_human" schema:"name_for_human"`
-	// NameForModel: Name the model will used to target the plugin.
-	NameForModel string `json:"name_for_model" yaml:"name_for_model" schema:"name_for_model"`
-	// SchemaVersion: Manifest schema version.
-	SchemaVersion string `json:"schema_version" yaml:"schema_version" schema:"schema_version"`
-}
-
 // AiPrompt: An AI prompt.
 type AiPrompt struct {
 	// CompletedAt: When the prompt was completed.
@@ -686,6 +611,16 @@ type BillingInfo struct {
 	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 }
 
+// BlockReason: The reason for blocking a user.
+type BlockReason string
+
+const (
+	// BlockReasonMissingPaymentMethod: The user is missing a payment method and has exceeded their free API call credits for the month.
+	BlockReasonMissingPaymentMethod BlockReason = "missing_payment_method"
+	// BlockReasonPaymentMethodFailed: The users payment method has failed.
+	BlockReasonPaymentMethodFailed BlockReason = "payment_method_failed"
+)
+
 // CacheMetadata: Metadata about our cache.
 // This is mostly used for internal purposes and debugging.
 type CacheMetadata struct {
@@ -912,6 +847,12 @@ type Coupon struct {
 	Deleted bool `json:"deleted" yaml:"deleted" schema:"deleted"`
 	// ID: Unique identifier for the object.
 	ID string `json:"id" yaml:"id" schema:"id"`
+	// Metadata: Set of key-value pairs.
+	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
+	// Name: Name of the coupon displayed to customers on, for instance invoices, or receipts.
+	//
+	// By default the `id` is shown if `name` is not set.
+	Name string `json:"name" yaml:"name" schema:"name"`
 	// PercentOff: Percent that will be taken off the subtotal of any invoices for this customer for the duration of the coupon.
 	//
 	// For example, a coupon with percent_off of 50 will make a %s100 invoice %s50 instead.
@@ -1144,6 +1085,8 @@ const (
 	EntityTypeFace EntityType = "face"
 	// EntityTypePlane represents the EntityType `"plane"`.
 	EntityTypePlane EntityType = "plane"
+	// EntityTypeVertex represents the EntityType `"vertex"`.
+	EntityTypeVertex EntityType = "vertex"
 )
 
 // Environment: The environment the server is running in.
@@ -1207,8 +1150,10 @@ type ExportFile struct {
 }
 
 // ExtendedUser: Extended user information.
-// This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp, Stripe, and Front
+// This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: MailChimp | Stripe
 type ExtendedUser struct {
+	// Block: If the user should be blocked and the reason why.
+	Block BlockReason `json:"block" yaml:"block" schema:"block"`
 	// Company: The user's company.
 	Company string `json:"company" yaml:"company" schema:"company"`
 	// CreatedAt: The date and time the user was created.
@@ -1784,8 +1729,6 @@ type InvoiceLineItem struct {
 type InvoiceStatus string
 
 const (
-	// InvoiceStatusDeleted: Deleted.
-	InvoiceStatusDeleted InvoiceStatus = "deleted"
 	// InvoiceStatusDraft: Draft.
 	InvoiceStatusDraft InvoiceStatus = "draft"
 	// InvoiceStatusOpen: Open.
@@ -1928,6 +1871,14 @@ type ModelingCmdAnimated struct {
 	AnnotationID UUID `json:"annotation_id" yaml:"annotation_id" schema:"annotation_id,required"`
 	// Options: If any of these fields are set, they will overwrite the previous options for the annotation.
 	Options AnnotationOptions `json:"options" yaml:"options" schema:"options,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdAnnotationID: When you select some entity with the current tool, what should happen to the entity?
+type ModelingCmdAnnotationID struct {
+	// SelectionType: What type of selection should occur when you select something?
+	SelectionType SceneSelectionType `json:"selection_type" yaml:"selection_type" schema:"selection_type,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2234,6 +2185,14 @@ type ModelingCmdFormat struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// ModelingCmdHidden: Use perspective projection.
+type ModelingCmdHidden struct {
+	// Parameters: If this is not given, use the same parameters as last time the perspective camera was used.
+	Parameters PerspectiveCameraParameters `json:"parameters" yaml:"parameters" schema:"parameters"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // ModelingCmdHighlightSetEntities: Constrain a curve.
 type ModelingCmdHighlightSetEntities struct {
 	// ConstraintBound: Which constraint to apply.
@@ -2298,6 +2257,14 @@ type ModelingCmdModelingCmdInteraction struct {
 	SelectedAtWindow Point2D `json:"selected_at_window" yaml:"selected_at_window" schema:"selected_at_window,required"`
 	// SelectionType: What entity was selected?
 	SelectionType SceneSelectionType `json:"selection_type" yaml:"selection_type" schema:"selection_type,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdModelingCmdOptions: What kind of entities can be selected?
+type ModelingCmdModelingCmdOptions struct {
+	// Filter: If vector is empty, clear all filters. If vector is non-empty, only the given entity types will be selectable.
+	Filter []EntityType `json:"filter" yaml:"filter" schema:"filter,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2574,6 +2541,12 @@ type ModelingCmdTo struct {
 
 // ModelingCmdUp: Find all IDs of selected entities
 type ModelingCmdUp struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdUpdateAnnotation: Use orthographic projection.
+type ModelingCmdUpdateAnnotation struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2867,15 +2840,11 @@ type OkWebSocketResponseDataTrickleIce struct {
 // Onboarding: Onboarding details
 type Onboarding struct {
 	// FirstCallFromModelingAppDate: When the user first used the modeling app.
-	FirstCallFromModelingAppDate string `json:"first_call_from_modeling_app_date" yaml:"first_call_from_modeling_app_date" schema:"first_call_from_modeling_app_date"`
+	FirstCallFromModelingAppDate Time `json:"first_call_from_modeling_app_date" yaml:"first_call_from_modeling_app_date" schema:"first_call_from_modeling_app_date"`
 	// FirstCallFromTextToCadDate: When the user first used text-to-CAD.
-	FirstCallFromTextToCadDate string `json:"first_call_from_text_to_cad_date" yaml:"first_call_from_text_to_cad_date" schema:"first_call_from_text_to_cad_date"`
-	// FirstCallFromTheirMachineDate: When the user first called an endpoint from their machine (i.e. not a litterbox execution).
-	FirstCallFromTheirMachineDate string `json:"first_call_from_their_machine_date" yaml:"first_call_from_their_machine_date" schema:"first_call_from_their_machine_date"`
-	// FirstLitterboxExecuteDate: When the user first used the litterbox.
-	FirstLitterboxExecuteDate string `json:"first_litterbox_execute_date" yaml:"first_litterbox_execute_date" schema:"first_litterbox_execute_date"`
+	FirstCallFromTextToCadDate Time `json:"first_call_from_text_to_cad_date" yaml:"first_call_from_text_to_cad_date" schema:"first_call_from_text_to_cad_date"`
 	// FirstTokenDate: When the user created their first token.
-	FirstTokenDate string `json:"first_token_date" yaml:"first_token_date" schema:"first_token_date"`
+	FirstTokenDate Time `json:"first_token_date" yaml:"first_token_date" schema:"first_token_date"`
 }
 
 // OutputFile: Output file contents.
@@ -3145,6 +3114,16 @@ const (
 	// PaymentMethodTypeCard: A card payment method.
 	PaymentMethodTypeCard PaymentMethodType = "card"
 )
+
+// PerspectiveCameraParameters: Defines a perspective view.
+type PerspectiveCameraParameters struct {
+	// FovY: Camera frustum vertical field of view.
+	FovY float64 `json:"fov_y" yaml:"fov_y" schema:"fov_y,required"`
+	// ZFar: Camera frustum far plane.
+	ZFar float64 `json:"z_far" yaml:"z_far" schema:"z_far,required"`
+	// ZNear: Camera frustum near plane.
+	ZNear float64 `json:"z_near" yaml:"z_near" schema:"z_near,required"`
+}
 
 // PlaneIntersectAndProject: Corresponding coordinates of given window coordinates, intersected on given plane.
 type PlaneIntersectAndProject struct {
@@ -4108,6 +4087,8 @@ type UpdateUser struct {
 
 // User: A user.
 type User struct {
+	// Block: If the user should be blocked and the reason why.
+	Block BlockReason `json:"block" yaml:"block" schema:"block"`
 	// Company: The user's company.
 	Company string `json:"company" yaml:"company" schema:"company"`
 	// CreatedAt: The date and time the user was created.

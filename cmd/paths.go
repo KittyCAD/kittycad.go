@@ -213,6 +213,8 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 
 		if typeName == "string" {
 			arg.ToString = arg.Name
+		} else if typeName == "bool" {
+			arg.ToString = fmt.Sprintf("strconv.FormatBool(%s)", arg.Name)
 		} else if typeName == "int" {
 			arg.ToString = fmt.Sprintf("strconv.Itoa(%s)", arg.Name)
 		} else if typeName == "float64" {

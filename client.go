@@ -16,7 +16,7 @@ type Client struct {
 	// token is the API token used for authentication.
 	token string
 
-	// Ai: AI uses machine learning to generate 3D meshes.
+	// Ai: AI uses machine learning to generate CAD models.
 	Ai *AiService
 	// APICall: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
 	APICall *APICallService
@@ -48,7 +48,7 @@ type Client struct {
 	User *UserService
 }
 
-// AiService: AI uses machine learning to generate 3D meshes.
+// AiService: AI uses machine learning to generate CAD models.
 type AiService service
 
 // APICallService: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
