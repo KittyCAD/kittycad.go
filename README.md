@@ -3,7 +3,7 @@
 The Golang API client for KittyCAD.
 
 - [Go docs](https://pkg.go.dev/github.com/kittycad/kittycad.go)
-- [KittyCAD API Docs](https://docs.kittycad.io/?lang=go)
+- [KittyCAD API Docs](https://zoo.dev/docs/api?lang=go)
 
 ## Generating
 
