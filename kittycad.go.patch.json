@@ -153,7 +153,7 @@
  },
  {
   "value": {
-   "example": "// CreateFileExecution: Execute a Zoo program in a specific language.\n// \n// \n// Parameters\n// \n// \t- `lang`: The language code is written in.\n// \t- `output`\n// \t- `body`\n// \n// CreateFileExecution: Execute a Zoo program in a specific language.\n// Parameters\n//\n//   - `lang`: The language code is written in.\n//   - `output`\n//   - `body`\nfunc ExampleExecutorService_CreateFileExecution() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Executor.CreateFileExecution(\"\", \"some-string\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateFileExecution: Execute a Zoo program in a specific language.\n// \n// \n// Parameters\n// \n// \t- `lang`: The language code is written in.\n// \t\t\n// \t\t\u003cdetails\u003e\u003csummary\u003eJSON schema\u003c/summary\u003e\n// \t\t\n// \t\t```json { \"description\": \"The language code is written in.\", \"oneOf\": [ { \"description\": \"The `go` programming language.\", \"type\": \"string\", \"enum\": [ \"go\" ] }, { \"description\": \"The `python` programming language.\", \"type\": \"string\", \"enum\": [ \"python\" ] }, { \"description\": \"The `node` programming language.\", \"type\": \"string\", \"enum\": [ \"node\" ] } ] } ``` \u003c/details\u003e\n// \t- `output`\n// \t- `body`\n// \n// CreateFileExecution: Execute a Zoo program in a specific language.\n// Parameters\n//\n//   - `lang`: The language code is written in.\n//\n//     \u003cdetails\u003e\u003csummary\u003eJSON schema\u003c/summary\u003e\n//\n//     ```json { \"description\": \"The language code is written in.\", \"oneOf\": [ { \"description\": \"The `go` programming language.\", \"type\": \"string\", \"enum\": [ \"go\" ] }, { \"description\": \"The `python` programming language.\", \"type\": \"string\", \"enum\": [ \"python\" ] }, { \"description\": \"The `node` programming language.\", \"type\": \"string\", \"enum\": [ \"node\" ] } ] } ``` \u003c/details\u003e\n//\n//   - `output`\n//\n//   - `body`\nfunc ExampleExecutorService_CreateFileExecution() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Executor.CreateFileExecution(\"\", \"some-string\", []byte(\"some-binary\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ExecutorService.CreateFileExecution"
   },
   "op": "add",
@@ -246,6 +246,174 @@
   },
   "op": "add",
   "path": "/paths/~1oauth2~1provider~1{provider}~1consent/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// Delete: Delete an org.\n// \n// In order to delete an org, you must first delete all of its members, except yourself.\n// You must also have no outstanding invoices or unpaid balances.\n// This endpoint requires authentication by an org admin. It deletes the authenticated user's org.\n// \n// Delete: Delete an org.\n// In order to delete an org, you must first delete all of its members, except yourself.\n// You must also have no outstanding invoices or unpaid balances.\n// This endpoint requires authentication by an org admin. It deletes the authenticated user's org.\nfunc ExampleOrgService_Delete() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Org.Delete(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.Delete"
+  },
+  "op": "add",
+  "path": "/paths/~1org/delete/x-go"
+ },
+ {
+  "value": {
+   "example": "// Get: Get an org.\n// \n// This endpoint requires authentication by an org admin. It gets the authenticated user's org.\n// \n// Get: Get an org.\n// This endpoint requires authentication by an org admin. It gets the authenticated user's org.\nfunc ExampleOrgService_Get() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.Get()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.Get"
+  },
+  "op": "add",
+  "path": "/paths/~1org/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// Create: Create an org.\n// \n// This endpoint requires authentication by a Zoo user that is not already in an org. It creates a new org for the authenticated user and makes them an admin.\n// \n// \n// Parameters\n// \n// \t- `body`: The user-modifiable parts of an organization.\n// \n// Create: Create an org.\n// This endpoint requires authentication by a Zoo user that is not already in an org. It creates a new org for the authenticated user and makes them an admin.\n//\n// Parameters\n//\n//   - `body`: The user-modifiable parts of an organization.\nfunc ExampleOrgService_Create() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.Create(kittycad.OrgDetails{AllowUsersInDomainToAutoJoin: true, BillingEmail: \"example@example.com\", Domain: \"some-string\", Image: kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.Create"
+  },
+  "op": "add",
+  "path": "/paths/~1org/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// Update: Update an org.\n// \n// This endpoint requires authentication by an org admin. It updates the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `body`: The user-modifiable parts of an organization.\n// \n// Update: Update an org.\n// This endpoint requires authentication by an org admin. It updates the authenticated user's org.\n//\n// Parameters\n//\n//   - `body`: The user-modifiable parts of an organization.\nfunc ExampleOrgService_Update() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.Update(kittycad.OrgDetails{AllowUsersInDomainToAutoJoin: true, BillingEmail: \"example@example.com\", Domain: \"some-string\", Image: kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.Update"
+  },
+  "op": "add",
+  "path": "/paths/~1org/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// OrgList: List API calls for your org.\n// \n// This includes all API calls that were made by users in the org.\n// This endpoint requires authentication by an org admin. It returns the API calls for the authenticated user's org.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// OrgList: List API calls for your org.\n// This includes all API calls that were made by users in the org.\n// This endpoint requires authentication by an org admin. It returns the API calls for the authenticated user's org.\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleAPICallService_OrgList() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.OrgList(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.OrgList"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1api-calls/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetForOrg: Get an API call for an org.\n// \n// This endpoint requires authentication by an org admin. It returns details of the requested API call for the user's org.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// GetForOrg: Get an API call for an org.\n// This endpoint requires authentication by an org admin. It returns details of the requested API call for the user's org.\n//\n// Parameters\n//\n//   - `id`\nfunc ExampleAPICallService_GetForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.GetForOrg(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.GetForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1api-calls~1{id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListMembers: List members of your org.\n// \n// This endpoint requires authentication by an org admin. It lists the members of the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \t- `role`: The roles for users in an organization.\n// \n// ListMembers: List members of your org.\n// This endpoint requires authentication by an org admin. It lists the members of the authenticated user's org.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\n//\n//   - `role`: The roles for users in an organization.\nfunc ExampleOrgService_ListMembers() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.ListMembers(123, \"some-string\", \"\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.ListMembers"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1members/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateMember: Add a member to your org.\n// \n// This endpoint requires authentication by an org admin. It adds the specified member to the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `body`: Data for adding a member to an org.\n// \n// CreateMember: Add a member to your org.\n// This endpoint requires authentication by an org admin. It adds the specified member to the authenticated user's org.\n//\n// Parameters\n//\n//   - `body`: Data for adding a member to an org.\nfunc ExampleOrgService_CreateMember() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.CreateMember(kittycad.AddOrgMember{Email: \"example@example.com\", Role: \"\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.CreateMember"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1members/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// DeleteMember: Remove a member from your org.\n// \n// This endpoint requires authentication by an org admin. It removes the specified member from the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `userId`: A UUID usually v4 or v7\n// \n// DeleteMember: Remove a member from your org.\n// This endpoint requires authentication by an org admin. It removes the specified member from the authenticated user's org.\n//\n// Parameters\n//\n//   - `userId`: A UUID usually v4 or v7\nfunc ExampleOrgService_DeleteMember() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Org.DeleteMember(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.DeleteMember"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1members~1{user_id}/delete/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetMember: Get a member of your org.\n// \n// This endpoint requires authentication by an org admin. It gets the specified member of the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `userId`: A UUID usually v4 or v7\n// \n// GetMember: Get a member of your org.\n// This endpoint requires authentication by an org admin. It gets the specified member of the authenticated user's org.\n//\n// Parameters\n//\n//   - `userId`: A UUID usually v4 or v7\nfunc ExampleOrgService_GetMember() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetMember(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.GetMember"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1members~1{user_id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// UpdateMember: Update a member of your org.\n// \n// This endpoint requires authentication by an org admin. It updates the specified member of the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `userId`: A UUID usually v4 or v7\n// \t- `body`: Data for updating a member of an org.\n// \n// UpdateMember: Update a member of your org.\n// This endpoint requires authentication by an org admin. It updates the specified member of the authenticated user's org.\n//\n// Parameters\n//\n//   - `userId`: A UUID usually v4 or v7\n//   - `body`: Data for updating a member of an org.\nfunc ExampleOrgService_UpdateMember() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.UpdateMember(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdateMemberToOrgBody{Role: \"\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.UpdateMember"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1members~1{user_id}/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// DeleteInformationForOrg: Delete payment info for your org.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by an org admin. It deletes the payment information for the authenticated user's org.\n// \n// DeleteInformationForOrg: Delete payment info for your org.\n// This includes billing address, phone, and name.\n// This endpoint requires authentication by an org admin. It deletes the payment information for the authenticated user's org.\nfunc ExamplePaymentService_DeleteInformationForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.DeleteInformationForOrg(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.DeleteInformationForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1payment/delete/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetInformationForOrg: Get payment info about your org.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by an org admin. It gets the payment information for the authenticated user's org.\n// \n// GetInformationForOrg: Get payment info about your org.\n// This includes billing address, phone, and name.\n// This endpoint requires authentication by an org admin. It gets the payment information for the authenticated user's org.\nfunc ExamplePaymentService_GetInformationForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetInformationForOrg()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetInformationForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1payment/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateInformationForOrg: Create payment info for your org.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by the org admin. It creates the payment information for the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// CreateInformationForOrg: Create payment info for your org.\n// This includes billing address, phone, and name.\n// This endpoint requires authentication by the org admin. It creates the payment information for the authenticated user's org.\n//\n// Parameters\n//\n//   - `body`: The billing information for payments.\nfunc ExamplePaymentService_CreateInformationForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.CreateInformationForOrg(kittycad.BillingInfo{Address: kittycad.AddressDetails{City: \"some-string\", Country: \"some-string\", State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.CreateInformationForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1payment/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// UpdateInformationForOrg: Update payment info for your org.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by an org admin. It updates the payment information for the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// UpdateInformationForOrg: Update payment info for your org.\n// This includes billing address, phone, and name.\n// This endpoint requires authentication by an org admin. It updates the payment information for the authenticated user's org.\n//\n// Parameters\n//\n//   - `body`: The billing information for payments.\nfunc ExamplePaymentService_UpdateInformationForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateInformationForOrg(kittycad.BillingInfo{Address: kittycad.AddressDetails{City: \"some-string\", Country: \"some-string\", State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.UpdateInformationForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1payment/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetBalanceForOrg: Get balance for your org.\n// \n// This endpoint requires authentication by an org admin. It gets the balance information for the authenticated user's org.\n// \n// GetBalanceForOrg: Get balance for your org.\n// This endpoint requires authentication by an org admin. It gets the balance information for the authenticated user's org.\nfunc ExamplePaymentService_GetBalanceForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetBalanceForOrg()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetBalanceForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1payment~1balance/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateIntentForOrg: Create a payment intent for your org.\n// \n// This endpoint requires authentication by the org admin. It creates a new payment intent for the authenticated user's org's org.\n// \n// CreateIntentForOrg: Create a payment intent for your org.\n// This endpoint requires authentication by the org admin. It creates a new payment intent for the authenticated user's org's org.\nfunc ExamplePaymentService_CreateIntentForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.CreateIntentForOrg()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.CreateIntentForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1payment~1intent/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListInvoicesForOrg: List invoices for your org.\n// \n// This endpoint requires authentication by an org admin. It lists invoices for the authenticated user's org.\n// \n// ListInvoicesForOrg: List invoices for your org.\n// This endpoint requires authentication by an org admin. It lists invoices for the authenticated user's org.\nfunc ExamplePaymentService_ListInvoicesForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ListInvoicesForOrg()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ListInvoicesForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1payment~1invoices/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListMethodsForOrg: List payment methods for your org.\n// \n// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org.\n// \n// ListMethodsForOrg: List payment methods for your org.\n// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org.\nfunc ExamplePaymentService_ListMethodsForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ListMethodsForOrg()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ListMethodsForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1payment~1methods/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// DeleteMethodForOrg: Delete a payment method for your org.\n// \n// This endpoint requires authentication by an org admin. It deletes the specified payment method for the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// DeleteMethodForOrg: Delete a payment method for your org.\n// This endpoint requires authentication by an org admin. It deletes the specified payment method for the authenticated user's org.\n//\n// Parameters\n//\n//   - `id`\nfunc ExamplePaymentService_DeleteMethodForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.DeleteMethodForOrg(\"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.DeleteMethodForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1payment~1methods~1{id}/delete/x-go"
+ },
+ {
+  "value": {
+   "example": "// ValidateCustomerTaxInformationForOrg: Validate an orgs's information is correct and valid for automatic tax.\n// \n// This endpoint requires authentication by an org admin. It will return an error if the org's information is not valid for automatic tax. Otherwise, it will return an empty successful response.\n// \n// ValidateCustomerTaxInformationForOrg: Validate an orgs's information is correct and valid for automatic tax.\n// This endpoint requires authentication by an org admin. It will return an error if the org's information is not valid for automatic tax. Otherwise, it will return an empty successful response.\nfunc ExamplePaymentService_ValidateCustomerTaxInformationForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.ValidateCustomerTaxInformationForOrg(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ValidateCustomerTaxInformationForOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1payment~1tax/get/x-go"
  },
  {
   "value": {
@@ -409,7 +577,7 @@
  },
  {
   "value": {
-   "example": "// CreateForUser: Create a new API token for your user.\n// \n// This endpoint requires authentication by any Zoo user. It creates a new API token for the authenticated user.\n// \n// CreateForUser: Create a new API token for your user.\n// This endpoint requires authentication by any Zoo user. It creates a new API token for the authenticated user.\nfunc ExampleAPITokenService_CreateForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APIToken.CreateForUser()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateForUser: Create a new API token for your user.\n// \n// This endpoint requires authentication by any Zoo user. It creates a new API token for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `label`\n// \n// CreateForUser: Create a new API token for your user.\n// This endpoint requires authentication by any Zoo user. It creates a new API token for the authenticated user.\n//\n// Parameters\n//\n//   - `label`\nfunc ExampleAPITokenService_CreateForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APIToken.CreateForUser(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APITokenService.CreateForUser"
   },
   "op": "add",
@@ -449,6 +617,14 @@
  },
  {
   "value": {
+   "example": "// GetUser: Get a user's org.\n// \n// This endpoint requires authentication by any Zoo user. It gets the authenticated user's org.\n// If the user is not a member of an org, this endpoint will return a 404.\n// \n// GetUser: Get a user's org.\n// This endpoint requires authentication by any Zoo user. It gets the authenticated user's org.\n// If the user is not a member of an org, this endpoint will return a 404.\nfunc ExampleOrgService_GetUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetUser()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.GetUser"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1org/get/x-go"
+ },
+ {
+  "value": {
    "example": "// DeleteInformationForUser: Delete payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any Zoo user. It deletes the payment information for the authenticated user.\n// \n// DeleteInformationForUser: Delete payment info for your user.\n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any Zoo user. It deletes the payment information for the authenticated user.\nfunc ExamplePaymentService_DeleteInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.DeleteInformationForUser(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.DeleteInformationForUser"
   },
@@ -465,7 +641,7 @@
  },
  {
   "value": {
-   "example": "// CreateInformationForUser: Create payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any Zoo user. It creates the payment information for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// CreateInformationForUser: Create payment info for your user.\n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any Zoo user. It creates the payment information for the authenticated user.\n//\n// Parameters\n//\n//   - `body`: The billing information for payments.\nfunc ExamplePaymentService_CreateInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: \"some-string\", Country: \"some-string\", State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", UserID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateInformationForUser: Create payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any Zoo user. It creates the payment information for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// CreateInformationForUser: Create payment info for your user.\n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any Zoo user. It creates the payment information for the authenticated user.\n//\n// Parameters\n//\n//   - `body`: The billing information for payments.\nfunc ExamplePaymentService_CreateInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.AddressDetails{City: \"some-string\", Country: \"some-string\", State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.CreateInformationForUser"
   },
   "op": "add",
@@ -473,7 +649,7 @@
  },
  {
   "value": {
-   "example": "// UpdateInformationForUser: Update payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any Zoo user. It updates the payment information for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// UpdateInformationForUser: Update payment info for your user.\n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any Zoo user. It updates the payment information for the authenticated user.\n//\n// Parameters\n//\n//   - `body`: The billing information for payments.\nfunc ExamplePaymentService_UpdateInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: \"some-string\", Country: \"some-string\", State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", UserID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// UpdateInformationForUser: Update payment info for your user.\n// \n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any Zoo user. It updates the payment information for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The billing information for payments.\n// \n// UpdateInformationForUser: Update payment info for your user.\n// This includes billing address, phone, and name.\n// This endpoint requires authentication by any Zoo user. It updates the payment information for the authenticated user.\n//\n// Parameters\n//\n//   - `body`: The billing information for payments.\nfunc ExamplePaymentService_UpdateInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.AddressDetails{City: \"some-string\", Country: \"some-string\", State: \"some-string\", Street1: \"some-string\", Street2: \"some-string\", Zip: \"some-string\"}, Name: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.UpdateInformationForUser"
   },
   "op": "add",
@@ -521,7 +697,7 @@
  },
  {
   "value": {
-   "example": "// ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.\n// \n// This endpoint requires authentication by any Zoo user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.\n// \n// ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.\n// This endpoint requires authentication by any Zoo user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.\nfunc ExamplePaymentService_ValidateCustomerTaxInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.ValidateCustomerTaxInformationForUser(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "example": "// ValidateCustomerTaxInformationForUser: Validate a user's information is correct and valid for automatic tax.\n// \n// This endpoint requires authentication by any Zoo user. It will return an error if the user's information is not valid for automatic tax. Otherwise, it will return an empty successful response.\n// \n// ValidateCustomerTaxInformationForUser: Validate a user's information is correct and valid for automatic tax.\n// This endpoint requires authentication by any Zoo user. It will return an error if the user's information is not valid for automatic tax. Otherwise, it will return an empty successful response.\nfunc ExamplePaymentService_ValidateCustomerTaxInformationForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.ValidateCustomerTaxInformationForUser(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ValidateCustomerTaxInformationForUser"
   },
   "op": "add",

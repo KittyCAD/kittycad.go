@@ -36,15 +36,17 @@ type Client struct {
 	Hidden *HiddenService
 	// Meta: Meta information about the API.
 	Meta *MetaService
-	// Modeling: Modeling API for updating your 3D files using the KittyCAD engine.
+	// Modeling: Modeling API for updating your 3D files using the Zoo engine.
 	Modeling *ModelingService
 	// Oauth2: Endpoints that implement OAuth 2.0 grant flows.
 	Oauth2 *Oauth2Service
+	// Org: An organization is a group of users of the Zoo API. Here, we can add users to an org and perform operations on orgs.
+	Org *OrgService
 	// Payment: Operations around payments and billing.
 	Payment *PaymentService
 	// Unit: Unit conversion operations.
 	Unit *UnitService
-	// User: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
+	// User: A user is someone who uses the Zoo API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
 	User *UserService
 }
 
@@ -78,11 +80,14 @@ type HiddenService service
 // MetaService: Meta information about the API.
 type MetaService service
 
-// ModelingService: Modeling API for updating your 3D files using the KittyCAD engine.
+// ModelingService: Modeling API for updating your 3D files using the Zoo engine.
 type ModelingService service
 
 // Oauth2Service: Endpoints that implement OAuth 2.0 grant flows.
 type Oauth2Service service
+
+// OrgService: An organization is a group of users of the Zoo API. Here, we can add users to an org and perform operations on orgs.
+type OrgService service
 
 // PaymentService: Operations around payments and billing.
 type PaymentService service
@@ -90,5 +95,5 @@ type PaymentService service
 // UnitService: Unit conversion operations.
 type UnitService service
 
-// UserService: A user is someone who uses the KittyCAD API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
+// UserService: A user is someone who uses the Zoo API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
 type UserService service

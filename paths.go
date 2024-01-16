@@ -942,7 +942,13 @@ func (s *FileService) CreateDensity(materialMass float64, materialMassUnit UnitM
 // Parameters
 //
 //   - `lang`: The language code is written in.
+//
+//     <details><summary>JSON schema</summary>
+//
+//     ```json { "description": "The language code is written in.", "oneOf": [ { "description": "The `go` programming language.", "type": "string", "enum": [ "go" ] }, { "description": "The `python` programming language.", "type": "string", "enum": [ "python" ] }, { "description": "The `node` programming language.", "type": "string", "enum": [ "node" ] } ] } ``` </details>
+//
 //   - `output`
+//
 //   - `body`
 func (s *ExecutorService) CreateFileExecution(lang CodeLanguage, output string, body []byte) (*CodeOutput, error) {
 	// Create the url.
@@ -1531,6 +1537,959 @@ func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl st
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// Get: Get an org.
+// This endpoint requires authentication by an org admin. It gets the authenticated user's org.
+func (s *OrgService) Get() (*Org, error) {
+	// Create the url.
+	path := "/org"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Org
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// Create: Create an org.
+// This endpoint requires authentication by a Zoo user that is not already in an org. It creates a new org for the authenticated user and makes them an admin.
+//
+// Parameters
+//
+//   - `body`: The user-modifiable parts of an organization.
+func (s *OrgService) Create(body OrgDetails) (*Org, error) {
+	// Create the url.
+	path := "/org"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Org
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// Update: Update an org.
+// This endpoint requires authentication by an org admin. It updates the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: The user-modifiable parts of an organization.
+func (s *OrgService) Update(body OrgDetails) (*Org, error) {
+	// Create the url.
+	path := "/org"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Org
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// Delete: Delete an org.
+// In order to delete an org, you must first delete all of its members, except yourself.
+// You must also have no outstanding invoices or unpaid balances.
+// This endpoint requires authentication by an org admin. It deletes the authenticated user's org.
+func (s *OrgService) Delete() error {
+	// Create the url.
+	path := "/org"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// OrgList: List API calls for your org.
+// This includes all API calls that were made by users in the org.
+// This endpoint requires authentication by an org admin. It returns the API calls for the authenticated user's org.
+// The API calls are returned in order of creation, with the most recently created API calls first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *APICallService) OrgList(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
+	// Create the url.
+	path := "/org/api-calls"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded APICallWithPriceResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetForOrg: Get an API call for an org.
+// This endpoint requires authentication by an org admin. It returns details of the requested API call for the user's org.
+//
+// Parameters
+//
+//   - `id`
+func (s *APICallService) GetForOrg(id UUID) (*APICallWithPrice, error) {
+	// Create the url.
+	path := "/org/api-calls/{{.id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded APICallWithPrice
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListMembers: List members of your org.
+// This endpoint requires authentication by an org admin. It lists the members of the authenticated user's org.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+//
+//   - `role`: The roles for users in an organization.
+func (s *OrgService) ListMembers(limit int, pageToken string, sortBy CreatedAtSortMode, role OrgRole) (*OrgMemberResultsPage, error) {
+	// Create the url.
+	path := "/org/members"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+		"role":       string(role),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgMemberResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateMember: Add a member to your org.
+// This endpoint requires authentication by an org admin. It adds the specified member to the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: Data for adding a member to an org.
+func (s *OrgService) CreateMember(body AddOrgMember) (*OrgMember, error) {
+	// Create the url.
+	path := "/org/members"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgMember
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetMember: Get a member of your org.
+// This endpoint requires authentication by an org admin. It gets the specified member of the authenticated user's org.
+//
+// Parameters
+//
+//   - `userId`: A UUID usually v4 or v7
+func (s *OrgService) GetMember(userId UUID) (*OrgMember, error) {
+	// Create the url.
+	path := "/org/members/{{.user_id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"user_id": userId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgMember
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateMember: Update a member of your org.
+// This endpoint requires authentication by an org admin. It updates the specified member of the authenticated user's org.
+//
+// Parameters
+//
+//   - `userId`: A UUID usually v4 or v7
+//   - `body`: Data for updating a member of an org.
+func (s *OrgService) UpdateMember(userId UUID, body UpdateMemberToOrgBody) (*OrgMember, error) {
+	// Create the url.
+	path := "/org/members/{{.user_id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"user_id": userId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgMember
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteMember: Remove a member from your org.
+// This endpoint requires authentication by an org admin. It removes the specified member from the authenticated user's org.
+//
+// Parameters
+//
+//   - `userId`: A UUID usually v4 or v7
+func (s *OrgService) DeleteMember(userId UUID) error {
+	// Create the url.
+	path := "/org/members/{{.user_id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"user_id": userId.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// GetInformationForOrg: Get payment info about your org.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by an org admin. It gets the payment information for the authenticated user's org.
+func (s *PaymentService) GetInformationForOrg() (*Customer, error) {
+	// Create the url.
+	path := "/org/payment"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Customer
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateInformationForOrg: Create payment info for your org.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by the org admin. It creates the payment information for the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: The billing information for payments.
+func (s *PaymentService) CreateInformationForOrg(body BillingInfo) (*Customer, error) {
+	// Create the url.
+	path := "/org/payment"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Customer
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateInformationForOrg: Update payment info for your org.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by an org admin. It updates the payment information for the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: The billing information for payments.
+func (s *PaymentService) UpdateInformationForOrg(body BillingInfo) (*Customer, error) {
+	// Create the url.
+	path := "/org/payment"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Customer
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteInformationForOrg: Delete payment info for your org.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by an org admin. It deletes the payment information for the authenticated user's org.
+func (s *PaymentService) DeleteInformationForOrg() error {
+	// Create the url.
+	path := "/org/payment"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// GetBalanceForOrg: Get balance for your org.
+// This endpoint requires authentication by an org admin. It gets the balance information for the authenticated user's org.
+func (s *PaymentService) GetBalanceForOrg() (*CustomerBalance, error) {
+	// Create the url.
+	path := "/org/payment/balance"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded CustomerBalance
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateIntentForOrg: Create a payment intent for your org.
+// This endpoint requires authentication by the org admin. It creates a new payment intent for the authenticated user's org's org.
+func (s *PaymentService) CreateIntentForOrg() (*PaymentIntent, error) {
+	// Create the url.
+	path := "/org/payment/intent"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded PaymentIntent
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListInvoicesForOrg: List invoices for your org.
+// This endpoint requires authentication by an org admin. It lists invoices for the authenticated user's org.
+func (s *PaymentService) ListInvoicesForOrg() (*[]Invoice, error) {
+	// Create the url.
+	path := "/org/payment/invoices"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []Invoice
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListMethodsForOrg: List payment methods for your org.
+// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org.
+func (s *PaymentService) ListMethodsForOrg() (*[]PaymentMethod, error) {
+	// Create the url.
+	path := "/org/payment/methods"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []PaymentMethod
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteMethodForOrg: Delete a payment method for your org.
+// This endpoint requires authentication by an org admin. It deletes the specified payment method for the authenticated user's org.
+//
+// Parameters
+//
+//   - `id`
+func (s *PaymentService) DeleteMethodForOrg(id string) error {
+	// Create the url.
+	path := "/org/payment/methods/{{.id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// ValidateCustomerTaxInformationForOrg: Validate an orgs's information is correct and valid for automatic tax.
+// This endpoint requires authentication by an org admin. It will return an error if the org's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
+func (s *PaymentService) ValidateCustomerTaxInformationForOrg() error {
+	// Create the url.
+	path := "/org/payment/tax"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }
 
@@ -2567,7 +3526,11 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 
 // CreateForUser: Create a new API token for your user.
 // This endpoint requires authentication by any Zoo user. It creates a new API token for the authenticated user.
-func (s *APITokenService) CreateForUser() (*APIToken, error) {
+//
+// Parameters
+//
+//   - `label`
+func (s *APITokenService) CreateForUser(label string) (*APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens"
 	uri := resolveRelative(s.client.server, path)
@@ -2576,6 +3539,13 @@ func (s *APITokenService) CreateForUser() (*APIToken, error) {
 	req, err := http.NewRequest("POST", uri, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"label": label,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -2766,6 +3736,46 @@ func (s *UserService) GetOnboardingSelf() (*Onboarding, error) {
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded Onboarding
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetUser: Get a user's org.
+// This endpoint requires authentication by any Zoo user. It gets the authenticated user's org.
+// If the user is not a member of an org, this endpoint will return a 404.
+func (s *OrgService) GetUser() (*UserOrgInfo, error) {
+	// Create the url.
+	path := "/user/org"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UserOrgInfo
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -3149,8 +4159,8 @@ func (s *PaymentService) DeleteMethodForUser(id string) error {
 
 }
 
-// ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.
-// This endpoint requires authentication by any Zoo user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
+// ValidateCustomerTaxInformationForUser: Validate a user's information is correct and valid for automatic tax.
+// This endpoint requires authentication by any Zoo user. It will return an error if the user's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
 func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
 	// Create the url.
 	path := "/user/payment/tax"

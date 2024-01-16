@@ -67,6 +67,8 @@ type APICallWithPrice struct {
 	Method Method `json:"method" yaml:"method" schema:"method,required"`
 	// Minutes: The number of minutes the API call was billed for.
 	Minutes int `json:"minutes" yaml:"minutes" schema:"minutes"`
+	// OrgID: The organization ID of the API call if it is billable through an organization.
+	OrgID UUID `json:"org_id" yaml:"org_id" schema:"org_id"`
 	// Origin: The origin of the API call.
 	Origin string `json:"origin" yaml:"origin" schema:"origin"`
 	// Price: The price of the API call.
@@ -118,6 +120,8 @@ type APIToken struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// IsValid: If the token is valid. We never delete API tokens, but we can mark them as invalid. We save them for ever to preserve the history of the API token.
 	IsValid bool `json:"is_valid" yaml:"is_valid" schema:"is_valid,required"`
+	// Label: An optional label for the API token.
+	Label string `json:"label" yaml:"label" schema:"label"`
 	// Token: The API token itself.
 	Token UUID `json:"token" yaml:"token" schema:"token,required"`
 	// UpdatedAt: The date and time the API token was last updated.
@@ -145,6 +149,30 @@ const (
 	// AccountProviderGithub: The GitHub account provider.
 	AccountProviderGithub AccountProvider = "github"
 )
+
+// AddOrgMember: Data for adding a member to an org.
+type AddOrgMember struct {
+	// Email: The email address of the user to add to the org.
+	Email string `json:"email" yaml:"email" schema:"email,required"`
+	// Role: The organization role to give the user.
+	Role OrgRole `json:"role" yaml:"role" schema:"role,required"`
+}
+
+// AddressDetails: Address details.
+type AddressDetails struct {
+	// City: The city component.
+	City string `json:"city" yaml:"city" schema:"city"`
+	// Country: The country component. This is a two-letter ISO country code.
+	Country string `json:"country" yaml:"country" schema:"country,required"`
+	// State: The state component.
+	State string `json:"state" yaml:"state" schema:"state"`
+	// Street1: The first street component.
+	Street1 string `json:"street1" yaml:"street1" schema:"street1"`
+	// Street2: The second street component.
+	Street2 string `json:"street2" yaml:"street2" schema:"street2"`
+	// Zip: The zip component.
+	Zip string `json:"zip" yaml:"zip" schema:"zip"`
+}
 
 // AiFeedback: Human feedback on an AI response.
 type AiFeedback string
@@ -604,7 +632,7 @@ type AxisDirectionPair struct {
 // BillingInfo: The billing information for payments.
 type BillingInfo struct {
 	// Address: The address of the customer.
-	Address NewAddress `json:"address" yaml:"address" schema:"address"`
+	Address AddressDetails `json:"address" yaml:"address" schema:"address"`
 	// Name: The name of the customer.
 	Name string `json:"name" yaml:"name" schema:"name"`
 	// Phone: The phone for the customer.
@@ -709,6 +737,9 @@ type Cluster struct {
 }
 
 // CodeLanguage: The language code is written in.
+// <details><summary>JSON schema</summary>
+//
+// ```json { "description": "The language code is written in.", "oneOf": [ { "description": "The `go` programming language.", "type": "string", "enum": [ "go" ] }, { "description": "The `python` programming language.", "type": "string", "enum": [ "python" ] }, { "description": "The `node` programming language.", "type": "string", "enum": [ "node" ] } ] } ``` </details>
 type CodeLanguage string
 
 const (
@@ -721,6 +752,9 @@ const (
 )
 
 // CodeOutput: Output of the code being executed.
+// <details><summary>JSON schema</summary>
+//
+// ```json { "description": "Output of the code being executed.", "type": "object", "properties": { "output_files": { "description": "The contents of the files requested if they were passed.", "type": "array", "items": { "$ref": "#/components/schemas/OutputFile" } }, "stderr": { "description": "The stderr of the code.", "default": "", "type": "string" }, "stdout": { "description": "The stdout of the code.", "default": "", "type": "string" } } } ``` </details>
 type CodeOutput struct {
 	// OutputFiles: The contents of the files requested if they were passed.
 	OutputFiles []OutputFile `json:"output_files" yaml:"output_files" schema:"output_files"`
@@ -905,7 +939,7 @@ const (
 // Customer: The resource representing a payment "Customer".
 type Customer struct {
 	// Address: The customer's address.
-	Address NewAddress `json:"address" yaml:"address" schema:"address"`
+	Address AddressDetails `json:"address" yaml:"address" schema:"address"`
 	// Balance: Current balance, if any, being stored on the customer in the payments service.
 	//
 	// If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.
@@ -930,25 +964,25 @@ type Customer struct {
 	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 }
 
-// CustomerBalance: A balance for a user.
-// This holds information about the financial balance for the user.
+// CustomerBalance: A balance for a customer.
+// This holds information about the financial balance for the customer.
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// ID: The unique identifier for the balance.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// MonthlyCreditsRemaining: The monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the user per month.
+	// MapID: The mapping id of the user or org.
+	MapID UUID `json:"map_id" yaml:"map_id" schema:"map_id,required"`
+	// MonthlyCreditsRemaining: The monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the customer per month.
 	MonthlyCreditsRemaining float64 `json:"monthly_credits_remaining" yaml:"monthly_credits_remaining" schema:"monthly_credits_remaining,required"`
-	// PrePayCashRemaining: The amount of pre-pay cash remaining in the balance. This number goes down as the user uses their pre-paid credits. The reason we track this amount is if a user ever wants to withdraw their pre-pay cash, we can use this amount to determine how much to give them. Say a user has $100 in pre-paid cash, their bill is worth, $50 after subtracting any other credits (like monthly etc.) Their bill is $50, their pre-pay cash remaining will be subtracted by 50 to pay the bill and their `pre_pay_credits_remaining` will be subtracted by 50 to pay the bill. This way if they want to withdraw money after, they can only withdraw $50 since that is the amount of cash they have remaining.
+	// PrePayCashRemaining: The amount of pre-pay cash remaining in the balance. This number goes down as the customer uses their pre-paid credits. The reason we track this amount is if a customer ever wants to withdraw their pre-pay cash, we can use this amount to determine how much to give them. Say a customer has $100 in pre-paid cash, their bill is worth, $50 after subtracting any other credits (like monthly etc.) Their bill is $50, their pre-pay cash remaining will be subtracted by 50 to pay the bill and their `pre_pay_credits_remaining` will be subtracted by 50 to pay the bill. This way if they want to withdraw money after, they can only withdraw $50 since that is the amount of cash they have remaining.
 	PrePayCashRemaining float64 `json:"pre_pay_cash_remaining" yaml:"pre_pay_cash_remaining" schema:"pre_pay_cash_remaining,required"`
-	// PrePayCreditsRemaining: The amount of credits remaining in the balance. This is typically the amount of cash * some multiplier they get for pre-paying their account. This number lowers every time a bill is paid with the balance. This number increases every time a user adds funds to their balance. This may be through a subscription or a one off payment.
+	// PrePayCreditsRemaining: The amount of credits remaining in the balance. This is typically the amount of cash * some multiplier they get for pre-paying their account. This number lowers every time a bill is paid with the balance. This number increases every time a customer adds funds to their balance. This may be through a subscription or a one off payment.
 	PrePayCreditsRemaining float64 `json:"pre_pay_credits_remaining" yaml:"pre_pay_credits_remaining" schema:"pre_pay_credits_remaining,required"`
-	// TotalDue: This includes any outstanding, draft, or open invoices and any pending invoice items. This does not include any credits the user has on their account.
+	// TotalDue: This includes any outstanding, draft, or open invoices and any pending invoice items. This does not include any credits the customer has on their account.
 	TotalDue float64 `json:"total_due" yaml:"total_due" schema:"total_due,required"`
 	// UpdatedAt: The date and time the balance was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// UserID: The user ID the balance belongs to.
-	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // Data is the type definition for a Data.
@@ -2611,24 +2645,6 @@ type MouseClick struct {
 	EntitiesSelected []UUID `json:"entities_selected" yaml:"entities_selected" schema:"entities_selected,required"`
 }
 
-// NewAddress: The struct that is used to create a new record. This is automatically generated and has all the same fields as the main struct only it is missing the `id`.
-type NewAddress struct {
-	// City: The city component.
-	City string `json:"city" yaml:"city" schema:"city"`
-	// Country: The country component. This is a two-letter ISO country code.
-	Country string `json:"country" yaml:"country" schema:"country,required"`
-	// State: The state component.
-	State string `json:"state" yaml:"state" schema:"state"`
-	// Street1: The first street component.
-	Street1 string `json:"street1" yaml:"street1" schema:"street1"`
-	// Street2: The second street component.
-	Street2 string `json:"street2" yaml:"street2" schema:"street2"`
-	// UserID: The user ID that this address belongs to.
-	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
-	// Zip: The zip component.
-	Zip string `json:"zip" yaml:"zip" schema:"zip"`
-}
-
 // Oauth2ClientInfo: Information about an OAuth 2.0 client.
 type Oauth2ClientInfo struct {
 	// CsrfToken: Value used for [CSRF](https://tools.ietf.org/html/rfc6749#section-10.12) protection via the `state` parameter.
@@ -2847,7 +2863,104 @@ type Onboarding struct {
 	FirstTokenDate Time `json:"first_token_date" yaml:"first_token_date" schema:"first_token_date"`
 }
 
+// Org: An organization.
+type Org struct {
+	// AllowUsersInDomainToAutoJoin: If we should allow all future users who are created with email addresses from this domain to join the org.
+	AllowUsersInDomainToAutoJoin bool `json:"allow_users_in_domain_to_auto_join" yaml:"allow_users_in_domain_to_auto_join" schema:"allow_users_in_domain_to_auto_join"`
+	// BillingEmail: The billing email address of the org.
+	BillingEmail string `json:"billing_email" yaml:"billing_email" schema:"billing_email"`
+	// BillingEmailVerified: The date and time the billing email address was verified.
+	BillingEmailVerified Time `json:"billing_email_verified" yaml:"billing_email_verified" schema:"billing_email_verified"`
+	// Block: If the org should be blocked and the reason why.
+	Block BlockReason `json:"block" yaml:"block" schema:"block"`
+	// CreatedAt: The date and time the org was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Domain: The org's domain.
+	Domain string `json:"domain" yaml:"domain" schema:"domain"`
+	// ID: The unique identifier for the org.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Image: The image for the org. This is a URL.
+	Image URL `json:"image" yaml:"image" schema:"image"`
+	// Name: The name of the org.
+	Name string `json:"name" yaml:"name" schema:"name"`
+	// Phone: The org's phone number.
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
+	// StripeID: The org's stripe id.
+	StripeID string `json:"stripe_id" yaml:"stripe_id" schema:"stripe_id"`
+	// UpdatedAt: The date and time the org was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// OrgDetails: The user-modifiable parts of an organization.
+type OrgDetails struct {
+	// AllowUsersInDomainToAutoJoin: If we should allow all future users who are created with email addresses from this domain to join the org.
+	AllowUsersInDomainToAutoJoin bool `json:"allow_users_in_domain_to_auto_join" yaml:"allow_users_in_domain_to_auto_join" schema:"allow_users_in_domain_to_auto_join"`
+	// BillingEmail: The billing email address of the org.
+	BillingEmail string `json:"billing_email" yaml:"billing_email" schema:"billing_email"`
+	// Domain: The org's domain.
+	Domain string `json:"domain" yaml:"domain" schema:"domain"`
+	// Image: The image for the org. This is a URL.
+	Image URL `json:"image" yaml:"image" schema:"image"`
+	// Name: The name of the org.
+	Name string `json:"name" yaml:"name" schema:"name"`
+	// Phone: The org's phone number.
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
+}
+
+// OrgMember: A member of an organization.
+type OrgMember struct {
+	// Company: The user's company.
+	Company string `json:"company" yaml:"company" schema:"company"`
+	// CreatedAt: The date and time the user was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Discord: The user's Discord handle.
+	Discord string `json:"discord" yaml:"discord" schema:"discord"`
+	// Email: The email address of the user.
+	Email string `json:"email" yaml:"email" schema:"email"`
+	// EmailVerified: The date and time the email address was verified.
+	EmailVerified Time `json:"email_verified" yaml:"email_verified" schema:"email_verified"`
+	// FirstName: The user's first name.
+	FirstName string `json:"first_name" yaml:"first_name" schema:"first_name"`
+	// Github: The user's GitHub handle.
+	Github string `json:"github" yaml:"github" schema:"github"`
+	// ID: The unique identifier for the user.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Image: The image avatar for the user. This is a URL.
+	Image URL `json:"image" yaml:"image" schema:"image,required"`
+	// LastName: The user's last name.
+	LastName string `json:"last_name" yaml:"last_name" schema:"last_name"`
+	// Name: The name of the user. This is auto populated at first from the authentication provider (if there was a name). It can be updated by the user by updating their `first_name` and `last_name` fields.
+	Name string `json:"name" yaml:"name" schema:"name"`
+	// Phone: The user's phone number.
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
+	// Role: The user's role in the org.
+	Role OrgRole `json:"role" yaml:"role" schema:"role,required"`
+	// UpdatedAt: The date and time the user was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// OrgMemberResultsPage: A single page of results
+type OrgMemberResultsPage struct {
+	// Items: list of items on this page of results
+	Items []OrgMember `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// OrgRole: The roles for users in an organization.
+type OrgRole string
+
+const (
+	// OrgRoleAdmin: Admins can do anything in the org.
+	OrgRoleAdmin OrgRole = "admin"
+	// OrgRoleMember: Members of an org can not modify an org, but they belong in the org.
+	OrgRoleMember OrgRole = "member"
+)
+
 // OutputFile: Output file contents.
+// <details><summary>JSON schema</summary>
+//
+// ```json { "description": "Output file contents.", "type": "object", "properties": { "contents": { "description": "The contents of the file. This is base64 encoded so we can ensure it is UTF-8 for JSON.", "type": "string" }, "name": { "description": "The name of the file.", "default": "", "type": "string" } } } ``` </details>
 type OutputFile struct {
 	// Contents: The contents of the file. This is base64 encoded so we can ensure it is UTF-8 for JSON.
 	Contents string `json:"contents" yaml:"contents" schema:"contents"`
@@ -4069,6 +4182,12 @@ type UnitVolumeConversion struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
+// UpdateMemberToOrgBody: Data for updating a member of an org.
+type UpdateMemberToOrgBody struct {
+	// Role: The organization role to give the user.
+	Role OrgRole `json:"role" yaml:"role" schema:"role,required"`
+}
+
 // UpdateUser: The user-modifiable parts of a User.
 type UpdateUser struct {
 	// Company: The user's company.
@@ -4114,6 +4233,36 @@ type User struct {
 	// Phone: The user's phone number.
 	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 	// UpdatedAt: The date and time the user was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// UserOrgInfo: A user's information about an org, including their role.
+type UserOrgInfo struct {
+	// AllowUsersInDomainToAutoJoin: If we should allow all future users who are created with email addresses from this domain to join the org.
+	AllowUsersInDomainToAutoJoin bool `json:"allow_users_in_domain_to_auto_join" yaml:"allow_users_in_domain_to_auto_join" schema:"allow_users_in_domain_to_auto_join"`
+	// BillingEmail: The billing email address of the org.
+	BillingEmail string `json:"billing_email" yaml:"billing_email" schema:"billing_email"`
+	// BillingEmailVerified: The date and time the billing email address was verified.
+	BillingEmailVerified Time `json:"billing_email_verified" yaml:"billing_email_verified" schema:"billing_email_verified"`
+	// Block: If the org should be blocked and the reason why.
+	Block BlockReason `json:"block" yaml:"block" schema:"block"`
+	// CreatedAt: The date and time the org was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Domain: The org's domain.
+	Domain string `json:"domain" yaml:"domain" schema:"domain"`
+	// ID: The unique identifier for the org.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Image: The image for the org. This is a URL.
+	Image URL `json:"image" yaml:"image" schema:"image"`
+	// Name: The name of the org.
+	Name string `json:"name" yaml:"name" schema:"name"`
+	// Phone: The org's phone number.
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
+	// Role: The user's role in the org.
+	Role OrgRole `json:"role" yaml:"role" schema:"role,required"`
+	// StripeID: The org's stripe id.
+	StripeID string `json:"stripe_id" yaml:"stripe_id" schema:"stripe_id"`
+	// UpdatedAt: The date and time the org was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
