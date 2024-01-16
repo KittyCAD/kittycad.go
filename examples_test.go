@@ -458,7 +458,13 @@ func ExampleFileService_CreateDensity() {
 // Parameters
 //
 //   - `lang`: The language code is written in.
+//
+//     <details><summary>JSON schema</summary>
+//
+//     ```json { "description": "The language code is written in.", "oneOf": [ { "description": "The `go` programming language.", "type": "string", "enum": [ "go" ] }, { "description": "The `python` programming language.", "type": "string", "enum": [ "python" ] }, { "description": "The `node` programming language.", "type": "string", "enum": [ "node" ] } ] } ``` </details>
+//
 //   - `output`
+//
 //   - `body`
 func ExampleExecutorService_CreateFileExecution() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -701,6 +707,419 @@ func ExampleOauth2Service_ProviderConsent() {
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// Get: Get an org.
+// This endpoint requires authentication by an org admin. It gets the authenticated user's org.
+func ExampleOrgService_Get() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.Get()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Create: Create an org.
+// This endpoint requires authentication by a Zoo user that is not already in an org. It creates a new org for the authenticated user and makes them an admin.
+//
+// Parameters
+//
+//   - `body`: The user-modifiable parts of an organization.
+func ExampleOrgService_Create() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.Create(kittycad.OrgDetails{AllowUsersInDomainToAutoJoin: true, BillingEmail: "example@example.com", Domain: "some-string", Image: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, Name: "some-string", Phone: "+1-555-555-555"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Update: Update an org.
+// This endpoint requires authentication by an org admin. It updates the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: The user-modifiable parts of an organization.
+func ExampleOrgService_Update() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.Update(kittycad.OrgDetails{AllowUsersInDomainToAutoJoin: true, BillingEmail: "example@example.com", Domain: "some-string", Image: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, Name: "some-string", Phone: "+1-555-555-555"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// Delete: Delete an org.
+// In order to delete an org, you must first delete all of its members, except yourself.
+// You must also have no outstanding invoices or unpaid balances.
+// This endpoint requires authentication by an org admin. It deletes the authenticated user's org.
+func ExampleOrgService_Delete() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Org.Delete(); err != nil {
+		panic(err)
+	}
+
+}
+
+// OrgList: List API calls for your org.
+// This includes all API calls that were made by users in the org.
+// This endpoint requires authentication by an org admin. It returns the API calls for the authenticated user's org.
+// The API calls are returned in order of creation, with the most recently created API calls first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleAPICallService_OrgList() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APICall.OrgList(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetForOrg: Get an API call for an org.
+// This endpoint requires authentication by an org admin. It returns details of the requested API call for the user's org.
+//
+// Parameters
+//
+//   - `id`
+func ExampleAPICallService_GetForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.APICall.GetForOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListMembers: List members of your org.
+// This endpoint requires authentication by an org admin. It lists the members of the authenticated user's org.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+//
+//   - `role`: The roles for users in an organization.
+func ExampleOrgService_ListMembers() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.ListMembers(123, "some-string", "", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateMember: Add a member to your org.
+// This endpoint requires authentication by an org admin. It adds the specified member to the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: Data for adding a member to an org.
+func ExampleOrgService_CreateMember() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.CreateMember(kittycad.AddOrgMember{Email: "example@example.com", Role: ""})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetMember: Get a member of your org.
+// This endpoint requires authentication by an org admin. It gets the specified member of the authenticated user's org.
+//
+// Parameters
+//
+//   - `userId`: A UUID usually v4 or v7
+func ExampleOrgService_GetMember() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.GetMember(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateMember: Update a member of your org.
+// This endpoint requires authentication by an org admin. It updates the specified member of the authenticated user's org.
+//
+// Parameters
+//
+//   - `userId`: A UUID usually v4 or v7
+//   - `body`: Data for updating a member of an org.
+func ExampleOrgService_UpdateMember() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.UpdateMember(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateMemberToOrgBody{Role: ""})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteMember: Remove a member from your org.
+// This endpoint requires authentication by an org admin. It removes the specified member from the authenticated user's org.
+//
+// Parameters
+//
+//   - `userId`: A UUID usually v4 or v7
+func ExampleOrgService_DeleteMember() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Org.DeleteMember(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
+// GetInformationForOrg: Get payment info about your org.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by an org admin. It gets the payment information for the authenticated user's org.
+func ExamplePaymentService_GetInformationForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.GetInformationForOrg()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateInformationForOrg: Create payment info for your org.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by the org admin. It creates the payment information for the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: The billing information for payments.
+func ExamplePaymentService_CreateInformationForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.CreateInformationForOrg(kittycad.BillingInfo{Address: kittycad.AddressDetails{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateInformationForOrg: Update payment info for your org.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by an org admin. It updates the payment information for the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: The billing information for payments.
+func ExamplePaymentService_UpdateInformationForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.UpdateInformationForOrg(kittycad.BillingInfo{Address: kittycad.AddressDetails{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteInformationForOrg: Delete payment info for your org.
+// This includes billing address, phone, and name.
+// This endpoint requires authentication by an org admin. It deletes the payment information for the authenticated user's org.
+func ExamplePaymentService_DeleteInformationForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Payment.DeleteInformationForOrg(); err != nil {
+		panic(err)
+	}
+
+}
+
+// GetBalanceForOrg: Get balance for your org.
+// This endpoint requires authentication by an org admin. It gets the balance information for the authenticated user's org.
+func ExamplePaymentService_GetBalanceForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.GetBalanceForOrg()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateIntentForOrg: Create a payment intent for your org.
+// This endpoint requires authentication by the org admin. It creates a new payment intent for the authenticated user's org's org.
+func ExamplePaymentService_CreateIntentForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.CreateIntentForOrg()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListInvoicesForOrg: List invoices for your org.
+// This endpoint requires authentication by an org admin. It lists invoices for the authenticated user's org.
+func ExamplePaymentService_ListInvoicesForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.ListInvoicesForOrg()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListMethodsForOrg: List payment methods for your org.
+// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org.
+func ExamplePaymentService_ListMethodsForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.ListMethodsForOrg()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteMethodForOrg: Delete a payment method for your org.
+// This endpoint requires authentication by an org admin. It deletes the specified payment method for the authenticated user's org.
+//
+// Parameters
+//
+//   - `id`
+func ExamplePaymentService_DeleteMethodForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Payment.DeleteMethodForOrg("some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// ValidateCustomerTaxInformationForOrg: Validate an orgs's information is correct and valid for automatic tax.
+// This endpoint requires authentication by an org admin. It will return an error if the org's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
+func ExamplePaymentService_ValidateCustomerTaxInformationForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Payment.ValidateCustomerTaxInformationForOrg(); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -1152,13 +1571,17 @@ func ExampleAPITokenService_ListForUser() {
 
 // CreateForUser: Create a new API token for your user.
 // This endpoint requires authentication by any Zoo user. It creates a new API token for the authenticated user.
+//
+// Parameters
+//
+//   - `label`
 func ExampleAPITokenService_CreateForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.APIToken.CreateForUser()
+	result, err := client.APIToken.CreateForUser("some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -1242,6 +1665,24 @@ func ExampleUserService_GetOnboardingSelf() {
 
 }
 
+// GetUser: Get a user's org.
+// This endpoint requires authentication by any Zoo user. It gets the authenticated user's org.
+// If the user is not a member of an org, this endpoint will return a 404.
+func ExampleOrgService_GetUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.GetUser()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // GetInformationForUser: Get payment info about your user.
 // This includes billing address, phone, and name.
 // This endpoint requires authentication by any Zoo user. It gets the payment information for the authenticated user.
@@ -1273,7 +1714,7 @@ func ExamplePaymentService_CreateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.CreateInformationForUser(kittycad.BillingInfo{Address: kittycad.AddressDetails{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1295,7 +1736,7 @@ func ExamplePaymentService_UpdateInformationForUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.NewAddress{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", UserID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.Payment.UpdateInformationForUser(kittycad.BillingInfo{Address: kittycad.AddressDetails{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", Zip: "some-string"}, Name: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1405,8 +1846,8 @@ func ExamplePaymentService_DeleteMethodForUser() {
 
 }
 
-// ValidateCustomerTaxInformationForUser: Validate a customer's information is correct and valid for automatic tax.
-// This endpoint requires authentication by any Zoo user. It will return an error if the customer's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
+// ValidateCustomerTaxInformationForUser: Validate a user's information is correct and valid for automatic tax.
+// This endpoint requires authentication by any Zoo user. It will return an error if the user's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
 func ExamplePaymentService_ValidateCustomerTaxInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
