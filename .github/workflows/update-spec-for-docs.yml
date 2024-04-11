@@ -71,7 +71,7 @@ jobs:
               --body "Updating the generated docs for go lang" \
               --head "$NEW_BRANCH" \
               --reviewer jessfraz \
-              --reviewer irevdev \
+              --reviewer irev-dev \
               --reviewer franknoirot \
               --base main || true
         env:
