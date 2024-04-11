@@ -1,0 +1,22 @@
+// {{.Description}}
+func Example{{.Tag}}Service_{{.Name}}() {
+    client, err := {{.PackageName}}.NewClientFromEnv("your apps user agent")
+    if err != nil {
+        panic(err)
+    }
+
+    buf := new(bytes.Buffer)
+
+    {{if .Response}}
+        result, err := client.{{.Tag}}.{{.Name}}({{range .Args -}}{{.Example}},{{end -}} buf)
+        if err != nil {
+            panic(err)
+        }
+
+        fmt.Printf("%#v", result)
+    {{else}}
+    if err := client.{{.Tag}}.{{.Name}}({{range .Args -}}{{.Example}},{{end -}} buf); err != nil {
+        panic(err)
+    }
+    {{end}}
+}

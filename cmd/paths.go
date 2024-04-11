@@ -269,9 +269,22 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 	// Now we can get the description since we have filled in everything else.
 	function.Description = function.getDescription(operation)
 
+	isMultiPart := false
+	if operation.RequestBody != nil {
+		for mediaType := range operation.RequestBody.Value.Content {
+			if strings.Contains(mediaType, "multipart/form-data") {
+				isMultiPart = true
+				break
+			}
+		}
+	}
+
 	exampleTemplatePath := "function-example.tmpl"
 	if _, ok := operation.Extensions["x-dropshot-websocket"]; ok {
 		exampleTemplatePath = "function-example-ws.tmpl"
+	}
+	if isMultiPart {
+		exampleTemplatePath = "function-example-multipart.tmpl"
 	}
 
 	// Build the example function.
@@ -284,6 +297,10 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 	templatePath := "path.tmpl"
 	if _, ok := operation.Extensions["x-dropshot-websocket"]; ok {
 		templatePath = "websocket.tmpl"
+	}
+	// If its a multipart request, we need to use a different template.
+	if isMultiPart {
+		templatePath = "multipart.tmpl"
 	}
 
 	// Print the template for the function.

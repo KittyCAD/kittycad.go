@@ -3,6 +3,7 @@
 package kittycad_test
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/url"
@@ -80,6 +81,22 @@ func ExampleMetaService_Getdata() {
 
 }
 
+// GetIpinfo: Get ip address information.
+func ExampleMetaService_GetIpinfo() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Meta.GetIpinfo()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // ListPrompts: List all AI prompts.
 // For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
 // This endpoint requires authentication by a Zoo employee.
@@ -130,11 +147,29 @@ func ExampleAiService_GetPrompt() {
 
 }
 
+// CreateKclCodeCompletions: Generate code completions for KCL.
+// Parameters
+//
+//   - `body`: A request to generate KCL code completions.
+func ExampleAiService_CreateKclCodeCompletions() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ai.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: "some-string", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: "some-string", Prompt: "some-string", Stop: []string{"some-string"}, Stream: true, Suffix: "some-string", Temperature: 123.45, TopP: 123.45})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateTextToCad: Generate a CAD model from text.
 // Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 // One thing to note, if you hit the cache, this endpoint will return right away. So you only have to wait if the status is not `Completed` or `Failed`.
-// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
 //
 // Parameters
 //
@@ -367,6 +402,85 @@ func ExampleHiddenService_AuthEmailCallback() {
 	}
 
 	if err := client.Hidden.AuthEmailCallback(kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, "example@example.com", "some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// GetAuthSaml: Get a redirect straight to the SAML IdP.
+// The UI uses this to avoid having to ask the API anything about the IdP. It already knows the SAML IdP ID from the path, so it can just link to this path and rely on the API to redirect to the actual IdP.
+//
+// Parameters
+//
+//   - `providerId`: A UUID usually v4 or v7
+//   - `callbackUrl`
+func ExampleHiddenService_GetAuthSaml() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Hidden.GetAuthSaml(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}); err != nil {
+		panic(err)
+	}
+
+}
+
+// PostAuthSaml: Authenticate a user via SAML
+// Parameters
+//
+//   - `providerId`: A UUID usually v4 or v7
+//   - `body`
+func ExampleHiddenService_PostAuthSaml() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Hidden.PostAuthSaml(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), []byte("some-binary")); err != nil {
+		panic(err)
+	}
+
+}
+
+// CreateDebugUploads: Uploads files to public blob storage for debugging purposes.
+// Do NOT send files here that you don't want to be public.
+//
+// Parameters
+//
+//   - `body`
+func ExampleMetaService_CreateDebugUploads() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	buf := new(bytes.Buffer)
+
+	result, err := client.Meta.CreateDebugUploads(buf)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateEvent: Creates an internal telemetry event.
+// We collect anonymous telemetry data for improving our product.
+//
+// Parameters
+//
+//   - `body`: Telemetry data we are collecting
+func ExampleMetaService_CreateEvent() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	buf := new(bytes.Buffer)
+
+	if err := client.Meta.CreateEvent(buf); err != nil {
 		panic(err)
 	}
 
@@ -677,14 +791,35 @@ func ExampleOauth2Service_DeviceAuthVerify() {
 //
 //   - `provider`: An account provider.
 //   - `code`
+//   - `idToken`
 //   - `state`
+//   - `user`
 func ExampleOauth2Service_ProviderCallback() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.Oauth2.ProviderCallback("", "some-string", "some-string"); err != nil {
+	if err := client.Oauth2.ProviderCallback("", "some-string", "some-string", "some-string", "some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// ProviderCallbackCreate: Listen for callbacks for the OAuth 2.0 provider.
+// This specific endpoint listens for posts of form data.
+//
+// Parameters
+//
+//   - `provider`: An account provider.
+//   - `body`: The authentication callback from the OAuth 2.0 client. This is typically posted to the redirect URL as query params after authenticating.
+func ExampleOauth2Service_ProviderCallbackCreate() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.ProviderCallbackCreate("", kittycad.AuthCallback{Code: "some-string", IdToken: "some-string", State: "some-string", User: "some-string"}); err != nil {
 		panic(err)
 	}
 
@@ -865,6 +1000,10 @@ func ExampleOrgService_ListMembers() {
 }
 
 // CreateMember: Add a member to your org.
+// If the user exists, this will add them to your org. If they do not exist, this will create a new user and add them to your org.
+// In both cases the user gets an email that they have been added to the org.
+// If the user is already in your org, this will return a 400 and a message.
+// If the user is already in a different org, this will return a 400 and a message.
 // This endpoint requires authentication by an org admin. It adds the specified member to the authenticated user's org.
 //
 // Parameters
@@ -1109,6 +1248,65 @@ func ExamplePaymentService_DeleteMethodForOrg() {
 
 }
 
+// GetOrgSubscription: Get the subscription for an org.
+// This endpoint requires authentication by an org admin. It gets the subscription for the authenticated user's org.
+func ExamplePaymentService_GetOrgSubscription() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.GetOrgSubscription()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateOrgSubscription: Create the subscription for an org.
+// This endpoint requires authentication by an org admin. It creates the subscription for the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: A struct of Zoo product subscriptions an organization can request.
+func ExamplePaymentService_CreateOrgSubscription() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.CreateOrgSubscription(kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: ""})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateOrgSubscription: Update the subscription for an org.
+// This endpoint requires authentication by an org admin. It updates the subscription for the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: A struct of Zoo product subscriptions an organization can request.
+func ExamplePaymentService_UpdateOrgSubscription() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.UpdateOrgSubscription(kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: ""})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // ValidateCustomerTaxInformationForOrg: Validate an orgs's information is correct and valid for automatic tax.
 // This endpoint requires authentication by an org admin. It will return an error if the org's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
 func ExamplePaymentService_ValidateCustomerTaxInformationForOrg() {
@@ -1123,6 +1321,319 @@ func ExamplePaymentService_ValidateCustomerTaxInformationForOrg() {
 
 }
 
+// GetPrivacySettings: Get the privacy settings for an org.
+// This endpoint requires authentication by an org admin. It gets the privacy settings for the authenticated user's org.
+func ExampleOrgService_GetPrivacySettings() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.GetPrivacySettings()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdatePrivacySettings: Update the privacy settings for an org.
+// This endpoint requires authentication by an org admin. It updates the privacy settings for the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: Privacy settings for an org or user.
+func ExampleOrgService_UpdatePrivacySettings() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.UpdatePrivacySettings(kittycad.PrivacySettings{CanTrainOnData: true})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetSamlIdp: Get the SAML identity provider.
+// This endpoint requires authentication by an org admin.
+func ExampleOrgService_GetSamlIdp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.GetSamlIdp()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateSamlIdp: Create a SAML identity provider.
+// This endpoint requires authentication by an org admin.
+//
+// Parameters
+//
+//   - `body`: Parameters for creating a SAML identity provider.
+func ExampleOrgService_CreateSamlIdp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.CreateSamlIdp(kittycad.SamlIdentityProviderCreate{IdpEntityID: "some-string", IdpMetadataSource: "", SigningKeypair: kittycad.DerEncodedKeyPair{PrivateKey: kittycad.Base64{Inner: []byte("aGVsbG8gd29ybGQK")}, PublicCert: kittycad.Base64{Inner: []byte("aGVsbG8gd29ybGQK")}}, TechnicalContactEmail: "example@example.com"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateSamlIdp: Update the SAML identity provider.
+// This endpoint requires authentication by an org admin.
+//
+// Parameters
+//
+//   - `body`: Parameters for creating a SAML identity provider.
+func ExampleOrgService_UpdateSamlIdp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.UpdateSamlIdp(kittycad.SamlIdentityProviderCreate{IdpEntityID: "some-string", IdpMetadataSource: "", SigningKeypair: kittycad.DerEncodedKeyPair{PrivateKey: kittycad.Base64{Inner: []byte("aGVsbG8gd29ybGQK")}, PublicCert: kittycad.Base64{Inner: []byte("aGVsbG8gd29ybGQK")}}, TechnicalContactEmail: "example@example.com"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteSamlIdp: Delete an SAML identity provider.
+// This endpoint requires authentication by an org admin.
+func ExampleOrgService_DeleteSamlIdp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Org.DeleteSamlIdp(); err != nil {
+		panic(err)
+	}
+
+}
+
+// ListForOrg: List service accounts for your org.
+// This endpoint requires authentication by an org admin. It returns the service accounts for the organization.
+// The service accounts are returned in order of creation, with the most recently created service accounts first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleServiceAccountService_ListForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.ServiceAccount.ListForOrg(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateForOrg: Create a new service account for your org.
+// This endpoint requires authentication by an org admin. It creates a new service account for the organization.
+//
+// Parameters
+//
+//   - `label`
+func ExampleServiceAccountService_CreateForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.ServiceAccount.CreateForOrg("some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetForOrg: Get an service account for your org.
+// This endpoint requires authentication by an org admin. It returns details of the requested service account for the organization.
+//
+// Parameters
+//
+//   - `token`
+func ExampleServiceAccountService_GetForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.ServiceAccount.GetForOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteForOrg: Delete an service account for your org.
+// This endpoint requires authentication by an org admin. It deletes the requested service account for the organization.
+// This endpoint does not actually delete the service account from the database. It merely marks the token as invalid. We still want to keep the service account in the database for historical purposes.
+//
+// Parameters
+//
+//   - `token`
+func ExampleServiceAccountService_DeleteForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.ServiceAccount.DeleteForOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
+// List: List orgs.
+// This endpoint requires authentication by a Zoo employee. The orgs are returned in order of creation, with the most recently created orgs first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleOrgService_List() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.List(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetAny: Get an org.
+// This endpoint requires authentication by a Zoo employee. It gets the information for the specified org.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_GetAny() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.GetAny(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateEnterprisePricingFor: Set the enterprise price for an organization.
+// You must be a Zoo employee to perform this request.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: The price for a subscription tier.
+func ExampleOrgService_UpdateEnterprisePricingFor() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.UpdateEnterprisePricingFor(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetBalanceForAnyOrg: Get balance for an org.
+// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified org.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExamplePaymentService_GetBalanceForAnyOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.GetBalanceForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateBalanceForAnyOrg: Update balance for an org.
+// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified org.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: The data for updating a balance.
+func ExamplePaymentService_UpdateBalanceForAnyOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.UpdateBalanceForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdatePaymentBalance{MonthlyCreditsRemaining: 123.45, PrePayCashRemaining: 123.45, PrePayCreditsRemaining: 123.45})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // Ping: Return pong.
 func ExampleMetaService_Ping() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -1131,6 +1642,44 @@ func ExampleMetaService_Ping() {
 	}
 
 	result, err := client.Meta.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetPricingSubscriptions: Get the pricing for our subscriptions.
+// This is the ultimate source of truth for the pricing of our subscriptions.
+func ExampleMetaService_GetPricingSubscriptions() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Meta.GetPricingSubscriptions()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateCoupon: Create a new store coupon.
+// This endpoint requires authentication by a Zoo employee. It creates a new store coupon.
+//
+// Parameters
+//
+//   - `body`: The parameters for a new store coupon.
+func ExampleStoreService_CreateCoupon() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Store.CreateCoupon(kittycad.StoreCouponParams{PercentOff: 123})
 	if err != nil {
 		panic(err)
 	}
@@ -1468,7 +2017,7 @@ func ExampleUserService_UpdateSelf() {
 		panic(err)
 	}
 
-	result, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: "some-string", Discord: "some-string", FirstName: "some-string", Github: "some-string", LastName: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: "some-string", Discord: "some-string", FirstName: "some-string", Github: "some-string", Image: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, LastName: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -1640,6 +2189,24 @@ func ExampleUserService_GetSelfExtended() {
 	}
 
 	result, err := client.User.GetSelfExtended()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetOauth2ProvidersFor: Get the OAuth2 providers for your user.
+// If this returns an empty array, then the user has not connected any OAuth2 providers and uses raw email authentication.
+// This endpoint requires authentication by any Zoo user. It gets the providers for the authenticated user.
+func ExampleUserService_GetOauth2ProvidersFor() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.GetOauth2ProvidersFor()
 	if err != nil {
 		panic(err)
 	}
@@ -1846,6 +2413,65 @@ func ExamplePaymentService_DeleteMethodForUser() {
 
 }
 
+// GetUserSubscription: Get the subscription for a user.
+// This endpoint requires authentication by any Zoo user. It gets the subscription for the user.
+func ExamplePaymentService_GetUserSubscription() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.GetUserSubscription()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateUserSubscription: Create the subscription for a user.
+// This endpoint requires authentication by any Zoo user. It creates the subscription for the user.
+//
+// Parameters
+//
+//   - `body`: A struct of Zoo product subscriptions a user can request.
+func ExamplePaymentService_CreateUserSubscription() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.CreateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: ""})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateUserSubscription: Update the user's subscription.
+// This endpoint requires authentication by any Zoo user. It updates the subscription for the user.
+//
+// Parameters
+//
+//   - `body`: A struct of Zoo product subscriptions a user can request.
+func ExamplePaymentService_UpdateUserSubscription() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.UpdateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: ""})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // ValidateCustomerTaxInformationForUser: Validate a user's information is correct and valid for automatic tax.
 // This endpoint requires authentication by any Zoo user. It will return an error if the user's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
 func ExamplePaymentService_ValidateCustomerTaxInformationForUser() {
@@ -1857,6 +2483,44 @@ func ExamplePaymentService_ValidateCustomerTaxInformationForUser() {
 	if err := client.Payment.ValidateCustomerTaxInformationForUser(); err != nil {
 		panic(err)
 	}
+
+}
+
+// GetPrivacySettings: Get the privacy settings for a user.
+// This endpoint requires authentication by any Zoo user. It gets the privacy settings for the user.
+func ExampleUserService_GetPrivacySettings() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.GetPrivacySettings()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdatePrivacySettings: Update the user's privacy settings.
+// This endpoint requires authentication by any Zoo user. It updates the privacy settings for the user.
+//
+// Parameters
+//
+//   - `body`: Privacy settings for an org or user.
+func ExampleUserService_UpdatePrivacySettings() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.UpdatePrivacySettings(kittycad.PrivacySettings{CanTrainOnData: true})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
 
 }
 
@@ -1953,7 +2617,7 @@ func ExampleAiService_CreateTextToCadModelFeedback() {
 }
 
 // List: List users.
-// This endpoint required authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
+// This endpoint requires authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
 //
 // Parameters
 //
@@ -1980,7 +2644,7 @@ func ExampleUserService_List() {
 }
 
 // ListExtended: List users with extended information.
-// This endpoint required authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
+// This endpoint requires authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
 //
 // Parameters
 //
@@ -2084,6 +2748,49 @@ func ExampleAPICallService_ListForUser() {
 
 }
 
+// GetBalanceForAnyUser: Get balance for an user.
+// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified user.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExamplePaymentService_GetBalanceForAnyUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.GetBalanceForAnyUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateBalanceForAnyUser: Update balance for an user.
+// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified user.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: The data for updating a balance.
+func ExamplePaymentService_UpdateBalanceForAnyUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.UpdateBalanceForAnyUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdatePaymentBalance{MonthlyCreditsRemaining: 123.45, PrePayCashRemaining: 123.45, PrePayCreditsRemaining: 123.45})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateTerm: Create a terminal.
 // Attach to a docker container to create an interactive terminal.
 func ExampleExecutorService_CreateTerm() {
@@ -2156,6 +2863,8 @@ func ExampleExecutorService_CreateTerm() {
 // Parameters
 //
 //   - `fps`
+//   - `pool`
+//   - `postEffect`: Post effect type
 //   - `unlockedFramerate`
 //   - `videoResHeight`
 //   - `videoResWidth`
@@ -2168,7 +2877,7 @@ func ExampleModelingService_CommandsWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Modeling.CommandsWs(123, true, 123, 123, true, "")
+	ws, err := client.Modeling.CommandsWs(123, "some-string", kittycad.PostEffectTypePhosphor, true, 123, 123, true, "")
 	if err != nil {
 		panic(err)
 	}
