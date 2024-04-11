@@ -70,6 +70,9 @@ jobs:
           gh pr create --title "Update go lang spec docs for ${VERSION}" \
               --body "Updating the generated docs for go lang" \
               --head "$NEW_BRANCH" \
+              --assignee jessfraz \
+              --assignee irevdev \
+              --assignee franknoirot \
               --base main || true
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
