@@ -85,6 +85,44 @@ func (s *MetaService) Getdata() (*Metadata, error) {
 
 }
 
+// GetIpinfo: Get ip address information.
+func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
+	// Create the url.
+	path := "/_meta/ipinfo"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded IpAddrInfo
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // ListPrompts: List all AI prompts.
 // For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
 // This endpoint requires authentication by a Zoo employee.
@@ -195,11 +233,60 @@ func (s *AiService) GetPrompt(id UUID) (*AiPrompt, error) {
 
 }
 
+// CreateKclCodeCompletions: Generate code completions for KCL.
+// Parameters
+//
+//   - `body`: A request to generate KCL code completions.
+func (s *AiService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*KclCodeCompletionResponse, error) {
+	// Create the url.
+	path := "/ai/kcl/completions"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded KclCodeCompletionResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateTextToCad: Generate a CAD model from text.
 // Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 // One thing to note, if you hit the cache, this endpoint will return right away. So you only have to wait if the status is not `Completed` or `Failed`.
-// This is an alpha endpoint. It will change in the future. The current output is honestly pretty bad. So if you find this endpoint, you get what you pay for, which currently is nothing. But in the future will be made a lot better.
 //
 // Parameters
 //
@@ -660,7 +747,7 @@ func (s *APICallService) GetAsyncOperation(id string) (*any, error) {
 // Parameters
 //
 //   - `body`: The body of the form for email authentication.
-func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationToken, error) {
+func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTokenResponse, error) {
 	// Create the url.
 	path := "/auth/email"
 	uri := resolveRelative(s.client.server, path)
@@ -696,7 +783,7 @@ func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTo
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded VerificationToken
+	var decoded VerificationTokenResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -731,6 +818,177 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// GetAuthSaml: Get a redirect straight to the SAML IdP.
+// The UI uses this to avoid having to ask the API anything about the IdP. It already knows the SAML IdP ID from the path, so it can just link to this path and rely on the API to redirect to the actual IdP.
+//
+// Parameters
+//
+//   - `providerId`: A UUID usually v4 or v7
+//   - `callbackUrl`
+func (s *HiddenService) GetAuthSaml(providerId UUID, callbackUrl URL) error {
+	// Create the url.
+	path := "/auth/saml/provider/{{.provider_id}}/login"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"provider_id":  providerId.String(),
+		"callback_url": callbackUrl.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// PostAuthSaml: Authenticate a user via SAML
+// Parameters
+//
+//   - `providerId`: A UUID usually v4 or v7
+//   - `body`
+func (s *HiddenService) PostAuthSaml(providerId UUID, body []byte) error {
+	// Create the url.
+	path := "/auth/saml/provider/{{.provider_id}}/login"
+	uri := resolveRelative(s.client.server, path)
+
+	b := bytes.NewReader(body)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/octet-stream")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"provider_id": providerId.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// CreateDebugUploads: Uploads files to public blob storage for debugging purposes.
+// Do NOT send files here that you don't want to be public.
+//
+// Parameters
+//
+//   - `body`
+func (s *MetaService) CreateDebugUploads(body *bytes.Buffer) (*[]URL, error) {
+	// Create the url.
+	path := "/debug/uploads"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, body)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "multipart/form-data")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []URL
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateEvent: Creates an internal telemetry event.
+// We collect anonymous telemetry data for improving our product.
+//
+// Parameters
+//
+//   - `body`: Telemetry data we are collecting
+func (s *MetaService) CreateEvent(body *bytes.Buffer) error {
+	// Create the url.
+	path := "/events"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, body)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "multipart/form-data")
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -1452,8 +1710,10 @@ func (s *Oauth2Service) DeviceAuthVerify(userCode string) error {
 //
 //   - `provider`: An account provider.
 //   - `code`
+//   - `idToken`
 //   - `state`
-func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, state string) error {
+//   - `user`
+func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, idToken string, state string, user string) error {
 	// Create the url.
 	path := "/oauth2/provider/{{.provider}}/callback"
 	uri := resolveRelative(s.client.server, path)
@@ -1468,7 +1728,63 @@ func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, 
 	if err := expandURL(req.URL, map[string]string{
 		"provider": string(provider),
 		"code":     code,
+		"id_token": idToken,
 		"state":    state,
+		"user":     user,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// ProviderCallbackCreate: Listen for callbacks for the OAuth 2.0 provider.
+// This specific endpoint listens for posts of form data.
+//
+// Parameters
+//
+//   - `provider`: An account provider.
+//   - `body`: The authentication callback from the OAuth 2.0 client. This is typically posted to the redirect URL as query params after authenticating.
+func (s *Oauth2Service) ProviderCallbackCreate(provider AccountProvider, body AuthCallback) error {
+	// Create the url.
+	path := "/oauth2/provider/{{.provider}}/callback"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as a form.
+	form := url.Values{}
+	encoder := schema.NewEncoder()
+	err := encoder.Encode(body, form)
+	if err != nil {
+		return fmt.Errorf("encoding form body request failed: %v", err)
+	}
+	b := strings.NewReader(form.Encode())
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"provider": string(provider),
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1839,7 +2155,7 @@ func (s *APICallService) GetForOrg(id UUID) (*APICallWithPrice, error) {
 //     Currently, we only support scanning in ascending order.
 //
 //   - `role`: The roles for users in an organization.
-func (s *OrgService) ListMembers(limit int, pageToken string, sortBy CreatedAtSortMode, role OrgRole) (*OrgMemberResultsPage, error) {
+func (s *OrgService) ListMembers(limit int, pageToken string, sortBy CreatedAtSortMode, role UserOrgRole) (*OrgMemberResultsPage, error) {
 	// Create the url.
 	path := "/org/members"
 	uri := resolveRelative(s.client.server, path)
@@ -1887,6 +2203,10 @@ func (s *OrgService) ListMembers(limit int, pageToken string, sortBy CreatedAtSo
 }
 
 // CreateMember: Add a member to your org.
+// If the user exists, this will add them to your org. If they do not exist, this will create a new user and add them to your org.
+// In both cases the user gets an email that they have been added to the org.
+// If the user is already in your org, this will return a 400 and a message.
+// If the user is already in a different org, this will return a 400 and a message.
 // This endpoint requires authentication by an org admin. It adds the specified member to the authenticated user's org.
 //
 // Parameters
@@ -2463,6 +2783,149 @@ func (s *PaymentService) DeleteMethodForOrg(id string) error {
 
 }
 
+// GetOrgSubscription: Get the subscription for an org.
+// This endpoint requires authentication by an org admin. It gets the subscription for the authenticated user's org.
+func (s *PaymentService) GetOrgSubscription() (*ZooProductSubscriptions, error) {
+	// Create the url.
+	path := "/org/payment/subscriptions"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ZooProductSubscriptions
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateOrgSubscription: Create the subscription for an org.
+// This endpoint requires authentication by an org admin. It creates the subscription for the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: A struct of Zoo product subscriptions an organization can request.
+func (s *PaymentService) CreateOrgSubscription(body ZooProductSubscriptionsOrgRequest) (*ZooProductSubscriptions, error) {
+	// Create the url.
+	path := "/org/payment/subscriptions"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ZooProductSubscriptions
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateOrgSubscription: Update the subscription for an org.
+// This endpoint requires authentication by an org admin. It updates the subscription for the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: A struct of Zoo product subscriptions an organization can request.
+func (s *PaymentService) UpdateOrgSubscription(body ZooProductSubscriptionsOrgRequest) (*ZooProductSubscriptions, error) {
+	// Create the url.
+	path := "/org/payment/subscriptions"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ZooProductSubscriptions
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // ValidateCustomerTaxInformationForOrg: Validate an orgs's information is correct and valid for automatic tax.
 // This endpoint requires authentication by an org admin. It will return an error if the org's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
 func (s *PaymentService) ValidateCustomerTaxInformationForOrg() error {
@@ -2490,6 +2953,749 @@ func (s *PaymentService) ValidateCustomerTaxInformationForOrg() error {
 
 	// Return.
 	return nil
+
+}
+
+// GetPrivacySettings: Get the privacy settings for an org.
+// This endpoint requires authentication by an org admin. It gets the privacy settings for the authenticated user's org.
+func (s *OrgService) GetPrivacySettings() (*PrivacySettings, error) {
+	// Create the url.
+	path := "/org/privacy"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded PrivacySettings
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdatePrivacySettings: Update the privacy settings for an org.
+// This endpoint requires authentication by an org admin. It updates the privacy settings for the authenticated user's org.
+//
+// Parameters
+//
+//   - `body`: Privacy settings for an org or user.
+func (s *OrgService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySettings, error) {
+	// Create the url.
+	path := "/org/privacy"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded PrivacySettings
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetSamlIdp: Get the SAML identity provider.
+// This endpoint requires authentication by an org admin.
+func (s *OrgService) GetSamlIdp() (*SamlIdentityProvider, error) {
+	// Create the url.
+	path := "/org/saml/idp"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded SamlIdentityProvider
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateSamlIdp: Create a SAML identity provider.
+// This endpoint requires authentication by an org admin.
+//
+// Parameters
+//
+//   - `body`: Parameters for creating a SAML identity provider.
+func (s *OrgService) CreateSamlIdp(body SamlIdentityProviderCreate) (*SamlIdentityProvider, error) {
+	// Create the url.
+	path := "/org/saml/idp"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded SamlIdentityProvider
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateSamlIdp: Update the SAML identity provider.
+// This endpoint requires authentication by an org admin.
+//
+// Parameters
+//
+//   - `body`: Parameters for creating a SAML identity provider.
+func (s *OrgService) UpdateSamlIdp(body SamlIdentityProviderCreate) (*SamlIdentityProvider, error) {
+	// Create the url.
+	path := "/org/saml/idp"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded SamlIdentityProvider
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteSamlIdp: Delete an SAML identity provider.
+// This endpoint requires authentication by an org admin.
+func (s *OrgService) DeleteSamlIdp() error {
+	// Create the url.
+	path := "/org/saml/idp"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// ListForOrg: List service accounts for your org.
+// This endpoint requires authentication by an org admin. It returns the service accounts for the organization.
+// The service accounts are returned in order of creation, with the most recently created service accounts first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *ServiceAccountService) ListForOrg(limit int, pageToken string, sortBy CreatedAtSortMode) (*ServiceAccountResultsPage, error) {
+	// Create the url.
+	path := "/org/service-accounts"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ServiceAccountResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateForOrg: Create a new service account for your org.
+// This endpoint requires authentication by an org admin. It creates a new service account for the organization.
+//
+// Parameters
+//
+//   - `label`
+func (s *ServiceAccountService) CreateForOrg(label string) (*ServiceAccount, error) {
+	// Create the url.
+	path := "/org/service-accounts"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"label": label,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ServiceAccount
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetForOrg: Get an service account for your org.
+// This endpoint requires authentication by an org admin. It returns details of the requested service account for the organization.
+//
+// Parameters
+//
+//   - `token`
+func (s *ServiceAccountService) GetForOrg(token UUID) (*ServiceAccount, error) {
+	// Create the url.
+	path := "/org/service-accounts/{{.token}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"token": token.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ServiceAccount
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteForOrg: Delete an service account for your org.
+// This endpoint requires authentication by an org admin. It deletes the requested service account for the organization.
+// This endpoint does not actually delete the service account from the database. It merely marks the token as invalid. We still want to keep the service account in the database for historical purposes.
+//
+// Parameters
+//
+//   - `token`
+func (s *ServiceAccountService) DeleteForOrg(token UUID) error {
+	// Create the url.
+	path := "/org/service-accounts/{{.token}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"token": token.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// List: List orgs.
+// This endpoint requires authentication by a Zoo employee. The orgs are returned in order of creation, with the most recently created orgs first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *OrgService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*OrgResultsPage, error) {
+	// Create the url.
+	path := "/orgs"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetAny: Get an org.
+// This endpoint requires authentication by a Zoo employee. It gets the information for the specified org.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) GetAny(id UUID) (*Org, error) {
+	// Create the url.
+	path := "/orgs/{{.id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Org
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateEnterprisePricingFor: Set the enterprise price for an organization.
+// You must be a Zoo employee to perform this request.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: The price for a subscription tier.
+func (s *OrgService) UpdateEnterprisePricingFor(id UUID, body any) (*ZooProductSubscriptions, error) {
+	// Create the url.
+	path := "/orgs/{{.id}}/enterprise/pricing"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ZooProductSubscriptions
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetBalanceForAnyOrg: Get balance for an org.
+// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified org.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *PaymentService) GetBalanceForAnyOrg(id UUID) (*CustomerBalance, error) {
+	// Create the url.
+	path := "/orgs/{{.id}}/payment/balance"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded CustomerBalance
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateBalanceForAnyOrg: Update balance for an org.
+// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified org.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: The data for updating a balance.
+func (s *PaymentService) UpdateBalanceForAnyOrg(id UUID, body UpdatePaymentBalance) (*CustomerBalance, error) {
+	// Create the url.
+	path := "/orgs/{{.id}}/payment/balance"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded CustomerBalance
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
 
 }
 
@@ -2522,6 +3728,97 @@ func (s *MetaService) Ping() (*Pong, error) {
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded Pong
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetPricingSubscriptions: Get the pricing for our subscriptions.
+// This is the ultimate source of truth for the pricing of our subscriptions.
+func (s *MetaService) GetPricingSubscriptions() (*map[string][]ZooProductSubscription, error) {
+	// Create the url.
+	path := "/pricing/subscriptions"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded map[string][]ZooProductSubscription
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateCoupon: Create a new store coupon.
+// This endpoint requires authentication by a Zoo employee. It creates a new store coupon.
+//
+// Parameters
+//
+//   - `body`: The parameters for a new store coupon.
+func (s *StoreService) CreateCoupon(body StoreCouponParams) (*DiscountCode, error) {
+	// Create the url.
+	path := "/store/coupon"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded DiscountCode
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -3706,6 +5003,46 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 
 }
 
+// GetOauth2ProvidersFor: Get the OAuth2 providers for your user.
+// If this returns an empty array, then the user has not connected any OAuth2 providers and uses raw email authentication.
+// This endpoint requires authentication by any Zoo user. It gets the providers for the authenticated user.
+func (s *UserService) GetOauth2ProvidersFor() (*[]AccountProvider, error) {
+	// Create the url.
+	path := "/user/oauth2/providers"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []AccountProvider
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // GetOnboardingSelf: Get your user's onboarding status.
 // Checks key part of their api usage to determine their onboarding progress
 func (s *UserService) GetOnboardingSelf() (*Onboarding, error) {
@@ -4159,6 +5496,149 @@ func (s *PaymentService) DeleteMethodForUser(id string) error {
 
 }
 
+// GetUserSubscription: Get the subscription for a user.
+// This endpoint requires authentication by any Zoo user. It gets the subscription for the user.
+func (s *PaymentService) GetUserSubscription() (*ZooProductSubscriptions, error) {
+	// Create the url.
+	path := "/user/payment/subscriptions"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ZooProductSubscriptions
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateUserSubscription: Create the subscription for a user.
+// This endpoint requires authentication by any Zoo user. It creates the subscription for the user.
+//
+// Parameters
+//
+//   - `body`: A struct of Zoo product subscriptions a user can request.
+func (s *PaymentService) CreateUserSubscription(body ZooProductSubscriptionsUserRequest) (*ZooProductSubscriptions, error) {
+	// Create the url.
+	path := "/user/payment/subscriptions"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ZooProductSubscriptions
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateUserSubscription: Update the user's subscription.
+// This endpoint requires authentication by any Zoo user. It updates the subscription for the user.
+//
+// Parameters
+//
+//   - `body`: A struct of Zoo product subscriptions a user can request.
+func (s *PaymentService) UpdateUserSubscription(body ZooProductSubscriptionsUserRequest) (*ZooProductSubscriptions, error) {
+	// Create the url.
+	path := "/user/payment/subscriptions"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ZooProductSubscriptions
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // ValidateCustomerTaxInformationForUser: Validate a user's information is correct and valid for automatic tax.
 // This endpoint requires authentication by any Zoo user. It will return an error if the user's information is not valid for automatic tax. Otherwise, it will return an empty successful response.
 func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
@@ -4186,6 +5666,97 @@ func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
 
 	// Return.
 	return nil
+
+}
+
+// GetPrivacySettings: Get the privacy settings for a user.
+// This endpoint requires authentication by any Zoo user. It gets the privacy settings for the user.
+func (s *UserService) GetPrivacySettings() (*PrivacySettings, error) {
+	// Create the url.
+	path := "/user/privacy"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded PrivacySettings
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdatePrivacySettings: Update the user's privacy settings.
+// This endpoint requires authentication by any Zoo user. It updates the privacy settings for the user.
+//
+// Parameters
+//
+//   - `body`: Privacy settings for an org or user.
+func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySettings, error) {
+	// Create the url.
+	path := "/user/privacy"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded PrivacySettings
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
 
 }
 
@@ -4396,7 +5967,7 @@ func (s *AiService) CreateTextToCadModelFeedback(id UUID, feedback AiFeedback) e
 }
 
 // List: List users.
-// This endpoint required authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
+// This endpoint requires authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
 //
 // Parameters
 //
@@ -4454,7 +6025,7 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 }
 
 // ListExtended: List users with extended information.
-// This endpoint required authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
+// This endpoint requires authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
 //
 // Parameters
 //
@@ -4679,6 +6250,116 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 
 }
 
+// GetBalanceForAnyUser: Get balance for an user.
+// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified user.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *PaymentService) GetBalanceForAnyUser(id UUID) (*CustomerBalance, error) {
+	// Create the url.
+	path := "/users/{{.id}}/payment/balance"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded CustomerBalance
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateBalanceForAnyUser: Update balance for an user.
+// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified user.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: The data for updating a balance.
+func (s *PaymentService) UpdateBalanceForAnyUser(id UUID, body UpdatePaymentBalance) (*CustomerBalance, error) {
+	// Create the url.
+	path := "/users/{{.id}}/payment/balance"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded CustomerBalance
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateTerm: Create a terminal.
 // Attach to a docker container to create an interactive terminal.
 func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
@@ -4703,12 +6384,14 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 // Parameters
 //
 //   - `fps`
+//   - `pool`
+//   - `postEffect`: Post effect type
 //   - `unlockedFramerate`
 //   - `videoResHeight`
 //   - `videoResWidth`
 //   - `webrtc`
 //   - `body`: The websocket messages the server receives.
-func (s *ModelingService) CommandsWs(fps int, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, body any) (*websocket.Conn, error) {
+func (s *ModelingService) CommandsWs(fps int, pool string, postEffect PostEffectType, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
 	uri := resolveRelative(s.client.server, path)

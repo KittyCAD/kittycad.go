@@ -298,6 +298,11 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 		}, enumDocs)
 	}
 
+	if len(s.OneOf) == 1 && s.OneOf[0].Value.Type == "object" {
+		// We need to generate the one of type.
+		return data.generateSchemaType(name, s.OneOf[0].Value, spec)
+	}
+
 	// Check if they all have a type.
 	types := []string{}
 	typeName := ""

@@ -44,6 +44,10 @@ type Client struct {
 	Org *OrgService
 	// Payment: Operations around payments and billing.
 	Payment *PaymentService
+	// ServiceAccount: Service accounts allow organizations to call the API. Organization admins can create, delete, and list the service accounts for their org. Service accounts are scoped to an organization not individual users, these are better to use for automations than individual API tokens, since they won't stop working when an individual leaves the company.
+	ServiceAccount *ServiceAccountService
+	// Store: Operations involving our swag store.
+	Store *StoreService
 	// Unit: Unit conversion operations.
 	Unit *UnitService
 	// User: A user is someone who uses the Zoo API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
@@ -91,6 +95,12 @@ type OrgService service
 
 // PaymentService: Operations around payments and billing.
 type PaymentService service
+
+// ServiceAccountService: Service accounts allow organizations to call the API. Organization admins can create, delete, and list the service accounts for their org. Service accounts are scoped to an organization not individual users, these are better to use for automations than individual API tokens, since they won't stop working when an individual leaves the company.
+type ServiceAccountService service
+
+// StoreService: Operations involving our swag store.
+type StoreService service
 
 // UnitService: Unit conversion operations.
 type UnitService service
