@@ -3353,7 +3353,15 @@ type OkWebSocketResponseDataIceServerInfo struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkWebSocketResponseDataOkWebSocketResponseDataData: Pong response to a Ping message.
+// OkWebSocketResponseDataModeling: Pong response to a Ping message.
+type OkWebSocketResponseDataModeling struct {
+	// Data:
+	Data Data `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkWebSocketResponseDataOkWebSocketResponseDataData: Request a collection of metrics, to include WebRTC.
 type OkWebSocketResponseDataOkWebSocketResponseDataData struct {
 	// Data:
 	Data Data `json:"data" yaml:"data" schema:"data,required"`
@@ -3361,7 +3369,7 @@ type OkWebSocketResponseDataOkWebSocketResponseDataData struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkWebSocketResponseDataSdpAnswer: Request a collection of metrics, to include WebRTC.
+// OkWebSocketResponseDataSdpAnswer: The exported files.
 type OkWebSocketResponseDataSdpAnswer struct {
 	// Data:
 	Data Data `json:"data" yaml:"data" schema:"data,required"`
