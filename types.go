@@ -4083,10 +4083,12 @@ type ServiceAccountResultsPage struct {
 type Session struct {
 	// CreatedAt: The date and time the session was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// ExpiresAt: The date and time the session expires.
-	ExpiresAt Time `json:"expires_at" yaml:"expires_at" schema:"expires_at,required"`
-	// Token: The session token.
-	Token UUID `json:"token" yaml:"token" schema:"token,required"`
+	// Expires: The date and time the session expires.
+	Expires Time `json:"expires" yaml:"expires" schema:"expires,required"`
+	// ID: The unique identifier for the session.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// SessionToken: The session token.
+	SessionToken UUID `json:"session_token" yaml:"session_token" schema:"session_token,required"`
 	// UpdatedAt: The date and time the session was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user that the session belongs to.
