@@ -2497,7 +2497,7 @@ type ModelingCmdEdgeID struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEditModeEnter: Clear the selection
+// ModelingCmdEditModeEnter: Exit edit mode
 type ModelingCmdEditModeEnter struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
@@ -2603,12 +2603,12 @@ type ModelingCmdEntityLinearPattern struct {
 	Width int `json:"width" yaml:"width" schema:"width,required"`
 }
 
-// ModelingCmdEntityMakeHelix: Get a concise description of all of an extrusion's faces.
+// ModelingCmdEntityMakeHelix: Fit the view to the specified object(s).
 type ModelingCmdEntityMakeHelix struct {
-	// EdgeID: Any edge that lies on the extrusion base path.
-	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
-	// ObjectID: The Solid3d object whose extrusion is being queried.
-	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// ObjectIds: Which objects to fit to
+	ObjectIds []UUID `json:"object_ids" yaml:"object_ids" schema:"object_ids"`
+	// Padding: How much to pad the view frame by.
+	Padding float64 `json:"padding" yaml:"padding" schema:"padding,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2801,8 +2801,12 @@ type ModelingCmdModelingCmdSequence struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdTarget: Exit edit mode
+// ModelingCmdModelingCmdTarget: Get a concise description of all of an extrusion's faces.
 type ModelingCmdModelingCmdTarget struct {
+	// EdgeID: Any edge that lies on the extrusion base path.
+	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
+	// ObjectID: The Solid3d object whose extrusion is being queried.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -2993,13 +2997,19 @@ type ModelingCmdSegment struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdSelectedAtWindow: Find all IDs of selected entities
+// ModelingCmdSelectWithPoint: Get the number of objects in the scene
+type ModelingCmdSelectWithPoint struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdSelectedAtWindow: Clear the selection
 type ModelingCmdSelectedAtWindow struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdSelectionType: Get the number of objects in the scene
+// ModelingCmdSelectionType: Find all IDs of selected entities
 type ModelingCmdSelectionType struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
