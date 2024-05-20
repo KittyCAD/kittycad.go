@@ -14431,6 +14431,14 @@
             "type": "number",
             "format": "float"
           },
+          "orientation": {
+            "description": "The Camera's orientation (in the form of a quaternion)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Point4d"
+              }
+            ]
+          },
           "ortho": {
             "description": "Whether or not the camera is in ortho mode",
             "type": "boolean"
@@ -14460,6 +14468,7 @@
         },
         "required": [
           "center",
+          "orientation",
           "ortho",
           "pos",
           "up"
@@ -15826,6 +15835,20 @@
             ]
           },
           {
+            "description": "Auth token is missing from the request",
+            "type": "string",
+            "enum": [
+              "auth_token_missing"
+            ]
+          },
+          {
+            "description": "Auth token is invalid in some way (expired, incorrect format, etc)",
+            "type": "string",
+            "enum": [
+              "auth_token_invalid"
+            ]
+          },
+          {
             "description": "Client sent invalid JSON.",
             "type": "string",
             "enum": [
@@ -16161,6 +16184,23 @@
         },
         "required": [
           "cap"
+        ]
+      },
+      "FaceGetCenter": {
+        "description": "The 3D center of mass on the surface",
+        "type": "object",
+        "properties": {
+          "pos": {
+            "description": "The 3D position on the surface center of mass",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Point3d"
+              }
+            ]
+          }
+        },
+        "required": [
+          "pos"
         ]
       },
       "FaceGetGradient": {
@@ -19049,79 +19089,6 @@
             ]
           },
           {
-            "description": "Enable sketch mode, where users can sketch 2D geometry. Users choose a plane to sketch on.",
-            "type": "object",
-            "properties": {
-              "animated": {
-                "description": "Should we animate or snap for the camera transition?",
-                "type": "boolean"
-              },
-              "distance_to_plane": {
-                "description": "How far to the sketching plane?",
-                "type": "number",
-                "format": "float"
-              },
-              "origin": {
-                "description": "What's the origin of the sketching plane?",
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/Point3d"
-                  }
-                ]
-              },
-              "ortho": {
-                "description": "Should the camera use orthographic projection? In other words, should an object's size in the rendered image stay constant regardless of its distance from the camera.",
-                "type": "boolean"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "default_camera_enable_sketch_mode"
-                ]
-              },
-              "x_axis": {
-                "description": "Which 3D axis of the scene should be the X axis of the sketching plane?",
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/Point3d"
-                  }
-                ]
-              },
-              "y_axis": {
-                "description": "Which 3D axis of the scene should be the Y axis of the sketching plane?",
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/Point3d"
-                  }
-                ]
-              }
-            },
-            "required": [
-              "animated",
-              "distance_to_plane",
-              "origin",
-              "ortho",
-              "type",
-              "x_axis",
-              "y_axis"
-            ]
-          },
-          {
-            "description": "Disable sketch mode, from the default camera.",
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "default_camera_disable_sketch_mode"
-                ]
-              }
-            },
-            "required": [
-              "type"
-            ]
-          },
-          {
             "description": "Export the scene to a file.",
             "type": "object",
             "properties": {
@@ -20162,6 +20129,27 @@
             ]
           },
           {
+            "description": "Obtains the surface \"center of mass\"",
+            "type": "object",
+            "properties": {
+              "object_id": {
+                "description": "Which face is being queried.",
+                "type": "string",
+                "format": "uuid"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "face_get_center"
+                ]
+              }
+            },
+            "required": [
+              "object_id",
+              "type"
+            ]
+          },
+          {
             "description": "Determines the gradient (dFdu, dFdv) + normal vector on a brep face evaluated by parameters u,v",
             "type": "object",
             "properties": {
@@ -20447,46 +20435,6 @@
             ]
           },
           {
-            "description": "Enable sketch mode on the given plane. If you want to sketch on a face, use `enable_sketch_mode` instead.",
-            "type": "object",
-            "properties": {
-              "animated": {
-                "description": "Animate the transition to sketch mode.",
-                "type": "boolean"
-              },
-              "disable_camera_with_plane": {
-                "nullable": true,
-                "description": "Disable the camera entirely for sketch mode and sketch on a plane (this would be the normal of that plane).",
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/Point3d"
-                  }
-                ]
-              },
-              "ortho": {
-                "description": "Use an orthographic camera.",
-                "type": "boolean"
-              },
-              "plane_id": {
-                "description": "Sketch on this plane.",
-                "type": "string",
-                "format": "uuid"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "sketch_mode_enable"
-                ]
-              }
-            },
-            "required": [
-              "animated",
-              "ortho",
-              "plane_id",
-              "type"
-            ]
-          },
-          {
             "description": "Disable sketch mode. If you are sketching on a face, be sure to not disable sketch mode until you have extruded. Otherwise, your object will not be fused with the face.",
             "type": "object",
             "properties": {
@@ -20575,6 +20523,15 @@
               "ortho": {
                 "description": "Should the camera use orthographic projection? In other words, should an object's size in the rendered image stay constant regardless of its distance from the camera.",
                 "type": "boolean"
+              },
+              "planar_normal": {
+                "nullable": true,
+                "description": "If provided, ensures that the normal of the sketch plane must be aligned with this supplied normal (otherwise the camera position will be used to infer the normal to point towards the viewer)",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Point3d"
+                  }
+                ]
               },
               "type": {
                 "type": "string",
@@ -21406,6 +21363,27 @@
             ]
           },
           {
+            "description": "Fit the view to the scene with an isometric view.",
+            "type": "object",
+            "properties": {
+              "padding": {
+                "description": "How much to pad the view frame by.",
+                "default": 0.0,
+                "type": "number",
+                "format": "float"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "view_isometric"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
             "description": "Get a concise description of all of an extrusion's faces.",
             "type": "object",
             "properties": {
@@ -22181,6 +22159,25 @@
                 "type": "string",
                 "enum": [
                   "face_get_position"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "type"
+            ]
+          },
+          {
+            "description": "The response to the 'FaceGetCenter' endpoint",
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/FaceGetCenter"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "face_get_center"
                 ]
               }
             },
@@ -23374,7 +23371,7 @@
             ]
           },
           {
-            "description": "A circular arc segment.",
+            "description": "A circular arc segment. Arcs can be drawn clockwise when start > end.",
             "type": "object",
             "properties": {
               "center": {
@@ -23481,7 +23478,7 @@
             "type": "object",
             "properties": {
               "offset": {
-                "description": "Offset of the arc.",
+                "description": "Offset of the arc. Negative values will arc clockwise.",
                 "allOf": [
                   {
                     "$ref": "#/components/schemas/Angle"
@@ -23510,7 +23507,7 @@
             ]
           },
           {
-            "description": "Adds a tangent arc from current pen position to the new position.",
+            "description": "Adds a tangent arc from current pen position to the new position. Arcs will choose a clockwise or counter-clockwise direction based on the arc end position.",
             "type": "object",
             "properties": {
               "angle_snap_increment": {
@@ -23805,6 +23802,34 @@
           }
         },
         "required": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      "Point4d": {
+        "description": "A point in homogeneous (4D) space",
+        "type": "object",
+        "properties": {
+          "w": {
+            "type": "number",
+            "format": "float"
+          },
+          "x": {
+            "type": "number",
+            "format": "float"
+          },
+          "y": {
+            "type": "number",
+            "format": "float"
+          },
+          "z": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "required": [
+          "w",
           "x",
           "y",
           "z"
