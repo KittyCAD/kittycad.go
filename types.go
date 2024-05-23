@@ -3133,34 +3133,34 @@ const (
 	Oauth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode Oauth2GrantType = "urn:ietf:params:oauth:grant-type:device_code"
 )
 
-// OkModelingCmdResponseCameraDragEnd: The response to the 'Solid3dGetNextAdjacentEdge' endpoint
+// OkModelingCmdResponseCameraDragEnd: The response to the 'Solid3dGetAllOppositeEdges' endpoint
 type OkModelingCmdResponseCameraDragEnd struct {
-	// Data: The response from the `Solid3dGetNextAdjacentEdge` command.
-	Data Solid3DGetNextAdjacentEdge `json:"data" yaml:"data" schema:"data,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// OkModelingCmdResponseCameraDragMove: The response to the 'Solid3dGetAllOppositeEdges' endpoint
-type OkModelingCmdResponseCameraDragMove struct {
 	// Data: The response from the `Solid3dGetAllOppositeEdges` command.
 	Data Solid3DGetAllOppositeEdges `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseCurveGetControlPoints: The response to the 'GetSketchModePlane' endpoint
-type OkModelingCmdResponseCurveGetControlPoints struct {
-	// Data: The plane for sketch mode.
-	Data GetSketchModePlane `json:"data" yaml:"data" schema:"data,required"`
+// OkModelingCmdResponseCameraDragMove: The response to the 'SelectGet' endpoint
+type OkModelingCmdResponseCameraDragMove struct {
+	// Data: The response from the `SelectGet` command.
+	Data SelectGet `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseCurveGetType: The response to the 'EntityLinearPattern' endpoint
-type OkModelingCmdResponseCurveGetType struct {
+// OkModelingCmdResponseCurveGetControlPoints: The response to the 'EntityLinearPattern' endpoint
+type OkModelingCmdResponseCurveGetControlPoints struct {
 	// Data: The response from the `EntityLinearPattern` command.
 	Data EntityLinearPattern `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseCurveGetType: The response to the 'Solid3dGetExtrusionFaceInfo' endpoint
+type OkModelingCmdResponseCurveGetType struct {
+	// Data: Extrusion face info struct (useful for maintaining mappings between source path segment ids and extrusion faces)
+	Data Solid3DGetExtrusionFaceInfo `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3173,26 +3173,26 @@ type OkModelingCmdResponseData struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseDefaultCameraFocusOn: The response to the 'PathSegmentInfo' endpoint
+// OkModelingCmdResponseDefaultCameraFocusOn: The response to the 'PathGetVertexUuids' endpoint
 type OkModelingCmdResponseDefaultCameraFocusOn struct {
-	// Data: Info about a path segment
-	Data PathSegmentInfo `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the `PathGetVertexUuids` command.
+	Data PathGetVertexUuids `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseDefaultCameraGetSettings: The response to the 'GetEntityType' endpoint
+// OkModelingCmdResponseDefaultCameraGetSettings: The response to the 'Solid3dGetNextAdjacentEdge' endpoint
 type OkModelingCmdResponseDefaultCameraGetSettings struct {
+	// Data: The response from the `Solid3dGetNextAdjacentEdge` command.
+	Data Solid3DGetNextAdjacentEdge `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseDefaultCameraZoom: The response to the 'GetEntityType' endpoint
+type OkModelingCmdResponseDefaultCameraZoom struct {
 	// Data: The response from the `GetEntityType` command.
 	Data GetEntityType `json:"data" yaml:"data" schema:"data,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// OkModelingCmdResponseDefaultCameraZoom: The response to the 'CurveGetType' endpoint
-type OkModelingCmdResponseDefaultCameraZoom struct {
-	// Data: The response from the `CurveGetType` command.
-	Data CurveGetType `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3203,10 +3203,10 @@ type OkModelingCmdResponseEmpty struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseEntityGetAllChildUuids: The response to the 'SelectGet' endpoint
+// OkModelingCmdResponseEntityGetAllChildUuids: The response to the 'GetNumObjects' endpoint
 type OkModelingCmdResponseEntityGetAllChildUuids struct {
-	// Data: The response from the `SelectGet` command.
-	Data SelectGet `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the `GetNumObjects` command.
+	Data GetNumObjects `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3227,10 +3227,10 @@ type OkModelingCmdResponseEntityGetNumChildren struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseEntityGetParentID: The response to the 'GetNumObjects' endpoint
+// OkModelingCmdResponseEntityGetParentID: The response to the 'ZoomToFit' endpoint
 type OkModelingCmdResponseEntityGetParentID struct {
-	// Data: The response from the `GetNumObjects` command.
-	Data GetNumObjects `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the `ZoomToFit` command.
+	Data ZoomToFit `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3243,18 +3243,18 @@ type OkModelingCmdResponseExport struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseGetEntityType: The response to the 'SurfaceArea' endpoint
+// OkModelingCmdResponseGetEntityType: The response to the 'GetSketchModePlane' endpoint
 type OkModelingCmdResponseGetEntityType struct {
-	// Data: The surface area response.
-	Data SurfaceArea `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The plane for sketch mode.
+	Data GetSketchModePlane `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseGetNumObjects: The response to the 'TakeSnapshot' endpoint
+// OkModelingCmdResponseGetNumObjects: The response to the 'PathSegmentInfo' endpoint
 type OkModelingCmdResponseGetNumObjects struct {
-	// Data: The response from the `TakeSnapshot` command.
-	Data TakeSnapshot `json:"data" yaml:"data" schema:"data,required"`
+	// Data: Info about a path segment
+	Data PathSegmentInfo `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3267,14 +3267,6 @@ type OkModelingCmdResponseHighlightSetEntity struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseMouseClick: The response to the 'Solid3dGetExtrusionFaceInfo' endpoint
-type OkModelingCmdResponseMouseClick struct {
-	// Data: Extrusion face info struct (useful for maintaining mappings between source path segment ids and extrusion faces)
-	Data Solid3DGetExtrusionFaceInfo `json:"data" yaml:"data" schema:"data,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
 // OkModelingCmdResponseOkModelingCmdResponseData: The response to the 'ExtrusionFaceInfo' endpoint
 type OkModelingCmdResponseOkModelingCmdResponseData struct {
 	// Data: Extrusion face info struct (useful for maintaining mappings between source path segment ids and extrusion faces)
@@ -3283,10 +3275,10 @@ type OkModelingCmdResponseOkModelingCmdResponseData struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseSelectGet: The response to the 'PathGetVertexUuids' endpoint
+// OkModelingCmdResponseSelectGet: The response to the 'FaceIsPlanar' endpoint
 type OkModelingCmdResponseSelectGet struct {
-	// Data: The response from the `PathGetVertexUuids` command.
-	Data PathGetVertexUuids `json:"data" yaml:"data" schema:"data,required"`
+	// Data: Surface-local planar axes (if available)
+	Data FaceIsPlanar `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3299,42 +3291,58 @@ type OkModelingCmdResponseSelectWithPoint struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseSolid3DgetAllEdgeFaces: The response to the 'FaceIsPlanar' endpoint
+// OkModelingCmdResponseSolid3DgetAllEdgeFaces: The response to the 'FaceGetCenter' endpoint
 type OkModelingCmdResponseSolid3DgetAllEdgeFaces struct {
-	// Data: Surface-local planar axes (if available)
-	Data FaceIsPlanar `json:"data" yaml:"data" schema:"data,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// OkModelingCmdResponseSolid3DgetAllOppositeEdges: The response to the 'FaceGetCenter' endpoint
-type OkModelingCmdResponseSolid3DgetAllOppositeEdges struct {
 	// Data: The 3D center of mass on the surface
 	Data FaceGetCenter `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseSolid3DgetNextAdjacentEdge: The response to the 'ImportedGeometry' endpoint
-type OkModelingCmdResponseSolid3DgetNextAdjacentEdge struct {
-	// Data: Data from importing the files
-	Data ImportedGeometry `json:"data" yaml:"data" schema:"data,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// OkModelingCmdResponseSolid3DgetOppositeEdge: The response to the 'PlaneIntersectAndProject' endpoint
-type OkModelingCmdResponseSolid3DgetOppositeEdge struct {
+// OkModelingCmdResponseSolid3DgetAllOppositeEdges: The response to the 'PlaneIntersectAndProject' endpoint
+type OkModelingCmdResponseSolid3DgetAllOppositeEdges struct {
 	// Data: Corresponding coordinates of given window coordinates, intersected on given plane.
 	Data PlaneIntersectAndProject `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkModelingCmdResponseSolid3DgetPrevAdjacentEdge: The response to the 'Volume' endpoint
-type OkModelingCmdResponseSolid3DgetPrevAdjacentEdge struct {
+// OkModelingCmdResponseSolid3DgetNextAdjacentEdge: The response to the 'Volume' endpoint
+type OkModelingCmdResponseSolid3DgetNextAdjacentEdge struct {
 	// Data: The volume response.
 	Data Volume `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseSolid3DgetOppositeEdge: The response to the 'ImportedGeometry' endpoint
+type OkModelingCmdResponseSolid3DgetOppositeEdge struct {
+	// Data: Data from importing the files
+	Data ImportedGeometry `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseSolid3DgetPrevAdjacentEdge: The response to the 'SurfaceArea' endpoint
+type OkModelingCmdResponseSolid3DgetPrevAdjacentEdge struct {
+	// Data: The surface area response.
+	Data SurfaceArea `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseViewIsometric: The response to the 'TakeSnapshot' endpoint
+type OkModelingCmdResponseViewIsometric struct {
+	// Data: The response from the `TakeSnapshot` command.
+	Data TakeSnapshot `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseZoomToFit: The response to the 'CurveGetType' endpoint
+type OkModelingCmdResponseZoomToFit struct {
+	// Data: The response from the `CurveGetType` command.
+	Data CurveGetType `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5056,6 +5064,12 @@ type VerificationTokenResponse struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
+// ViewIsometric: The response from the `ViewIsometric` command.
+type ViewIsometric struct {
+	// Settings: Camera settings
+	Settings CameraSettings `json:"settings" yaml:"settings" schema:"settings,required"`
+}
+
 // Volume: The volume response.
 type Volume struct {
 	// OutputUnit: The output unit for the volume.
@@ -5175,3 +5189,9 @@ const (
 	// ZooToolDiffChromeExtension: The Diff Chrome Extension.
 	ZooToolDiffChromeExtension ZooTool = "diff_chrome_extension"
 )
+
+// ZoomToFit: The response from the `ZoomToFit` command.
+type ZoomToFit struct {
+	// Settings: Camera settings
+	Settings CameraSettings `json:"settings" yaml:"settings" schema:"settings,required"`
+}
