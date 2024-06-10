@@ -6,7 +6,7 @@ require (
 	github.com/getkin/kin-openapi v0.118.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/schema v1.3.0
-	github.com/gorilla/websocket v1.5.1
+	github.com/gorilla/websocket v1.5.2
 	github.com/iancoleman/strcase v0.3.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/wI2L/jsondiff v0.4.0
