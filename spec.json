@@ -14609,6 +14609,20 @@
           "rtc_total_freezes_duration_sec"
         ]
       },
+      "ClosePath": {
+        "description": "The response from the `ClosePath` command.",
+        "type": "object",
+        "properties": {
+          "face_id": {
+            "description": "The UUID of the lone face of the resulting solid2D.",
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "face_id"
+        ]
+      },
       "Cluster": {
         "description": "Cluster information.",
         "type": "object",
@@ -15364,6 +15378,25 @@
           "updated_at"
         ]
       },
+      "CutType": {
+        "description": "What kind of cut to do",
+        "oneOf": [
+          {
+            "description": "Round off an edge.",
+            "type": "string",
+            "enum": [
+              "fillet"
+            ]
+          },
+          {
+            "description": "Cut away an edge.",
+            "type": "string",
+            "enum": [
+              "chamfer"
+            ]
+          }
+        ]
+      },
       "DefaultCameraFocusOn": {
         "description": "The response from the `DefaultCameraFocusOn` command.",
         "type": "object"
@@ -15734,6 +15767,23 @@
       },
       "EntityLinearPattern": {
         "description": "The response from the `EntityLinearPattern` command.",
+        "type": "object",
+        "properties": {
+          "entity_ids": {
+            "description": "The UUIDs of the entities that were created.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "entity_ids"
+        ]
+      },
+      "EntityLinearPatternTransform": {
+        "description": "The response from the `EntityLinearPatternTransform` command.",
         "type": "object",
         "properties": {
           "entity_ids": {
@@ -18241,6 +18291,43 @@
         "type": "number",
         "format": "double"
       },
+      "LinearTransform": {
+        "description": "Ways to transform each solid being replicated in a repeating pattern.",
+        "type": "object",
+        "properties": {
+          "replicate": {
+            "description": "Whether to replicate the original solid in this instance.",
+            "default": true,
+            "type": "boolean"
+          },
+          "scale": {
+            "description": "Scale the replica's size along each axis. Defaults to (1, 1, 1) (i.e. the same size as the original).",
+            "default": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Point3d"
+              }
+            ]
+          },
+          "translate": {
+            "description": "Translate the replica this far along each dimension. Defaults to zero vector (i.e. same position as the original).",
+            "default": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Point3d"
+              }
+            ]
+          }
+        }
+      },
       "Mass": {
         "description": "The mass response.",
         "type": "object",
@@ -18762,6 +18849,45 @@
             ]
           },
           {
+            "description": "Command for revolving a solid 2d.",
+            "type": "object",
+            "properties": {
+              "face_ids": {
+                "description": "Which faces to remove, leaving only the shell.",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "object_id": {
+                "description": "Which Solid3D is being shelled.",
+                "type": "string",
+                "format": "uuid"
+              },
+              "shell_thickness": {
+                "description": "How thick the shell should be. Smaller values mean a thinner shell.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/LengthUnit"
+                  }
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "solid3d_shell_face"
+                ]
+              }
+            },
+            "required": [
+              "face_ids",
+              "object_id",
+              "shell_thickness",
+              "type"
+            ]
+          },
+          {
             "description": "Command for revolving a solid 2d about a brep edge",
             "type": "object",
             "properties": {
@@ -19245,6 +19371,35 @@
               "distance_type",
               "entity_id1",
               "entity_id2",
+              "type"
+            ]
+          },
+          {
+            "description": "Create a linear pattern using this entity.",
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "description": "ID of the entity being copied.",
+                "type": "string",
+                "format": "uuid"
+              },
+              "transform": {
+                "description": "How to transform each repeated solid. The total number of repetitions equals the size of this list.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LinearTransform"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "entity_linear_pattern_transform"
+                ]
+              }
+            },
+            "required": [
+              "entity_id",
+              "transform",
               "type"
             ]
           },
@@ -20036,6 +20191,15 @@
             "description": "Fillets the given edge with the specified radius.",
             "type": "object",
             "properties": {
+              "cut_type": {
+                "description": "How to apply the cut.",
+                "default": "fillet",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CutType"
+                  }
+                ]
+              },
               "edge_id": {
                 "description": "Which edge you want to fillet.",
                 "type": "string",
@@ -21712,6 +21876,25 @@
             ]
           },
           {
+            "description": "The response to the 'ClosePath' endpoint",
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/ClosePath"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "close_path"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "type"
+            ]
+          },
+          {
             "description": "The response to the 'CameraDragMove' endpoint",
             "type": "object",
             "properties": {
@@ -22425,6 +22608,25 @@
                 "type": "string",
                 "enum": [
                   "entity_get_distance"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "type"
+            ]
+          },
+          {
+            "description": "The response to the 'EntityLinearPatternTransform' endpoint",
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/EntityLinearPatternTransform"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "entity_linear_pattern_transform"
                 ]
               }
             },
