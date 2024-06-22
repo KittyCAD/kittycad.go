@@ -2318,7 +2318,7 @@ type ModelingCmdAxisIs2D struct {
 	// Center: What the camera is looking at. Center of the camera's field of vision
 	Center Point3D `json:"center" yaml:"center" schema:"center,required"`
 	// FovY: The field of view angle in the y direction, in degrees.
-	FovY float64 `json:"fov_y" yaml:"fov_y" schema:"fov_y,required"`
+	FovY float64 `json:"fov_y" yaml:"fov_y" schema:"fov_y"`
 	// Sequence: Logical timestamp. The client should increment this with every event in the current mouse drag. That way, if the events are being sent over an unordered channel, the API can ignore the older events.
 	Sequence int `json:"sequence" yaml:"sequence" schema:"sequence"`
 	// Type:
@@ -2328,9 +2328,9 @@ type ModelingCmdAxisIs2D struct {
 	// Vantage: Where the camera is positioned
 	Vantage Point3D `json:"vantage" yaml:"vantage" schema:"vantage,required"`
 	// ZFar: The distance to the far clipping plane.
-	ZFar float64 `json:"z_far" yaml:"z_far" schema:"z_far,required"`
+	ZFar float64 `json:"z_far" yaml:"z_far" schema:"z_far"`
 	// ZNear: The distance to the near clipping plane.
-	ZNear float64 `json:"z_near" yaml:"z_near" schema:"z_near,required"`
+	ZNear float64 `json:"z_near" yaml:"z_near" schema:"z_near"`
 }
 
 // ModelingCmdCameraDragEnd: Hide or show an object
