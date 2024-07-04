@@ -2865,6 +2865,7 @@ func ExampleExecutorService_CreateTerm() {
 //   - `fps`
 //   - `pool`
 //   - `postEffect`: Post effect type
+//   - `showGrid`
 //   - `unlockedFramerate`
 //   - `videoResHeight`
 //   - `videoResWidth`
@@ -2877,7 +2878,7 @@ func ExampleModelingService_CommandsWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Modeling.CommandsWs(123, "some-string", kittycad.PostEffectTypePhosphor, true, 123, 123, true, "")
+	ws, err := client.Modeling.CommandsWs(123, "some-string", kittycad.PostEffectTypePhosphor, true, true, 123, 123, true, "")
 	if err != nil {
 		panic(err)
 	}

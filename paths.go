@@ -6386,12 +6386,13 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 //   - `fps`
 //   - `pool`
 //   - `postEffect`: Post effect type
+//   - `showGrid`
 //   - `unlockedFramerate`
 //   - `videoResHeight`
 //   - `videoResWidth`
 //   - `webrtc`
 //   - `body`: The websocket messages the server receives.
-func (s *ModelingService) CommandsWs(fps int, pool string, postEffect PostEffectType, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, body any) (*websocket.Conn, error) {
+func (s *ModelingService) CommandsWs(fps int, pool string, postEffect PostEffectType, showGrid bool, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
 	uri := resolveRelative(s.client.server, path)

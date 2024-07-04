@@ -3837,11 +3837,11 @@ const (
 // PerspectiveCameraParameters: Defines a perspective view.
 type PerspectiveCameraParameters struct {
 	// FovY: Camera frustum vertical field of view.
-	FovY float64 `json:"fov_y" yaml:"fov_y" schema:"fov_y,required"`
+	FovY float64 `json:"fov_y" yaml:"fov_y" schema:"fov_y"`
 	// ZFar: Camera frustum far plane.
-	ZFar float64 `json:"z_far" yaml:"z_far" schema:"z_far,required"`
+	ZFar float64 `json:"z_far" yaml:"z_far" schema:"z_far"`
 	// ZNear: Camera frustum near plane.
-	ZNear float64 `json:"z_near" yaml:"z_near" schema:"z_near,required"`
+	ZNear float64 `json:"z_near" yaml:"z_near" schema:"z_near"`
 }
 
 // PlanInterval: A plan's interval.
