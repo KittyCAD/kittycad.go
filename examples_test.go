@@ -174,6 +174,7 @@ func ExampleAiService_CreateKclCodeCompletions() {
 // Parameters
 //
 //   - `outputFormat`: The valid types of output file formats.
+//   - `kcl`
 //   - `body`: Body for generating models from text.
 func ExampleAiService_CreateTextToCad() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -181,7 +182,7 @@ func ExampleAiService_CreateTextToCad() {
 		panic(err)
 	}
 
-	result, err := client.Ai.CreateTextToCad("", kittycad.TextToCadCreateBody{Prompt: "some-string"})
+	result, err := client.Ai.CreateTextToCad("", true, kittycad.TextToCadCreateBody{Prompt: "some-string"})
 	if err != nil {
 		panic(err)
 	}
@@ -361,7 +362,7 @@ func ExampleAPICallService_GetAsyncOperation() {
 		panic(err)
 	}
 
-	result, err := client.APICall.GetAsyncOperation("some-string")
+	result, err := client.APICall.GetAsyncOperation(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}

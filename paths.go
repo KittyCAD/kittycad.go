@@ -291,8 +291,9 @@ func (s *AiService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*Kc
 // Parameters
 //
 //   - `outputFormat`: The valid types of output file formats.
+//   - `kcl`
 //   - `body`: Body for generating models from text.
-func (s *AiService) CreateTextToCad(outputFormat FileExportFormat, body TextToCadCreateBody) (*TextToCad, error) {
+func (s *AiService) CreateTextToCad(outputFormat FileExportFormat, kcl bool, body TextToCadCreateBody) (*TextToCad, error) {
 	// Create the url.
 	path := "/ai/text-to-cad/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -315,6 +316,7 @@ func (s *AiService) CreateTextToCad(outputFormat FileExportFormat, body TextToCa
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
 		"output_format": string(outputFormat),
+		"kcl":           strconv.FormatBool(kcl),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -699,7 +701,7 @@ func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy
 // Parameters
 //
 //   - `id`
-func (s *APICallService) GetAsyncOperation(id string) (*any, error) {
+func (s *APICallService) GetAsyncOperation(id UUID) (*any, error) {
 	// Create the url.
 	path := "/async/operations/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -712,7 +714,7 @@ func (s *APICallService) GetAsyncOperation(id string) (*any, error) {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id,
+		"id": id.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
