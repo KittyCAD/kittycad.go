@@ -506,6 +506,15 @@
             "schema": {
               "$ref": "#/components/schemas/FileExportFormat"
             }
+          },
+          {
+            "in": "query",
+            "name": "kcl",
+            "description": "If we should output the kcl for the model.",
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
           }
         ],
         "requestBody": {
@@ -1249,7 +1258,8 @@
             "description": "The ID of the async operation.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -12692,6 +12702,13 @@
             "enum": [
               "text_to_cad"
             ]
+          },
+          {
+            "description": "Text to KCL.",
+            "type": "string",
+            "enum": [
+              "text_to_kcl"
+            ]
           }
         ]
       },
@@ -13209,7 +13226,7 @@
             "description": "The API token itself.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/Uuid"
+                "$ref": "#/components/schemas/StringUuid"
               }
             ]
           },
@@ -14011,6 +14028,11 @@
             "description": "Text to CAD.",
             "type": "object",
             "properties": {
+              "code": {
+                "nullable": true,
+                "description": "The code for the model. This is optional but will be required in the future once we are at v1.",
+                "type": "string"
+              },
               "completed_at": {
                 "nullable": true,
                 "title": "DateTime",
@@ -14043,6 +14065,14 @@
                 "allOf": [
                   {
                     "$ref": "#/components/schemas/Uuid"
+                  }
+                ]
+              },
+              "model": {
+                "description": "The model being used.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/TextToCadModel"
                   }
                 ]
               },
@@ -14110,6 +14140,7 @@
             "required": [
               "created_at",
               "id",
+              "model",
               "model_version",
               "output_format",
               "prompt",
@@ -15771,6 +15802,23 @@
         },
         "required": [
           "entity_id"
+        ]
+      },
+      "EntityGetSketchPaths": {
+        "description": "The response from the `EntityGetSketchPaths` command.",
+        "type": "object",
+        "properties": {
+          "entity_ids": {
+            "description": "The UUIDs of the sketch paths.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "entity_ids"
         ]
       },
       "EntityLinearPattern": {
@@ -17584,6 +17632,11 @@
             "description": "SolidWorks part (SLDPRT) format.",
             "type": "object",
             "properties": {
+              "split_closed_faces": {
+                "description": "Splits all closed faces into two open faces.\n\nDefaults to `false` but is implicitly `true` when importing into the engine.",
+                "default": false,
+                "type": "boolean"
+              },
               "type": {
                 "type": "string",
                 "enum": [
@@ -17599,6 +17652,11 @@
             "description": "ISO 10303-21 (STEP) format.",
             "type": "object",
             "properties": {
+              "split_closed_faces": {
+                "description": "Splits all closed faces into two open faces.\n\nDefaults to `false` but is implicitly `true` when importing into the engine.",
+                "default": false,
+                "type": "boolean"
+              },
               "type": {
                 "type": "string",
                 "enum": [
@@ -19347,6 +19405,27 @@
             ]
           },
           {
+            "description": "What are all UUIDs of all the paths sketched on top of this entity?",
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "description": "ID of the entity being queried.",
+                "type": "string",
+                "format": "uuid"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "entity_get_sketch_paths"
+                ]
+              }
+            },
+            "required": [
+              "entity_id",
+              "type"
+            ]
+          },
+          {
             "description": "What is the distance between these two entities?",
             "type": "object",
             "properties": {
@@ -19383,7 +19462,7 @@
             ]
           },
           {
-            "description": "Create a linear pattern using this entity.",
+            "description": "Create a pattern using this entity by specifying the transform for each desired repetition.",
             "type": "object",
             "properties": {
               "entity_id": {
@@ -19392,7 +19471,7 @@
                 "format": "uuid"
               },
               "transform": {
-                "description": "How to transform each repeated solid. The total number of repetitions equals the size of this list.",
+                "description": "How to transform each repeated solid. The 0th transform will create the first copy of the entity. The total number of (optional) repetitions equals the size of this list.",
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/LinearTransform"
@@ -19603,6 +19682,36 @@
               "axis",
               "ids",
               "point",
+              "type"
+            ]
+          },
+          {
+            "description": "Mirror the input entities over the specified edge. (Currently only supports sketches)",
+            "type": "object",
+            "properties": {
+              "edge_id": {
+                "description": "The edge to use as the mirror axis, must be linear and lie in the plane of the solid",
+                "type": "string",
+                "format": "uuid"
+              },
+              "ids": {
+                "description": "ID of the mirror entities.",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "entity_mirror_across_edge"
+                ]
+              }
+            },
+            "required": [
+              "edge_id",
+              "ids",
               "type"
             ]
           },
@@ -20935,6 +21044,34 @@
             ]
           },
           {
+            "description": "Obtain curve id by index",
+            "type": "object",
+            "properties": {
+              "index": {
+                "description": "IDs of the vertices for which to obtain curve ids from",
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0
+              },
+              "path_id": {
+                "description": "Which path to query",
+                "type": "string",
+                "format": "uuid"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "path_get_curve_uuid"
+                ]
+              }
+            },
+            "required": [
+              "index",
+              "path_id",
+              "type"
+            ]
+          },
+          {
             "description": "Obtain vertex ids for a path",
             "type": "object",
             "properties": {
@@ -20947,6 +21084,27 @@
                 "type": "string",
                 "enum": [
                   "path_get_vertex_uuids"
+                ]
+              }
+            },
+            "required": [
+              "path_id",
+              "type"
+            ]
+          },
+          {
+            "description": "Obtain the sketch target id (if the path was drawn in sketchmode) for a path",
+            "type": "object",
+            "properties": {
+              "path_id": {
+                "description": "Which path to query",
+                "type": "string",
+                "format": "uuid"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "path_get_sketch_target_uuid"
                 ]
               }
             },
@@ -21884,6 +22042,25 @@
             ]
           },
           {
+            "description": "The response to the 'EntityGetSketchPaths' endpoint",
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/EntityGetSketchPaths"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "entity_get_sketch_paths"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "type"
+            ]
+          },
+          {
             "description": "The response to the 'ClosePath' endpoint",
             "type": "object",
             "properties": {
@@ -22321,6 +22498,25 @@
             ]
           },
           {
+            "description": "The response to the 'PathGetCurveUuid' endpoint",
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/PathGetCurveUuid"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "path_get_curve_uuid"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "type"
+            ]
+          },
+          {
             "description": "The response to the 'PathGetVertexUuids' endpoint",
             "type": "object",
             "properties": {
@@ -22331,6 +22527,25 @@
                 "type": "string",
                 "enum": [
                   "path_get_vertex_uuids"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "type"
+            ]
+          },
+          {
+            "description": "The response to the 'PathGetSketchTargetUuid' endpoint",
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/PathGetSketchTargetUuid"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "path_get_sketch_target_uuid"
                 ]
               }
             },
@@ -23536,6 +23751,20 @@
           "angle_between"
         ]
       },
+      "PathGetCurveUuid": {
+        "description": "The response from the `PathGetCurveUuid` command.",
+        "type": "object",
+        "properties": {
+          "curve_id": {
+            "description": "The UUID of the curve entity.",
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "curve_id"
+        ]
+      },
       "PathGetCurveUuidsForVertices": {
         "description": "The response from the `PathGetCurveUuidsForVertices` command.",
         "type": "object",
@@ -23568,6 +23797,18 @@
         "required": [
           "segments"
         ]
+      },
+      "PathGetSketchTargetUuid": {
+        "description": "The response from the `PathGetSketchTargetUuid` command.",
+        "type": "object",
+        "properties": {
+          "target_id": {
+            "nullable": true,
+            "description": "The UUID of the sketch target.",
+            "type": "string",
+            "format": "uuid"
+          }
+        }
       },
       "PathGetVertexUuids": {
         "description": "The response from the `PathGetVertexUuids` command.",
@@ -24558,7 +24799,7 @@
             "description": "The API token itself.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/Uuid"
+                "$ref": "#/components/schemas/StringUuid"
               }
             ]
           },
@@ -24627,7 +24868,7 @@
             "description": "The session token.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/Uuid"
+                "$ref": "#/components/schemas/SessionTokenUuid"
               }
             ]
           },
@@ -24654,6 +24895,10 @@
           "updated_at",
           "user_id"
         ]
+      },
+      "SessionTokenUuid": {
+        "description": "An auth token. A uuid with a prefix of ses-",
+        "type": "string"
       },
       "Solid3dGetAllEdgeFaces": {
         "description": "The response from the `Solid3dGetAllEdgeFaces` command.",
@@ -24776,6 +25021,10 @@
         "required": [
           "percent_off"
         ]
+      },
+      "StringUuid": {
+        "description": "An auth token. A UUIDv4",
+        "type": "string"
       },
       "SubscriptionTierFeature": {
         "description": "A subscription tier feature.",
@@ -25069,6 +25318,11 @@
         "description": "A response from a text to CAD prompt.",
         "type": "object",
         "properties": {
+          "code": {
+            "nullable": true,
+            "description": "The code for the model. This is optional but will be required in the future once we are at v1.",
+            "type": "string"
+          },
           "completed_at": {
             "nullable": true,
             "title": "DateTime",
@@ -25101,6 +25355,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/Uuid"
+              }
+            ]
+          },
+          "model": {
+            "description": "The model being used.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TextToCadModel"
               }
             ]
           },
@@ -25162,6 +25424,7 @@
         "required": [
           "created_at",
           "id",
+          "model",
           "model_version",
           "output_format",
           "prompt",
@@ -25181,6 +25444,25 @@
         },
         "required": [
           "prompt"
+        ]
+      },
+      "TextToCadModel": {
+        "description": "A type of Text-to-CAD model.",
+        "oneOf": [
+          {
+            "description": "CAD.",
+            "type": "string",
+            "enum": [
+              "cad"
+            ]
+          },
+          {
+            "description": "KCL.",
+            "type": "string",
+            "enum": [
+              "kcl"
+            ]
+          }
         ]
       },
       "TextToCadResultsPage": {
