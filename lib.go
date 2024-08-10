@@ -52,7 +52,6 @@ func NewClient(token, userAgent string) (*Client, error) {
 	}
 
 	// Add the services to our client.
-	client.Ai = &AiService{client: client}
 	client.APICall = &APICallService{client: client}
 	client.APIToken = &APITokenService{client: client}
 	client.App = &AppService{client: client}
@@ -62,6 +61,7 @@ func NewClient(token, userAgent string) (*Client, error) {
 	client.File = &FileService{client: client}
 	client.Hidden = &HiddenService{client: client}
 	client.Meta = &MetaService{client: client}
+	client.Ml = &MlService{client: client}
 	client.Modeling = &ModelingService{client: client}
 	client.Oauth2 = &Oauth2Service{client: client}
 	client.Org = &OrgService{client: client}

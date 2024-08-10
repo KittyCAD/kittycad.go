@@ -205,7 +205,7 @@ type AiPrompt struct {
 	// ID: The unique identifier for the AI Prompt.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Metadata: The metadata for the prompt.
-	Metadata any `json:"metadata" yaml:"metadata" schema:"metadata"`
+	Metadata AiPromptMetadata `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// ModelVersion: The version of the model.
 	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
 	// OutputFile: The output file. In the case of TextToCad this is a link to a file in a GCP bucket.
@@ -222,6 +222,12 @@ type AiPrompt struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the AI Prompt.
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// AiPromptMetadata: Metadata for an AI prompt.
+type AiPromptMetadata struct {
+	// Code: Code for the model.
+	Code string `json:"code" yaml:"code" schema:"code"`
 }
 
 // AiPromptResultsPage: A single page of results
