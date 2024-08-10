@@ -3,6 +3,8 @@ on:
     tags:
       - v*
 name: make-release
+permissions:
+  contents: write
 jobs:
   makerelease:
     name: make release
