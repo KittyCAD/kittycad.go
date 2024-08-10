@@ -123,7 +123,7 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 
 }
 
-// ListPrompts: List all AI prompts.
+// ListAiPrompts: List all AI prompts.
 // For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
 // This endpoint requires authentication by a Zoo employee.
 // The AI prompts are returned in order of creation, with the most recently created AI prompts first.
@@ -137,7 +137,7 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 //   - `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
 //     Currently, we only support scanning in ascending order.
-func (s *AiService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSortMode) (*AiPromptResultsPage, error) {
+func (s *MlService) ListAiPrompts(limit int, pageToken string, sortBy CreatedAtSortMode) (*AiPromptResultsPage, error) {
 	// Create the url.
 	path := "/ai-prompts"
 	uri := resolveRelative(s.client.server, path)
@@ -183,13 +183,13 @@ func (s *AiService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSor
 
 }
 
-// GetPrompt: Get an AI prompt.
+// GetAiPrompt: Get an AI prompt.
 // This endpoint requires authentication by a Zoo employee.
 //
 // Parameters
 //
 //   - `id`
-func (s *AiService) GetPrompt(id UUID) (*AiPrompt, error) {
+func (s *MlService) GetAiPrompt(id UUID) (*AiPrompt, error) {
 	// Create the url.
 	path := "/ai-prompts/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -237,7 +237,7 @@ func (s *AiService) GetPrompt(id UUID) (*AiPrompt, error) {
 // Parameters
 //
 //   - `body`: A request to generate KCL code completions.
-func (s *AiService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*KclCodeCompletionResponse, error) {
+func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*KclCodeCompletionResponse, error) {
 	// Create the url.
 	path := "/ai/kcl/completions"
 	uri := resolveRelative(s.client.server, path)
@@ -293,7 +293,7 @@ func (s *AiService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*Kc
 //   - `outputFormat`: The valid types of output file formats.
 //   - `kcl`
 //   - `body`: Body for generating models from text.
-func (s *AiService) CreateTextToCad(outputFormat FileExportFormat, kcl bool, body TextToCadCreateBody) (*TextToCad, error) {
+func (s *MlService) CreateTextToCad(outputFormat FileExportFormat, kcl bool, body TextToCadCreateBody) (*TextToCad, error) {
 	// Create the url.
 	path := "/ai/text-to-cad/{{.output_format}}"
 	uri := resolveRelative(s.client.server, path)
@@ -5828,7 +5828,7 @@ func (s *UserService) GetSessionFor(token UUID) (*Session, error) {
 //     Currently, we only support scanning in ascending order.
 //
 //   - `noModels`
-func (s *AiService) ListTextToCadModelsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, noModels bool) (*TextToCadResultsPage, error) {
+func (s *MlService) ListTextToCadModelsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, noModels bool) (*TextToCadResultsPage, error) {
 	// Create the url.
 	path := "/user/text-to-cad"
 	uri := resolveRelative(s.client.server, path)
@@ -5881,7 +5881,7 @@ func (s *AiService) ListTextToCadModelsForUser(limit int, pageToken string, sort
 // Parameters
 //
 //   - `id`
-func (s *AiService) GetTextToCadModelForUser(id UUID) (*TextToCad, error) {
+func (s *MlService) GetTextToCadModelForUser(id UUID) (*TextToCad, error) {
 	// Create the url.
 	path := "/user/text-to-cad/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -5932,7 +5932,7 @@ func (s *AiService) GetTextToCadModelForUser(id UUID) (*TextToCad, error) {
 //
 //   - `id`
 //   - `feedback`: Human feedback on an AI response.
-func (s *AiService) CreateTextToCadModelFeedback(id UUID, feedback AiFeedback) error {
+func (s *MlService) CreateTextToCadModelFeedback(id UUID, feedback AiFeedback) error {
 	// Create the url.
 	path := "/user/text-to-cad/{{.id}}"
 	uri := resolveRelative(s.client.server, path)

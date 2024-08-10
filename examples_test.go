@@ -97,7 +97,7 @@ func ExampleMetaService_GetIpinfo() {
 
 }
 
-// ListPrompts: List all AI prompts.
+// ListAiPrompts: List all AI prompts.
 // For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
 // This endpoint requires authentication by a Zoo employee.
 // The AI prompts are returned in order of creation, with the most recently created AI prompts first.
@@ -111,13 +111,13 @@ func ExampleMetaService_GetIpinfo() {
 //   - `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
 //     Currently, we only support scanning in ascending order.
-func ExampleAiService_ListPrompts() {
+func ExampleMlService_ListAiPrompts() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ai.ListPrompts(123, "some-string", "")
+	result, err := client.Ml.ListAiPrompts(123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}
@@ -126,19 +126,19 @@ func ExampleAiService_ListPrompts() {
 
 }
 
-// GetPrompt: Get an AI prompt.
+// GetAiPrompt: Get an AI prompt.
 // This endpoint requires authentication by a Zoo employee.
 //
 // Parameters
 //
 //   - `id`
-func ExampleAiService_GetPrompt() {
+func ExampleMlService_GetAiPrompt() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ai.GetPrompt(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.Ml.GetAiPrompt(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -151,13 +151,13 @@ func ExampleAiService_GetPrompt() {
 // Parameters
 //
 //   - `body`: A request to generate KCL code completions.
-func ExampleAiService_CreateKclCodeCompletions() {
+func ExampleMlService_CreateKclCodeCompletions() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ai.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: "some-string", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: "some-string", Prompt: "some-string", Stop: []string{"some-string"}, Stream: true, Suffix: "some-string", Temperature: 123.45, TopP: 123.45})
+	result, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: "some-string", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: "some-string", Prompt: "some-string", Stop: []string{"some-string"}, Stream: true, Suffix: "some-string", Temperature: 123.45, TopP: 123.45})
 	if err != nil {
 		panic(err)
 	}
@@ -176,13 +176,13 @@ func ExampleAiService_CreateKclCodeCompletions() {
 //   - `outputFormat`: The valid types of output file formats.
 //   - `kcl`
 //   - `body`: Body for generating models from text.
-func ExampleAiService_CreateTextToCad() {
+func ExampleMlService_CreateTextToCad() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ai.CreateTextToCad("", true, kittycad.TextToCadCreateBody{Prompt: "some-string"})
+	result, err := client.Ml.CreateTextToCad("", true, kittycad.TextToCadCreateBody{Prompt: "some-string"})
 	if err != nil {
 		panic(err)
 	}
@@ -2562,13 +2562,13 @@ func ExampleUserService_GetSessionFor() {
 //     Currently, we only support scanning in ascending order.
 //
 //   - `noModels`
-func ExampleAiService_ListTextToCadModelsForUser() {
+func ExampleMlService_ListTextToCadModelsForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ai.ListTextToCadModelsForUser(123, "some-string", "", true)
+	result, err := client.Ml.ListTextToCadModelsForUser(123, "some-string", "", true)
 	if err != nil {
 		panic(err)
 	}
@@ -2583,13 +2583,13 @@ func ExampleAiService_ListTextToCadModelsForUser() {
 // Parameters
 //
 //   - `id`
-func ExampleAiService_GetTextToCadModelForUser() {
+func ExampleMlService_GetTextToCadModelForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ai.GetTextToCadModelForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.Ml.GetTextToCadModelForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -2605,13 +2605,13 @@ func ExampleAiService_GetTextToCadModelForUser() {
 //
 //   - `id`
 //   - `feedback`: Human feedback on an AI response.
-func ExampleAiService_CreateTextToCadModelFeedback() {
+func ExampleMlService_CreateTextToCadModelFeedback() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.Ai.CreateTextToCadModelFeedback(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ""); err != nil {
+	if err := client.Ml.CreateTextToCadModelFeedback(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ""); err != nil {
 		panic(err)
 	}
 
