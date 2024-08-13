@@ -190,6 +190,10 @@ const (
 	AiFeedbackThumbsUp AiFeedback = "thumbs_up"
 	// AiFeedbackThumbsDown: Thumbs down.
 	AiFeedbackThumbsDown AiFeedback = "thumbs_down"
+	// AiFeedbackAccepted: Accepted.
+	AiFeedbackAccepted AiFeedback = "accepted"
+	// AiFeedbackRejected: Rejected.
+	AiFeedbackRejected AiFeedback = "rejected"
 )
 
 // AiPrompt: An AI prompt.
