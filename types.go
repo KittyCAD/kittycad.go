@@ -182,76 +182,6 @@ type AddressDetails struct {
 	Zip string `json:"zip" yaml:"zip" schema:"zip"`
 }
 
-// AiFeedback: Human feedback on an AI response.
-type AiFeedback string
-
-const (
-	// AiFeedbackThumbsUp: Thumbs up.
-	AiFeedbackThumbsUp AiFeedback = "thumbs_up"
-	// AiFeedbackThumbsDown: Thumbs down.
-	AiFeedbackThumbsDown AiFeedback = "thumbs_down"
-	// AiFeedbackAccepted: Accepted.
-	AiFeedbackAccepted AiFeedback = "accepted"
-	// AiFeedbackRejected: Rejected.
-	AiFeedbackRejected AiFeedback = "rejected"
-)
-
-// AiPrompt: An AI prompt.
-type AiPrompt struct {
-	// CompletedAt: When the prompt was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
-	// CreatedAt: The date and time the AI prompt was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Error: The error message if the prompt failed.
-	Error string `json:"error" yaml:"error" schema:"error"`
-	// Feedback: Feedback from the user, if any.
-	Feedback AiFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
-	// ID: The unique identifier for the AI Prompt.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Metadata: The metadata for the prompt.
-	Metadata AiPromptMetadata `json:"metadata" yaml:"metadata" schema:"metadata"`
-	// ModelVersion: The version of the model.
-	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
-	// OutputFile: The output file. In the case of TextToCad this is a link to a file in a GCP bucket.
-	OutputFile string `json:"output_file" yaml:"output_file" schema:"output_file"`
-	// Prompt: The prompt.
-	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
-	// StartedAt: When the prompt was started.
-	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
-	// Status: The status of the prompt.
-	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// Type: The type of prompt.
-	Type AiPromptType `json:"type" yaml:"type" schema:"type,required"`
-	// UpdatedAt: The date and time the AI prompt was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// UserID: The user ID of the user who created the AI Prompt.
-	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
-}
-
-// AiPromptMetadata: Metadata for an AI prompt.
-type AiPromptMetadata struct {
-	// Code: Code for the model.
-	Code string `json:"code" yaml:"code" schema:"code"`
-}
-
-// AiPromptResultsPage: A single page of results
-type AiPromptResultsPage struct {
-	// Items: list of items on this page of results
-	Items []AiPrompt `json:"items" yaml:"items" schema:"items,required"`
-	// NextPage: token used to fetch the next page of results (if any)
-	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
-}
-
-// AiPromptType: A type of AI prompt.
-type AiPromptType string
-
-const (
-	// AiPromptTypeTextToCad: Text to CAD.
-	AiPromptTypeTextToCad AiPromptType = "text_to_cad"
-	// AiPromptTypeTextToKcl: Text to KCL.
-	AiPromptTypeTextToKcl AiPromptType = "text_to_kcl"
-)
-
 // Angle: An angle, with a specific unit.
 type Angle struct {
 	// Unit: What unit is the measurement?
@@ -577,7 +507,7 @@ type AsyncAPICallOutputOutputs struct {
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error" schema:"error"`
 	// Feedback: Feedback from the user, if any.
-	Feedback AiFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
+	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
 	// ID: The unique identifier of the API call.
 	//
 	// This is the same as the API call ID.
@@ -592,6 +522,44 @@ type AsyncAPICallOutputOutputs struct {
 	Outputs map[string]Base64 `json:"outputs" yaml:"outputs" schema:"outputs"`
 	// Prompt: The prompt.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
+	// StartedAt: The time and date the API call was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the API call.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// UpdatedAt: The time and date the API call was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the API call.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// AsyncAPICallOutputSrcFormat: Text to CAD iteration.
+type AsyncAPICallOutputSrcFormat struct {
+	// Code: The code for the new model.
+	Code string `json:"code" yaml:"code" schema:"code,required"`
+	// CompletedAt: The time and date the API call was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the API call was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// Feedback: Feedback from the user, if any.
+	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
+	// ID: The unique identifier of the API call.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Model: The model being used.
+	Model TextToCadModel `json:"model" yaml:"model" schema:"model,required"`
+	// ModelVersion: The version of the model.
+	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
+	// OriginalSourceCode: The original source code for the model, previous to the changes.
+	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code,required"`
+	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
+	// SourceRanges: The source ranges the user suggested to change.
+	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
 	// StartedAt: The time and date the API call was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the API call.
@@ -630,6 +598,8 @@ const (
 	AsyncAPICallTypeFileSurfaceArea AsyncAPICallType = "file_surface_area"
 	// AsyncAPICallTypeTextToCad: Text to CAD.
 	AsyncAPICallTypeTextToCad AsyncAPICallType = "text_to_cad"
+	// AsyncAPICallTypeTextToCadIteration: Text to CAD iteration.
+	AsyncAPICallTypeTextToCadIteration AsyncAPICallType = "text_to_cad_iteration"
 )
 
 // AuthCallback: The authentication callback from the OAuth 2.0 client. This is typically posted to the redirect URL as query params after authenticating.
@@ -2249,6 +2219,82 @@ const (
 	MethodPatch Method = "PATCH"
 	// MethodExtension: A catch all.
 	MethodExtension Method = "EXTENSION"
+)
+
+// MlFeedback: Human feedback on an ML response.
+type MlFeedback string
+
+const (
+	// MlFeedbackThumbsUp: Thumbs up.
+	MlFeedbackThumbsUp MlFeedback = "thumbs_up"
+	// MlFeedbackThumbsDown: Thumbs down.
+	MlFeedbackThumbsDown MlFeedback = "thumbs_down"
+	// MlFeedbackAccepted: Accepted.
+	MlFeedbackAccepted MlFeedback = "accepted"
+	// MlFeedbackRejected: Rejected.
+	MlFeedbackRejected MlFeedback = "rejected"
+)
+
+// MlPrompt: A ML prompt.
+type MlPrompt struct {
+	// CompletedAt: When the prompt was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The date and time the ML prompt was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error message if the prompt failed.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// Feedback: Feedback from the user, if any.
+	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
+	// ID: The unique identifier for the ML prompt.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Metadata: The metadata for the prompt.
+	Metadata MlPromptMetadata `json:"metadata" yaml:"metadata" schema:"metadata"`
+	// ModelVersion: The version of the model.
+	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
+	// OutputFile: The output file. In the case of TextToCad this is a link to a file in a GCP bucket.
+	OutputFile string `json:"output_file" yaml:"output_file" schema:"output_file"`
+	// Prompt: The prompt.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
+	// StartedAt: When the prompt was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the prompt.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type: The type of prompt.
+	Type MlPromptType `json:"type" yaml:"type" schema:"type,required"`
+	// UpdatedAt: The date and time the ML prompt was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the ML prompt.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// MlPromptMetadata: Metadata for a ML prompt.
+type MlPromptMetadata struct {
+	// Code: Code for the model.
+	Code string `json:"code" yaml:"code" schema:"code"`
+	// OriginalSourceCode: The original source code for the model.
+	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code"`
+	// SourceRanges: The source ranges the user suggested to change.
+	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
+}
+
+// MlPromptResultsPage: A single page of results
+type MlPromptResultsPage struct {
+	// Items: list of items on this page of results
+	Items []MlPrompt `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// MlPromptType: A type of ML prompt.
+type MlPromptType string
+
+const (
+	// MlPromptTypeTextToCad: Text to CAD.
+	MlPromptTypeTextToCad MlPromptType = "text_to_cad"
+	// MlPromptTypeTextToKcl: Text to KCL.
+	MlPromptTypeTextToKcl MlPromptType = "text_to_kcl"
+	// MlPromptTypeTextToKclIteration: Text to Kcl iteration,
+	MlPromptTypeTextToKclIteration MlPromptType = "text_to_kcl_iteration"
 )
 
 // ModelingAppEventType: Type for modeling-app events
@@ -4281,6 +4327,30 @@ type Solid3DGetPrevAdjacentEdge struct {
 	Edge UUID `json:"edge" yaml:"edge" schema:"edge"`
 }
 
+// SourcePosition: A position in the source code.
+type SourcePosition struct {
+	// Column: The column number.
+	Column int `json:"column" yaml:"column" schema:"column,required"`
+	// Line: The line number.
+	Line int `json:"line" yaml:"line" schema:"line,required"`
+}
+
+// SourceRange: A source range of code.
+type SourceRange struct {
+	// End: The end of the range.
+	End SourcePosition `json:"end" yaml:"end" schema:"end,required"`
+	// Start: The start of the range.
+	Start SourcePosition `json:"start" yaml:"start" schema:"start,required"`
+}
+
+// SourceRangePrompt: A source range and prompt for a text to CAD iteration.
+type SourceRangePrompt struct {
+	// Prompt: The prompt for the changes.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
+	// Range: The range of the source code to change.
+	Range SourceRange `json:"range" yaml:"range" schema:"range,required"`
+}
+
 // StlStorage: Export storage.
 type StlStorage string
 
@@ -4419,7 +4489,7 @@ type TextToCad struct {
 	// Error: The error the function returned, if any.
 	Error string `json:"error" yaml:"error" schema:"error"`
 	// Feedback: Feedback from the user, if any.
-	Feedback AiFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
+	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
 	// ID: The unique identifier of the API call.
 	//
 	// This is the same as the API call ID.
@@ -4450,6 +4520,52 @@ type TextToCadCreateBody struct {
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
 }
 
+// TextToCadIteration: A response from a text to CAD iteration.
+type TextToCadIteration struct {
+	// Code: The code for the new model.
+	Code string `json:"code" yaml:"code" schema:"code,required"`
+	// CompletedAt: The time and date the API call was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the API call was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// Feedback: Feedback from the user, if any.
+	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
+	// ID: The unique identifier of the API call.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Model: The model being used.
+	Model TextToCadModel `json:"model" yaml:"model" schema:"model,required"`
+	// ModelVersion: The version of the model.
+	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
+	// OriginalSourceCode: The original source code for the model, previous to the changes.
+	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code,required"`
+	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
+	// SourceRanges: The source ranges the user suggested to change.
+	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
+	// StartedAt: The time and date the API call was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the API call.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the API call was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the API call.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// TextToCadIterationBody: Body for generating models from text.
+type TextToCadIterationBody struct {
+	// OriginalSourceCode: The source code for the model (in kcl) that is to be edited.
+	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code,required"`
+	// Prompt: The prompt for the model, if not using source ranges.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
+	// SourceRanges: The source ranges the user suggested to change. If empty, the prompt will be used and is required.
+	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
+}
+
 // TextToCadModel: A type of Text-to-CAD model.
 type TextToCadModel string
 
@@ -4458,6 +4574,8 @@ const (
 	TextToCadModelCad TextToCadModel = "cad"
 	// TextToCadModelKcl: KCL.
 	TextToCadModelKcl TextToCadModel = "kcl"
+	// TextToCadModelKclIteration: KCL iteration.
+	TextToCadModelKclIteration TextToCadModel = "kcl_iteration"
 )
 
 // TextToCadResultsPage: A single page of results

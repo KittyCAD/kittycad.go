@@ -33,30 +33,6 @@
  },
  {
   "value": {
-   "example": "// ListAiPrompts: List all AI prompts.\n// \n// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.\n// This endpoint requires authentication by a Zoo employee.\n// The AI prompts are returned in order of creation, with the most recently created AI prompts first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListAiPrompts: List all AI prompts.\n// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.\n// This endpoint requires authentication by a Zoo employee.\n// The AI prompts are returned in order of creation, with the most recently created AI prompts first.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleMlService_ListAiPrompts() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.ListAiPrompts(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.ListAiPrompts"
-  },
-  "op": "add",
-  "path": "/paths/~1ai-prompts/get/x-go"
- },
- {
-  "value": {
-   "example": "// GetAiPrompt: Get an AI prompt.\n// \n// This endpoint requires authentication by a Zoo employee.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// GetAiPrompt: Get an AI prompt.\n// This endpoint requires authentication by a Zoo employee.\n//\n// Parameters\n//\n//   - `id`\nfunc ExampleMlService_GetAiPrompt() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.GetAiPrompt(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.GetAiPrompt"
-  },
-  "op": "add",
-  "path": "/paths/~1ai-prompts~1{id}/get/x-go"
- },
- {
-  "value": {
-   "example": "// CreateKclCodeCompletions: Generate code completions for KCL.\n// \n// \n// Parameters\n// \n// \t- `body`: A request to generate KCL code completions.\n// \n// CreateKclCodeCompletions: Generate code completions for KCL.\n// Parameters\n//\n//   - `body`: A request to generate KCL code completions.\nfunc ExampleMlService_CreateKclCodeCompletions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: \"some-string\", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: \"some-string\", Prompt: \"some-string\", Stop: []string{\"some-string\"}, Stream: true, Suffix: \"some-string\", Temperature: 123.45, TopP: 123.45})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.CreateKclCodeCompletions"
-  },
-  "op": "add",
-  "path": "/paths/~1ai~1kcl~1completions/post/x-go"
- },
- {
-  "value": {
    "example": "// CreateTextToCad: Generate a CAD model from text.\n// \n// Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.\n// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// One thing to note, if you hit the cache, this endpoint will return right away. So you only have to wait if the status is not `Completed` or `Failed`.\n// \n// \n// Parameters\n// \n// \t- `outputFormat`: The valid types of output file formats.\n// \t- `kcl`\n// \t- `body`: Body for generating models from text.\n// \n// CreateTextToCad: Generate a CAD model from text.\n// Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.\n// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// One thing to note, if you hit the cache, this endpoint will return right away. So you only have to wait if the status is not `Completed` or `Failed`.\n//\n// Parameters\n//\n//   - `outputFormat`: The valid types of output file formats.\n//   - `kcl`\n//   - `body`: Body for generating models from text.\nfunc ExampleMlService_CreateTextToCad() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.CreateTextToCad(\"\", true, kittycad.TextToCadCreateBody{Prompt: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.CreateTextToCad"
   },
@@ -246,6 +222,38 @@
   },
   "op": "add",
   "path": "/paths/~1logout/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListPrompts: List all ML prompts.\n// \n// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.\n// This endpoint requires authentication by a Zoo employee.\n// The ML prompts are returned in order of creation, with the most recently created ML prompts first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListPrompts: List all ML prompts.\n// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.\n// This endpoint requires authentication by a Zoo employee.\n// The ML prompts are returned in order of creation, with the most recently created ML prompts first.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleMlService_ListPrompts() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.ListPrompts(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.ListPrompts"
+  },
+  "op": "add",
+  "path": "/paths/~1ml-prompts/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetPrompt: Get a ML prompt.\n// \n// This endpoint requires authentication by a Zoo employee.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// GetPrompt: Get a ML prompt.\n// This endpoint requires authentication by a Zoo employee.\n//\n// Parameters\n//\n//   - `id`\nfunc ExampleMlService_GetPrompt() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.GetPrompt(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.GetPrompt"
+  },
+  "op": "add",
+  "path": "/paths/~1ml-prompts~1{id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateKclCodeCompletions: Generate code completions for KCL.\n// \n// \n// Parameters\n// \n// \t- `body`: A request to generate KCL code completions.\n// \n// CreateKclCodeCompletions: Generate code completions for KCL.\n// Parameters\n//\n//   - `body`: A request to generate KCL code completions.\nfunc ExampleMlService_CreateKclCodeCompletions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: \"some-string\", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: \"some-string\", Prompt: \"some-string\", Stop: []string{\"some-string\"}, Stream: true, Suffix: \"some-string\", Temperature: 123.45, TopP: 123.45})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.CreateKclCodeCompletions"
+  },
+  "op": "add",
+  "path": "/paths/~1ml~1kcl~1completions/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateTextToCadIteration: Iterate on a CAD model with a prompt.\n// \n// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n// \n// \n// Parameters\n// \n// \t- `body`: Body for generating models from text.\n// \n// CreateTextToCadIteration: Iterate on a CAD model with a prompt.\n// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.\n//\n// Parameters\n//\n//   - `body`: Body for generating models from text.\nfunc ExampleMlService_CreateTextToCadIteration() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.CreateTextToCadIteration(kittycad.TextToCadIterationBody{OriginalSourceCode: \"some-string\", Prompt: \"some-string\", SourceRanges: []kittycad.SourceRangePrompt{kittycad.SourceRangePrompt{Prompt: \"some-string\", Range: kittycad.SourceRange{End: kittycad.SourcePosition{Column: 123, Line: 123}, Start: kittycad.SourcePosition{Column: 123, Line: 123}}}}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.CreateTextToCadIteration"
+  },
+  "op": "add",
+  "path": "/paths/~1ml~1text-to-cad~1iteration/post/x-go"
  },
  {
   "value": {
@@ -993,7 +1001,7 @@
  },
  {
   "value": {
-   "example": "// CreateTextToCadModelFeedback: Give feedback to a specific text-to-CAD response.\n// \n// This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model, in order to give feedback.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `feedback`: Human feedback on an AI response.\n// \n// CreateTextToCadModelFeedback: Give feedback to a specific text-to-CAD response.\n// This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model, in order to give feedback.\n//\n// Parameters\n//\n//   - `id`\n//   - `feedback`: Human feedback on an AI response.\nfunc ExampleMlService_CreateTextToCadModelFeedback() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Ml.CreateTextToCadModelFeedback(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "example": "// CreateTextToCadModelFeedback: Give feedback to a specific text-to-CAD response.\n// \n// This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model, in order to give feedback.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `feedback`: Human feedback on an ML response.\n// \n// CreateTextToCadModelFeedback: Give feedback to a specific text-to-CAD response.\n// This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model, in order to give feedback.\n//\n// Parameters\n//\n//   - `id`\n//   - `feedback`: Human feedback on an ML response.\nfunc ExampleMlService_CreateTextToCadModelFeedback() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Ml.CreateTextToCadModelFeedback(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.CreateTextToCadModelFeedback"
   },
   "op": "add",

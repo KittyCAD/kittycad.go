@@ -97,75 +97,6 @@ func ExampleMetaService_GetIpinfo() {
 
 }
 
-// ListAiPrompts: List all AI prompts.
-// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
-// This endpoint requires authentication by a Zoo employee.
-// The AI prompts are returned in order of creation, with the most recently created AI prompts first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func ExampleMlService_ListAiPrompts() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Ml.ListAiPrompts(123, "some-string", "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// GetAiPrompt: Get an AI prompt.
-// This endpoint requires authentication by a Zoo employee.
-//
-// Parameters
-//
-//   - `id`
-func ExampleMlService_GetAiPrompt() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Ml.GetAiPrompt(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// CreateKclCodeCompletions: Generate code completions for KCL.
-// Parameters
-//
-//   - `body`: A request to generate KCL code completions.
-func ExampleMlService_CreateKclCodeCompletions() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: "some-string", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: "some-string", Prompt: "some-string", Stop: []string{"some-string"}, Stream: true, Suffix: "some-string", Temperature: 123.45, TopP: 123.45})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // CreateTextToCad: Generate a CAD model from text.
 // Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -712,6 +643,96 @@ func ExampleHiddenService_Logout() {
 	if err := client.Hidden.Logout(); err != nil {
 		panic(err)
 	}
+
+}
+
+// ListPrompts: List all ML prompts.
+// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
+// This endpoint requires authentication by a Zoo employee.
+// The ML prompts are returned in order of creation, with the most recently created ML prompts first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleMlService_ListPrompts() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ml.ListPrompts(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetPrompt: Get a ML prompt.
+// This endpoint requires authentication by a Zoo employee.
+//
+// Parameters
+//
+//   - `id`
+func ExampleMlService_GetPrompt() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ml.GetPrompt(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateKclCodeCompletions: Generate code completions for KCL.
+// Parameters
+//
+//   - `body`: A request to generate KCL code completions.
+func ExampleMlService_CreateKclCodeCompletions() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: "some-string", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: "some-string", Prompt: "some-string", Stop: []string{"some-string"}, Stream: true, Suffix: "some-string", Temperature: 123.45, TopP: 123.45})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateTextToCadIteration: Iterate on a CAD model with a prompt.
+// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `body`: Body for generating models from text.
+func ExampleMlService_CreateTextToCadIteration() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ml.CreateTextToCadIteration(kittycad.TextToCadIterationBody{OriginalSourceCode: "some-string", Prompt: "some-string", SourceRanges: []kittycad.SourceRangePrompt{{Prompt: "some-string", Range: kittycad.SourceRange{End: kittycad.SourcePosition{Column: 123, Line: 123}, Start: kittycad.SourcePosition{Column: 123, Line: 123}}}}})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
 
 }
 
@@ -2604,7 +2625,7 @@ func ExampleMlService_GetTextToCadModelForUser() {
 // Parameters
 //
 //   - `id`
-//   - `feedback`: Human feedback on an AI response.
+//   - `feedback`: Human feedback on an ML response.
 func ExampleMlService_CreateTextToCadModelFeedback() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
