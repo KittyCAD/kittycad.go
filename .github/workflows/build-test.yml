@@ -39,12 +39,6 @@ jobs:
           export PATH=${PATH}:`go env GOPATH`/bin
           go get golang.org/x/lint/golint
           make lint
-      - name: staticcheck
-        shell: bash
-        run: |
-          export PATH=${PATH}:`go env GOPATH`/bin
-          go get honnef.co/go/tools/cmd/staticcheck@latest
-          make staticcheck
       - name: vet
         shell: bash
         run: |
@@ -62,6 +56,12 @@ jobs:
           make cover
         env:
           KITTYCAD_API_TOKEN: ${{secrets.KITTYCAD_API_TOKEN}}
+      - name: staticcheck
+        shell: bash
+        run: |
+          export PATH=${PATH}:`go env GOPATH`/bin
+          go get honnef.co/go/tools/cmd/staticcheck@latest
+          make staticcheck
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
