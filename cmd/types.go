@@ -710,6 +710,14 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 			return "", err
 		}
 
+		if schema.Items.Ref != "" {
+			t := fmt.Sprintf("[]kittycad.%s{%s}", typeName, items)
+			if required {
+				return t, nil
+			}
+			return fmt.Sprintf("&%s", t), nil
+		}
+
 		t := fmt.Sprintf("[]%s{%s}", typeName, items)
 		if required {
 			return t, nil

@@ -123,166 +123,6 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 
 }
 
-// ListAiPrompts: List all AI prompts.
-// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
-// This endpoint requires authentication by a Zoo employee.
-// The AI prompts are returned in order of creation, with the most recently created AI prompts first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *MlService) ListAiPrompts(limit int, pageToken string, sortBy CreatedAtSortMode) (*AiPromptResultsPage, error) {
-	// Create the url.
-	path := "/ai-prompts"
-	uri := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded AiPromptResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
-// GetAiPrompt: Get an AI prompt.
-// This endpoint requires authentication by a Zoo employee.
-//
-// Parameters
-//
-//   - `id`
-func (s *MlService) GetAiPrompt(id UUID) (*AiPrompt, error) {
-	// Create the url.
-	path := "/ai-prompts/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id.String(),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded AiPrompt
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
-// CreateKclCodeCompletions: Generate code completions for KCL.
-// Parameters
-//
-//   - `body`: A request to generate KCL code completions.
-func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*KclCodeCompletionResponse, error) {
-	// Create the url.
-	path := "/ai/kcl/completions"
-	uri := resolveRelative(s.client.server, path)
-
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(body); err != nil {
-		return nil, fmt.Errorf("encoding json body request failed: %v", err)
-	}
-
-	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add our headers.
-	req.Header.Add("Content-Type", "application/json")
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded KclCodeCompletionResponse
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // CreateTextToCad: Generate a CAD model from text.
 // Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -1528,6 +1368,218 @@ func (s *HiddenService) Logout() error {
 
 	// Return.
 	return nil
+
+}
+
+// ListPrompts: List all ML prompts.
+// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
+// This endpoint requires authentication by a Zoo employee.
+// The ML prompts are returned in order of creation, with the most recently created ML prompts first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *MlService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSortMode) (*MlPromptResultsPage, error) {
+	// Create the url.
+	path := "/ml-prompts"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded MlPromptResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetPrompt: Get a ML prompt.
+// This endpoint requires authentication by a Zoo employee.
+//
+// Parameters
+//
+//   - `id`
+func (s *MlService) GetPrompt(id UUID) (*MlPrompt, error) {
+	// Create the url.
+	path := "/ml-prompts/{{.id}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded MlPrompt
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateKclCodeCompletions: Generate code completions for KCL.
+// Parameters
+//
+//   - `body`: A request to generate KCL code completions.
+func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*KclCodeCompletionResponse, error) {
+	// Create the url.
+	path := "/ml/kcl/completions"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded KclCodeCompletionResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateTextToCadIteration: Iterate on a CAD model with a prompt.
+// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `body`: Body for generating models from text.
+func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*TextToCadIteration, error) {
+	// Create the url.
+	path := "/ml/text-to-cad/iteration"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded TextToCadIteration
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
 
 }
 
@@ -5931,8 +5983,8 @@ func (s *MlService) GetTextToCadModelForUser(id UUID) (*TextToCad, error) {
 // Parameters
 //
 //   - `id`
-//   - `feedback`: Human feedback on an AI response.
-func (s *MlService) CreateTextToCadModelFeedback(id UUID, feedback AiFeedback) error {
+//   - `feedback`: Human feedback on an ML response.
+func (s *MlService) CreateTextToCadModelFeedback(id UUID, feedback MlFeedback) error {
 	// Create the url.
 	path := "/user/text-to-cad/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
