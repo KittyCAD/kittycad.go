@@ -1045,8 +1045,8 @@ const (
 
 // Data is the type definition for a Data.
 type Data struct {
-	// Files: The exported files
-	Files []RawFile `json:"files" yaml:"files" schema:"files,required"`
+	// Session: Data about the Modeling Session (application-level).
+	Session ModelingSessionData `json:"session" yaml:"session" schema:"session,required"`
 }
 
 // DefaultCameraFocusOn: The response from the `DefaultCameraFocusOn` command.
@@ -3265,6 +3265,12 @@ type ModelingCmdZnear struct {
 	Uv Point2D `json:"uv" yaml:"uv" schema:"uv,required"`
 }
 
+// ModelingSessionData: Successful Websocket response.
+type ModelingSessionData struct {
+	// APICallID: ID of the API call this modeling session is using. Useful for tracing and debugging.
+	APICallID string `json:"api_call_id" yaml:"api_call_id" schema:"api_call_id,required"`
+}
+
 // MouseClick: The response from the `MouseClick` command.
 type MouseClick struct {
 	// EntitiesModified: Entities that are modified.
@@ -3545,7 +3551,7 @@ type OkWebSocketResponseDataIceServerInfo struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkWebSocketResponseDataModeling: Pong response to a Ping message.
+// OkWebSocketResponseDataModeling: Data about the Modeling Session (application-level).
 type OkWebSocketResponseDataModeling struct {
 	// Data:
 	Data Data `json:"data" yaml:"data" schema:"data,required"`
@@ -3553,7 +3559,7 @@ type OkWebSocketResponseDataModeling struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OkWebSocketResponseDataOkWebSocketResponseDataData: Request a collection of metrics, to include WebRTC.
+// OkWebSocketResponseDataOkWebSocketResponseDataData: Pong response to a Ping message.
 type OkWebSocketResponseDataOkWebSocketResponseDataData struct {
 	// Data:
 	Data Data `json:"data" yaml:"data" schema:"data,required"`
