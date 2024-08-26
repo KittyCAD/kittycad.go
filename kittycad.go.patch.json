@@ -313,6 +313,14 @@
  },
  {
   "value": {
+   "example": "// TokenRevoke: Revoke an OAuth2 token.\n// \n// This endpoint is designed to be accessed from an *unauthenticated* API client.\n// \n// \n// Parameters\n// \n// \t- `body`: The request parameters for the OAuth 2.0 token revocation flow.\n// \n// TokenRevoke: Revoke an OAuth2 token.\n// This endpoint is designed to be accessed from an *unauthenticated* API client.\n//\n// Parameters\n//\n//   - `body`: The request parameters for the OAuth 2.0 token revocation flow.\nfunc ExampleOauth2Service_TokenRevoke() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Oauth2.TokenRevoke(kittycad.TokenRevokeRequestForm{ClientID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), ClientSecret: \"some-string\", Token: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.TokenRevoke"
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1token~1revoke/post/x-go"
+ },
+ {
+  "value": {
    "example": "// Delete: Delete an org.\n// \n// In order to delete an org, you must first delete all of its members, except yourself.\n// You must also have no outstanding invoices or unpaid balances.\n// This endpoint requires authentication by an org admin. It deletes the authenticated user's org.\n// \n// Delete: Delete an org.\n// In order to delete an org, you must first delete all of its members, except yourself.\n// You must also have no outstanding invoices or unpaid balances.\n// This endpoint requires authentication by an org admin. It deletes the authenticated user's org.\nfunc ExampleOrgService_Delete() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Org.Delete(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.Delete"
   },

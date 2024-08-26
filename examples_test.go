@@ -867,6 +867,24 @@ func ExampleOauth2Service_ProviderConsent() {
 
 }
 
+// TokenRevoke: Revoke an OAuth2 token.
+// This endpoint is designed to be accessed from an *unauthenticated* API client.
+//
+// Parameters
+//
+//   - `body`: The request parameters for the OAuth 2.0 token revocation flow.
+func ExampleOauth2Service_TokenRevoke() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.TokenRevoke(kittycad.TokenRevokeRequestForm{ClientID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ClientSecret: "some-string", Token: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")}); err != nil {
+		panic(err)
+	}
+
+}
+
 // Get: Get an org.
 // This endpoint requires authentication by an org admin. It gets the authenticated user's org.
 func ExampleOrgService_Get() {
