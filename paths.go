@@ -1910,6 +1910,52 @@ func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl st
 
 }
 
+// TokenRevoke: Revoke an OAuth2 token.
+// This endpoint is designed to be accessed from an *unauthenticated* API client.
+//
+// Parameters
+//
+//   - `body`: The request parameters for the OAuth 2.0 token revocation flow.
+func (s *Oauth2Service) TokenRevoke(body TokenRevokeRequestForm) error {
+	// Create the url.
+	path := "/oauth2/token/revoke"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as a form.
+	form := url.Values{}
+	encoder := schema.NewEncoder()
+	err := encoder.Encode(body, form)
+	if err != nil {
+		return fmt.Errorf("encoding form body request failed: %v", err)
+	}
+	b := strings.NewReader(form.Encode())
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // Get: Get an org.
 // This endpoint requires authentication by an org admin. It gets the authenticated user's org.
 func (s *OrgService) Get() (*Org, error) {
