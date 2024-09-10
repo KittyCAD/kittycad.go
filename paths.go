@@ -3434,8 +3434,8 @@ func (s *ServiceAccountService) CreateForOrg(label string) (*ServiceAccount, err
 //
 // Parameters
 //
-//   - `token`
-func (s *ServiceAccountService) GetForOrg(token UUID) (*ServiceAccount, error) {
+//   - `token`: An auth token. A uuid with a prefix of svc-
+func (s *ServiceAccountService) GetForOrg(token string) (*ServiceAccount, error) {
 	// Create the url.
 	path := "/org/service-accounts/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3448,7 +3448,7 @@ func (s *ServiceAccountService) GetForOrg(token UUID) (*ServiceAccount, error) {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token.String(),
+		"token": token,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -3485,8 +3485,8 @@ func (s *ServiceAccountService) GetForOrg(token UUID) (*ServiceAccount, error) {
 //
 // Parameters
 //
-//   - `token`
-func (s *ServiceAccountService) DeleteForOrg(token UUID) error {
+//   - `token`: An auth token. A uuid with a prefix of svc-
+func (s *ServiceAccountService) DeleteForOrg(token string) error {
 	// Create the url.
 	path := "/org/service-accounts/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -3499,7 +3499,7 @@ func (s *ServiceAccountService) DeleteForOrg(token UUID) error {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token.String(),
+		"token": token,
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -4976,8 +4976,8 @@ func (s *APITokenService) CreateForUser(label string) (*APIToken, error) {
 //
 // Parameters
 //
-//   - `token`
-func (s *APITokenService) GetForUser(token UUID) (*APIToken, error) {
+//   - `token`: An auth token. A uuid with a prefix of api-
+func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -4990,7 +4990,7 @@ func (s *APITokenService) GetForUser(token UUID) (*APIToken, error) {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token.String(),
+		"token": token,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -5027,8 +5027,8 @@ func (s *APITokenService) GetForUser(token UUID) (*APIToken, error) {
 //
 // Parameters
 //
-//   - `token`
-func (s *APITokenService) DeleteForUser(token UUID) error {
+//   - `token`: An auth token. A uuid with a prefix of api-
+func (s *APITokenService) DeleteForUser(token string) error {
 	// Create the url.
 	path := "/user/api-tokens/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -5041,7 +5041,7 @@ func (s *APITokenService) DeleteForUser(token UUID) error {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token.String(),
+		"token": token,
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -5865,8 +5865,8 @@ func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySetti
 //
 // Parameters
 //
-//   - `token`
-func (s *UserService) GetSessionFor(token UUID) (*Session, error) {
+//   - `token`: An auth token. A uuid with a prefix of ses-
+func (s *UserService) GetSessionFor(token string) (*Session, error) {
 	// Create the url.
 	path := "/user/session/{{.token}}"
 	uri := resolveRelative(s.client.server, path)
@@ -5879,7 +5879,7 @@ func (s *UserService) GetSessionFor(token UUID) (*Session, error) {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"token": token.String(),
+		"token": token,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}

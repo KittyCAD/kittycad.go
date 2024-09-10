@@ -879,7 +879,7 @@ func ExampleOauth2Service_TokenRevoke() {
 		panic(err)
 	}
 
-	if err := client.Oauth2.TokenRevoke(kittycad.TokenRevokeRequestForm{ClientID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ClientSecret: "some-string", Token: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")}); err != nil {
+	if err := client.Oauth2.TokenRevoke(kittycad.TokenRevokeRequestForm{ClientID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ClientSecret: "some-string", Token: "some-string"}); err != nil {
 		panic(err)
 	}
 
@@ -1526,14 +1526,14 @@ func ExampleServiceAccountService_CreateForOrg() {
 //
 // Parameters
 //
-//   - `token`
+//   - `token`: An auth token. A uuid with a prefix of svc-
 func ExampleServiceAccountService_GetForOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.ServiceAccount.GetForOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.ServiceAccount.GetForOrg("some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -1548,14 +1548,14 @@ func ExampleServiceAccountService_GetForOrg() {
 //
 // Parameters
 //
-//   - `token`
+//   - `token`: An auth token. A uuid with a prefix of svc-
 func ExampleServiceAccountService_DeleteForOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.ServiceAccount.DeleteForOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+	if err := client.ServiceAccount.DeleteForOrg("some-string"); err != nil {
 		panic(err)
 	}
 
@@ -2184,14 +2184,14 @@ func ExampleAPITokenService_CreateForUser() {
 //
 // Parameters
 //
-//   - `token`
+//   - `token`: An auth token. A uuid with a prefix of api-
 func ExampleAPITokenService_GetForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.APIToken.GetForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.APIToken.GetForUser("some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -2206,14 +2206,14 @@ func ExampleAPITokenService_GetForUser() {
 //
 // Parameters
 //
-//   - `token`
+//   - `token`: An auth token. A uuid with a prefix of api-
 func ExampleAPITokenService_DeleteForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.APIToken.DeleteForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+	if err := client.APIToken.DeleteForUser("some-string"); err != nil {
 		panic(err)
 	}
 
@@ -2569,14 +2569,14 @@ func ExampleUserService_UpdatePrivacySettings() {
 //
 // Parameters
 //
-//   - `token`
+//   - `token`: An auth token. A uuid with a prefix of ses-
 func ExampleUserService_GetSessionFor() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.User.GetSessionFor(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.User.GetSessionFor("some-string")
 	if err != nil {
 		panic(err)
 	}
