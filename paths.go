@@ -47,6 +47,7 @@ func (s *MetaService) GetSchema() error {
 
 // Getdata: Get the metadata about our currently running server.
 // This includes information on any of our other distributed systems it is connected to.
+//
 // You must be a Zoo employee to perform this request.
 func (s *MetaService) Getdata() (*Metadata, error) {
 	// Create the url.
@@ -125,7 +126,9 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 
 // CreateTextToCad: Generate a CAD model from text.
 // Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.
+//
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
 // One thing to note, if you hit the cache, this endpoint will return right away. So you only have to wait if the status is not `Completed` or `Failed`.
 //
 // Parameters
@@ -297,7 +300,9 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 
 // Get: Get details of an API call.
 // This endpoint requires authentication by any Zoo user. It returns details of the requested API call for the user.
+//
 // If the user is not authenticated to view the specified API call, then it is not returned.
+//
 // Only Zoo employees can view API calls for other users.
 //
 // Parameters
@@ -349,6 +354,7 @@ func (s *APICallService) Get(id UUID) (*APICallWithPrice, error) {
 
 // GithubCallback: Listen for callbacks to GitHub app authentication.
 // This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.
+//
 // The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 //
 // Parameters
@@ -393,6 +399,7 @@ func (s *AppService) GithubCallback(body any) error {
 
 // GithubConsent: Get the consent URL for GitHub app authentication.
 // This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.
+//
 // The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 func (s *AppService) GithubConsent() (*AppClientInfo, error) {
 	// Create the url.
@@ -472,6 +479,7 @@ func (s *AppService) GithubWebhook(body []byte) error {
 
 // ListAsyncOperations: List async operations.
 // For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
+//
 // This endpoint requires authentication by a Zoo employee.
 //
 // Parameters
@@ -534,8 +542,11 @@ func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy
 
 // GetAsyncOperation: Get an async operation.
 // Get the status and output of an async operation.
+//
 // This endpoint requires authentication by any Zoo user. It returns details of the requested async operation for the user.
+//
 // If the user is not authenticated to view the specified async operation, then it is not returned.
+//
 // Only Zoo employees with the proper access can view async operations for other users.
 //
 // Parameters
@@ -851,9 +862,13 @@ func (s *MetaService) CreateEvent(body *bytes.Buffer) error {
 
 // CreateCenterOfMass: Get CAD file center of mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+//
 // This endpoint returns the cartesian coordinate in world space measure units.
+//
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+//
 // Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -913,8 +928,11 @@ func (s *FileService) CreateCenterOfMass(outputUnit UnitLength, srcFormat FileIm
 
 // CreateConversion: Convert CAD file with defaults.
 // If you wish to specify the conversion options, use the `/file/conversion` endpoint instead.
+//
 // Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
+//
 // If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -974,9 +992,13 @@ func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat 
 
 // CreateDensity: Get CAD file density.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+//
 // This endpoint assumes if you are giving a material mass in a specific mass units, we return a density in mass unit per cubic measure unit.
+//
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+//
 // Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -1102,9 +1124,13 @@ func (s *ExecutorService) CreateFileExecution(lang CodeLanguage, output string, 
 
 // CreateMass: Get CAD file mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+//
 // This endpoint assumes if you are giving a material density in a specific mass unit per cubic measure unit, we return a mass in mass units. The same mass units as passed in the material density.
+//
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+//
 // Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -1168,9 +1194,13 @@ func (s *FileService) CreateMass(materialDensity float64, materialDensityUnit Un
 
 // CreateSurfaceArea: Get CAD file surface area.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+//
 // This endpoint returns the square measure units.
+//
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+//
 // Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -1230,9 +1260,13 @@ func (s *FileService) CreateSurfaceArea(outputUnit UnitArea, srcFormat FileImpor
 
 // CreateVolume: Get CAD file volume.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+//
 // This endpoint returns the cubic measure units.
+//
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+//
 // Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -1292,6 +1326,7 @@ func (s *FileService) CreateVolume(outputUnit UnitVolume, srcFormat FileImportFo
 
 // InternalGetAPITokenForDiscordUser: Get an API token for a user by their discord id.
 // This endpoint allows us to run API calls from our discord bot on behalf of a user. The user must have a discord account linked to their Zoo Account via oauth2 for this to work.
+//
 // You must be a Zoo employee to use this endpoint.
 //
 // Parameters
@@ -1373,7 +1408,9 @@ func (s *HiddenService) Logout() error {
 
 // ListPrompts: List all ML prompts.
 // For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
+//
 // This endpoint requires authentication by a Zoo employee.
+//
 // The ML prompts are returned in order of creation, with the most recently created ML prompts first.
 //
 // Parameters
@@ -2101,7 +2138,9 @@ func (s *OrgService) Update(body OrgDetails) (*Org, error) {
 
 // Delete: Delete an org.
 // In order to delete an org, you must first delete all of its members, except yourself.
+//
 // You must also have no outstanding invoices or unpaid balances.
+//
 // This endpoint requires authentication by an org admin. It deletes the authenticated user's org.
 func (s *OrgService) Delete() error {
 	// Create the url.
@@ -2133,7 +2172,9 @@ func (s *OrgService) Delete() error {
 
 // OrgList: List API calls for your org.
 // This includes all API calls that were made by users in the org.
+//
 // This endpoint requires authentication by an org admin. It returns the API calls for the authenticated user's org.
+//
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters
@@ -2304,9 +2345,13 @@ func (s *OrgService) ListMembers(limit int, pageToken string, sortBy CreatedAtSo
 
 // CreateMember: Add a member to your org.
 // If the user exists, this will add them to your org. If they do not exist, this will create a new user and add them to your org.
+//
 // In both cases the user gets an email that they have been added to the org.
+//
 // If the user is already in your org, this will return a 400 and a message.
+//
 // If the user is already in a different org, this will return a 400 and a message.
+//
 // This endpoint requires authentication by an org admin. It adds the specified member to the authenticated user's org.
 //
 // Parameters
@@ -2511,6 +2556,7 @@ func (s *OrgService) DeleteMember(userId UUID) error {
 
 // GetInformationForOrg: Get payment info about your org.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by an org admin. It gets the payment information for the authenticated user's org.
 func (s *PaymentService) GetInformationForOrg() (*Customer, error) {
 	// Create the url.
@@ -2551,6 +2597,7 @@ func (s *PaymentService) GetInformationForOrg() (*Customer, error) {
 
 // CreateInformationForOrg: Create payment info for your org.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by the org admin. It creates the payment information for the authenticated user's org.
 //
 // Parameters
@@ -2604,6 +2651,7 @@ func (s *PaymentService) CreateInformationForOrg(body BillingInfo) (*Customer, e
 
 // UpdateInformationForOrg: Update payment info for your org.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by an org admin. It updates the payment information for the authenticated user's org.
 //
 // Parameters
@@ -2657,6 +2705,7 @@ func (s *PaymentService) UpdateInformationForOrg(body BillingInfo) (*Customer, e
 
 // DeleteInformationForOrg: Delete payment info for your org.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by an org admin. It deletes the payment information for the authenticated user's org.
 func (s *PaymentService) DeleteInformationForOrg() error {
 	// Create the url.
@@ -3322,6 +3371,7 @@ func (s *OrgService) DeleteSamlIdp() error {
 
 // ListForOrg: List service accounts for your org.
 // This endpoint requires authentication by an org admin. It returns the service accounts for the organization.
+//
 // The service accounts are returned in order of creation, with the most recently created service accounts first.
 //
 // Parameters
@@ -3481,6 +3531,7 @@ func (s *ServiceAccountService) GetForOrg(token string) (*ServiceAccount, error)
 
 // DeleteForOrg: Delete an service account for your org.
 // This endpoint requires authentication by an org admin. It deletes the requested service account for the organization.
+//
 // This endpoint does not actually delete the service account from the database. It merely marks the token as invalid. We still want to keep the service account in the database for historical purposes.
 //
 // Parameters
@@ -4632,6 +4683,7 @@ func (s *UnitService) GetVolumeConversion(inputUnit UnitVolume, outputUnit UnitV
 
 // GetSelf: Get your user.
 // Get the user information for the authenticated user.
+//
 // Alternatively, you can also use the `/users/me` endpoint.
 func (s *UserService) GetSelf() (*User, error) {
 	// Create the url.
@@ -4724,6 +4776,7 @@ func (s *UserService) UpdateSelf(body UpdateUser) (*User, error) {
 
 // DeleteSelf: Delete your user.
 // This endpoint requires authentication by any Zoo user. It deletes the authenticated user from Zoo's database.
+//
 // This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.
 func (s *UserService) DeleteSelf() error {
 	// Create the url.
@@ -4755,6 +4808,7 @@ func (s *UserService) DeleteSelf() error {
 
 // UserList: List API calls for your user.
 // This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user.
+//
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters
@@ -4864,6 +4918,7 @@ func (s *APICallService) GetForUser(id UUID) (*APICallWithPrice, error) {
 
 // ListForUser: List API tokens for your user.
 // This endpoint requires authentication by any Zoo user. It returns the API tokens for the authenticated user.
+//
 // The API tokens are returned in order of creation, with the most recently created API tokens first.
 //
 // Parameters
@@ -5023,6 +5078,7 @@ func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
 
 // DeleteForUser: Delete an API token for your user.
 // This endpoint requires authentication by any Zoo user. It deletes the requested API token for the user.
+//
 // This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.
 //
 // Parameters
@@ -5065,6 +5121,7 @@ func (s *APITokenService) DeleteForUser(token string) error {
 
 // GetSelfExtended: Get extended information about your user.
 // Get the user information for the authenticated user.
+//
 // Alternatively, you can also use the `/users-extended/me` endpoint.
 func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 	// Create the url.
@@ -5105,6 +5162,7 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 
 // GetOauth2ProvidersFor: Get the OAuth2 providers for your user.
 // If this returns an empty array, then the user has not connected any OAuth2 providers and uses raw email authentication.
+//
 // This endpoint requires authentication by any Zoo user. It gets the providers for the authenticated user.
 func (s *UserService) GetOauth2ProvidersFor() (*[]AccountProvider, error) {
 	// Create the url.
@@ -5184,6 +5242,7 @@ func (s *UserService) GetOnboardingSelf() (*Onboarding, error) {
 
 // GetUser: Get a user's org.
 // This endpoint requires authentication by any Zoo user. It gets the authenticated user's org.
+//
 // If the user is not a member of an org, this endpoint will return a 404.
 func (s *OrgService) GetUser() (*UserOrgInfo, error) {
 	// Create the url.
@@ -5224,6 +5283,7 @@ func (s *OrgService) GetUser() (*UserOrgInfo, error) {
 
 // GetInformationForUser: Get payment info about your user.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by any Zoo user. It gets the payment information for the authenticated user.
 func (s *PaymentService) GetInformationForUser() (*Customer, error) {
 	// Create the url.
@@ -5264,6 +5324,7 @@ func (s *PaymentService) GetInformationForUser() (*Customer, error) {
 
 // CreateInformationForUser: Create payment info for your user.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by any Zoo user. It creates the payment information for the authenticated user.
 //
 // Parameters
@@ -5317,6 +5378,7 @@ func (s *PaymentService) CreateInformationForUser(body BillingInfo) (*Customer, 
 
 // UpdateInformationForUser: Update payment info for your user.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by any Zoo user. It updates the payment information for the authenticated user.
 //
 // Parameters
@@ -5370,6 +5432,7 @@ func (s *PaymentService) UpdateInformationForUser(body BillingInfo) (*Customer, 
 
 // DeleteInformationForUser: Delete payment info for your user.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by any Zoo user. It deletes the payment information for the authenticated user.
 func (s *PaymentService) DeleteInformationForUser() error {
 	// Create the url.
@@ -5912,7 +5975,9 @@ func (s *UserService) GetSessionFor(token string) (*Session, error) {
 
 // ListTextToCadModelsForUser: List text-to-CAD models you've generated.
 // This will always return the STEP file contents as well as the format the user originally requested.
+//
 // This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.
+//
 // The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.
 //
 // Parameters
@@ -6184,7 +6249,9 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 
 // GetExtended: Get extended information about a user.
 // To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
+//
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
+//
 // To get information about any Zoo user, you must be a Zoo employee.
 //
 // Parameters
@@ -6236,7 +6303,9 @@ func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 
 // Get: Get a user.
 // To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.
+//
 // Alternatively, to get information about the authenticated user, use `/user` endpoint.
+//
 // To get information about any Zoo user, you must be a Zoo employee.
 //
 // Parameters
@@ -6288,8 +6357,11 @@ func (s *UserService) Get(id string) (*User, error) {
 
 // ListForUser: List API calls for a user.
 // This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user if "me" is passed as the user id.
+//
 // Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.
+//
 // If the authenticated user is a Zoo employee, then the API calls are returned for the user specified by the user id.
+//
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters
