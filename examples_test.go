@@ -65,6 +65,7 @@ func ExampleMetaService_GetSchema() {
 
 // Getdata: Get the metadata about our currently running server.
 // This includes information on any of our other distributed systems it is connected to.
+//
 // You must be a Zoo employee to perform this request.
 func ExampleMetaService_Getdata() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -99,7 +100,9 @@ func ExampleMetaService_GetIpinfo() {
 
 // CreateTextToCad: Generate a CAD model from text.
 // Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.
+//
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
 // One thing to note, if you hit the cache, this endpoint will return right away. So you only have to wait if the status is not `Completed` or `Failed`.
 //
 // Parameters
@@ -172,7 +175,9 @@ func ExampleAPICallService_List() {
 
 // Get: Get details of an API call.
 // This endpoint requires authentication by any Zoo user. It returns details of the requested API call for the user.
+//
 // If the user is not authenticated to view the specified API call, then it is not returned.
+//
 // Only Zoo employees can view API calls for other users.
 //
 // Parameters
@@ -195,6 +200,7 @@ func ExampleAPICallService_Get() {
 
 // GithubCallback: Listen for callbacks to GitHub app authentication.
 // This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.
+//
 // The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 //
 // Parameters
@@ -214,6 +220,7 @@ func ExampleAppService_GithubCallback() {
 
 // GithubConsent: Get the consent URL for GitHub app authentication.
 // This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.
+//
 // The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
 func ExampleAppService_GithubConsent() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -250,6 +257,7 @@ func ExampleAppService_GithubWebhook() {
 
 // ListAsyncOperations: List async operations.
 // For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
+//
 // This endpoint requires authentication by a Zoo employee.
 //
 // Parameters
@@ -280,8 +288,11 @@ func ExampleAPICallService_ListAsyncOperations() {
 
 // GetAsyncOperation: Get an async operation.
 // Get the status and output of an async operation.
+//
 // This endpoint requires authentication by any Zoo user. It returns details of the requested async operation for the user.
+//
 // If the user is not authenticated to view the specified async operation, then it is not returned.
+//
 // Only Zoo employees with the proper access can view async operations for other users.
 //
 // Parameters
@@ -420,9 +431,13 @@ func ExampleMetaService_CreateEvent() {
 
 // CreateCenterOfMass: Get CAD file center of mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+//
 // This endpoint returns the cartesian coordinate in world space measure units.
+//
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+//
 // Get the center of mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -447,8 +462,11 @@ func ExampleFileService_CreateCenterOfMass() {
 
 // CreateConversion: Convert CAD file with defaults.
 // If you wish to specify the conversion options, use the `/file/conversion` endpoint instead.
+//
 // Convert a CAD file from one format to another. If the file being converted is larger than 25MB, it will be performed asynchronously.
+//
 // If the conversion is performed synchronously, the contents of the converted file (`output`) will be returned as a base64 encoded string.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -473,9 +491,13 @@ func ExampleFileService_CreateConversion() {
 
 // CreateDensity: Get CAD file density.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+//
 // This endpoint assumes if you are giving a material mass in a specific mass units, we return a density in mass unit per cubic measure unit.
+//
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+//
 // Get the density of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -529,9 +551,13 @@ func ExampleExecutorService_CreateFileExecution() {
 
 // CreateMass: Get CAD file mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+//
 // This endpoint assumes if you are giving a material density in a specific mass unit per cubic measure unit, we return a mass in mass units. The same mass units as passed in the material density.
+//
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+//
 // Get the mass of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -558,9 +584,13 @@ func ExampleFileService_CreateMass() {
 
 // CreateSurfaceArea: Get CAD file surface area.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+//
 // This endpoint returns the square measure units.
+//
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+//
 // Get the surface area of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -585,9 +615,13 @@ func ExampleFileService_CreateSurfaceArea() {
 
 // CreateVolume: Get CAD file volume.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
+//
 // This endpoint returns the cubic measure units.
+//
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
+//
 // Get the volume of an object in a CAD file. If the file is larger than 25MB, it will be performed asynchronously.
+//
 // If the operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -612,6 +646,7 @@ func ExampleFileService_CreateVolume() {
 
 // InternalGetAPITokenForDiscordUser: Get an API token for a user by their discord id.
 // This endpoint allows us to run API calls from our discord bot on behalf of a user. The user must have a discord account linked to their Zoo Account via oauth2 for this to work.
+//
 // You must be a Zoo employee to use this endpoint.
 //
 // Parameters
@@ -648,7 +683,9 @@ func ExampleHiddenService_Logout() {
 
 // ListPrompts: List all ML prompts.
 // For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
+//
 // This endpoint requires authentication by a Zoo employee.
+//
 // The ML prompts are returned in order of creation, with the most recently created ML prompts first.
 //
 // Parameters
@@ -946,7 +983,9 @@ func ExampleOrgService_Update() {
 
 // Delete: Delete an org.
 // In order to delete an org, you must first delete all of its members, except yourself.
+//
 // You must also have no outstanding invoices or unpaid balances.
+//
 // This endpoint requires authentication by an org admin. It deletes the authenticated user's org.
 func ExampleOrgService_Delete() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -962,7 +1001,9 @@ func ExampleOrgService_Delete() {
 
 // OrgList: List API calls for your org.
 // This includes all API calls that were made by users in the org.
+//
 // This endpoint requires authentication by an org admin. It returns the API calls for the authenticated user's org.
+//
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters
@@ -1041,9 +1082,13 @@ func ExampleOrgService_ListMembers() {
 
 // CreateMember: Add a member to your org.
 // If the user exists, this will add them to your org. If they do not exist, this will create a new user and add them to your org.
+//
 // In both cases the user gets an email that they have been added to the org.
+//
 // If the user is already in your org, this will return a 400 and a message.
+//
 // If the user is already in a different org, this will return a 400 and a message.
+//
 // This endpoint requires authentication by an org admin. It adds the specified member to the authenticated user's org.
 //
 // Parameters
@@ -1127,6 +1172,7 @@ func ExampleOrgService_DeleteMember() {
 
 // GetInformationForOrg: Get payment info about your org.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by an org admin. It gets the payment information for the authenticated user's org.
 func ExamplePaymentService_GetInformationForOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -1145,6 +1191,7 @@ func ExamplePaymentService_GetInformationForOrg() {
 
 // CreateInformationForOrg: Create payment info for your org.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by the org admin. It creates the payment information for the authenticated user's org.
 //
 // Parameters
@@ -1167,6 +1214,7 @@ func ExamplePaymentService_CreateInformationForOrg() {
 
 // UpdateInformationForOrg: Update payment info for your org.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by an org admin. It updates the payment information for the authenticated user's org.
 //
 // Parameters
@@ -1189,6 +1237,7 @@ func ExamplePaymentService_UpdateInformationForOrg() {
 
 // DeleteInformationForOrg: Delete payment info for your org.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by an org admin. It deletes the payment information for the authenticated user's org.
 func ExamplePaymentService_DeleteInformationForOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -1474,6 +1523,7 @@ func ExampleOrgService_DeleteSamlIdp() {
 
 // ListForOrg: List service accounts for your org.
 // This endpoint requires authentication by an org admin. It returns the service accounts for the organization.
+//
 // The service accounts are returned in order of creation, with the most recently created service accounts first.
 //
 // Parameters
@@ -1544,6 +1594,7 @@ func ExampleServiceAccountService_GetForOrg() {
 
 // DeleteForOrg: Delete an service account for your org.
 // This endpoint requires authentication by an org admin. It deletes the requested service account for the organization.
+//
 // This endpoint does not actually delete the service account from the database. It merely marks the token as invalid. We still want to keep the service account in the database for historical purposes.
 //
 // Parameters
@@ -2029,6 +2080,7 @@ func ExampleUnitService_GetVolumeConversion() {
 
 // GetSelf: Get your user.
 // Get the user information for the authenticated user.
+//
 // Alternatively, you can also use the `/users/me` endpoint.
 func ExampleUserService_GetSelf() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -2068,6 +2120,7 @@ func ExampleUserService_UpdateSelf() {
 
 // DeleteSelf: Delete your user.
 // This endpoint requires authentication by any Zoo user. It deletes the authenticated user from Zoo's database.
+//
 // This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.
 func ExampleUserService_DeleteSelf() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -2083,6 +2136,7 @@ func ExampleUserService_DeleteSelf() {
 
 // UserList: List API calls for your user.
 // This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user.
+//
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters
@@ -2132,6 +2186,7 @@ func ExampleAPICallService_GetForUser() {
 
 // ListForUser: List API tokens for your user.
 // This endpoint requires authentication by any Zoo user. It returns the API tokens for the authenticated user.
+//
 // The API tokens are returned in order of creation, with the most recently created API tokens first.
 //
 // Parameters
@@ -2202,6 +2257,7 @@ func ExampleAPITokenService_GetForUser() {
 
 // DeleteForUser: Delete an API token for your user.
 // This endpoint requires authentication by any Zoo user. It deletes the requested API token for the user.
+//
 // This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.
 //
 // Parameters
@@ -2221,6 +2277,7 @@ func ExampleAPITokenService_DeleteForUser() {
 
 // GetSelfExtended: Get extended information about your user.
 // Get the user information for the authenticated user.
+//
 // Alternatively, you can also use the `/users-extended/me` endpoint.
 func ExampleUserService_GetSelfExtended() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -2239,6 +2296,7 @@ func ExampleUserService_GetSelfExtended() {
 
 // GetOauth2ProvidersFor: Get the OAuth2 providers for your user.
 // If this returns an empty array, then the user has not connected any OAuth2 providers and uses raw email authentication.
+//
 // This endpoint requires authentication by any Zoo user. It gets the providers for the authenticated user.
 func ExampleUserService_GetOauth2ProvidersFor() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -2274,6 +2332,7 @@ func ExampleUserService_GetOnboardingSelf() {
 
 // GetUser: Get a user's org.
 // This endpoint requires authentication by any Zoo user. It gets the authenticated user's org.
+//
 // If the user is not a member of an org, this endpoint will return a 404.
 func ExampleOrgService_GetUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -2292,6 +2351,7 @@ func ExampleOrgService_GetUser() {
 
 // GetInformationForUser: Get payment info about your user.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by any Zoo user. It gets the payment information for the authenticated user.
 func ExamplePaymentService_GetInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -2310,6 +2370,7 @@ func ExamplePaymentService_GetInformationForUser() {
 
 // CreateInformationForUser: Create payment info for your user.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by any Zoo user. It creates the payment information for the authenticated user.
 //
 // Parameters
@@ -2332,6 +2393,7 @@ func ExamplePaymentService_CreateInformationForUser() {
 
 // UpdateInformationForUser: Update payment info for your user.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by any Zoo user. It updates the payment information for the authenticated user.
 //
 // Parameters
@@ -2354,6 +2416,7 @@ func ExamplePaymentService_UpdateInformationForUser() {
 
 // DeleteInformationForUser: Delete payment info for your user.
 // This includes billing address, phone, and name.
+//
 // This endpoint requires authentication by any Zoo user. It deletes the payment information for the authenticated user.
 func ExamplePaymentService_DeleteInformationForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -2587,7 +2650,9 @@ func ExampleUserService_GetSessionFor() {
 
 // ListTextToCadModelsForUser: List text-to-CAD models you've generated.
 // This will always return the STEP file contents as well as the format the user originally requested.
+//
 // This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.
+//
 // The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.
 //
 // Parameters
@@ -2712,7 +2777,9 @@ func ExampleUserService_ListExtended() {
 
 // GetExtended: Get extended information about a user.
 // To get information about yourself, use `/users-extended/me` as the endpoint. By doing so you will get the user information for the authenticated user.
+//
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
+//
 // To get information about any Zoo user, you must be a Zoo employee.
 //
 // Parameters
@@ -2735,7 +2802,9 @@ func ExampleUserService_GetExtended() {
 
 // Get: Get a user.
 // To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.
+//
 // Alternatively, to get information about the authenticated user, use `/user` endpoint.
+//
 // To get information about any Zoo user, you must be a Zoo employee.
 //
 // Parameters
@@ -2758,8 +2827,11 @@ func ExampleUserService_Get() {
 
 // ListForUser: List API calls for a user.
 // This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user if "me" is passed as the user id.
+//
 // Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.
+//
 // If the authenticated user is a Zoo employee, then the API calls are returned for the user specified by the user id.
+//
 // The API calls are returned in order of creation, with the most recently created API calls first.
 //
 // Parameters
