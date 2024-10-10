@@ -1612,6 +1612,33 @@ func ExampleServiceAccountService_DeleteForOrg() {
 
 }
 
+// GetShortlinks: Get the shortlinks for an org.
+// This endpoint requires authentication by an org admin. It gets the shortlinks for the authenticated user's org.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleOrgService_GetShortlinks() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.GetShortlinks(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // List: List orgs.
 // This endpoint requires authentication by a Zoo employee. The orgs are returned in order of creation, with the most recently created orgs first.
 //
@@ -2648,6 +2675,111 @@ func ExampleUserService_GetSessionFor() {
 
 }
 
+// GetShortlinks: Get the shortlinks for a user.
+// This endpoint requires authentication by any Zoo user. It gets the shortlinks for the user.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleUserService_GetShortlinks() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.GetShortlinks(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateShortlink: Create a shortlink for a user.
+// This endpoint requires authentication by any Zoo user. It creates a shortlink for the user.
+//
+// Parameters
+//
+//   - `body`: Request to create a shortlink.
+func ExampleUserService_CreateShortlink() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.CreateShortlink(kittycad.CreateShortlinkRequest{RestrictToOrg: true, Url: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// RedirectUserShortlink: Redirect the user to the URL for the shortlink.
+// This endpoint might require authentication by a Zoo user. It gets the shortlink for the user and redirects them to the URL. If the shortlink is owned by an org, the user must be a member of the org.
+//
+// Parameters
+//
+//   - `key`
+func ExampleHiddenService_RedirectUserShortlink() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Hidden.RedirectUserShortlink("some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// UpdateShortlink: Update a shortlink for a user.
+// This endpoint requires authentication by any Zoo user. It updates a shortlink for the user.
+//
+// This endpoint really only allows you to change the `restrict_to_org` setting of a shortlink. Thus it is only useful for folks who are part of an org. If you are not part of an org, you will not be able to change the `restrict_to_org` status.
+//
+// Parameters
+//
+//   - `key`
+//   - `body`: Request to update a shortlink.
+func ExampleUserService_UpdateShortlink() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.UpdateShortlink("some-string", kittycad.UpdateShortlinkRequest{RestrictToOrg: true}); err != nil {
+		panic(err)
+	}
+
+}
+
+// DeleteShortlink: Delete a shortlink for a user.
+// This endpoint requires authentication by any Zoo user. It deletes a shortlink for the user.
+//
+// Parameters
+//
+//   - `key`
+func ExampleUserService_DeleteShortlink() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.DeleteShortlink("some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
 // ListTextToCadModelsForUser: List text-to-CAD models you've generated.
 // This will always return the STEP file contents as well as the format the user originally requested.
 //
@@ -2865,14 +2997,14 @@ func ExampleAPICallService_ListForUser() {
 //
 // Parameters
 //
-//   - `id`: A UUID usually v4 or v7
+//   - `id`
 func ExamplePaymentService_GetBalanceForAnyUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Payment.GetBalanceForAnyUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.Payment.GetBalanceForAnyUser("some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -2886,7 +3018,7 @@ func ExamplePaymentService_GetBalanceForAnyUser() {
 //
 // Parameters
 //
-//   - `id`: A UUID usually v4 or v7
+//   - `id`
 //   - `body`: The data for updating a balance.
 func ExamplePaymentService_UpdateBalanceForAnyUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -2894,7 +3026,7 @@ func ExamplePaymentService_UpdateBalanceForAnyUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateBalanceForAnyUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdatePaymentBalance{MonthlyCreditsRemaining: 123.45, PrePayCashRemaining: 123.45, PrePayCreditsRemaining: 123.45})
+	result, err := client.Payment.UpdateBalanceForAnyUser("some-string", kittycad.UpdatePaymentBalance{MonthlyCreditsRemaining: 123.45, PrePayCashRemaining: 123.45, PrePayCreditsRemaining: 123.45})
 	if err != nil {
 		panic(err)
 	}
