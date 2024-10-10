@@ -3572,6 +3572,64 @@ func (s *ServiceAccountService) DeleteForOrg(token string) error {
 
 }
 
+// GetShortlinks: Get the shortlinks for an org.
+// This endpoint requires authentication by an org admin. It gets the shortlinks for the authenticated user's org.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *OrgService) GetShortlinks(limit int, pageToken string, sortBy CreatedAtSortMode) (*ShortlinkResultsPage, error) {
+	// Create the url.
+	path := "/org/shortlinks"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ShortlinkResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // List: List orgs.
 // This endpoint requires authentication by a Zoo employee. The orgs are returned in order of creation, with the most recently created orgs first.
 //
@@ -5973,6 +6031,251 @@ func (s *UserService) GetSessionFor(token string) (*Session, error) {
 
 }
 
+// GetShortlinks: Get the shortlinks for a user.
+// This endpoint requires authentication by any Zoo user. It gets the shortlinks for the user.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *UserService) GetShortlinks(limit int, pageToken string, sortBy CreatedAtSortMode) (*ShortlinkResultsPage, error) {
+	// Create the url.
+	path := "/user/shortlinks"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ShortlinkResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateShortlink: Create a shortlink for a user.
+// This endpoint requires authentication by any Zoo user. It creates a shortlink for the user.
+//
+// Parameters
+//
+//   - `body`: Request to create a shortlink.
+func (s *UserService) CreateShortlink(body CreateShortlinkRequest) (*CreateShortlinkResponse, error) {
+	// Create the url.
+	path := "/user/shortlinks"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded CreateShortlinkResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// RedirectUserShortlink: Redirect the user to the URL for the shortlink.
+// This endpoint might require authentication by a Zoo user. It gets the shortlink for the user and redirects them to the URL. If the shortlink is owned by an org, the user must be a member of the org.
+//
+// Parameters
+//
+//   - `key`
+func (s *HiddenService) RedirectUserShortlink(key string) error {
+	// Create the url.
+	path := "/user/shortlinks/{{.key}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"key": key,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// UpdateShortlink: Update a shortlink for a user.
+// This endpoint requires authentication by any Zoo user. It updates a shortlink for the user.
+//
+// This endpoint really only allows you to change the `restrict_to_org` setting of a shortlink. Thus it is only useful for folks who are part of an org. If you are not part of an org, you will not be able to change the `restrict_to_org` status.
+//
+// Parameters
+//
+//   - `key`
+//   - `body`: Request to update a shortlink.
+func (s *UserService) UpdateShortlink(key string, body UpdateShortlinkRequest) error {
+	// Create the url.
+	path := "/user/shortlinks/{{.key}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"key": key,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// DeleteShortlink: Delete a shortlink for a user.
+// This endpoint requires authentication by any Zoo user. It deletes a shortlink for the user.
+//
+// Parameters
+//
+//   - `key`
+func (s *UserService) DeleteShortlink(key string) error {
+	// Create the url.
+	path := "/user/shortlinks/{{.key}}"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"key": key,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // ListTextToCadModelsForUser: List text-to-CAD models you've generated.
 // This will always return the STEP file contents as well as the format the user originally requested.
 //
@@ -6427,8 +6730,8 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 //
 // Parameters
 //
-//   - `id`: A UUID usually v4 or v7
-func (s *PaymentService) GetBalanceForAnyUser(id UUID) (*CustomerBalance, error) {
+//   - `id`
+func (s *PaymentService) GetBalanceForAnyUser(id string) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/users/{{.id}}/payment/balance"
 	uri := resolveRelative(s.client.server, path)
@@ -6441,7 +6744,7 @@ func (s *PaymentService) GetBalanceForAnyUser(id UUID) (*CustomerBalance, error)
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id.String(),
+		"id": id,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -6477,9 +6780,9 @@ func (s *PaymentService) GetBalanceForAnyUser(id UUID) (*CustomerBalance, error)
 //
 // Parameters
 //
-//   - `id`: A UUID usually v4 or v7
+//   - `id`
 //   - `body`: The data for updating a balance.
-func (s *PaymentService) UpdateBalanceForAnyUser(id UUID, body UpdatePaymentBalance) (*CustomerBalance, error) {
+func (s *PaymentService) UpdateBalanceForAnyUser(id string, body UpdatePaymentBalance) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/users/{{.id}}/payment/balance"
 	uri := resolveRelative(s.client.server, path)
@@ -6501,7 +6804,7 @@ func (s *PaymentService) UpdateBalanceForAnyUser(id UUID, body UpdatePaymentBala
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id.String(),
+		"id": id,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}

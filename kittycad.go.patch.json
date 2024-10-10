@@ -593,6 +593,14 @@
  },
  {
   "value": {
+   "example": "// GetShortlinks: Get the shortlinks for an org.\n// \n// This endpoint requires authentication by an org admin. It gets the shortlinks for the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// GetShortlinks: Get the shortlinks for an org.\n// This endpoint requires authentication by an org admin. It gets the shortlinks for the authenticated user's org.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleOrgService_GetShortlinks() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetShortlinks(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.GetShortlinks"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1shortlinks/get/x-go"
+ },
+ {
+  "value": {
    "example": "// List: List orgs.\n// \n// This endpoint requires authentication by a Zoo employee. The orgs are returned in order of creation, with the most recently created orgs first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// List: List orgs.\n// This endpoint requires authentication by a Zoo employee. The orgs are returned in order of creation, with the most recently created orgs first.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleOrgService_List() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.List(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.List"
   },
@@ -993,6 +1001,46 @@
  },
  {
   "value": {
+   "example": "// GetShortlinks: Get the shortlinks for a user.\n// \n// This endpoint requires authentication by any Zoo user. It gets the shortlinks for the user.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// GetShortlinks: Get the shortlinks for a user.\n// This endpoint requires authentication by any Zoo user. It gets the shortlinks for the user.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleUserService_GetShortlinks() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetShortlinks(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetShortlinks"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1shortlinks/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateShortlink: Create a shortlink for a user.\n// \n// This endpoint requires authentication by any Zoo user. It creates a shortlink for the user.\n// \n// \n// Parameters\n// \n// \t- `body`: Request to create a shortlink.\n// \n// CreateShortlink: Create a shortlink for a user.\n// This endpoint requires authentication by any Zoo user. It creates a shortlink for the user.\n//\n// Parameters\n//\n//   - `body`: Request to create a shortlink.\nfunc ExampleUserService_CreateShortlink() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.CreateShortlink(kittycad.CreateShortlinkRequest{RestrictToOrg: true, Url: kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.CreateShortlink"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1shortlinks/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// DeleteShortlink: Delete a shortlink for a user.\n// \n// This endpoint requires authentication by any Zoo user. It deletes a shortlink for the user.\n// \n// \n// Parameters\n// \n// \t- `key`\n// \n// DeleteShortlink: Delete a shortlink for a user.\n// This endpoint requires authentication by any Zoo user. It deletes a shortlink for the user.\n//\n// Parameters\n//\n//   - `key`\nfunc ExampleUserService_DeleteShortlink() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.DeleteShortlink(\"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.DeleteShortlink"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1shortlinks~1{key}/delete/x-go"
+ },
+ {
+  "value": {
+   "example": "// RedirectUserShortlink: Redirect the user to the URL for the shortlink.\n// \n// This endpoint might require authentication by a Zoo user. It gets the shortlink for the user and redirects them to the URL. If the shortlink is owned by an org, the user must be a member of the org.\n// \n// \n// Parameters\n// \n// \t- `key`\n// \n// RedirectUserShortlink: Redirect the user to the URL for the shortlink.\n// This endpoint might require authentication by a Zoo user. It gets the shortlink for the user and redirects them to the URL. If the shortlink is owned by an org, the user must be a member of the org.\n//\n// Parameters\n//\n//   - `key`\nfunc ExampleHiddenService_RedirectUserShortlink() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.RedirectUserShortlink(\"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.RedirectUserShortlink"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1shortlinks~1{key}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// UpdateShortlink: Update a shortlink for a user.\n// \n// This endpoint requires authentication by any Zoo user. It updates a shortlink for the user.\n// \n// This endpoint really only allows you to change the `restrict_to_org` setting of a shortlink. Thus it is only useful for folks who are part of an org. If you are not part of an org, you will not be able to change the `restrict_to_org` status.\n// \n// \n// Parameters\n// \n// \t- `key`\n// \t- `body`: Request to update a shortlink.\n// \n// UpdateShortlink: Update a shortlink for a user.\n// This endpoint requires authentication by any Zoo user. It updates a shortlink for the user.\n//\n// This endpoint really only allows you to change the `restrict_to_org` setting of a shortlink. Thus it is only useful for folks who are part of an org. If you are not part of an org, you will not be able to change the `restrict_to_org` status.\n//\n// Parameters\n//\n//   - `key`\n//   - `body`: Request to update a shortlink.\nfunc ExampleUserService_UpdateShortlink() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.UpdateShortlink(\"some-string\", kittycad.UpdateShortlinkRequest{RestrictToOrg: true}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.UpdateShortlink"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1shortlinks~1{key}/put/x-go"
+ },
+ {
+  "value": {
    "example": "// ListTextToCadModelsForUser: List text-to-CAD models you've generated.\n// \n// This will always return the STEP file contents as well as the format the user originally requested.\n// \n// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.\n// \n// The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \t- `noModels`\n// \n// ListTextToCadModelsForUser: List text-to-CAD models you've generated.\n// This will always return the STEP file contents as well as the format the user originally requested.\n//\n// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.\n//\n// The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\n//\n//   - `noModels`\nfunc ExampleMlService_ListTextToCadModelsForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.ListTextToCadModelsForUser(123, \"some-string\", \"\", true)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.ListTextToCadModelsForUser"
   },
@@ -1057,7 +1105,7 @@
  },
  {
   "value": {
-   "example": "// GetBalanceForAnyUser: Get balance for an user.\n// \n// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified user.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// GetBalanceForAnyUser: Get balance for an user.\n// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified user.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExamplePaymentService_GetBalanceForAnyUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetBalanceForAnyUser(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetBalanceForAnyUser: Get balance for an user.\n// \n// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// GetBalanceForAnyUser: Get balance for an user.\n// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified user.\n//\n// Parameters\n//\n//   - `id`\nfunc ExamplePaymentService_GetBalanceForAnyUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetBalanceForAnyUser(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetBalanceForAnyUser"
   },
   "op": "add",
@@ -1065,7 +1113,7 @@
  },
  {
   "value": {
-   "example": "// UpdateBalanceForAnyUser: Update balance for an user.\n// \n// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified user.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`: The data for updating a balance.\n// \n// UpdateBalanceForAnyUser: Update balance for an user.\n// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified user.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`: The data for updating a balance.\nfunc ExamplePaymentService_UpdateBalanceForAnyUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateBalanceForAnyUser(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdatePaymentBalance{MonthlyCreditsRemaining: 123.45, PrePayCashRemaining: 123.45, PrePayCreditsRemaining: 123.45})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// UpdateBalanceForAnyUser: Update balance for an user.\n// \n// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `body`: The data for updating a balance.\n// \n// UpdateBalanceForAnyUser: Update balance for an user.\n// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified user.\n//\n// Parameters\n//\n//   - `id`\n//   - `body`: The data for updating a balance.\nfunc ExamplePaymentService_UpdateBalanceForAnyUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateBalanceForAnyUser(\"some-string\", kittycad.UpdatePaymentBalance{MonthlyCreditsRemaining: 123.45, PrePayCashRemaining: 123.45, PrePayCreditsRemaining: 123.45})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.UpdateBalanceForAnyUser"
   },
   "op": "add",

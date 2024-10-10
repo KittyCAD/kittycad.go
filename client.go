@@ -46,6 +46,8 @@ type Client struct {
 	Payment *PaymentService
 	// ServiceAccount: Service accounts allow organizations to call the API. Organization admins can create, delete, and list the service accounts for their org. Service accounts are scoped to an organization not individual users, these are better to use for automations than individual API tokens, since they won't stop working when an individual leaves the company.
 	ServiceAccount *ServiceAccountService
+	// Shortlink: Shortlinks are a way to create a short URL that redirects to a longer URL. This is useful for sharing links that are long and unwieldy.
+	Shortlink *ShortlinkService
 	// Store: Operations involving our swag store.
 	Store *StoreService
 	// Unit: Unit conversion operations.
@@ -98,6 +100,9 @@ type PaymentService service
 
 // ServiceAccountService: Service accounts allow organizations to call the API. Organization admins can create, delete, and list the service accounts for their org. Service accounts are scoped to an organization not individual users, these are better to use for automations than individual API tokens, since they won't stop working when an individual leaves the company.
 type ServiceAccountService service
+
+// ShortlinkService: Shortlinks are a way to create a short URL that redirects to a longer URL. This is useful for sharing links that are long and unwieldy.
+type ShortlinkService service
 
 // StoreService: Operations involving our swag store.
 type StoreService service
