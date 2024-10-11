@@ -135,6 +135,10 @@ type EnumValue struct {
 
 func (data *Data) generateEnumType(name string, s *openapi3.Schema, additionalDocs map[string]string) error {
 	enumName := makeSingular(name)
+	if name == "ModelingAppShareLinks" {
+		// Don't make it singular.
+		enumName = "ModelingAppShareLinks"
+	}
 	enum := Enum{
 		Name:        enumName,
 		Description: getTypeDescription(enumName, s),
@@ -657,7 +661,7 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 		} else if schema.Format == "hostname" {
 			return `"localhost"`, nil
 		} else if schema.Format == "ip" || schema.Format == "ipv4" || schema.Format == "ipv6" {
-			t := fmt.Sprintf(`%s.IP{netaddr.MustParseIP("192.158.1.38")}`, data.PackageName)
+			t := fmt.Sprintf(`%s.IP{netipx.MustParseIP("192.158.1.38")}`, data.PackageName)
 			if required {
 				return t, nil
 			}

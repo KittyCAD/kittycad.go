@@ -2714,7 +2714,7 @@ func ExampleUserService_CreateShortlink() {
 		panic(err)
 	}
 
-	result, err := client.User.CreateShortlink(kittycad.CreateShortlinkRequest{RestrictToOrg: true, Url: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}})
+	result, err := client.User.CreateShortlink(kittycad.CreateShortlinkRequest{Password: "some-string", RestrictToOrg: true, Url: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}})
 	if err != nil {
 		panic(err)
 	}
@@ -2756,7 +2756,7 @@ func ExampleUserService_UpdateShortlink() {
 		panic(err)
 	}
 
-	if err := client.User.UpdateShortlink("some-string", kittycad.UpdateShortlinkRequest{RestrictToOrg: true}); err != nil {
+	if err := client.User.UpdateShortlink("some-string", kittycad.UpdateShortlinkRequest{Password: "some-string", RestrictToOrg: true}); err != nil {
 		panic(err)
 	}
 
