@@ -22,7 +22,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.19.x'
+          go-version: '1.23.x'
       - name: Run generate
         shell: bash
         run: |
