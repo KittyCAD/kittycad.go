@@ -1366,7 +1366,7 @@ func ExamplePaymentService_CreateOrgSubscription() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateOrgSubscription(kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: ""})
+	result, err := client.Payment.CreateOrgSubscription(kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: "", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -1387,7 +1387,7 @@ func ExamplePaymentService_UpdateOrgSubscription() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateOrgSubscription(kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: ""})
+	result, err := client.Payment.UpdateOrgSubscription(kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: "", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -2572,7 +2572,7 @@ func ExamplePaymentService_CreateUserSubscription() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: ""})
+	result, err := client.Payment.CreateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -2593,7 +2593,7 @@ func ExamplePaymentService_UpdateUserSubscription() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: ""})
+	result, err := client.Payment.UpdateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}

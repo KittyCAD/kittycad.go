@@ -2447,6 +2447,8 @@ const (
 
 // ModelingAppSubscriptionTier: A subscription tier we offer for the Modeling App.
 type ModelingAppSubscriptionTier struct {
+	// AnnualDiscount: Annual discount. The percentage off the monthly price if the user pays annually.
+	AnnualDiscount int `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
 	// Description: A description of the tier.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
 	// Features: Features that are included in the subscription.
@@ -5998,6 +6000,8 @@ type WebSocketRequestTrickleIce struct {
 
 // ZooProductSubscription: A subscription to the modeling app.
 type ZooProductSubscription struct {
+	// AnnualDiscount: Annual discount. The percentage off the monthly price if the user pays annually.
+	AnnualDiscount int `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
 	// Description: A description of the tier.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
 	// Features: Features that are included in the subscription.
@@ -6030,12 +6034,16 @@ type ZooProductSubscriptions struct {
 type ZooProductSubscriptionsOrgRequest struct {
 	// ModelingApp: A modeling app subscription.
 	ModelingApp ModelingAppOrganizationSubscriptionTier `json:"modeling_app" yaml:"modeling_app" schema:"modeling_app"`
+	// PayAnnually: If the customer chooses to pay annually or monthly, we can add that here. The annual discount will apply if there is a discount for the subscription.
+	PayAnnually bool `json:"pay_annually" yaml:"pay_annually" schema:"pay_annually"`
 }
 
 // ZooProductSubscriptionsUserRequest: A struct of Zoo product subscriptions a user can request.
 type ZooProductSubscriptionsUserRequest struct {
 	// ModelingApp: A modeling app subscription.
 	ModelingApp ModelingAppIndividualSubscriptionTier `json:"modeling_app" yaml:"modeling_app" schema:"modeling_app"`
+	// PayAnnually: If the customer chooses to pay annually or monthly, we can add that here. The annual discount will apply if there is a discount for the subscription.
+	PayAnnually bool `json:"pay_annually" yaml:"pay_annually" schema:"pay_annually"`
 }
 
 // ZooTool: The Zoo tools that can make API calls.
