@@ -62,7 +62,7 @@ vet: ## Verifies `go vet` passes.
 .PHONY: staticcheck
 staticcheck: ## Verifies `staticcheck` passes.
 	@echo "+ $@"
-	@if [[ ! -z "$(shell staticcheck $(shell $(GO) list ./... | grep -v vendor) | tee /dev/stderr)" ]]; then \
+	@if [[ ! -z "$(shell staticcheck $(shell $(GO) list ./... | grep -v vendor | grep -v /usr/local/go/src) | tee /dev/stderr)" ]]; then \
 		exit 1; \
 	fi
 
