@@ -2,31 +2,22 @@ package kittycad
 
 import (
 	"bytes"
+	"net/netip"
 	"strings"
-
-	"inet.af/netaddr"
 )
 
 // IP is a wrapper around ip.IP which marshals to and from empty strings.
 type IP struct {
-	*netaddr.IP
+	*netip.Addr
 }
 
 // MarshalJSON implements the json.Marshaler interface.
 func (u IP) MarshalJSON() ([]byte, error) {
-	if u.IP == nil {
-		return []byte("null"), nil
-	}
-
-	return []byte(`"` + u.IP.String() + `"`), nil
+	return u.MarshalText()
 }
 
 func (u IP) String() string {
-	if u.IP == nil {
-		return ""
-	}
-
-	return u.IP.String()
+	return u.String()
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
@@ -45,7 +36,7 @@ func (u *IP) UnmarshalJSON(data []byte) (err error) {
 		return nil
 	}
 
-	ip, err := netaddr.ParseIP(strings.Trim(string(data), `"`))
+	ip, err := netip.ParseAddr(strings.Trim(string(data), `"`))
 	if err != nil {
 		return err
 	}

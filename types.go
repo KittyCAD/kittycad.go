@@ -941,8 +941,10 @@ type Coupon struct {
 
 // CreateShortlinkRequest: Request to create a shortlink.
 type CreateShortlinkRequest struct {
+	// Password: The password for the shortlink, if you want to restrict access to it. This can only be set if your subscription allows for it. Otherwise, it will return an error. When you access the link it will be required to enter this password through basic auth. The username will be `{anything}` and the password will be the password you set here.
+	Password string `json:"password" yaml:"password" schema:"password"`
 	// RestrictToOrg: If the shortlink should be restricted to the user's organization to view. This only applies to org shortlinks. If you are creating a user shortlink and you are not a member of a team or enterprise and you try to set this to true, it will fail.
-	RestrictToOrg bool `json:"restrict_to_org" yaml:"restrict_to_org" schema:"restrict_to_org,required"`
+	RestrictToOrg bool `json:"restrict_to_org" yaml:"restrict_to_org" schema:"restrict_to_org"`
 	// Url: The URL to redirect back to.
 	Url URL `json:"url" yaml:"url" schema:"url,required"`
 }
@@ -2431,6 +2433,18 @@ const (
 	ModelingAppOrganizationSubscriptionTierEnterprise ModelingAppOrganizationSubscriptionTier = "enterprise"
 )
 
+// ModelingAppShareLinks: The options for sharable links through the modeling app.
+type ModelingAppShareLinks string
+
+const (
+	// ModelingAppShareLinksPublic: Public.
+	ModelingAppShareLinksPublic ModelingAppShareLinks = "public"
+	// ModelingAppShareLinksPasswordProtected: Password protected.
+	ModelingAppShareLinksPasswordProtected ModelingAppShareLinks = "password_protected"
+	// ModelingAppShareLinksOrganizationOnly: Organization only. Links can be made only available to members of the organization.
+	ModelingAppShareLinksOrganizationOnly ModelingAppShareLinks = "organization_only"
+)
+
 // ModelingAppSubscriptionTier: A subscription tier we offer for the Modeling App.
 type ModelingAppSubscriptionTier struct {
 	// Description: A description of the tier.
@@ -2443,6 +2457,8 @@ type ModelingAppSubscriptionTier struct {
 	PayAsYouGoCredits float64 `json:"pay_as_you_go_credits" yaml:"pay_as_you_go_credits" schema:"pay_as_you_go_credits,required"`
 	// Price: The price of the tier per month. If this is for an individual, this is the price they pay. If this is for an organization, this is the price the organization pays per member in the org. This is in USD.
 	Price any `json:"price" yaml:"price" schema:"price,required"`
+	// ShareLinks: The options for sharable links through the modeling app.
+	ShareLinks []ModelingAppShareLinks `json:"share_links" yaml:"share_links" schema:"share_links"`
 	// SupportTier: The support tier the subscription provides.
 	SupportTier SupportTier `json:"support_tier" yaml:"support_tier" schema:"support_tier,required"`
 	// TrainingDataBehavior: The behavior of the users data (can it be used for training, etc).
@@ -5782,6 +5798,8 @@ type UpdatePaymentBalance struct {
 
 // UpdateShortlinkRequest: Request to update a shortlink.
 type UpdateShortlinkRequest struct {
+	// Password: The password for the shortlink, if you want to restrict access to it. This can only be set if your subscription allows for it. Otherwise, it will return an error. When you access the link it will be required to enter this password through basic auth. The username will be `{anything}` and the password will be the password you set here.
+	Password string `json:"password" yaml:"password" schema:"password"`
 	// RestrictToOrg: If the shortlink should be restricted to the user's organization to view. This only applies to org shortlinks. If you are creating a user shortlink and you are not a member of a team or enterprise and you try to set this to true, it will fail.
 	RestrictToOrg bool `json:"restrict_to_org" yaml:"restrict_to_org" schema:"restrict_to_org,required"`
 }
@@ -5990,6 +6008,8 @@ type ZooProductSubscription struct {
 	PayAsYouGoCredits float64 `json:"pay_as_you_go_credits" yaml:"pay_as_you_go_credits" schema:"pay_as_you_go_credits,required"`
 	// Price: The price of the tier per month. If this is for an individual, this is the price they pay. If this is for an organization, this is the price the organization pays per member in the org. This is in USD.
 	Price any `json:"price" yaml:"price" schema:"price,required"`
+	// ShareLinks: The options for sharable links through the modeling app.
+	ShareLinks []ModelingAppShareLinks `json:"share_links" yaml:"share_links" schema:"share_links"`
 	// SupportTier: The support tier the subscription provides.
 	SupportTier SupportTier `json:"support_tier" yaml:"support_tier" schema:"support_tier,required"`
 	// TrainingDataBehavior: The behavior of the users data (can it be used for training, etc).
