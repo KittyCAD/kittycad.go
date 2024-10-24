@@ -3744,7 +3744,7 @@ func (s *OrgService) GetAny(id UUID) (*Org, error) {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-//   - `body`: The price for a subscription tier.
+//   - `body`: The price for an enterprise subscription.
 func (s *OrgService) UpdateEnterprisePricingFor(id UUID, body any) (*ZooProductSubscriptions, error) {
 	// Create the url.
 	path := "/orgs/{{.id}}/enterprise/pricing"

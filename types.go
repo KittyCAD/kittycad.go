@@ -1219,6 +1219,26 @@ type EngineUtilEvaluatePath struct {
 	Pos Point3D `json:"pos" yaml:"pos" schema:"pos,required"`
 }
 
+// EnterpriseSubscriptionTierPriceInterval: A flat price that we publicly list.
+type EnterpriseSubscriptionTierPriceInterval struct {
+	// Interval: The interval the price is charged.
+	Interval PlanInterval `json:"interval" yaml:"interval" schema:"interval,required"`
+	// Price: The price.
+	Price float64 `json:"price" yaml:"price" schema:"price,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// EnterpriseSubscriptionTierPricePrice: A per user price that we publicly list.
+type EnterpriseSubscriptionTierPricePrice struct {
+	// Interval: The interval the price is charged.
+	Interval PlanInterval `json:"interval" yaml:"interval" schema:"interval,required"`
+	// Price: The price.
+	Price float64 `json:"price" yaml:"price" schema:"price,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // EntityCircularPattern: The response from the `EntityCircularPattern` command.
 type EntityCircularPattern struct {
 	// EntityIds: The UUIDs of the entities that were created.

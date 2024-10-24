@@ -1693,7 +1693,7 @@ func ExampleOrgService_GetAny() {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-//   - `body`: The price for a subscription tier.
+//   - `body`: The price for an enterprise subscription.
 func ExampleOrgService_UpdateEnterprisePricingFor() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
