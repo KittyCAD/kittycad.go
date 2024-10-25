@@ -13,10 +13,10 @@ import (
 )
 
 // DefaultServerURL is the default server URL for the KittyCad API.
-const DefaultServerURL = "https://api.kittycad.io"
+const DefaultServerURL = "https://api.zoo.dev"
 
 // TokenEnvVar is the environment variable that contains the token.
-const TokenEnvVar = "KITTYCAD_API_TOKEN"
+const TokenEnvVar = "ZOO_API_TOKEN"
 
 type service struct {
 	client *Client
@@ -26,7 +26,7 @@ type service struct {
 // You need to pass in your API token to create the client.
 func NewClient(token, userAgent string) (*Client, error) {
 	if token == "" {
-		return nil, fmt.Errorf("you need to pass in an API token to create the client. Create a token at https://kittycad.io/account")
+		return nil, fmt.Errorf("you need to pass in an API token to create the client. Create a token at https://zoo.dev/account")
 	}
 
 	client := &Client{
@@ -75,14 +75,31 @@ func NewClient(token, userAgent string) (*Client, error) {
 }
 
 // NewClientFromEnv creates a new client for the KittyCad API, using the token
-// stored in the environment variable `KITTYCAD_API_TOKEN`.
+// stored in the environment variable `KITTYCAD_API_TOKEN` or `ZOO_API_TOKEN`.
+// Optionally, you can pass in a different base url from the default with `ZOO_HOST`. But that
+// is not recommended, unless you know what you are doing or you are hosting
+// your own instance of the KittyCAD API.
 func NewClientFromEnv(userAgent string) (*Client, error) {
 	token := os.Getenv(TokenEnvVar)
 	if token == "" {
-		return nil, fmt.Errorf("the environment variable %s must be set with your API token. Create a token at https://kittycad.io/account", TokenEnvVar)
+		// Try the old environment variable name.
+		token = os.Getenv("KITTYCAD_API_TOKEN")
+		if token == "" {
+			return nil, fmt.Errorf("the environment variable %s must be set with your API token. Create a token at https://zoo.dev/account", TokenEnvVar)
+		}
 	}
 
-	return NewClient(token, userAgent)
+	host := os.Getenv("ZOO_HOST")
+	if host == "" {
+		host = DefaultServerURL
+	}
+
+	c, err := NewClient(token, userAgent)
+	if err != nil {
+		return nil, err
+	}
+	c.WithBaseURL(host)
+	return c, nil
 }
 
 // WithBaseURL overrides the baseURL.

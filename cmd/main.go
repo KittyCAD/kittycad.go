@@ -53,8 +53,8 @@ func run() error {
 
 	data := Data{
 		PackageName:      "kittycad",
-		BaseURL:          "https://api.kittycad.io",
-		EnvVariable:      "KITTYCAD_API_TOKEN",
+		BaseURL:          "https://api.zoo.dev",
+		EnvVariable:      "ZOO_API_TOKEN",
 		Tags:             []Tag{},
 		Examples:         []string{},
 		Paths:            []string{},

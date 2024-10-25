@@ -34,7 +34,7 @@ func ExampleNewClient() {
 // - OR -
 
 // Create a new client with your token parsed from the environment
-// variable: `KITTYCAD_API_TOKEN`.
+// variable: `ZOO_API_TOKEN`.
 func ExampleNewClientFromEnv() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
