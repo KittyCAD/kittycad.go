@@ -386,6 +386,23 @@ func ExampleHiddenService_PostAuthSaml() {
 
 }
 
+// CommunitySso: Authorize an inbound auth request from our Community page.
+// Parameters
+//
+//   - `sig`
+//   - `sso`
+func ExampleMetaService_CommunitySso() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Meta.CommunitySso("some-string", "some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
 // CreateDebugUploads: Uploads files to public blob storage for debugging purposes.
 // Do NOT send files here that you don't want to be public.
 //

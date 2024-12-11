@@ -777,6 +777,47 @@ func (s *HiddenService) PostAuthSaml(providerId UUID, body []byte) error {
 
 }
 
+// CommunitySso: Authorize an inbound auth request from our Community page.
+// Parameters
+//
+//   - `sig`
+//   - `sso`
+func (s *MetaService) CommunitySso(sig string, sso string) error {
+	// Create the url.
+	path := "/community/sso"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"sig": sig,
+		"sso": sso,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // CreateDebugUploads: Uploads files to public blob storage for debugging purposes.
 // Do NOT send files here that you don't want to be public.
 //

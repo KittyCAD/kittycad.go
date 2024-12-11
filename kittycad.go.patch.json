@@ -137,6 +137,14 @@
  },
  {
   "value": {
+   "example": "// CommunitySso: Authorize an inbound auth request from our Community page.\n// \n// \n// Parameters\n// \n// \t- `sig`\n// \t- `sso`\n// \n// CommunitySso: Authorize an inbound auth request from our Community page.\n// Parameters\n//\n//   - `sig`\n//   - `sso`\nfunc ExampleMetaService_CommunitySso() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Meta.CommunitySso(\"some-string\", \"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.CommunitySso"
+  },
+  "op": "add",
+  "path": "/paths/~1community~1sso/get/x-go"
+ },
+ {
+  "value": {
    "example": "// CreateDebugUploads: Uploads files to public blob storage for debugging purposes.\n// \n// Do NOT send files here that you don't want to be public.\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// CreateDebugUploads: Uploads files to public blob storage for debugging purposes.\n// Do NOT send files here that you don't want to be public.\n//\n// Parameters\n//\n//   - `body`\nfunc ExampleMetaService_CreateDebugUploads() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tbuf := new(bytes.Buffer)\n\n\tresult, err := client.Meta.CreateDebugUploads(buf)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.CreateDebugUploads"
   },
