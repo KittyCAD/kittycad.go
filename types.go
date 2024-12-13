@@ -61,8 +61,6 @@ type APICallWithPrice struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// IPAddress: The ip address of the origin.
 	IPAddress IP `json:"ip_address" yaml:"ip_address" schema:"ip_address"`
-	// Litterbox: If the API call was spawned from the litterbox or not.
-	Litterbox bool `json:"litterbox" yaml:"litterbox" schema:"litterbox"`
 	// Method: The HTTP method requested by the API call.
 	Method Method `json:"method" yaml:"method" schema:"method,required"`
 	// Minutes: The number of minutes the API call was billed for.
