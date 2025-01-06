@@ -1610,6 +1610,10 @@ func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*Kc
 }
 
 // CreateTextToCadIteration: Iterate on a CAD model with a prompt.
+// Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
+//
+// You always get the whole code back, even if you only changed a small part of it.
+//
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
 // Parameters
@@ -6432,8 +6436,10 @@ func (s *MlService) GetTextToCadModelForUser(id UUID) (*TextToCad, error) {
 
 }
 
-// CreateTextToCadModelFeedback: Give feedback to a specific text-to-CAD response.
-// This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model, in order to give feedback.
+// CreateTextToCadModelFeedback: Give feedback to a specific ML response.
+// This can be a text-to-CAD creation or iteration.
+//
+// This endpoint requires authentication by any Zoo user. The user must be the owner of the ML response, in order to give feedback.
 //
 // Parameters
 //
