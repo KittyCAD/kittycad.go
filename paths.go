@@ -646,7 +646,7 @@ func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTo
 
 }
 
-// AuthEmailCallback: Listen for callbacks for email verification for users.
+// AuthEmailCallback: Listen for callbacks for email authentication for users.
 // Parameters
 //
 //   - `callbackUrl`
