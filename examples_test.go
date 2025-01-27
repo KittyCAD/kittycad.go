@@ -332,7 +332,7 @@ func ExampleHiddenService_AuthEmail() {
 
 }
 
-// AuthEmailCallback: Listen for callbacks for email verification for users.
+// AuthEmailCallback: Listen for callbacks for email authentication for users.
 // Parameters
 //
 //   - `callbackUrl`

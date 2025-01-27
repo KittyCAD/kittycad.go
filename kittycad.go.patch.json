@@ -113,7 +113,7 @@
  },
  {
   "value": {
-   "example": "// AuthEmailCallback: Listen for callbacks for email verification for users.\n// \n// \n// Parameters\n// \n// \t- `callbackUrl`\n// \t- `email`\n// \t- `token`\n// \n// AuthEmailCallback: Listen for callbacks for email verification for users.\n// Parameters\n//\n//   - `callbackUrl`\n//   - `email`\n//   - `token`\nfunc ExampleHiddenService_AuthEmailCallback() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.AuthEmailCallback(kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, \"example@example.com\", \"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "example": "// AuthEmailCallback: Listen for callbacks for email authentication for users.\n// \n// \n// Parameters\n// \n// \t- `callbackUrl`\n// \t- `email`\n// \t- `token`\n// \n// AuthEmailCallback: Listen for callbacks for email authentication for users.\n// Parameters\n//\n//   - `callbackUrl`\n//   - `email`\n//   - `token`\nfunc ExampleHiddenService_AuthEmailCallback() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.AuthEmailCallback(kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, \"example@example.com\", \"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.AuthEmailCallback"
   },
   "op": "add",
