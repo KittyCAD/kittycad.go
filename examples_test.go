@@ -116,7 +116,7 @@ func ExampleMlService_CreateTextToCad() {
 		panic(err)
 	}
 
-	result, err := client.Ml.CreateTextToCad("", true, kittycad.TextToCadCreateBody{Prompt: "some-string"})
+	result, err := client.Ml.CreateTextToCad("", true, kittycad.TextToCadCreateBody{KclVersion: "some-string", ProjectName: "some-string", Prompt: "some-string"})
 	if err != nil {
 		panic(err)
 	}
@@ -787,7 +787,7 @@ func ExampleMlService_CreateTextToCadIteration() {
 		panic(err)
 	}
 
-	result, err := client.Ml.CreateTextToCadIteration(kittycad.TextToCadIterationBody{OriginalSourceCode: "some-string", Prompt: "some-string", SourceRanges: []kittycad.SourceRangePrompt{{File: "some-string", Prompt: "some-string", Range: kittycad.SourceRange{End: kittycad.SourcePosition{Column: 123, Line: 123}, Start: kittycad.SourcePosition{Column: 123, Line: 123}}}}})
+	result, err := client.Ml.CreateTextToCadIteration(kittycad.TextToCadIterationBody{KclVersion: "some-string", OriginalSourceCode: "some-string", ProjectName: "some-string", Prompt: "some-string", SourceRanges: []kittycad.SourceRangePrompt{{File: "some-string", Prompt: "some-string", Range: kittycad.SourceRange{End: kittycad.SourcePosition{Column: 123, Line: 123}, Start: kittycad.SourcePosition{Column: 123, Line: 123}}}}})
 	if err != nil {
 		panic(err)
 	}

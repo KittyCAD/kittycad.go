@@ -2489,12 +2489,16 @@ type MlPrompt struct {
 	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
 	// ID: The unique identifier for the ML prompt.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// KclVersion: The KCL version being used.
+	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
 	// Metadata: The metadata for the prompt.
 	Metadata MlPromptMetadata `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// ModelVersion: The version of the model.
 	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
 	// OutputFile: The output file. In the case of TextToCad this is a link to a file in a GCP bucket.
 	OutputFile string `json:"output_file" yaml:"output_file" schema:"output_file"`
+	// ProjectName: The name of the project, if any. This allows us to group prompts together that come from the same project and user.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
 	// Prompt: The prompt.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
 	// StartedAt: When the prompt was started.
@@ -5400,6 +5404,10 @@ type TextToCad struct {
 
 // TextToCadCreateBody: Body for generating models from text.
 type TextToCadCreateBody struct {
+	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
+	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
+	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
 	// Prompt: The prompt for the model.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
 }
@@ -5442,8 +5450,12 @@ type TextToCadIteration struct {
 
 // TextToCadIterationBody: Body for generating models from text.
 type TextToCadIterationBody struct {
+	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
+	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
 	// OriginalSourceCode: The source code for the model (in kcl) that is to be edited.
 	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code,required"`
+	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
 	// Prompt: The prompt for the model, if not using source ranges.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
 	// SourceRanges: The source ranges the user suggested to change. If empty, the prompt will be used and is required.
@@ -5496,6 +5508,10 @@ type TextToCadMultiFileIteration struct {
 
 // TextToCadMultiFileIterationBody: Body for generating models from text.
 type TextToCadMultiFileIterationBody struct {
+	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
+	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
+	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
 	// SourceRanges: The source ranges the user suggested to change. If empty, the prompt will be used and is required.
 	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
 }
