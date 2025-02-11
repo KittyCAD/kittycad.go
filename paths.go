@@ -1616,6 +1616,8 @@ func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*Kc
 //
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
+// This endpoint will soon be deprecated in favor of the `/ml/text-to-cad/multi-file/iteration` endpoint. In that the endpoint path will remain but it will have the same behavior as `ml/text-to-cad/multi-file/iteration`.
+//
 // Parameters
 //
 //   - `body`: Body for generating models from text.
@@ -1656,6 +1658,58 @@ func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*Text
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded TextToCadIteration
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateTextToCadMultiFileIteration: Iterate on a CAD model with a prompt.
+// This endpoint can iterate on multi-file models.
+//
+// Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
+//
+// You always get the whole code back, even if you only changed a small part of it. This endpoint will always return all the code back, including files that were not changed. If your original source code imported a stl/gltf/step/etc file, the output will not include that file since the model will never change non-kcl files. The endpoint will only return the kcl files that were changed.
+//
+// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `body`: Body for generating models from text.
+func (s *MlService) CreateTextToCadMultiFileIteration(body *bytes.Buffer) (*TextToCadMultiFileIteration, error) {
+	// Create the url.
+	path := "/ml/text-to-cad/multi-file/iteration"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, body)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "multipart/form-data")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded TextToCadMultiFileIteration
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
