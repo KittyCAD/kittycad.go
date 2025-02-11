@@ -776,6 +776,8 @@ func ExampleMlService_CreateKclCodeCompletions() {
 //
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
+// This endpoint will soon be deprecated in favor of the `/ml/text-to-cad/multi-file/iteration` endpoint. In that the endpoint path will remain but it will have the same behavior as `ml/text-to-cad/multi-file/iteration`.
+//
 // Parameters
 //
 //   - `body`: Body for generating models from text.
@@ -785,7 +787,36 @@ func ExampleMlService_CreateTextToCadIteration() {
 		panic(err)
 	}
 
-	result, err := client.Ml.CreateTextToCadIteration(kittycad.TextToCadIterationBody{OriginalSourceCode: "some-string", Prompt: "some-string", SourceRanges: []kittycad.SourceRangePrompt{{Prompt: "some-string", Range: kittycad.SourceRange{End: kittycad.SourcePosition{Column: 123, Line: 123}, Start: kittycad.SourcePosition{Column: 123, Line: 123}}}}})
+	result, err := client.Ml.CreateTextToCadIteration(kittycad.TextToCadIterationBody{OriginalSourceCode: "some-string", Prompt: "some-string", SourceRanges: []kittycad.SourceRangePrompt{{File: "some-string", Prompt: "some-string", Range: kittycad.SourceRange{End: kittycad.SourcePosition{Column: 123, Line: 123}, Start: kittycad.SourcePosition{Column: 123, Line: 123}}}}})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateTextToCadMultiFileIteration: Iterate on a CAD model with a prompt.
+// This endpoint can iterate on multi-file models.
+//
+// Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
+//
+// You always get the whole code back, even if you only changed a small part of it. This endpoint will always return all the code back, including files that were not changed. If your original source code imported a stl/gltf/step/etc file, the output will not include that file since the model will never change non-kcl files. The endpoint will only return the kcl files that were changed.
+//
+// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `body`: Body for generating models from text.
+func ExampleMlService_CreateTextToCadMultiFileIteration() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	buf := new(bytes.Buffer)
+
+	result, err := client.Ml.CreateTextToCadMultiFileIteration(buf)
 	if err != nil {
 		panic(err)
 	}
