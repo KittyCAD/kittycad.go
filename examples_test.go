@@ -796,7 +796,7 @@ func ExampleMlService_CreateTextToCadIteration() {
 
 }
 
-// CreateTextToCadMultiFileIteration: Iterate on a CAD model with a prompt.
+// CreateTextToCadMultiFileIteration: Iterate on a multi-file CAD model with a prompt.
 // This endpoint can iterate on multi-file models.
 //
 // Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
