@@ -280,6 +280,8 @@ type AppClientInfo struct {
 
 // AsyncAPICall: An async API call.
 type AsyncAPICall struct {
+	// Attempts: The number of times we've attempted to process this job.
+	Attempts int `json:"attempts" yaml:"attempts" schema:"attempts"`
 	// CompletedAt: The time and date the async API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// CreatedAt: The time and date the async API call was created.
