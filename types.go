@@ -4534,8 +4534,34 @@ type OutputFormat2D struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OutputFormat3Dcoords: *ST**ereo**L**ithography format.
-type OutputFormat3Dcoords struct {
+// OutputFormat3Dcreated: Autodesk Filmbox (FBX) format.
+type OutputFormat3Dcreated struct {
+	// Created: Timestamp override.
+	Created Time `json:"created" yaml:"created" schema:"created"`
+	// Storage: Specifies which kind of FBX will be exported.
+	Storage FbxStorage `json:"storage" yaml:"storage" schema:"storage,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OutputFormat3Dfbx: Wavefront OBJ format.
+type OutputFormat3Dfbx struct {
+	// Coords: Co-ordinate system of output data.
+	//
+	// Defaults to the [KittyCAD co-ordinate system].
+	//
+	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
+	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Units: Export length unit.
+	//
+	// Defaults to millimeters.
+	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
+}
+
+// OutputFormat3Dgltf: *ST**ereo**L**ithography format.
+type OutputFormat3Dgltf struct {
 	// Coords: Co-ordinate system of output data.
 	//
 	// Defaults to the [KittyCAD co-ordinate system].
@@ -4554,46 +4580,8 @@ type OutputFormat3Dcoords struct {
 	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
 }
 
-// OutputFormat3Dfbx: glTF 2.0. We refer to this as glTF since that is how our customers refer to it, although by default it will be in binary format and thus technically (glb). If you prefer ASCII output, you can set that option for the export.
-type OutputFormat3Dfbx struct {
-	// Presentation: Specifies how the JSON will be presented.
-	Presentation GltfPresentation `json:"presentation" yaml:"presentation" schema:"presentation,required"`
-	// Storage: Specifies which kind of glTF 2.0 will be exported.
-	Storage GltfStorage `json:"storage" yaml:"storage" schema:"storage,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// OutputFormat3Dgltf: ISO 10303-21 (STEP) format.
-type OutputFormat3Dgltf struct {
-	// Coords: Co-ordinate system of output data.
-	//
-	// Defaults to the [KittyCAD co-ordinate system].
-	//
-	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
-	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// OutputFormat3Dpresentation: Wavefront OBJ format.
+// OutputFormat3Dpresentation: The PLY Polygon File Format.
 type OutputFormat3Dpresentation struct {
-	// Coords: Co-ordinate system of output data.
-	//
-	// Defaults to the [KittyCAD co-ordinate system].
-	//
-	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
-	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-	// Units: Export length unit.
-	//
-	// Defaults to millimeters.
-	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
-}
-
-// OutputFormat3Dstorage: The PLY Polygon File Format.
-type OutputFormat3Dstorage struct {
 	// Coords: Co-ordinate system of output data.
 	//
 	// Defaults to the [KittyCAD co-ordinate system].
@@ -4610,6 +4598,20 @@ type OutputFormat3Dstorage struct {
 	//
 	// Defaults to millimeters.
 	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
+}
+
+// OutputFormat3Dstorage: ISO 10303-21 (STEP) format.
+type OutputFormat3Dstorage struct {
+	// Coords: Co-ordinate system of output data.
+	//
+	// Defaults to the [KittyCAD co-ordinate system].
+	//
+	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
+	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
+	// Created: Timestamp override.
+	Created Time `json:"created" yaml:"created" schema:"created"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // PathCommand: The path component command type (within a Path)
