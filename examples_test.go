@@ -807,7 +807,7 @@ func ExampleMlService_CreateTextToCadIteration() {
 //
 // Parameters
 //
-//   - `body`: Body for generating models from text.
+//   - `body`: Body for iterating on models from text prompts.
 func ExampleMlService_CreateTextToCadMultiFileIteration() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
