@@ -1678,7 +1678,7 @@ func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*Text
 //
 // Parameters
 //
-//   - `body`: Body for generating models from text.
+//   - `body`: Body for iterating on models from text prompts.
 func (s *MlService) CreateTextToCadMultiFileIteration(body *bytes.Buffer) (*TextToCadMultiFileIteration, error) {
 	// Create the url.
 	path := "/ml/text-to-cad/multi-file/iteration"

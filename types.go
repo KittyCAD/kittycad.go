@@ -600,6 +600,8 @@ type AsyncAPICallOutputSrcFormatOptions struct {
 	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
 	// Outputs: The output files. Returns a map of the file name to the file contents. The file contents are not encoded since kcl files are not binary.
 	Outputs map[string]string `json:"outputs" yaml:"outputs" schema:"outputs"`
+	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges. This will apply to all the files.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
 	// SourceRanges: The source ranges the user suggested to change.
 	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
 	// StartedAt: The time and date the API call was started.
@@ -5343,7 +5345,7 @@ type SourceRange struct {
 
 // SourceRangePrompt: A source range and prompt for a text to CAD iteration.
 type SourceRangePrompt struct {
-	// File: The name of the file the source range applies to. This only applies to multi-file iterations.
+	// File: The name of the file the source range applies to. This is the relative path to the file from the root of the project. This only applies to multi-file iterations.
 	File string `json:"file" yaml:"file" schema:"file"`
 	// Prompt: The prompt for the changes.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
@@ -5616,6 +5618,8 @@ type TextToCadMultiFileIteration struct {
 	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
 	// Outputs: The output files. Returns a map of the file name to the file contents. The file contents are not encoded since kcl files are not binary.
 	Outputs map[string]string `json:"outputs" yaml:"outputs" schema:"outputs"`
+	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges. This will apply to all the files.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
 	// SourceRanges: The source ranges the user suggested to change.
 	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
 	// StartedAt: The time and date the API call was started.
@@ -5628,14 +5632,16 @@ type TextToCadMultiFileIteration struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
-// TextToCadMultiFileIterationBody: Body for generating models from text.
+// TextToCadMultiFileIterationBody: Body for iterating on models from text prompts.
 type TextToCadMultiFileIterationBody struct {
 	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
 	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
 	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
 	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
+	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges. This will apply to all the files. If you want to apply a prompt to just a single file, use the source_ranges field and you can leave this empty.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
 	// SourceRanges: The source ranges the user suggested to change. If empty, the prompt will be used and is required.
-	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
+	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
 }
 
 // TextToCadResultsPage: A single page of results
