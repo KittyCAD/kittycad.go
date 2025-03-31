@@ -594,12 +594,16 @@ type AsyncAPICallOutputSrcFormatOptions struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
+	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
 	// Model: The model being used.
 	Model TextToCadModel `json:"model" yaml:"model" schema:"model,required"`
 	// ModelVersion: The version of the model.
 	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
 	// Outputs: The output files. Returns a map of the file name to the file contents. The file contents are not encoded since kcl files are not binary.
 	Outputs map[string]string `json:"outputs" yaml:"outputs" schema:"outputs"`
+	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
 	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges. This will apply to all the files.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
 	// SourceRanges: The source ranges the user suggested to change.
@@ -5612,12 +5616,16 @@ type TextToCadMultiFileIteration struct {
 	//
 	// This is the same as the API call ID.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
+	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
 	// Model: The model being used.
 	Model TextToCadModel `json:"model" yaml:"model" schema:"model,required"`
 	// ModelVersion: The version of the model.
 	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
 	// Outputs: The output files. Returns a map of the file name to the file contents. The file contents are not encoded since kcl files are not binary.
 	Outputs map[string]string `json:"outputs" yaml:"outputs" schema:"outputs"`
+	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
 	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges. This will apply to all the files.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
 	// SourceRanges: The source ranges the user suggested to change.
