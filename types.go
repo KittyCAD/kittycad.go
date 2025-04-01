@@ -782,10 +782,10 @@ type CameraViewState struct {
 	OrthoScaleEnabled bool `json:"ortho_scale_enabled" yaml:"ortho_scale_enabled" schema:"ortho_scale_enabled,required"`
 	// OrthoScaleFactor:
 	OrthoScaleFactor float64 `json:"ortho_scale_factor" yaml:"ortho_scale_factor" schema:"ortho_scale_factor,required"`
-	// PivotPosition:
-	PivotPosition []float64 `json:"pivot_position" yaml:"pivot_position" schema:"pivot_position,required"`
-	// PivotRotation:
-	PivotRotation []float64 `json:"pivot_rotation" yaml:"pivot_rotation" schema:"pivot_rotation,required"`
+	// PivotPosition: A point in 3D space
+	PivotPosition Point3D `json:"pivot_position" yaml:"pivot_position" schema:"pivot_position,required"`
+	// PivotRotation: A point in homogeneous (4D) space
+	PivotRotation Point4D `json:"pivot_rotation" yaml:"pivot_rotation" schema:"pivot_rotation,required"`
 	// WorldCoordSystem:
 	WorldCoordSystem WorldCoordinateSystem `json:"world_coord_system" yaml:"world_coord_system" schema:"world_coord_system,required"`
 }
@@ -4750,6 +4750,20 @@ type PathSegmentPathSegmentEnd struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// PathSegmentPathSegmentRelative: Adds a circular involute from the current position that goes through the given end_radius and is rotated around the current point by angle.
+type PathSegmentPathSegmentRelative struct {
+	// Angle: The angle to rotate the involute by. A value of zero will produce a curve with a tangent along the x-axis at the start point of the curve.
+	Angle Angle `json:"angle" yaml:"angle" schema:"angle,required"`
+	// EndRadius: The involute is described between two circles, end_radius is the radius of the outer circle.
+	EndRadius float64 `json:"end_radius" yaml:"end_radius" schema:"end_radius,required"`
+	// Reverse: If reverse is true, the segment will start from the end of the involute, otherwise it will start from that start.
+	Reverse bool `json:"reverse" yaml:"reverse" schema:"reverse,required"`
+	// StartRadius: The involute is described between two circles, start_radius is the radius of the inner circle.
+	StartRadius float64 `json:"start_radius" yaml:"start_radius" schema:"start_radius,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // PathSegmentRadius: Adds an arc from the current position that goes through the given interior point and ends at the given end position
 type PathSegmentRadius struct {
 	// End: End point of the arc.
@@ -4826,6 +4840,28 @@ type PerspectiveCameraParameters struct {
 	ZFar float64 `json:"z_far" yaml:"z_far" schema:"z_far"`
 	// ZNear: Camera frustum near plane.
 	ZNear float64 `json:"z_near" yaml:"z_near" schema:"z_near"`
+}
+
+// PivotPosition: A point in 3D space
+type PivotPosition struct {
+	// X:
+	X float64 `json:"x" yaml:"x" schema:"x,required"`
+	// Y:
+	Y float64 `json:"y" yaml:"y" schema:"y,required"`
+	// Z:
+	Z float64 `json:"z" yaml:"z" schema:"z,required"`
+}
+
+// PivotRotation: A point in homogeneous (4D) space
+type PivotRotation struct {
+	// W:
+	W float64 `json:"w" yaml:"w" schema:"w,required"`
+	// X:
+	X float64 `json:"x" yaml:"x" schema:"x,required"`
+	// Y:
+	Y float64 `json:"y" yaml:"y" schema:"y,required"`
+	// Z:
+	Z float64 `json:"z" yaml:"z" schema:"z,required"`
 }
 
 // PlanInterval: A plan's interval.
