@@ -101,6 +101,18 @@ type APICallWithPriceResultsPage struct {
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
+// APIEndpoint: Types of API endpoints.
+type APIEndpoint string
+
+const (
+	// APIendpointModeling: The modeling API.
+	APIendpointModeling APIEndpoint = "modeling"
+	// APIendpointMl: Machine learning API.
+	APIendpointMl APIEndpoint = "ml"
+	// APIendpointFile: File API.
+	APIendpointFile APIEndpoint = "file"
+)
+
 // APIError: An error.
 type APIError struct {
 	// ErrorCode: The error code.
@@ -824,22 +836,68 @@ type CenterOfMass struct {
 
 // ClientMetrics: ClientMetrics contains information regarding the state of the peer.
 type ClientMetrics struct {
-	// RtcFramesDecoded: Counter of the number of WebRTC frames that the client has decoded during this session.
-	RtcFramesDecoded int `json:"rtc_frames_decoded" yaml:"rtc_frames_decoded" schema:"rtc_frames_decoded,required"`
-	// RtcFramesDropped: Counter of the number of WebRTC frames the client has dropped during this session.
-	RtcFramesDropped int `json:"rtc_frames_dropped" yaml:"rtc_frames_dropped" schema:"rtc_frames_dropped,required"`
-	// RtcFramesPerSecond: Current number of frames being rendered per second. A good target is 60 frames per second, but it can fluctuate depending on network conditions.
-	RtcFramesPerSecond int `json:"rtc_frames_per_second" yaml:"rtc_frames_per_second" schema:"rtc_frames_per_second,required"`
-	// RtcFramesReceived: Counter of the number of WebRTC frames that the client has received during this session.
-	RtcFramesReceived int `json:"rtc_frames_received" yaml:"rtc_frames_received" schema:"rtc_frames_received,required"`
-	// RtcFreezeCount: Number of times the WebRTC playback has frozen. This is usually due to network conditions.
-	RtcFreezeCount int `json:"rtc_freeze_count" yaml:"rtc_freeze_count" schema:"rtc_freeze_count,required"`
-	// RtcJitterSec: Amount of "jitter" in the WebRTC session. Network latency is the time it takes a packet to traverse the network. The amount that the latency varies is the jitter. Video latency is the time it takes to render a frame sent by the server (including network latency). A low jitter means the video latency can be reduced without impacting smooth playback. High jitter means clients will increase video latency to ensure smooth playback.
-	RtcJitterSec float64 `json:"rtc_jitter_sec" yaml:"rtc_jitter_sec" schema:"rtc_jitter_sec,required"`
-	// RtcKeyframesDecoded: Number of "key frames" decoded in the underlying h.264 stream. A key frame is an expensive (bandwidth-wise) "full image" of the video frame. Data after the keyframe become -- effectively -- "diff" operations on that key frame. The Engine will only send a keyframe if required, which is an indication that some of the "diffs" have been lost, usually an indication of poor network conditions. We like this metric to understand times when the connection has had to recover.
-	RtcKeyframesDecoded int `json:"rtc_keyframes_decoded" yaml:"rtc_keyframes_decoded" schema:"rtc_keyframes_decoded,required"`
+	// RtcFrameHeight: The height of the inbound video stream in pixels.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-frameheight
+	RtcFrameHeight int `json:"rtc_frame_height" yaml:"rtc_frame_height" schema:"rtc_frame_height"`
+	// RtcFrameWidth: The width of the inbound video stream in pixels.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-framewidth
+	RtcFrameWidth int `json:"rtc_frame_width" yaml:"rtc_frame_width" schema:"rtc_frame_width"`
+	// RtcFramesDecoded: Counter of the number of WebRTC frames that the client has decoded from the inbound video stream.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-freezecount
+	RtcFramesDecoded int `json:"rtc_frames_decoded" yaml:"rtc_frames_decoded" schema:"rtc_frames_decoded"`
+	// RtcFramesDropped: Counter of the number of WebRTC frames the client has dropped from the inbound video stream.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-framesdropped
+	RtcFramesDropped int `json:"rtc_frames_dropped" yaml:"rtc_frames_dropped" schema:"rtc_frames_dropped"`
+	// RtcFramesPerSecond: Current number of frames being rendered in the last second. A good target is 60 frames per second, but it can fluctuate depending on network conditions.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-freezecount
+	RtcFramesPerSecond int `json:"rtc_frames_per_second" yaml:"rtc_frames_per_second" schema:"rtc_frames_per_second"`
+	// RtcFramesReceived: Counter of the number of WebRTC frames that the client has received from the inbound video stream.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-freezecount
+	RtcFramesReceived int `json:"rtc_frames_received" yaml:"rtc_frames_received" schema:"rtc_frames_received"`
+	// RtcFreezeCount: Number of times the inbound video playback has frozen. This is usually due to network conditions.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-freezecount
+	RtcFreezeCount int `json:"rtc_freeze_count" yaml:"rtc_freeze_count" schema:"rtc_freeze_count"`
+	// RtcJitterSec: Amount of "jitter" in the inbound video stream. Network latency is the time it takes a packet to traverse the network. The amount that the latency varies is the jitter. Video latency is the time it takes to render a frame sent by the server (including network latency). A low jitter means the video latency can be reduced without impacting smooth playback. High jitter means clients will increase video latency to ensure smooth playback.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcreceivedrtpstreamstats-jitter
+	RtcJitterSec float64 `json:"rtc_jitter_sec" yaml:"rtc_jitter_sec" schema:"rtc_jitter_sec"`
+	// RtcKeyframesDecoded: Number of "key frames" decoded in the inbound h.264 stream. A key frame is an expensive (bandwidth-wise) "full image" of the video frame. Data after the keyframe become -- effectively -- "diff" operations on that key frame. The Engine will only send a keyframe if required, which is an indication that some of the "diffs" have been lost, usually an indication of poor network conditions. We like this metric to understand times when the connection has had to recover.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-keyframesdecoded
+	RtcKeyframesDecoded int `json:"rtc_keyframes_decoded" yaml:"rtc_keyframes_decoded" schema:"rtc_keyframes_decoded"`
+	// RtcPacketsLost: Amount of packets lost in the inbound video stream.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcreceivedrtpstreamstats-packetslost
+	RtcPacketsLost int `json:"rtc_packets_lost" yaml:"rtc_packets_lost" schema:"rtc_packets_lost"`
+	// RtcPauseCount: Count of the total number of video pauses experienced by this receiver.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-pausecount
+	RtcPauseCount int `json:"rtc_pause_count" yaml:"rtc_pause_count" schema:"rtc_pause_count"`
+	// RtcPliCount: Count the total number of Picture Loss Indication (PLI) packets.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-plicount
+	RtcPliCount int `json:"rtc_pli_count" yaml:"rtc_pli_count" schema:"rtc_pli_count"`
+	// RtcStunRttSec: Total duration of pauses in seconds.
+	//
+	// This is the "ping" between the client and the STUN server. Not to be confused with the E2E RTT documented [here](https://www.w3.org/TR/webrtc-stats/#dom-rtcremoteinboundrtpstreamstats-roundtriptime)
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcicecandidatepairstats-currentroundtriptime
+	RtcStunRttSec float64 `json:"rtc_stun_rtt_sec" yaml:"rtc_stun_rtt_sec" schema:"rtc_stun_rtt_sec"`
 	// RtcTotalFreezesDurationSec: Number of seconds of frozen video the user has been subjected to.
-	RtcTotalFreezesDurationSec float64 `json:"rtc_total_freezes_duration_sec" yaml:"rtc_total_freezes_duration_sec" schema:"rtc_total_freezes_duration_sec,required"`
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-totalfreezesduration
+	RtcTotalFreezesDurationSec float64 `json:"rtc_total_freezes_duration_sec" yaml:"rtc_total_freezes_duration_sec" schema:"rtc_total_freezes_duration_sec"`
+	// RtcTotalPausesDurationSec: Count of the total number of video pauses experienced by this receiver.
+	//
+	// https://www.w3.org/TR/webrtc-stats/#dom-rtcinboundrtpstreamstats-totalpausesduration
+	RtcTotalPausesDurationSec float64 `json:"rtc_total_pauses_duration_sec" yaml:"rtc_total_pauses_duration_sec" schema:"rtc_total_pauses_duration_sec"`
 }
 
 // ClosePath: The response from the `ClosePath` command.
@@ -2641,6 +2699,8 @@ type ModelingAppSubscriptionTier struct {
 	AnnualDiscount int `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
 	// Description: A description of the tier.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// EndpointsIncluded: The Zoo API endpoints that are included when through an approved zoo tool.
+	EndpointsIncluded []APIEndpoint `json:"endpoints_included" yaml:"endpoints_included" schema:"endpoints_included"`
 	// Features: Features that are included in the subscription.
 	Features []SubscriptionTierFeature `json:"features" yaml:"features" schema:"features"`
 	// Name: The name of the tier.
@@ -6578,6 +6638,8 @@ type ZooProductSubscription struct {
 	AnnualDiscount int `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
 	// Description: A description of the tier.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// EndpointsIncluded: The Zoo API endpoints that are included when through an approved zoo tool.
+	EndpointsIncluded []APIEndpoint `json:"endpoints_included" yaml:"endpoints_included" schema:"endpoints_included"`
 	// Features: Features that are included in the subscription.
 	Features []SubscriptionTierFeature `json:"features" yaml:"features" schema:"features"`
 	// Name: The name of the tier.
