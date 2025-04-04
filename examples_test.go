@@ -848,14 +848,14 @@ func ExampleOauth2Service_DeviceAuthRequest() {
 //
 // Parameters
 //
-//   - `body`: The request parameters to verify the `user_code` for the OAuth 2.0 Device Authorization Grant.
+//   - `body`: The request parameters to confirm the `user_code` for the OAuth 2.0 Device Authorization Grant.
 func ExampleOauth2Service_DeviceAuthConfirm() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.Oauth2.DeviceAuthConfirm(kittycad.DeviceAuthVerifyParams{UserCode: "some-string"}); err != nil {
+	if err := client.Oauth2.DeviceAuthConfirm(kittycad.DeviceAuthConfirmParams{UserCode: "some-string"}); err != nil {
 		panic(err)
 	}
 
@@ -884,6 +884,7 @@ func ExampleOauth2Service_DeviceAccessToken() {
 //
 // Parameters
 //
+//   - `appName`
 //   - `userCode`
 func ExampleOauth2Service_DeviceAuthVerify() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -891,7 +892,7 @@ func ExampleOauth2Service_DeviceAuthVerify() {
 		panic(err)
 	}
 
-	if err := client.Oauth2.DeviceAuthVerify("some-string"); err != nil {
+	if err := client.Oauth2.DeviceAuthVerify("some-string", "some-string"); err != nil {
 		panic(err)
 	}
 
