@@ -1303,16 +1303,16 @@ type DeviceAccessTokenRequestForm struct {
 	GrantType Oauth2GrantType `json:"grant_type" yaml:"grant_type" schema:"grant_type,required"`
 }
 
+// DeviceAuthConfirmParams: The request parameters to confirm the `user_code` for the OAuth 2.0 Device Authorization Grant.
+type DeviceAuthConfirmParams struct {
+	// UserCode: The user code.
+	UserCode string `json:"user_code" yaml:"user_code" schema:"user_code,required"`
+}
+
 // DeviceAuthRequestForm: The request parameters for the OAuth 2.0 Device Authorization Grant flow.
 type DeviceAuthRequestForm struct {
 	// ClientID: The client ID.
 	ClientID UUID `json:"client_id" yaml:"client_id" schema:"client_id,required"`
-}
-
-// DeviceAuthVerifyParams: The request parameters to verify the `user_code` for the OAuth 2.0 Device Authorization Grant.
-type DeviceAuthVerifyParams struct {
-	// UserCode: The user code.
-	UserCode string `json:"user_code" yaml:"user_code" schema:"user_code,required"`
 }
 
 // Direction: Specifies the sign of a co-ordinate axis.

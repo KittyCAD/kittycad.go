@@ -1770,8 +1770,8 @@ func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) error {
 //
 // Parameters
 //
-//   - `body`: The request parameters to verify the `user_code` for the OAuth 2.0 Device Authorization Grant.
-func (s *Oauth2Service) DeviceAuthConfirm(body DeviceAuthVerifyParams) error {
+//   - `body`: The request parameters to confirm the `user_code` for the OAuth 2.0 Device Authorization Grant.
+func (s *Oauth2Service) DeviceAuthConfirm(body DeviceAuthConfirmParams) error {
 	// Create the url.
 	path := "/oauth2/device/confirm"
 	uri := resolveRelative(s.client.server, path)
@@ -1859,8 +1859,9 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) err
 //
 // Parameters
 //
+//   - `appName`
 //   - `userCode`
-func (s *Oauth2Service) DeviceAuthVerify(userCode string) error {
+func (s *Oauth2Service) DeviceAuthVerify(appName string, userCode string) error {
 	// Create the url.
 	path := "/oauth2/device/verify"
 	uri := resolveRelative(s.client.server, path)
@@ -1873,6 +1874,7 @@ func (s *Oauth2Service) DeviceAuthVerify(userCode string) error {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
+		"app_name":  appName,
 		"user_code": userCode,
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
