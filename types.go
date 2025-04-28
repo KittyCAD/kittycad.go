@@ -1666,6 +1666,8 @@ type ExtendedUser struct {
 	Company string `json:"company" yaml:"company" schema:"company"`
 	// CreatedAt: The date and time the user was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// DeletionScheduled: If the user is scheduled for deletion
+	DeletionScheduled bool `json:"deletion_scheduled" yaml:"deletion_scheduled" schema:"deletion_scheduled"`
 	// Discord: The user's Discord handle.
 	Discord string `json:"discord" yaml:"discord" schema:"discord"`
 	// Email: The email address of the user.
@@ -6528,6 +6530,8 @@ type User struct {
 	Company string `json:"company" yaml:"company" schema:"company"`
 	// CreatedAt: The date and time the user was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// DeletionScheduled: If the user is scheduled for deletion
+	DeletionScheduled bool `json:"deletion_scheduled" yaml:"deletion_scheduled" schema:"deletion_scheduled"`
 	// Discord: The user's Discord handle.
 	Discord string `json:"discord" yaml:"discord" schema:"discord"`
 	// Email: The email address of the user.
