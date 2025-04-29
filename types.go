@@ -3895,6 +3895,8 @@ type NewAnnotation struct {
 type Oauth2ClientInfo struct {
 	// CsrfToken: Value used for [CSRF](https://tools.ietf.org/html/rfc6749#section-10.12) protection via the `state` parameter.
 	CsrfToken string `json:"csrf_token" yaml:"csrf_token" schema:"csrf_token"`
+	// OidcNonce: Nonce required for OIDC flows.
+	OidcNonce string `json:"oidc_nonce" yaml:"oidc_nonce" schema:"oidc_nonce"`
 	// PkceCodeVerifier: Code Verifier used for [PKCE]((https://tools.ietf.org/html/rfc7636)) protection via the `code_verifier` parameter. The value must have a minimum length of 43 characters and a maximum length of 128 characters.  Each character must be ASCII alphanumeric or one of the characters "-" / "." / "_" / "~".
 	PkceCodeVerifier string `json:"pkce_code_verifier" yaml:"pkce_code_verifier" schema:"pkce_code_verifier"`
 	// Url: The URL for consent.
