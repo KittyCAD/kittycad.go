@@ -2497,6 +2497,12 @@ type KclCodeCompletionResponse struct {
 	Completions []string `json:"completions" yaml:"completions" schema:"completions,required"`
 }
 
+// KclModel: The response containing the KCL code.
+type KclModel struct {
+	// Code: The KCL code.
+	Code string `json:"code" yaml:"code" schema:"code,required"`
+}
+
 // LeafNode: Leaf node information.
 type LeafNode struct {
 	// AuthTimeout: The auth timeout of the leaf node.

@@ -249,6 +249,14 @@
  },
  {
   "value": {
+   "example": "// CreateProprietaryToKcl: Converts a proprietary CAD format to KCL.\n// \n// This endpoint is used to convert a proprietary CAD format to KCL. The file passed MUST have feature tree data.\n// \n// A STEP file does not have feature tree data, so it will not work. A sldprt file does have feature tree data, so it will work.\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// CreateProprietaryToKcl: Converts a proprietary CAD format to KCL.\n// This endpoint is used to convert a proprietary CAD format to KCL. The file passed MUST have feature tree data.\n//\n// A STEP file does not have feature tree data, so it will not work. A sldprt file does have feature tree data, so it will work.\n//\n// Parameters\n//\n//   - `body`\nfunc ExampleMlService_CreateProprietaryToKcl() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tbuf := new(bytes.Buffer)\n\n\tresult, err := client.Ml.CreateProprietaryToKcl(buf)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.CreateProprietaryToKcl"
+  },
+  "op": "add",
+  "path": "/paths/~1ml~1convert~1proprietary-to-kcl/post/x-go"
+ },
+ {
+  "value": {
    "example": "// CreateKclCodeCompletions: Generate code completions for KCL.\n// \n// \n// Parameters\n// \n// \t- `body`: A request to generate KCL code completions.\n// \n// CreateKclCodeCompletions: Generate code completions for KCL.\n// Parameters\n//\n//   - `body`: A request to generate KCL code completions.\nfunc ExampleMlService_CreateKclCodeCompletions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: \"some-string\", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: \"some-string\", Prompt: \"some-string\", Stop: []string{\"some-string\"}, Stream: true, Suffix: \"some-string\", Temperature: 123.45, TopP: 123.45})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.CreateKclCodeCompletions"
   },
