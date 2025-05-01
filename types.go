@@ -720,19 +720,19 @@ const (
 // BooleanIntersection: The response from the 'BooleanIntersection'.
 type BooleanIntersection struct {
 	// ExtraSolidIds: If the operation produced just one solid, then its ID will be the ID of the modeling command request. But if any extra solids are produced, then their IDs will be included here.
-	ExtraSolidIds []UUID `json:"extra_solid_ids" yaml:"extra_solid_ids" schema:"extra_solid_ids,required"`
+	ExtraSolidIds []UUID `json:"extra_solid_ids" yaml:"extra_solid_ids" schema:"extra_solid_ids"`
 }
 
 // BooleanSubtract: The response from the 'BooleanSubtract'.
 type BooleanSubtract struct {
 	// ExtraSolidIds: If the operation produced just one solid, then its ID will be the ID of the modeling command request. But if any extra solids are produced, then their IDs will be included here.
-	ExtraSolidIds []UUID `json:"extra_solid_ids" yaml:"extra_solid_ids" schema:"extra_solid_ids,required"`
+	ExtraSolidIds []UUID `json:"extra_solid_ids" yaml:"extra_solid_ids" schema:"extra_solid_ids"`
 }
 
 // BooleanUnion: The response from the 'BooleanUnion'.
 type BooleanUnion struct {
 	// ExtraSolidIds: If the operation produced just one solid, then its ID will be the ID of the modeling command request. But if any extra solids are produced, then their IDs will be included here.
-	ExtraSolidIds []UUID `json:"extra_solid_ids" yaml:"extra_solid_ids" schema:"extra_solid_ids,required"`
+	ExtraSolidIds []UUID `json:"extra_solid_ids" yaml:"extra_solid_ids" schema:"extra_solid_ids"`
 }
 
 // CacheMetadata: Metadata about our cache.
@@ -980,7 +980,7 @@ type Color struct {
 	R float64 `json:"r" yaml:"r" schema:"r,required"`
 }
 
-// ComponentTransform: Container that holds a translate, rotate and scale.
+// ComponentTransform: Container that holds a translate, rotate and scale. Defaults to no change, everything stays the same (i.e. the identity function).
 type ComponentTransform struct {
 	// RotateAngleAxis: Rotate component of the transform. The rotation is specified as an axis and an angle (xyz are the components of the axis, w is the angle in degrees).
 	RotateAngleAxis string `json:"rotate_angle_axis" yaml:"rotate_angle_axis" schema:"rotate_angle_axis"`
@@ -1241,8 +1241,8 @@ const (
 
 // Data is the type definition for a Data.
 type Data struct {
-	// Session: Data about the Modeling Session (application-level).
-	Session ModelingSessionData `json:"session" yaml:"session" schema:"session,required"`
+	// Name: Instance name. This may or may not mean something.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
 }
 
 // DefaultCameraCenterToScene: The response from the `DefaultCameraCenterToScene` endpoint.
@@ -4495,6 +4495,14 @@ type OkWebSocketResponseDataModeling struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// OkWebSocketResponseDataModelingBatch: Information about the connected instance
+type OkWebSocketResponseDataModelingBatch struct {
+	// Data:
+	Data Data `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // OkWebSocketResponseDataOkWebSocketResponseDataData: Pong response to a Ping message.
 type OkWebSocketResponseDataOkWebSocketResponseDataData struct {
 	// Data:
@@ -6644,6 +6652,14 @@ type Volume struct {
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume,required"`
 }
 
+// WebSocketRequestBatchID: Authentication header request.
+type WebSocketRequestBatchID struct {
+	// Headers: The authentication header.
+	Headers map[string]string `json:"headers" yaml:"headers" schema:"headers,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // WebSocketRequestCandidate: The trickle ICE candidate request.
 type WebSocketRequestCandidate struct {
 	// Candidate: Information about the ICE candidate.
@@ -6666,10 +6682,8 @@ type WebSocketRequestCmdID struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// WebSocketRequestModelingCmdReq: Authentication header request.
+// WebSocketRequestModelingCmdReq: Return information about the connected instance
 type WebSocketRequestModelingCmdReq struct {
-	// Headers: The authentication header.
-	Headers map[string]string `json:"headers" yaml:"headers" schema:"headers,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }

@@ -7009,6 +7009,7 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 //
 // Parameters
 //
+//   - `apicallId`
 //   - `fps`
 //   - `pool`
 //   - `postEffect`: Post effect type
@@ -7019,7 +7020,7 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 //   - `videoResWidth`
 //   - `webrtc`
 //   - `body`: The websocket messages the server receives.
-func (s *ModelingService) CommandsWs(fps int, pool string, postEffect PostEffectType, replay string, showGrid bool, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, body any) (*websocket.Conn, error) {
+func (s *ModelingService) CommandsWs(apicallId string, fps int, pool string, postEffect PostEffectType, replay string, showGrid bool, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
 	uri := resolveRelative(s.client.server, path)
