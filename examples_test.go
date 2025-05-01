@@ -750,6 +750,31 @@ func ExampleMlService_GetPrompt() {
 
 }
 
+// CreateProprietaryToKcl: Converts a proprietary CAD format to KCL.
+// This endpoint is used to convert a proprietary CAD format to KCL. The file passed MUST have feature tree data.
+//
+// A STEP file does not have feature tree data, so it will not work. A sldprt file does have feature tree data, so it will work.
+//
+// Parameters
+//
+//   - `body`
+func ExampleMlService_CreateProprietaryToKcl() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	buf := new(bytes.Buffer)
+
+	result, err := client.Ml.CreateProprietaryToKcl(buf)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateKclCodeCompletions: Generate code completions for KCL.
 // Parameters
 //

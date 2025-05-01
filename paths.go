@@ -1559,6 +1559,54 @@ func (s *MlService) GetPrompt(id UUID) (*MlPrompt, error) {
 
 }
 
+// CreateProprietaryToKcl: Converts a proprietary CAD format to KCL.
+// This endpoint is used to convert a proprietary CAD format to KCL. The file passed MUST have feature tree data.
+//
+// A STEP file does not have feature tree data, so it will not work. A sldprt file does have feature tree data, so it will work.
+//
+// Parameters
+//
+//   - `body`
+func (s *MlService) CreateProprietaryToKcl(body *bytes.Buffer) (*KclModel, error) {
+	// Create the url.
+	path := "/ml/convert/proprietary-to-kcl"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, body)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "multipart/form-data")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded KclModel
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateKclCodeCompletions: Generate code completions for KCL.
 // Parameters
 //
