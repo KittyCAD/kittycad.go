@@ -1821,7 +1821,7 @@ func ExamplePaymentService_UpdateBalanceForAnyOrg() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateBalanceForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdatePaymentBalance{MonthlyCreditsRemaining: 123.45, PrePayCashRemaining: 123.45, PrePayCreditsRemaining: 123.45})
+	result, err := client.Payment.UpdateBalanceForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})
 	if err != nil {
 		panic(err)
 	}
@@ -3106,7 +3106,7 @@ func ExamplePaymentService_UpdateBalanceForAnyUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateBalanceForAnyUser("some-string", kittycad.UpdatePaymentBalance{MonthlyCreditsRemaining: 123.45, PrePayCashRemaining: 123.45, PrePayCreditsRemaining: 123.45})
+	result, err := client.Payment.UpdateBalanceForAnyUser("some-string", kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})
 	if err != nil {
 		panic(err)
 	}
