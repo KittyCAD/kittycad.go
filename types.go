@@ -1213,12 +1213,22 @@ type CustomerBalance struct {
 	MapID UUID `json:"map_id" yaml:"map_id" schema:"map_id,required"`
 	// ModelingAppEnterprisePrice: The enterprise price for the Modeling App subscription, if they are on the enterprise plan.
 	ModelingAppEnterprisePrice any `json:"modeling_app_enterprise_price" yaml:"modeling_app_enterprise_price" schema:"modeling_app_enterprise_price"`
-	// MonthlyCreditsRemaining: The monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the customer per month.
-	MonthlyCreditsRemaining float64 `json:"monthly_credits_remaining" yaml:"monthly_credits_remaining" schema:"monthly_credits_remaining,required"`
-	// PrePayCashRemaining: The amount of pre-pay cash remaining in the balance. This number goes down as the customer uses their pre-paid credits. The reason we track this amount is if a customer ever wants to withdraw their pre-pay cash, we can use this amount to determine how much to give them. Say a customer has $100 in pre-paid cash, their bill is worth, $50 after subtracting any other credits (like monthly etc.) Their bill is $50, their pre-pay cash remaining will be subtracted by 50 to pay the bill and their `pre_pay_credits_remaining` will be subtracted by 50 to pay the bill. This way if they want to withdraw money after, they can only withdraw $50 since that is the amount of cash they have remaining.
-	PrePayCashRemaining float64 `json:"pre_pay_cash_remaining" yaml:"pre_pay_cash_remaining" schema:"pre_pay_cash_remaining,required"`
-	// PrePayCreditsRemaining: The amount of credits remaining in the balance. This is typically the amount of cash * some multiplier they get for pre-paying their account. This number lowers every time a bill is paid with the balance. This number increases every time a customer adds funds to their balance. This may be through a subscription or a one off payment.
-	PrePayCreditsRemaining float64 `json:"pre_pay_credits_remaining" yaml:"pre_pay_credits_remaining" schema:"pre_pay_credits_remaining,required"`
+	// MonthlyAPICreditsRemaining: The number of monthly API credits remaining in the balance. This is the number of credits remaining in the balance.
+	//
+	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
+	MonthlyAPICreditsRemaining int `json:"monthly_api_credits_remaining" yaml:"monthly_api_credits_remaining" schema:"monthly_api_credits_remaining,required"`
+	// MonthlyAPICreditsRemainingMonetaryValue: The monetary value of the monthy API credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month.
+	//
+	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
+	MonthlyAPICreditsRemainingMonetaryValue float64 `json:"monthly_api_credits_remaining_monetary_value" yaml:"monthly_api_credits_remaining_monetary_value" schema:"monthly_api_credits_remaining_monetary_value,required"`
+	// StableAPICreditsRemaining: The number of stable API credits remaining in the balance. These do not get reset or re-upped every month. This is separate from the monthly credits. Credits will first pull from the monthly credits, then the stable credits. Stable just means that they do not get reset every month. A user will have stable credits if a Zoo employee granted them credits.
+	//
+	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
+	StableAPICreditsRemaining int `json:"stable_api_credits_remaining" yaml:"stable_api_credits_remaining" schema:"stable_api_credits_remaining,required"`
+	// StableAPICreditsRemainingMonetaryValue: The monetary value of stable API credits remaining in the balance. These do not get reset or re-upped every month. This is separate from the monthly credits. Credits will first pull from the monthly credits, then the stable credits. Stable just means that they do not get reset every month. A user will have stable credits if a Zoo employee granted them credits.
+	//
+	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
+	StableAPICreditsRemainingMonetaryValue float64 `json:"stable_api_credits_remaining_monetary_value" yaml:"stable_api_credits_remaining_monetary_value" schema:"stable_api_credits_remaining_monetary_value,required"`
 	// SubscriptionDetails: Details about the subscription.
 	SubscriptionDetails ZooProductSubscriptions `json:"subscription_details" yaml:"subscription_details" schema:"subscription_details"`
 	// SubscriptionID: The subscription ID for the user.
@@ -2729,10 +2739,14 @@ type ModelingAppSubscriptionTier struct {
 	EndpointsIncluded []APIEndpoint `json:"endpoints_included" yaml:"endpoints_included" schema:"endpoints_included"`
 	// Features: Features that are included in the subscription.
 	Features []SubscriptionTierFeature `json:"features" yaml:"features" schema:"features"`
+	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month. This is equivalent to the monetary value divided by the price of an API credit.
+	MonthlyPayAsYouGoAPICredits int `json:"monthly_pay_as_you_go_api_credits" yaml:"monthly_pay_as_you_go_api_credits" schema:"monthly_pay_as_you_go_api_credits"`
+	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month.
+	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value,required"`
 	// Name: The name of the tier.
 	Name ModelingAppSubscriptionTierName `json:"name" yaml:"name" schema:"name,required"`
-	// PayAsYouGoCredits: The amount of pay-as-you-go credits the individual or org gets outside the modeling app.
-	PayAsYouGoCredits float64 `json:"pay_as_you_go_credits" yaml:"pay_as_you_go_credits" schema:"pay_as_you_go_credits,required"`
+	// PayAsYouGoAPICreditPrice: The price of an API credit (meaning 1 credit = 1 minute of API usage).
+	PayAsYouGoAPICreditPrice float64 `json:"pay_as_you_go_api_credit_price" yaml:"pay_as_you_go_api_credit_price" schema:"pay_as_you_go_api_credit_price"`
 	// Price: The price of the tier per month. If this is for an individual, this is the price they pay. If this is for an organization, this is the price the organization pays per member in the org. This is in USD.
 	Price any `json:"price" yaml:"price" schema:"price,required"`
 	// ShareLinks: The options for sharable links through the modeling app.
@@ -6502,12 +6516,10 @@ type UpdateMemberToOrgBody struct {
 
 // UpdatePaymentBalance: The data for updating a balance.
 type UpdatePaymentBalance struct {
-	// MonthlyCreditsRemaining: The monthy credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month. It is a stable amount granted to the user per month.
-	MonthlyCreditsRemaining float64 `json:"monthly_credits_remaining" yaml:"monthly_credits_remaining" schema:"monthly_credits_remaining"`
-	// PrePayCashRemaining: The amount of pre-pay cash remaining in the balance. This number goes down as the user uses their pre-paid credits. The reason we track this amount is if a user ever wants to withdraw their pre-pay cash, we can use this amount to determine how much to give them. Say a user has $100 in pre-paid cash, their bill is worth, $50 after subtracting any other credits (like monthly etc.) Their bill is $50, their pre-pay cash remaining will be subtracted by 50 to pay the bill and their `pre_pay_credits_remaining` will be subtracted by 50 to pay the bill. This way if they want to withdraw money after, they can only withdraw $50 since that is the amount of cash they have remaining.
-	PrePayCashRemaining float64 `json:"pre_pay_cash_remaining" yaml:"pre_pay_cash_remaining" schema:"pre_pay_cash_remaining"`
-	// PrePayCreditsRemaining: The amount of credits remaining in the balance. This is typically the amount of cash * some multiplier they get for pre-paying their account. This number lowers every time a bill is paid with the balance. This number increases every time a user adds funds to their balance. This may be through a subscription or a one off payment.
-	PrePayCreditsRemaining float64 `json:"pre_pay_credits_remaining" yaml:"pre_pay_credits_remaining" schema:"pre_pay_credits_remaining"`
+	// MonthlyAPICreditsRemainingMonetaryValue: The monetary value of the monthy API credits remaining in the balance. This gets re-upped every month,
+	MonthlyAPICreditsRemainingMonetaryValue float64 `json:"monthly_api_credits_remaining_monetary_value" yaml:"monthly_api_credits_remaining_monetary_value" schema:"monthly_api_credits_remaining_monetary_value"`
+	// StableAPICreditsRemainingMonetaryValue: The monetary value of stable API credits remaining in the balance. These do not get reset or re-upped every month. This is separate from the monthly credits. Credits will first pull from the monthly credits, then the stable credits. Stable just means that they do not get reset every month. A user will have stable credits if a Zoo employee granted them credits.
+	StableAPICreditsRemainingMonetaryValue float64 `json:"stable_api_credits_remaining_monetary_value" yaml:"stable_api_credits_remaining_monetary_value" schema:"stable_api_credits_remaining_monetary_value"`
 }
 
 // UpdateShortlinkRequest: Request to update a shortlink.
@@ -6738,10 +6750,14 @@ type ZooProductSubscription struct {
 	EndpointsIncluded []APIEndpoint `json:"endpoints_included" yaml:"endpoints_included" schema:"endpoints_included"`
 	// Features: Features that are included in the subscription.
 	Features []SubscriptionTierFeature `json:"features" yaml:"features" schema:"features"`
+	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month. This is equivalent to the monetary value divided by the price of an API credit.
+	MonthlyPayAsYouGoAPICredits int `json:"monthly_pay_as_you_go_api_credits" yaml:"monthly_pay_as_you_go_api_credits" schema:"monthly_pay_as_you_go_api_credits"`
+	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month.
+	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value,required"`
 	// Name: The name of the tier.
 	Name ModelingAppSubscriptionTierName `json:"name" yaml:"name" schema:"name,required"`
-	// PayAsYouGoCredits: The amount of pay-as-you-go credits the individual or org gets outside the modeling app.
-	PayAsYouGoCredits float64 `json:"pay_as_you_go_credits" yaml:"pay_as_you_go_credits" schema:"pay_as_you_go_credits,required"`
+	// PayAsYouGoAPICreditPrice: The price of an API credit (meaning 1 credit = 1 minute of API usage).
+	PayAsYouGoAPICreditPrice float64 `json:"pay_as_you_go_api_credit_price" yaml:"pay_as_you_go_api_credit_price" schema:"pay_as_you_go_api_credit_price"`
 	// Price: The price of the tier per month. If this is for an individual, this is the price they pay. If this is for an organization, this is the price the organization pays per member in the org. This is in USD.
 	Price any `json:"price" yaml:"price" schema:"price,required"`
 	// ShareLinks: The options for sharable links through the modeling app.
