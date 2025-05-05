@@ -1217,7 +1217,7 @@ type CustomerBalance struct {
 	//
 	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
 	MonthlyAPICreditsRemaining int `json:"monthly_api_credits_remaining" yaml:"monthly_api_credits_remaining" schema:"monthly_api_credits_remaining,required"`
-	// MonthlyAPICreditsRemainingMonetaryValue: The monetary value of the monthy API credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month.
+	// MonthlyAPICreditsRemainingMonetaryValue: The monetary value of the monthly API credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month.
 	//
 	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
 	MonthlyAPICreditsRemainingMonetaryValue float64 `json:"monthly_api_credits_remaining_monetary_value" yaml:"monthly_api_credits_remaining_monetary_value" schema:"monthly_api_credits_remaining_monetary_value,required"`
