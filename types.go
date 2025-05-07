@@ -1233,8 +1233,8 @@ type CustomerBalance struct {
 	SubscriptionDetails ZooProductSubscriptions `json:"subscription_details" yaml:"subscription_details" schema:"subscription_details"`
 	// SubscriptionID: The subscription ID for the user.
 	SubscriptionID string `json:"subscription_id" yaml:"subscription_id" schema:"subscription_id"`
-	// TotalDue: This includes any outstanding, draft, or open invoices and any pending invoice items. This does not include any credits the customer has on their account.
-	TotalDue float64 `json:"total_due" yaml:"total_due" schema:"total_due,required"`
+	// TotalDue: This includes any outstanding, draft, or open invoices and any pending invoice items. This does not include any credits the customer has on their account. This amount is only returned if requested from the api.
+	TotalDue float64 `json:"total_due" yaml:"total_due" schema:"total_due"`
 	// UpdatedAt: The date and time the balance was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }

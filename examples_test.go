@@ -1331,13 +1331,17 @@ func ExamplePaymentService_DeleteInformationForOrg() {
 
 // GetBalanceForOrg: Get balance for your org.
 // This endpoint requires authentication by an org admin. It gets the balance information for the authenticated user's org.
+//
+// Parameters
+//
+//   - `includeTotalDue`
 func ExamplePaymentService_GetBalanceForOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Payment.GetBalanceForOrg()
+	result, err := client.Payment.GetBalanceForOrg(true)
 	if err != nil {
 		panic(err)
 	}
@@ -1792,6 +1796,7 @@ func ExampleOrgService_UpdateEnterprisePricingFor() {
 //
 // Parameters
 //
+//   - `includeTotalDue`
 //   - `id`: A UUID usually v4 or v7
 func ExamplePaymentService_GetBalanceForAnyOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -1799,7 +1804,7 @@ func ExamplePaymentService_GetBalanceForAnyOrg() {
 		panic(err)
 	}
 
-	result, err := client.Payment.GetBalanceForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.Payment.GetBalanceForAnyOrg(true, kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -1814,6 +1819,7 @@ func ExamplePaymentService_GetBalanceForAnyOrg() {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
+//   - `includeTotalDue`
 //   - `body`: The data for updating a balance.
 func ExamplePaymentService_UpdateBalanceForAnyOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -1821,7 +1827,7 @@ func ExamplePaymentService_UpdateBalanceForAnyOrg() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateBalanceForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})
+	result, err := client.Payment.UpdateBalanceForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})
 	if err != nil {
 		panic(err)
 	}
@@ -2537,13 +2543,17 @@ func ExamplePaymentService_DeleteInformationForUser() {
 
 // GetBalanceForUser: Get balance for your user.
 // This endpoint requires authentication by any Zoo user. It gets the balance information for the authenticated user.
+//
+// Parameters
+//
+//   - `includeTotalDue`
 func ExamplePaymentService_GetBalanceForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Payment.GetBalanceForUser()
+	result, err := client.Payment.GetBalanceForUser(true)
 	if err != nil {
 		panic(err)
 	}
@@ -3078,13 +3088,14 @@ func ExampleAPICallService_ListForUser() {
 // Parameters
 //
 //   - `id`
+//   - `includeTotalDue`
 func ExamplePaymentService_GetBalanceForAnyUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Payment.GetBalanceForAnyUser("some-string")
+	result, err := client.Payment.GetBalanceForAnyUser("some-string", true)
 	if err != nil {
 		panic(err)
 	}
@@ -3099,6 +3110,7 @@ func ExamplePaymentService_GetBalanceForAnyUser() {
 // Parameters
 //
 //   - `id`
+//   - `includeTotalDue`
 //   - `body`: The data for updating a balance.
 func ExamplePaymentService_UpdateBalanceForAnyUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -3106,7 +3118,7 @@ func ExamplePaymentService_UpdateBalanceForAnyUser() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateBalanceForAnyUser("some-string", kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})
+	result, err := client.Payment.UpdateBalanceForAnyUser("some-string", true, kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})
 	if err != nil {
 		panic(err)
 	}

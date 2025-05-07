@@ -2886,7 +2886,11 @@ func (s *PaymentService) DeleteInformationForOrg() error {
 
 // GetBalanceForOrg: Get balance for your org.
 // This endpoint requires authentication by an org admin. It gets the balance information for the authenticated user's org.
-func (s *PaymentService) GetBalanceForOrg() (*CustomerBalance, error) {
+//
+// Parameters
+//
+//   - `includeTotalDue`
+func (s *PaymentService) GetBalanceForOrg(includeTotalDue bool) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/org/payment/balance"
 	uri := resolveRelative(s.client.server, path)
@@ -2895,6 +2899,13 @@ func (s *PaymentService) GetBalanceForOrg() (*CustomerBalance, error) {
 	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"include_total_due": strconv.FormatBool(includeTotalDue),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -3952,8 +3963,9 @@ func (s *OrgService) UpdateEnterprisePricingFor(id UUID, body any) (*ZooProductS
 //
 // Parameters
 //
+//   - `includeTotalDue`
 //   - `id`: A UUID usually v4 or v7
-func (s *PaymentService) GetBalanceForAnyOrg(id UUID) (*CustomerBalance, error) {
+func (s *PaymentService) GetBalanceForAnyOrg(includeTotalDue bool, id UUID) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/orgs/{{.id}}/payment/balance"
 	uri := resolveRelative(s.client.server, path)
@@ -3966,7 +3978,8 @@ func (s *PaymentService) GetBalanceForAnyOrg(id UUID) (*CustomerBalance, error) 
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id.String(),
+		"include_total_due": strconv.FormatBool(includeTotalDue),
+		"id":                id.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -4003,8 +4016,9 @@ func (s *PaymentService) GetBalanceForAnyOrg(id UUID) (*CustomerBalance, error) 
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
+//   - `includeTotalDue`
 //   - `body`: The data for updating a balance.
-func (s *PaymentService) UpdateBalanceForAnyOrg(id UUID, body UpdatePaymentBalance) (*CustomerBalance, error) {
+func (s *PaymentService) UpdateBalanceForAnyOrg(id UUID, includeTotalDue bool, body UpdatePaymentBalance) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/orgs/{{.id}}/payment/balance"
 	uri := resolveRelative(s.client.server, path)
@@ -4026,7 +4040,8 @@ func (s *PaymentService) UpdateBalanceForAnyOrg(id UUID, body UpdatePaymentBalan
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id.String(),
+		"id":                id.String(),
+		"include_total_due": strconv.FormatBool(includeTotalDue),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -5671,7 +5686,11 @@ func (s *PaymentService) DeleteInformationForUser() error {
 
 // GetBalanceForUser: Get balance for your user.
 // This endpoint requires authentication by any Zoo user. It gets the balance information for the authenticated user.
-func (s *PaymentService) GetBalanceForUser() (*CustomerBalance, error) {
+//
+// Parameters
+//
+//   - `includeTotalDue`
+func (s *PaymentService) GetBalanceForUser(includeTotalDue bool) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/user/payment/balance"
 	uri := resolveRelative(s.client.server, path)
@@ -5680,6 +5699,13 @@ func (s *PaymentService) GetBalanceForUser() (*CustomerBalance, error) {
 	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"include_total_due": strconv.FormatBool(includeTotalDue),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -6882,7 +6908,8 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 // Parameters
 //
 //   - `id`
-func (s *PaymentService) GetBalanceForAnyUser(id string) (*CustomerBalance, error) {
+//   - `includeTotalDue`
+func (s *PaymentService) GetBalanceForAnyUser(id string, includeTotalDue bool) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/users/{{.id}}/payment/balance"
 	uri := resolveRelative(s.client.server, path)
@@ -6895,7 +6922,8 @@ func (s *PaymentService) GetBalanceForAnyUser(id string) (*CustomerBalance, erro
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id,
+		"id":                id,
+		"include_total_due": strconv.FormatBool(includeTotalDue),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -6932,8 +6960,9 @@ func (s *PaymentService) GetBalanceForAnyUser(id string) (*CustomerBalance, erro
 // Parameters
 //
 //   - `id`
+//   - `includeTotalDue`
 //   - `body`: The data for updating a balance.
-func (s *PaymentService) UpdateBalanceForAnyUser(id string, body UpdatePaymentBalance) (*CustomerBalance, error) {
+func (s *PaymentService) UpdateBalanceForAnyUser(id string, includeTotalDue bool, body UpdatePaymentBalance) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/users/{{.id}}/payment/balance"
 	uri := resolveRelative(s.client.server, path)
@@ -6955,7 +6984,8 @@ func (s *PaymentService) UpdateBalanceForAnyUser(id string, body UpdatePaymentBa
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id,
+		"id":                id,
+		"include_total_due": strconv.FormatBool(includeTotalDue),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
