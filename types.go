@@ -980,6 +980,14 @@ type Color struct {
 	R float64 `json:"r" yaml:"r" schema:"r,required"`
 }
 
+// ComplementaryEdges: Struct to contain the edge information of a wall of an extrude/rotate/loft/sweep.
+type ComplementaryEdges struct {
+	// AdjacentIds: Every edge that shared one common vertex with the original edge.
+	AdjacentIds []UUID `json:"adjacent_ids" yaml:"adjacent_ids" schema:"adjacent_ids,required"`
+	// OppositeID: The opposite edge has no common vertices with the original edge. A wall may not have an opposite edge (i.e. a revolve that touches the axis of rotation).
+	OppositeID UUID `json:"opposite_id" yaml:"opposite_id" schema:"opposite_id"`
+}
+
 // ComponentTransform: Container that holds a translate, rotate and scale. Defaults to no change, everything stays the same (i.e. the identity function).
 type ComponentTransform struct {
 	// RotateAngleAxis: Rotate component of the transform. The rotation is specified as an axis and an angle (xyz are the components of the axis, w is the angle in degrees).
@@ -1239,6 +1247,18 @@ type CustomerBalance struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
+// CutStrategy: What strategy (algorithm) should be used for cutting? Defaults to Automatic.
+type CutStrategy string
+
+const (
+	// CutStrategyBasic: Basic fillet cut. This has limitations, like the filletted edges can't touch each other. But it's very fast and simple.
+	CutStrategyBasic CutStrategy = "basic"
+	// CutStrategyCsg: More complicated fillet cut. It works for more use-cases, like edges that touch each other. But it's slower than the Basic method.
+	CutStrategyCsg CutStrategy = "csg"
+	// CutStrategyAutomatic: Tries the Basic method, and if that doesn't work, tries the CSG strategy.
+	CutStrategyAutomatic CutStrategy = "automatic"
+)
+
 // CutType: What kind of cut to do
 type CutType string
 
@@ -1447,12 +1467,18 @@ type EnterpriseSubscriptionTierPricePrice struct {
 
 // EntityCircularPattern: The response from the `EntityCircularPattern` command.
 type EntityCircularPattern struct {
+	// EntityFaceEdgeIds: The Face, edge, and entity ids of the patterned entities.
+	EntityFaceEdgeIds []FaceEdgeInfo `json:"entity_face_edge_ids" yaml:"entity_face_edge_ids" schema:"entity_face_edge_ids"`
 	// EntityIds: The UUIDs of the entities that were created.
-	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids"`
 }
 
 // EntityClone: The response from the `EntityClone` command.
 type EntityClone struct {
+	// EntityIds: The UUIDs of the entities that were created.
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids"`
+	// FaceEdgeIds: The Face and Edge Ids of the cloned entity.
+	FaceEdgeIds []FaceEdgeInfo `json:"face_edge_ids" yaml:"face_edge_ids" schema:"face_edge_ids"`
 }
 
 // EntityFade: The response from the `EntityFade` endpoint.
@@ -1499,14 +1525,18 @@ type EntityGetSketchPaths struct {
 
 // EntityLinearPattern: The response from the `EntityLinearPattern` command.
 type EntityLinearPattern struct {
+	// EntityFaceEdgeIds: The Face, edge, and entity ids of the patterned entities.
+	EntityFaceEdgeIds []FaceEdgeInfo `json:"entity_face_edge_ids" yaml:"entity_face_edge_ids" schema:"entity_face_edge_ids"`
 	// EntityIds: The UUIDs of the entities that were created.
-	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids"`
 }
 
 // EntityLinearPatternTransform: The response from the `EntityLinearPatternTransform` command.
 type EntityLinearPatternTransform struct {
+	// EntityFaceEdgeIds: The Face, edge, and entity ids of the patterned entities.
+	EntityFaceEdgeIds []FaceEdgeInfo `json:"entity_face_edge_ids" yaml:"entity_face_edge_ids" schema:"entity_face_edge_ids"`
 	// EntityIds: The UUIDs of the entities that were created.
-	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids"`
 }
 
 // EntityMakeHelix: The response from the `EntityMakeHelix` endpoint.
@@ -1523,14 +1553,18 @@ type EntityMakeHelixFromParams struct {
 
 // EntityMirror: The response from the `EntityMirror` endpoint.
 type EntityMirror struct {
+	// EntityFaceEdgeIds: The Face, edge, and entity ids of the patterned entities.
+	EntityFaceEdgeIds []FaceEdgeInfo `json:"entity_face_edge_ids" yaml:"entity_face_edge_ids" schema:"entity_face_edge_ids"`
 	// EntityIds: The UUIDs of the entities that were created.
-	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids"`
 }
 
 // EntityMirrorAcrossEdge: The response from the `EntityMirrorAcrossEdge` endpoint.
 type EntityMirrorAcrossEdge struct {
+	// EntityFaceEdgeIds: The Face, edge, and entity ids of the patterned entities.
+	EntityFaceEdgeIds []FaceEdgeInfo `json:"entity_face_edge_ids" yaml:"entity_face_edge_ids" schema:"entity_face_edge_ids"`
 	// EntityIds: The UUIDs of the entities that were created.
-	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids"`
 }
 
 // EntitySetOpacity: The response from the `EntitySetOpacity` endpoint.
@@ -1752,6 +1786,16 @@ type ExtrusionFaceInfo struct {
 	CurveID UUID `json:"curve_id" yaml:"curve_id" schema:"curve_id"`
 	// FaceID: Face uuid.
 	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id"`
+}
+
+// FaceEdgeInfo: Faces and edges id info (most used in identifying geometry in patterned and mirrored objects).
+type FaceEdgeInfo struct {
+	// Edges: The edges of each object.
+	Edges []UUID `json:"edges" yaml:"edges" schema:"edges,required"`
+	// Faces: The faces of each object.
+	Faces []UUID `json:"faces" yaml:"faces" schema:"faces,required"`
+	// ObjectID: The UUID of the object.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 }
 
 // FaceGetCenter: The 3D center of mass on the surface
@@ -2891,7 +2935,7 @@ type ModelingCmdClosePath struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdCylinderID: Find all IDs of selected entities
+// ModelingCmdCylinderID: Clear the selection
 type ModelingCmdCylinderID struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
@@ -2942,11 +2986,17 @@ type ModelingCmdDefaultCameraSetView struct {
 	// CutType: How to apply the cut.
 	CutType CutType `json:"cut_type" yaml:"cut_type" schema:"cut_type"`
 	// EdgeID: Which edge you want to fillet.
-	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
+	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id"`
+	// EdgeIds: Which edges you want to fillet.
+	EdgeIds []UUID `json:"edge_ids" yaml:"edge_ids" schema:"edge_ids"`
+	// ExtraFaceIds: What IDs should the resulting faces have? If you've only passed one edge ID, its ID will be the command ID used to send this command, and this field should be empty. If you've passed `n` IDs (to fillet `n` edges), then this should be length `n-1`, and the first edge will use the command ID used to send this command.
+	ExtraFaceIds []UUID `json:"extra_face_ids" yaml:"extra_face_ids" schema:"extra_face_ids"`
 	// ObjectID: Which object is being filletted.
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Radius: The radius of the fillet. Measured in length (using the same units that the current sketch uses). Must be positive (i.e. greater than zero).
 	Radius float64 `json:"radius" yaml:"radius" schema:"radius,required"`
+	// Strategy: Which cutting algorithm to use.
+	Strategy CutStrategy `json:"strategy" yaml:"strategy" schema:"strategy"`
 	// Tolerance: The maximum acceptable surface gap computed between the filleted surfaces. Must be positive (i.e. greater than zero).
 	Tolerance float64 `json:"tolerance" yaml:"tolerance" schema:"tolerance,required"`
 	// Type:
@@ -3017,8 +3067,10 @@ type ModelingCmdEngineUtilEvaluatePath struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityCircularPattern: Clear the selection
+// ModelingCmdEntityCircularPattern: Get a concise description of all of solids edges.
 type ModelingCmdEntityCircularPattern struct {
+	// ObjectID: The Solid3d object whose info is being queried.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3147,14 +3199,12 @@ type ModelingCmdEntityLinearPatternTransform struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityMakeHelix: Create a new solid from subtracting several other solids. The 'target' is what will be cut from. The 'tool' is what will be cut out from 'target'.
+// ModelingCmdEntityMakeHelix: Create a new solid from intersecting several other solids. In other words, the part of the input solids where they all overlap will be the output solid.
 type ModelingCmdEntityMakeHelix struct {
-	// TargetIds: Geometry to cut out from.
-	TargetIds []UUID `json:"target_ids" yaml:"target_ids" schema:"target_ids,required"`
-	// Tolerance: The maximum acceptable surface gap computed between the target and the solids cut out from it. Must be positive (i.e. greater than zero).
+	// SolidIds: Which solids to intersect together
+	SolidIds []UUID `json:"solid_ids" yaml:"solid_ids" schema:"solid_ids,required"`
+	// Tolerance: The maximum acceptable surface gap computed between the joined solids. Must be positive (i.e. greater than zero).
 	Tolerance float64 `json:"tolerance" yaml:"tolerance" schema:"tolerance,required"`
-	// ToolIds: Will be cut out from the 'target'.
-	ToolIds []UUID `json:"tool_ids" yaml:"tool_ids" schema:"tool_ids,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3271,18 +3321,14 @@ type ModelingCmdInteraction struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdIsClockwise: Get the number of objects in the scene
+// ModelingCmdIsClockwise: Find all IDs of selected entities
 type ModelingCmdIsClockwise struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdLength: Set the transform of an object.
+// ModelingCmdLength: Get the number of objects in the scene
 type ModelingCmdLength struct {
-	// ObjectID: Id of the object whose transform is to be set.
-	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
-	// Transforms: List of transforms to be applied to the object.
-	Transforms []ComponentTransform `json:"transforms" yaml:"transforms" schema:"transforms,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3325,21 +3371,23 @@ type ModelingCmdModelingCmdAngle struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdAxis: Make a new path by offsetting an object by a given distance. The new path's ID will be the ID of this command.
+// ModelingCmdModelingCmdAxis: Create a new solid from subtracting several other solids. The 'target' is what will be cut from. The 'tool' is what will be cut out from 'target'.
 type ModelingCmdModelingCmdAxis struct {
-	// FaceID: If the object is a solid, this is the ID of the face to base the offset on. If given, and `object_id` refers to a solid, then this face on the solid will be offset. If given but `object_id` doesn't refer to a solid, responds with an error. If not given, then `object_id` itself will be offset directly.
-	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id"`
-	// ObjectID: The object that will be offset (can be a path, sketch, or a solid)
-	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
-	// Offset: The distance to offset the path (positive for outset, negative for inset)
-	Offset float64 `json:"offset" yaml:"offset" schema:"offset,required"`
+	// TargetIds: Geometry to cut out from.
+	TargetIds []UUID `json:"target_ids" yaml:"target_ids" schema:"target_ids,required"`
+	// Tolerance: The maximum acceptable surface gap computed between the target and the solids cut out from it. Must be positive (i.e. greater than zero).
+	Tolerance float64 `json:"tolerance" yaml:"tolerance" schema:"tolerance,required"`
+	// ToolIds: Will be cut out from the 'target'.
+	ToolIds []UUID `json:"tool_ids" yaml:"tool_ids" schema:"tool_ids,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdCenter: Add a hole to a closed path by offsetting it a uniform distance inward.
+// ModelingCmdModelingCmdCenter: Make a new path by offsetting an object by a given distance. The new path's ID will be the ID of this command.
 type ModelingCmdModelingCmdCenter struct {
-	// ObjectID: The closed path to add a hole to.
+	// FaceID: If the object is a solid, this is the ID of the face to base the offset on. If given, and `object_id` refers to a solid, then this face on the solid will be offset. If given but `object_id` doesn't refer to a solid, responds with an error. If not given, then `object_id` itself will be offset directly.
+	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id"`
+	// ObjectID: The object that will be offset (can be a path, sketch, or a solid)
 	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
 	// Offset: The distance to offset the path (positive for outset, negative for inset)
 	Offset float64 `json:"offset" yaml:"offset" schema:"offset,required"`
@@ -3391,8 +3439,18 @@ type ModelingCmdModelingCmdInteraction struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdIsClockwise: Align the grid with a plane or a planar face.
+// ModelingCmdModelingCmdIsClockwise: Add a hole to a closed path by offsetting it a uniform distance inward.
 type ModelingCmdModelingCmdIsClockwise struct {
+	// ObjectID: The closed path to add a hole to.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// Offset: The distance to offset the path (positive for outset, negative for inset)
+	Offset float64 `json:"offset" yaml:"offset" schema:"offset,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdModelingCmdLength: Align the grid with a plane or a planar face.
+type ModelingCmdModelingCmdLength struct {
 	// GridID: The grid to be moved.
 	GridID UUID `json:"grid_id" yaml:"grid_id" schema:"grid_id,required"`
 	// ReferenceID: The plane or face that the grid will be aligned to. If a face, it must be planar to succeed.
@@ -3605,12 +3663,12 @@ type ModelingCmdReq struct {
 	CmdID UUID `json:"cmd_id" yaml:"cmd_id" schema:"cmd_id,required"`
 }
 
-// ModelingCmdRevolutions: Create a new solid from combining other smaller solids. In other words, every part of the input solids will be included in the output solid.
+// ModelingCmdRevolutions: Set the transform of an object.
 type ModelingCmdRevolutions struct {
-	// SolidIds: Which solids to union together. Cannot be empty.
-	SolidIds []UUID `json:"solid_ids" yaml:"solid_ids" schema:"solid_ids,required"`
-	// Tolerance: The maximum acceptable surface gap computed between the joined solids. Must be positive (i.e. greater than zero).
-	Tolerance float64 `json:"tolerance" yaml:"tolerance" schema:"tolerance,required"`
+	// ObjectID: Id of the object whose transform is to be set.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// Transforms: List of transforms to be applied to the object.
+	Transforms []ComponentTransform `json:"transforms" yaml:"transforms" schema:"transforms,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3717,9 +3775,9 @@ type ModelingCmdSpacing struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdStartAngle: Create a new solid from intersecting several other solids. In other words, the part of the input solids where they all overlap will be the output solid.
+// ModelingCmdStartAngle: Create a new solid from combining other smaller solids. In other words, every part of the input solids will be included in the output solid.
 type ModelingCmdStartAngle struct {
-	// SolidIds: Which solids to intersect together
+	// SolidIds: Which solids to union together. Cannot be empty.
 	SolidIds []UUID `json:"solid_ids" yaml:"solid_ids" schema:"solid_ids,required"`
 	// Tolerance: The maximum acceptable surface gap computed between the joined solids. Must be positive (i.e. greater than zero).
 	Tolerance float64 `json:"tolerance" yaml:"tolerance" schema:"tolerance,required"`
@@ -3943,10 +4001,26 @@ type ObjectSetMaterialParamsPbr struct {
 type ObjectVisible struct {
 }
 
+// OkModelingCmdResponseCameraDragMove is the type definition for a OkModelingCmdResponseCameraDragMove.
+type OkModelingCmdResponseCameraDragMove struct {
+	// Data: The response from the 'BooleanSubtract'.
+	Data BooleanSubtract `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // OkModelingCmdResponseCameraDragStart is the type definition for a OkModelingCmdResponseCameraDragStart.
 type OkModelingCmdResponseCameraDragStart struct {
 	// Data: The response from the `EdgeLinesVisible` endpoint.
 	Data EdgeLinesVisible `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseClosePath is the type definition for a OkModelingCmdResponseClosePath.
+type OkModelingCmdResponseClosePath struct {
+	// Data: The response from the 'BooleanUnion'.
+	Data BooleanUnion `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -4072,39 +4146,39 @@ type OkModelingCmdResponseEntityFade struct {
 // OkModelingCmdResponseEntityGetAllChildUuids is the type definition for a OkModelingCmdResponseEntityGetAllChildUuids.
 type OkModelingCmdResponseEntityGetAllChildUuids struct {
 	// Data: Extrusion face info struct (useful for maintaining mappings between source path segment ids and extrusion faces)
-	Data ExtrusionFaceInfo `json:"data" yaml:"data" schema:"data,required"`
+	Data Solid3DGetExtrusionFaceInfo `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // OkModelingCmdResponseEntityGetChildUuid is the type definition for a OkModelingCmdResponseEntityGetChildUuid.
 type OkModelingCmdResponseEntityGetChildUuid struct {
-	// Data: The response from the `EntityMirror` endpoint.
-	Data EntityMirror `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the `EntityCircularPattern` command.
+	Data EntityCircularPattern `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // OkModelingCmdResponseEntityGetNumChildren is the type definition for a OkModelingCmdResponseEntityGetNumChildren.
 type OkModelingCmdResponseEntityGetNumChildren struct {
-	// Data: The response from the `EntityMakeHelix` endpoint.
-	Data EntityMakeHelix `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the `EntityMirrorAcrossEdge` endpoint.
+	Data EntityMirrorAcrossEdge `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // OkModelingCmdResponseEntityGetParentID is the type definition for a OkModelingCmdResponseEntityGetParentID.
 type OkModelingCmdResponseEntityGetParentID struct {
-	// Data: The response from the `EntityMakeHelixFromEdge` endpoint.
-	Data EntityMakeHelixFromEdge `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the `EntityMakeHelixFromParams` endpoint.
+	Data EntityMakeHelixFromParams `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // OkModelingCmdResponseEntityGetSketchPaths is the type definition for a OkModelingCmdResponseEntityGetSketchPaths.
 type OkModelingCmdResponseEntityGetSketchPaths struct {
-	// Data: The response from the 'BooleanUnion'.
-	Data BooleanUnion `json:"data" yaml:"data" schema:"data,required"`
+	// Data: Struct to contain the edge information of a wall of an extrude/rotate/loft/sweep.
+	Data ComplementaryEdges `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -4191,16 +4265,16 @@ type OkModelingCmdResponseHighlightSetEntities struct {
 
 // OkModelingCmdResponseHighlightSetEntity is the type definition for a OkModelingCmdResponseHighlightSetEntity.
 type OkModelingCmdResponseHighlightSetEntity struct {
-	// Data: The response from the `EntityLinearPattern` command.
-	Data EntityLinearPattern `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the `EntityLinearPatternTransform` command.
+	Data EntityLinearPatternTransform `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // OkModelingCmdResponseLoft is the type definition for a OkModelingCmdResponseLoft.
 type OkModelingCmdResponseLoft struct {
-	// Data: The response from the 'BooleanSubtract'.
-	Data BooleanSubtract `json:"data" yaml:"data" schema:"data,required"`
+	// Data: Solid info struct (useful for maintaining mappings between edges and faces and adjacent/opposite edges).
+	Data SolidInfo `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -4359,8 +4433,8 @@ type OkModelingCmdResponseSelectReplace struct {
 
 // OkModelingCmdResponseSelectWithPoint is the type definition for a OkModelingCmdResponseSelectWithPoint.
 type OkModelingCmdResponseSelectWithPoint struct {
-	// Data: The response from the `EntityClone` command.
-	Data EntityClone `json:"data" yaml:"data" schema:"data,required"`
+	// Data: Faces and edges id info (most used in identifying geometry in patterned and mirrored objects).
+	Data FaceEdgeInfo `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5507,6 +5581,12 @@ type Solid3DGetExtrusionFaceInfo struct {
 	Faces []ExtrusionFaceInfo `json:"faces" yaml:"faces" schema:"faces,required"`
 }
 
+// Solid3DGetInfo: Extrusion face info struct (useful for maintaining mappings between source path segment ids and extrusion faces)
+type Solid3DGetInfo struct {
+	// Info: Details of each face.
+	Info SolidInfo `json:"info" yaml:"info" schema:"info,required"`
+}
+
 // Solid3DGetNextAdjacentEdge: The response from the `Solid3dGetNextAdjacentEdge` command.
 type Solid3DGetNextAdjacentEdge struct {
 	// Edge: The UUID of the edge.
@@ -5527,6 +5607,18 @@ type Solid3DGetPrevAdjacentEdge struct {
 
 // Solid3DShellFace: The response from the `Solid3dShellFace` endpoint.
 type Solid3DShellFace struct {
+}
+
+// SolidInfo: Solid info struct (useful for maintaining mappings between edges and faces and adjacent/opposite edges).
+type SolidInfo struct {
+	// BottomCapID: UUID for bottom cap.
+	BottomCapID UUID `json:"bottom_cap_id" yaml:"bottom_cap_id" schema:"bottom_cap_id"`
+	// CommonEdges: A map containing the common faces for all edges.
+	CommonEdges map[string][]UUID `json:"common_edges" yaml:"common_edges" schema:"common_edges,required"`
+	// ComplementaryEdges: A map containing the adjacent and opposite edge ids of each wall face.
+	ComplementaryEdges map[string]ComplementaryEdges `json:"complementary_edges" yaml:"complementary_edges" schema:"complementary_edges,required"`
+	// TopCapID: UUID for top cap.
+	TopCapID UUID `json:"top_cap_id" yaml:"top_cap_id" schema:"top_cap_id"`
 }
 
 // SourcePosition: A position in the source code.
