@@ -5743,12 +5743,12 @@ type SupportTier string
 const (
 	// SupportTierCommunity: Community support.
 	SupportTierCommunity SupportTier = "community"
-	// SupportTierStandard: Standard support.
-	SupportTierStandard SupportTier = "standard"
+	// SupportTierStandardEmail: Standard email support.
+	SupportTierStandardEmail SupportTier = "standard_email"
+	// SupportTierPriorityEmail: Priority email support.
+	SupportTierPriorityEmail SupportTier = "priority_email"
 	// SupportTierPremium: Premium support.
 	SupportTierPremium SupportTier = "premium"
-	// SupportTierPriority: Priority support.
-	SupportTierPriority SupportTier = "priority"
 )
 
 // SurfaceArea: The surface area response.
