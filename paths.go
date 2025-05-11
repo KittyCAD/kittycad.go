@@ -5341,6 +5341,47 @@ func (s *APITokenService) DeleteForUser(token string) error {
 
 }
 
+// PatchCrm: Update properties in the CRM
+// Parameters
+//
+//   - `body`: The data for subscribing a user to the newsletter.
+func (s *UserService) PatchCrm(body CrmData) error {
+	// Create the url.
+	path := "/user/crm"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PATCH", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // GetSelfExtended: Get extended information about your user.
 // Get the user information for the authenticated user.
 //
@@ -5379,6 +5420,49 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.
+// It gets attached to the user's account.
+//
+// Parameters
+//
+//   - `body`: The form for a public inquiry submission.
+func (s *UserService) PutFormSelf(body InquiryForm) error {
+	// Create the url.
+	path := "/user/form"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }
 
@@ -7013,6 +7097,90 @@ func (s *PaymentService) UpdateBalanceForAnyUser(id string, includeTotalDue bool
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted
+// users and is not authenticated.
+//
+// Parameters
+//
+//   - `body`: The form for a public inquiry submission.
+func (s *UserService) PutPublicForm(body InquiryForm) error {
+	// Create the url.
+	path := "/website/form"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// PutPublicSubscribe: Subscribes a user to the newsletter.
+// Parameters
+//
+//   - `body`: The data for subscribing a user to the newsletter.
+func (s *UserService) PutPublicSubscribe(body Subscribe) error {
+	// Create the url.
+	path := "/website/subscribe"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }
 

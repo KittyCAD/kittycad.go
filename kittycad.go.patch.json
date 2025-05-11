@@ -809,7 +809,7 @@
  },
  {
   "value": {
-   "example": "// UpdateSelf: Update your user.\n// \n// This endpoint requires authentication by any Zoo user. It updates information about the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The user-modifiable parts of a User.\n// \n// UpdateSelf: Update your user.\n// This endpoint requires authentication by any Zoo user. It updates information about the authenticated user.\n//\n// Parameters\n//\n//   - `body`: The user-modifiable parts of a User.\nfunc ExampleUserService_UpdateSelf() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: \"some-string\", Discord: \"some-string\", FirstName: \"some-string\", Github: \"some-string\", Image: kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, LastName: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// UpdateSelf: Update your user.\n// \n// This endpoint requires authentication by any Zoo user. It updates information about the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: The user-modifiable parts of a User.\n// \n// UpdateSelf: Update your user.\n// This endpoint requires authentication by any Zoo user. It updates information about the authenticated user.\n//\n// Parameters\n//\n//   - `body`: The user-modifiable parts of a User.\nfunc ExampleUserService_UpdateSelf() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: \"some-string\", Discord: \"some-string\", FirstName: \"some-string\", Github: \"some-string\", Image: kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, IsOnboarded: true, LastName: \"some-string\", Phone: \"+1-555-555-555\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.UpdateSelf"
   },
   "op": "add",
@@ -865,11 +865,27 @@
  },
  {
   "value": {
+   "example": "// PatchCrm: Update properties in the CRM\n// \n// \n// Parameters\n// \n// \t- `body`: The data for subscribing a user to the newsletter.\n// \n// PatchCrm: Update properties in the CRM\n// Parameters\n//\n//   - `body`: The data for subscribing a user to the newsletter.\nfunc ExampleUserService_PatchCrm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PatchCrm(kittycad.CrmData{CadIndustry: \"some-string\", CadUserCount: \"some-string\", CadUserType: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PatchCrm"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1crm/patch/x-go"
+ },
+ {
+  "value": {
    "example": "// GetSelfExtended: Get extended information about your user.\n// \n// Get the user information for the authenticated user.\n// \n// Alternatively, you can also use the `/users-extended/me` endpoint.\n// \n// GetSelfExtended: Get extended information about your user.\n// Get the user information for the authenticated user.\n//\n// Alternatively, you can also use the `/users-extended/me` endpoint.\nfunc ExampleUserService_GetSelfExtended() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetSelfExtended()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetSelfExtended"
   },
   "op": "add",
   "path": "/paths/~1user~1extended/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.\n// \n// It gets attached to the user's account.\n// \n// \n// Parameters\n// \n// \t- `body`: The form for a public inquiry submission.\n// \n// PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.\n// It gets attached to the user's account.\n//\n// Parameters\n//\n//   - `body`: The form for a public inquiry submission.\nfunc ExampleUserService_PutFormSelf() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutFormSelf(kittycad.InquiryForm{Company: \"some-string\", Email: \"example@example.com\", FirstName: \"some-string\", Industry: \"some-string\", InquiryType: \"\", LastName: \"some-string\", Message: \"some-string\", Phone: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutFormSelf"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1form/put/x-go"
  },
  {
   "value": {
@@ -1142,6 +1158,22 @@
   },
   "op": "add",
   "path": "/paths/~1users~1{id}~1payment~1balance/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted\n// \n// users and is not authenticated.\n// \n// \n// Parameters\n// \n// \t- `body`: The form for a public inquiry submission.\n// \n// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted\n// users and is not authenticated.\n//\n// Parameters\n//\n//   - `body`: The form for a public inquiry submission.\nfunc ExampleUserService_PutPublicForm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutPublicForm(kittycad.InquiryForm{Company: \"some-string\", Email: \"example@example.com\", FirstName: \"some-string\", Industry: \"some-string\", InquiryType: \"\", LastName: \"some-string\", Message: \"some-string\", Phone: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutPublicForm"
+  },
+  "op": "add",
+  "path": "/paths/~1website~1form/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// PutPublicSubscribe: Subscribes a user to the newsletter.\n// \n// \n// Parameters\n// \n// \t- `body`: The data for subscribing a user to the newsletter.\n// \n// PutPublicSubscribe: Subscribes a user to the newsletter.\n// Parameters\n//\n//   - `body`: The data for subscribing a user to the newsletter.\nfunc ExampleUserService_PutPublicSubscribe() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutPublicSubscribe(kittycad.Subscribe{Email: \"example@example.com\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutPublicSubscribe"
+  },
+  "op": "add",
+  "path": "/paths/~1website~1subscribe/put/x-go"
  },
  {
   "value": {

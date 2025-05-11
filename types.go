@@ -1146,6 +1146,16 @@ const (
 	CreatedAtSortModeCreatedAtDescending CreatedAtSortMode = "created_at_descending"
 )
 
+// CrmData: The data for subscribing a user to the newsletter.
+type CrmData struct {
+	// CadIndustry: The industry of the user.
+	CadIndustry string `json:"cad_industry" yaml:"cad_industry" schema:"cad_industry"`
+	// CadUserCount: The user count of the user.
+	CadUserCount string `json:"cad_user_count" yaml:"cad_user_count" schema:"cad_user_count"`
+	// CadUserType: The user type.
+	CadUserType string `json:"cad_user_type" yaml:"cad_user_type" schema:"cad_user_type"`
+}
+
 // CurveGetControlPoints: The response from the `CurveGetControlPoints` command.
 type CurveGetControlPoints struct {
 	// ControlPoints: Control points in the curve.
@@ -1603,7 +1613,7 @@ type Environment string
 const (
 	// EnvironmentDevelopment: The development environment. This is for running locally.
 	EnvironmentDevelopment Environment = "DEVELOPMENT"
-	// EnvironmentPreview: The preview environment. This is when PRs are created and a service is deployed for testing.
+	// EnvironmentPreview: The preview environment. This is deployed to api.dev.zoo.dev.
 	EnvironmentPreview Environment = "PREVIEW"
 	// EnvironmentProduction: The production environment.
 	EnvironmentProduction Environment = "PRODUCTION"
@@ -1728,6 +1738,8 @@ type ExtendedUser struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Image: The image avatar for the user. This is a URL.
 	Image URL `json:"image" yaml:"image" schema:"image,required"`
+	// IsOnboarded: If the user has finished onboarding.
+	IsOnboarded bool `json:"is_onboarded" yaml:"is_onboarded" schema:"is_onboarded"`
 	// IsServiceAccount: If the user is tied to a service account.
 	IsServiceAccount bool `json:"is_service_account" yaml:"is_service_account" schema:"is_service_account"`
 	// LastName: The user's last name.
@@ -2320,6 +2332,48 @@ type InputFormat3Dunits struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
+
+// InquiryForm: The form for a public inquiry submission.
+type InquiryForm struct {
+	// Company: The company name.
+	Company string `json:"company" yaml:"company" schema:"company"`
+	// Email: The email address of the user.
+	Email string `json:"email" yaml:"email" schema:"email,required"`
+	// FirstName: The first name of the user.
+	FirstName string `json:"first_name" yaml:"first_name" schema:"first_name,required"`
+	// Industry: The industry of the user.
+	Industry string `json:"industry" yaml:"industry" schema:"industry"`
+	// InquiryType: The type of inquiry.
+	InquiryType InquiryType `json:"inquiry_type" yaml:"inquiry_type" schema:"inquiry_type,required"`
+	// LastName: The last name of the user.
+	LastName string `json:"last_name" yaml:"last_name" schema:"last_name,required"`
+	// Message: The message content.
+	Message string `json:"message" yaml:"message" schema:"message,required"`
+	// Phone: The phone number of the user.
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
+}
+
+// InquiryType: The type of inquiry.
+type InquiryType string
+
+const (
+	// InquiryTypeGeneralInquiry: General inquiry about the service or product.
+	InquiryTypeGeneralInquiry InquiryType = "general_inquiry"
+	// InquiryTypeSalesQuestion: Questions related to sales or purchasing.
+	InquiryTypeSalesQuestion InquiryType = "sales_question"
+	// InquiryTypeDeveloperInquiry: Inquiry from a developer, typically technical in nature.
+	InquiryTypeDeveloperInquiry InquiryType = "developer_inquiry"
+	// InquiryTypePartnershipOpportunity: Opportunity for partnership or collaboration.
+	InquiryTypePartnershipOpportunity InquiryType = "partnership_opportunity"
+	// InquiryTypeOtherSalesInquiry: Other inquiries related to sales that do not fit predefined categories.
+	InquiryTypeOtherSalesInquiry InquiryType = "other_sales_inquiry"
+	// InquiryTypeTechnicalSupport: Request for technical support or troubleshooting.
+	InquiryTypeTechnicalSupport InquiryType = "technical_support"
+	// InquiryTypeAccountManagement: Questions or requests related to account management.
+	InquiryTypeAccountManagement InquiryType = "account_management"
+	// InquiryTypeOtherSupportInquiry: Other support-related inquiries that do not fit predefined categories.
+	InquiryTypeOtherSupportInquiry InquiryType = "other_support_inquiry"
+)
 
 // Invoice: An invoice.
 type Invoice struct {
@@ -5669,6 +5723,12 @@ type StoreCouponParams struct {
 	PercentOff int `json:"percent_off" yaml:"percent_off" schema:"percent_off,required"`
 }
 
+// Subscribe: The data for subscribing a user to the newsletter.
+type Subscribe struct {
+	// Email: The email
+	Email string `json:"email" yaml:"email" schema:"email,required"`
+}
+
 // SubscriptionTierFeature: A subscription tier feature.
 type SubscriptionTierFeature struct {
 	// Info: Information about the feature.
@@ -6634,6 +6694,8 @@ type UpdateUser struct {
 	Github string `json:"github" yaml:"github" schema:"github"`
 	// Image: The image URL for the user. NOTE: If the user uses an OAuth2 provider, this will be overwritten by the provider's image URL when the user logs in next.
 	Image URL `json:"image" yaml:"image" schema:"image,required"`
+	// IsOnboarded: If the user is now onboarded.
+	IsOnboarded bool `json:"is_onboarded" yaml:"is_onboarded" schema:"is_onboarded"`
 	// LastName: The user's last name.
 	LastName string `json:"last_name" yaml:"last_name" schema:"last_name"`
 	// Phone: The user's phone number.
@@ -6650,7 +6712,7 @@ type User struct {
 	Company string `json:"company" yaml:"company" schema:"company"`
 	// CreatedAt: The date and time the user was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// DeletionScheduled: If the user is scheduled for deletion
+	// DeletionScheduled: If the user is scheduled for deletion.
 	DeletionScheduled bool `json:"deletion_scheduled" yaml:"deletion_scheduled" schema:"deletion_scheduled"`
 	// Discord: The user's Discord handle.
 	Discord string `json:"discord" yaml:"discord" schema:"discord"`
@@ -6666,6 +6728,8 @@ type User struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Image: The image avatar for the user. This is a URL.
 	Image URL `json:"image" yaml:"image" schema:"image,required"`
+	// IsOnboarded: If the user has finished onboarding.
+	IsOnboarded bool `json:"is_onboarded" yaml:"is_onboarded" schema:"is_onboarded"`
 	// IsServiceAccount: If the user is tied to a service account.
 	IsServiceAccount bool `json:"is_service_account" yaml:"is_service_account" schema:"is_service_account"`
 	// LastName: The user's last name.
