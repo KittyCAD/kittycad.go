@@ -2220,7 +2220,7 @@ func ExampleUserService_UpdateSelf() {
 		panic(err)
 	}
 
-	result, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: "some-string", Discord: "some-string", FirstName: "some-string", Github: "some-string", Image: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, LastName: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: "some-string", Discord: "some-string", FirstName: "some-string", Github: "some-string", Image: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, IsOnboarded: true, LastName: "some-string", Phone: "+1-555-555-555"})
 	if err != nil {
 		panic(err)
 	}
@@ -2386,6 +2386,22 @@ func ExampleAPITokenService_DeleteForUser() {
 
 }
 
+// PatchCrm: Update properties in the CRM
+// Parameters
+//
+//   - `body`: The data for subscribing a user to the newsletter.
+func ExampleUserService_PatchCrm() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.PatchCrm(kittycad.CrmData{CadIndustry: "some-string", CadUserCount: "some-string", CadUserType: "some-string"}); err != nil {
+		panic(err)
+	}
+
+}
+
 // GetSelfExtended: Get extended information about your user.
 // Get the user information for the authenticated user.
 //
@@ -2402,6 +2418,24 @@ func ExampleUserService_GetSelfExtended() {
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.
+// It gets attached to the user's account.
+//
+// Parameters
+//
+//   - `body`: The form for a public inquiry submission.
+func ExampleUserService_PutFormSelf() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.PutFormSelf(kittycad.InquiryForm{Company: "some-string", Email: "example@example.com", FirstName: "some-string", Industry: "some-string", InquiryType: "", LastName: "some-string", Message: "some-string", Phone: "some-string"}); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -3124,6 +3158,40 @@ func ExamplePaymentService_UpdateBalanceForAnyUser() {
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted
+// users and is not authenticated.
+//
+// Parameters
+//
+//   - `body`: The form for a public inquiry submission.
+func ExampleUserService_PutPublicForm() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.PutPublicForm(kittycad.InquiryForm{Company: "some-string", Email: "example@example.com", FirstName: "some-string", Industry: "some-string", InquiryType: "", LastName: "some-string", Message: "some-string", Phone: "some-string"}); err != nil {
+		panic(err)
+	}
+
+}
+
+// PutPublicSubscribe: Subscribes a user to the newsletter.
+// Parameters
+//
+//   - `body`: The data for subscribing a user to the newsletter.
+func ExampleUserService_PutPublicSubscribe() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.PutPublicSubscribe(kittycad.Subscribe{Email: "example@example.com"}); err != nil {
+		panic(err)
+	}
 
 }
 
