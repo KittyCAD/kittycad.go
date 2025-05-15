@@ -2396,7 +2396,7 @@ func ExampleUserService_PatchCrm() {
 		panic(err)
 	}
 
-	if err := client.User.PatchCrm(kittycad.CrmData{CadIndustry: "some-string", CadUserCount: "some-string", CadUserType: "some-string"}); err != nil {
+	if err := client.User.PatchCrm(kittycad.CrmData{CadIndustry: "some-string", CadUserType: "some-string", NumberOfCadUsers: "some-string"}); err != nil {
 		panic(err)
 	}
 

@@ -1150,10 +1150,10 @@ const (
 type CrmData struct {
 	// CadIndustry: The industry of the user.
 	CadIndustry string `json:"cad_industry" yaml:"cad_industry" schema:"cad_industry"`
-	// CadUserCount: The user count of the user.
-	CadUserCount string `json:"cad_user_count" yaml:"cad_user_count" schema:"cad_user_count"`
 	// CadUserType: The user type.
 	CadUserType string `json:"cad_user_type" yaml:"cad_user_type" schema:"cad_user_type"`
+	// NumberOfCadUsers: The user count of the user.
+	NumberOfCadUsers string `json:"number_of_cad_users" yaml:"number_of_cad_users" schema:"number_of_cad_users"`
 }
 
 // CurveGetControlPoints: The response from the `CurveGetControlPoints` command.
