@@ -1566,8 +1566,14 @@ func (s *MlService) GetPrompt(id UUID) (*MlPrompt, error) {
 //
 // Parameters
 //
+//   - `codeOption`: Code option for running and verifying kcl.
+//
+//     <details><summary>JSON schema</summary>
+//
+//     ```json { "title": "CodeOption", "description": "Code option for running and verifying kcl.", "type": "string", "enum": [ "parse", "execute", "cleanup", "mock_execute" ] } ``` </details>
+//
 //   - `body`
-func (s *MlService) CreateProprietaryToKcl(body *bytes.Buffer) (*KclModel, error) {
+func (s *MlService) CreateProprietaryToKcl(codeOption CodeOption, body *bytes.Buffer) (*KclModel, error) {
 	// Create the url.
 	path := "/ml/convert/proprietary-to-kcl"
 	uri := resolveRelative(s.client.server, path)
@@ -1580,6 +1586,13 @@ func (s *MlService) CreateProprietaryToKcl(body *bytes.Buffer) (*KclModel, error
 
 	// Add our headers.
 	req.Header.Add("Content-Type", "multipart/form-data")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"code_option": string(codeOption),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)

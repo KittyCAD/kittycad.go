@@ -757,6 +757,12 @@ func ExampleMlService_GetPrompt() {
 //
 // Parameters
 //
+//   - `codeOption`: Code option for running and verifying kcl.
+//
+//     <details><summary>JSON schema</summary>
+//
+//     ```json { "title": "CodeOption", "description": "Code option for running and verifying kcl.", "type": "string", "enum": [ "parse", "execute", "cleanup", "mock_execute" ] } ``` </details>
+//
 //   - `body`
 func ExampleMlService_CreateProprietaryToKcl() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -766,7 +772,7 @@ func ExampleMlService_CreateProprietaryToKcl() {
 
 	buf := new(bytes.Buffer)
 
-	result, err := client.Ml.CreateProprietaryToKcl(buf)
+	result, err := client.Ml.CreateProprietaryToKcl(kittycad.CodeOptionParse, buf)
 	if err != nil {
 		panic(err)
 	}
