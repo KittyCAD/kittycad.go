@@ -6956,10 +6956,10 @@ type ZooTool string
 const (
 	// ZooToolModelingApp: The modeling app.
 	ZooToolModelingApp ZooTool = "modeling_app"
-	// ZooToolTextToCad: The Text-to-CAD UI.
-	ZooToolTextToCad ZooTool = "text_to_cad"
 	// ZooToolDiffChromeExtension: The Diff Chrome Extension.
 	ZooToolDiffChromeExtension ZooTool = "diff_chrome_extension"
+	// ZooToolTextToCad: The Text-to-CAD UI.
+	ZooToolTextToCad ZooTool = "text_to_cad"
 )
 
 // ZoomToFit: The response from the `ZoomToFit` command.
