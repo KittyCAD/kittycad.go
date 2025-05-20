@@ -1564,6 +1564,8 @@ func (s *MlService) GetPrompt(id UUID) (*MlPrompt, error) {
 //
 // A STEP file does not have feature tree data, so it will not work. A sldprt file does have feature tree data, so it will work.
 //
+// Input filepaths will be normalized and re-canonicalized to be under the current working directory -- so returned paths may differ from provided paths, and care must be taken when handling user provided paths.
+//
 // Parameters
 //
 //   - `codeOption`: Code option for running and verifying kcl.
@@ -1736,6 +1738,8 @@ func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*Text
 // You always get the whole code back, even if you only changed a small part of it. This endpoint will always return all the code back, including files that were not changed. If your original source code imported a stl/gltf/step/etc file, the output will not include that file since the model will never change non-kcl files. The endpoint will only return the kcl files that were changed.
 //
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Input filepaths will be normalized and re-canonicalized to be under the current working directory -- so returned paths may differ from provided paths, and care must be taken when handling user provided paths.
 //
 // Parameters
 //
