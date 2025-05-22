@@ -63,25 +63,6 @@ func ExampleMetaService_GetSchema() {
 
 }
 
-// Getdata: Get the metadata about our currently running server.
-// This includes information on any of our other distributed systems it is connected to.
-//
-// You must be a Zoo employee to perform this request.
-func ExampleMetaService_Getdata() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Meta.Getdata()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // GetIpinfo: Get ip address information.
 func ExampleMetaService_GetIpinfo() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -664,7 +645,7 @@ func ExampleFileService_CreateVolume() {
 // InternalGetAPITokenForDiscordUser: Get an API token for a user by their discord id.
 // This endpoint allows us to run API calls from our discord bot on behalf of a user. The user must have a discord account linked to their Zoo Account via oauth2 for this to work.
 //
-// You must be a Zoo employee to use this endpoint.
+// You must be a Zoo admin to use this endpoint.
 //
 // Parameters
 //
@@ -1780,7 +1761,7 @@ func ExampleOrgService_GetAny() {
 }
 
 // UpdateEnterprisePricingFor: Set the enterprise price for an organization.
-// You must be a Zoo employee to perform this request.
+// You must be a Zoo admin to perform this request.
 //
 // Parameters
 //
@@ -3046,8 +3027,6 @@ func ExampleUserService_ListExtended() {
 //
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
 //
-// To get information about any Zoo user, you must be a Zoo employee.
-//
 // Parameters
 //
 //   - `id`
@@ -3070,8 +3049,6 @@ func ExampleUserService_GetExtended() {
 // To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 //
 // Alternatively, to get information about the authenticated user, use `/user` endpoint.
-//
-// To get information about any Zoo user, you must be a Zoo employee.
 //
 // Parameters
 //

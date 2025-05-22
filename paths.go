@@ -45,47 +45,6 @@ func (s *MetaService) GetSchema() error {
 
 }
 
-// Getdata: Get the metadata about our currently running server.
-// This includes information on any of our other distributed systems it is connected to.
-//
-// You must be a Zoo employee to perform this request.
-func (s *MetaService) Getdata() (*Metadata, error) {
-	// Create the url.
-	path := "/_meta/info"
-	uri := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded Metadata
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // GetIpinfo: Get ip address information.
 func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 	// Create the url.
@@ -1368,7 +1327,7 @@ func (s *FileService) CreateVolume(outputUnit UnitVolume, srcFormat FileImportFo
 // InternalGetAPITokenForDiscordUser: Get an API token for a user by their discord id.
 // This endpoint allows us to run API calls from our discord bot on behalf of a user. The user must have a discord account linked to their Zoo Account via oauth2 for this to work.
 //
-// You must be a Zoo employee to use this endpoint.
+// You must be a Zoo admin to use this endpoint.
 //
 // Parameters
 //
@@ -3916,7 +3875,7 @@ func (s *OrgService) GetAny(id UUID) (*Org, error) {
 }
 
 // UpdateEnterprisePricingFor: Set the enterprise price for an organization.
-// You must be a Zoo employee to perform this request.
+// You must be a Zoo admin to perform this request.
 //
 // Parameters
 //
@@ -6833,8 +6792,6 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 //
 // Alternatively, to get information about the authenticated user, use `/user/extended` endpoint.
 //
-// To get information about any Zoo user, you must be a Zoo employee.
-//
 // Parameters
 //
 //   - `id`
@@ -6886,8 +6843,6 @@ func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 // To get information about yourself, use `/users/me` as the endpoint. By doing so you will get the user information for the authenticated user.
 //
 // Alternatively, to get information about the authenticated user, use `/user` endpoint.
-//
-// To get information about any Zoo user, you must be a Zoo employee.
 //
 // Parameters
 //
