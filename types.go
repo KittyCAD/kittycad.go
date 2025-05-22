@@ -745,13 +745,6 @@ type BooleanUnion struct {
 	ExtraSolidIds []UUID `json:"extra_solid_ids" yaml:"extra_solid_ids" schema:"extra_solid_ids"`
 }
 
-// CacheMetadata: Metadata about our cache.
-// This is mostly used for internal purposes and debugging.
-type CacheMetadata struct {
-	// Ok: If the cache returned an ok response from ping.
-	Ok bool `json:"ok" yaml:"ok" schema:"ok,required"`
-}
-
 // CameraDragEnd: The response from the `CameraDragEnd` command.
 type CameraDragEnd struct {
 	// Settings: Camera settings
@@ -934,22 +927,6 @@ type ClosePath struct {
 	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id,required"`
 }
 
-// Cluster: Cluster information.
-type Cluster struct {
-	// Addr: The IP address of the cluster.
-	Addr string `json:"addr" yaml:"addr" schema:"addr"`
-	// AuthTimeout: The auth timeout of the cluster.
-	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout" schema:"auth_timeout"`
-	// ClusterPort: The port of the cluster.
-	ClusterPort int `json:"cluster_port" yaml:"cluster_port" schema:"cluster_port"`
-	// Name: The name of the cluster.
-	Name string `json:"name" yaml:"name" schema:"name"`
-	// TlsTimeout: The TLS timeout for the cluster.
-	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
-	// Urls: The urls of the cluster.
-	Urls []string `json:"urls" yaml:"urls" schema:"urls"`
-}
-
 // CodeLanguage: The language code is written in.
 // <details><summary>JSON schema</summary>
 //
@@ -1025,103 +1002,6 @@ type ComponentTransform struct {
 	Scale string `json:"scale" yaml:"scale" schema:"scale"`
 	// Translate: Translate component of the transform.
 	Translate string `json:"translate" yaml:"translate" schema:"translate"`
-}
-
-// Connection: Metadata about a pub-sub connection.
-// This is mostly used for internal purposes and debugging.
-type Connection struct {
-	// AuthTimeout: The auth timeout of the server.
-	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout" schema:"auth_timeout"`
-	// Cluster: Information about the cluster.
-	Cluster Cluster `json:"cluster" yaml:"cluster" schema:"cluster"`
-	// ConfigLoadTime: The time the configuration was loaded.
-	ConfigLoadTime Time `json:"config_load_time" yaml:"config_load_time" schema:"config_load_time,required"`
-	// Connections: The number of connections to the server.
-	Connections int `json:"connections" yaml:"connections" schema:"connections"`
-	// Cores: The CPU core usage of the server.
-	Cores int `json:"cores" yaml:"cores" schema:"cores"`
-	// Cpu: The CPU usage of the server.
-	Cpu float64 `json:"cpu" yaml:"cpu" schema:"cpu"`
-	// Gateway: Information about the gateway.
-	Gateway Gateway `json:"gateway" yaml:"gateway" schema:"gateway"`
-	// GitCommit: The git commit.
-	GitCommit string `json:"git_commit" yaml:"git_commit" schema:"git_commit"`
-	// Go: The go version.
-	Go string `json:"go" yaml:"go" schema:"go"`
-	// Gomaxprocs: `GOMAXPROCS` of the server.
-	Gomaxprocs int `json:"gomaxprocs" yaml:"gomaxprocs" schema:"gomaxprocs"`
-	// Host: The host of the server.
-	Host IP `json:"host" yaml:"host" schema:"host,required"`
-	// HttpBasePath: The http base path of the server.
-	HttpBasePath string `json:"http_base_path" yaml:"http_base_path" schema:"http_base_path"`
-	// HttpHost: The http host of the server.
-	HttpHost string `json:"http_host" yaml:"http_host" schema:"http_host"`
-	// HttpPort: The http port of the server.
-	HttpPort int `json:"http_port" yaml:"http_port" schema:"http_port"`
-	// HttpReqStats: HTTP request statistics.
-	HttpReqStats map[string]int `json:"http_req_stats" yaml:"http_req_stats" schema:"http_req_stats,required"`
-	// HttpsPort: The https port of the server.
-	HttpsPort int `json:"https_port" yaml:"https_port" schema:"https_port"`
-	// InBytes: The count of inbound bytes for the server.
-	InBytes int `json:"in_bytes" yaml:"in_bytes" schema:"in_bytes"`
-	// InMsgs: The number of inbound messages for the server.
-	InMsgs int `json:"in_msgs" yaml:"in_msgs" schema:"in_msgs"`
-	// Jetstream: Jetstream information.
-	Jetstream Jetstream `json:"jetstream" yaml:"jetstream" schema:"jetstream"`
-	// Leaf: Information about leaf nodes.
-	Leaf LeafNode `json:"leaf" yaml:"leaf" schema:"leaf"`
-	// Leafnodes: The number of leaf nodes for the server.
-	Leafnodes int `json:"leafnodes" yaml:"leafnodes" schema:"leafnodes"`
-	// MaxConnections: The max connections of the server.
-	MaxConnections int `json:"max_connections" yaml:"max_connections" schema:"max_connections"`
-	// MaxControlLine: The max control line of the server.
-	MaxControlLine int `json:"max_control_line" yaml:"max_control_line" schema:"max_control_line"`
-	// MaxPayload: The max payload of the server.
-	MaxPayload int `json:"max_payload" yaml:"max_payload" schema:"max_payload"`
-	// MaxPending: The max pending of the server.
-	MaxPending int `json:"max_pending" yaml:"max_pending" schema:"max_pending"`
-	// Mem: The memory usage of the server.
-	Mem int `json:"mem" yaml:"mem" schema:"mem"`
-	// Now: The time now.
-	Now Time `json:"now" yaml:"now" schema:"now,required"`
-	// OutBytes: The count of outbound bytes for the server.
-	OutBytes int `json:"out_bytes" yaml:"out_bytes" schema:"out_bytes"`
-	// OutMsgs: The number of outbound messages for the server.
-	OutMsgs int `json:"out_msgs" yaml:"out_msgs" schema:"out_msgs"`
-	// PingInterval: The ping interval of the server.
-	PingInterval int `json:"ping_interval" yaml:"ping_interval" schema:"ping_interval"`
-	// PingMax: The ping max of the server.
-	PingMax int `json:"ping_max" yaml:"ping_max" schema:"ping_max"`
-	// Port: The port of the server.
-	Port int `json:"port" yaml:"port" schema:"port"`
-	// Proto: The protocol version.
-	Proto int `json:"proto" yaml:"proto" schema:"proto"`
-	// Remotes: The number of remotes for the server.
-	Remotes int `json:"remotes" yaml:"remotes" schema:"remotes"`
-	// Routes: The number of routes for the server.
-	Routes int `json:"routes" yaml:"routes" schema:"routes"`
-	// ServerID: The server ID.
-	ServerID string `json:"server_id" yaml:"server_id" schema:"server_id"`
-	// ServerName: The server name.
-	ServerName string `json:"server_name" yaml:"server_name" schema:"server_name"`
-	// SlowConsumers: The number of slow consumers for the server.
-	SlowConsumers int `json:"slow_consumers" yaml:"slow_consumers" schema:"slow_consumers"`
-	// Start: When the server was started.
-	Start Time `json:"start" yaml:"start" schema:"start,required"`
-	// Subscriptions: The number of subscriptions for the server.
-	Subscriptions int `json:"subscriptions" yaml:"subscriptions" schema:"subscriptions"`
-	// SystemAccount: The system account.
-	SystemAccount string `json:"system_account" yaml:"system_account" schema:"system_account"`
-	// TlsTimeout: The TLS timeout of the server.
-	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
-	// TotalConnections: The total number of connections to the server.
-	TotalConnections int `json:"total_connections" yaml:"total_connections" schema:"total_connections"`
-	// Uptime: The uptime of the server.
-	Uptime string `json:"uptime" yaml:"uptime" schema:"uptime"`
-	// Version: The version of the service.
-	Version string `json:"version" yaml:"version" schema:"version"`
-	// WriteDeadline: The write deadline of the server.
-	WriteDeadline int `json:"write_deadline" yaml:"write_deadline" schema:"write_deadline"`
 }
 
 // Coupon: The resource representing a Coupon.
@@ -1642,18 +1522,6 @@ const (
 	EntityTypeVertex EntityType = "vertex"
 )
 
-// Environment: The environment the server is running in.
-type Environment string
-
-const (
-	// EnvironmentDevelopment: The development environment. This is for running locally.
-	EnvironmentDevelopment Environment = "DEVELOPMENT"
-	// EnvironmentPreview: The preview environment. This is deployed to api.dev.zoo.dev.
-	EnvironmentPreview Environment = "PREVIEW"
-	// EnvironmentProduction: The production environment.
-	EnvironmentProduction Environment = "PRODUCTION"
-)
-
 // Error: Error information from a response.
 type Error struct {
 	// ErrorCode:
@@ -2101,13 +1969,6 @@ type FileSurfaceArea struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
-// FileSystemMetadata: Metadata about our file system.
-// This is mostly used for internal purposes and debugging.
-type FileSystemMetadata struct {
-	// Ok: If the file system passed a sanity check.
-	Ok bool `json:"ok" yaml:"ok" schema:"ok,required"`
-}
-
 // FileVolume: A file volume result.
 type FileVolume struct {
 	// CompletedAt: The time and date the API call was completed.
@@ -2134,20 +1995,6 @@ type FileVolume struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 	// Volume: The resulting volume.
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
-}
-
-// Gateway: Gateway information.
-type Gateway struct {
-	// AuthTimeout: The auth timeout of the gateway.
-	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout" schema:"auth_timeout"`
-	// Host: The host of the gateway.
-	Host string `json:"host" yaml:"host" schema:"host"`
-	// Name: The name of the gateway.
-	Name string `json:"name" yaml:"name" schema:"name"`
-	// Port: The port of the gateway.
-	Port int `json:"port" yaml:"port" schema:"port"`
-	// TlsTimeout: The TLS timeout for the gateway.
-	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
 }
 
 // GetEntityType: The response from the `GetEntityType` command.
@@ -2546,56 +2393,6 @@ type IpAddrInfo struct {
 	Timezone string `json:"timezone" yaml:"timezone" schema:"timezone"`
 }
 
-// Jetstream: Jetstream information.
-type Jetstream struct {
-	// Config: The Jetstream config.
-	Config JetstreamConfig `json:"config" yaml:"config" schema:"config"`
-	// Meta: Meta information about the cluster.
-	Meta MetaClusterInfo `json:"meta" yaml:"meta" schema:"meta"`
-	// Stats: Jetstream statistics.
-	Stats JetstreamStats `json:"stats" yaml:"stats" schema:"stats"`
-}
-
-// JetstreamAPIStats: Jetstream API statistics.
-type JetstreamAPIStats struct {
-	// Errors: The number of errors.
-	Errors int `json:"errors" yaml:"errors" schema:"errors"`
-	// Inflight: The number of inflight requests.
-	Inflight int `json:"inflight" yaml:"inflight" schema:"inflight"`
-	// Total: The number of requests.
-	Total int `json:"total" yaml:"total" schema:"total"`
-}
-
-// JetstreamConfig: Jetstream configuration.
-type JetstreamConfig struct {
-	// Domain: The domain.
-	Domain string `json:"domain" yaml:"domain" schema:"domain"`
-	// MaxMemory: The max memory.
-	MaxMemory int `json:"max_memory" yaml:"max_memory" schema:"max_memory"`
-	// MaxStorage: The max storage.
-	MaxStorage int `json:"max_storage" yaml:"max_storage" schema:"max_storage"`
-	// StoreDir: The store directory.
-	StoreDir string `json:"store_dir" yaml:"store_dir" schema:"store_dir"`
-}
-
-// JetstreamStats: Jetstream statistics.
-type JetstreamStats struct {
-	// Accounts: The number of accounts.
-	Accounts int `json:"accounts" yaml:"accounts" schema:"accounts"`
-	// API: API stats.
-	API JetstreamAPIStats `json:"api" yaml:"api" schema:"api"`
-	// HaAssets: The number of HA assets.
-	HaAssets int `json:"ha_assets" yaml:"ha_assets" schema:"ha_assets"`
-	// Memory: The memory used by the Jetstream server.
-	Memory int `json:"memory" yaml:"memory" schema:"memory"`
-	// ReservedMemory: The reserved memory for the Jetstream server.
-	ReservedMemory int `json:"reserved_memory" yaml:"reserved_memory" schema:"reserved_memory"`
-	// ReservedStore: The reserved storage for the Jetstream server.
-	ReservedStore int `json:"reserved_store" yaml:"reserved_store" schema:"reserved_store"`
-	// Store: The storage used by the Jetstream server.
-	Store int `json:"store" yaml:"store" schema:"store"`
-}
-
 // KclCodeCompletionParams: Extra params for the completions.
 type KclCodeCompletionParams struct {
 	// Language: The language of the code.
@@ -2646,18 +2443,6 @@ type KclModel struct {
 	Code string `json:"code" yaml:"code" schema:"code,required"`
 }
 
-// LeafNode: Leaf node information.
-type LeafNode struct {
-	// AuthTimeout: The auth timeout of the leaf node.
-	AuthTimeout int `json:"auth_timeout" yaml:"auth_timeout" schema:"auth_timeout"`
-	// Host: The host of the leaf node.
-	Host string `json:"host" yaml:"host" schema:"host"`
-	// Port: The port of the leaf node.
-	Port int `json:"port" yaml:"port" schema:"port"`
-	// TlsTimeout: The TLS timeout for the leaf node.
-	TlsTimeout int `json:"tls_timeout" yaml:"tls_timeout" schema:"tls_timeout"`
-}
-
 // Loft: The response from the `Loft` command.
 type Loft struct {
 	// SolidID: The UUID of the newly created solid loft.
@@ -2684,31 +2469,6 @@ type Mass struct {
 	Mass float64 `json:"mass" yaml:"mass" schema:"mass,required"`
 	// OutputUnit: The output unit for the mass.
 	OutputUnit UnitMas `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
-}
-
-// MetaClusterInfo: Jetstream statistics.
-type MetaClusterInfo struct {
-	// ClusterSize: The size of the cluster.
-	ClusterSize int `json:"cluster_size" yaml:"cluster_size" schema:"cluster_size"`
-	// Leader: The leader of the cluster.
-	Leader string `json:"leader" yaml:"leader" schema:"leader"`
-	// Name: The name of the cluster.
-	Name string `json:"name" yaml:"name" schema:"name"`
-}
-
-// Metadata: Metadata about our currently running server.
-// This is mostly used for internal purposes and debugging.
-type Metadata struct {
-	// Cache: Metadata about our cache.
-	Cache CacheMetadata `json:"cache" yaml:"cache" schema:"cache,required"`
-	// Environment: The environment we are running in.
-	Environment Environment `json:"environment" yaml:"environment" schema:"environment,required"`
-	// Fs: Metadata about our file system.
-	Fs FileSystemMetadata `json:"fs" yaml:"fs" schema:"fs,required"`
-	// GitHash: The git hash of the server.
-	GitHash string `json:"git_hash" yaml:"git_hash" schema:"git_hash,required"`
-	// Pubsub: Metadata about our pub-sub connection.
-	Pubsub Connection `json:"pubsub" yaml:"pubsub" schema:"pubsub,required"`
 }
 
 // Method: The Request Method (VERB)
