@@ -7072,6 +7072,66 @@ func (s *PaymentService) UpdateBalanceForAnyUser(id string, includeTotalDue bool
 
 }
 
+// UpdateSubscriptionFor: Update a subscription for a user.
+// You must be a Zoo admin to perform this request.
+//
+// Parameters
+//
+//   - `id`
+//   - `body`: A struct of Zoo product subscriptions a user can request.
+func (s *UserService) UpdateSubscriptionFor(id string, body ZooProductSubscriptionsUserRequest) (*ZooProductSubscriptions, error) {
+	// Create the url.
+	path := "/users/{{.id}}/payment/subscriptions"
+	uri := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", uri, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ZooProductSubscriptions
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted
 // users and is not authenticated.
 //
