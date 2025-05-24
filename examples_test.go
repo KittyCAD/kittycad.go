@@ -3148,6 +3148,28 @@ func ExamplePaymentService_UpdateBalanceForAnyUser() {
 
 }
 
+// UpdateSubscriptionFor: Update a subscription for a user.
+// You must be a Zoo admin to perform this request.
+//
+// Parameters
+//
+//   - `id`
+//   - `body`: A struct of Zoo product subscriptions a user can request.
+func ExampleUserService_UpdateSubscriptionFor() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.UpdateSubscriptionFor("some-string", kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "", PayAnnually: true})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted
 // users and is not authenticated.
 //

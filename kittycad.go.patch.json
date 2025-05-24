@@ -1153,6 +1153,14 @@
  },
  {
   "value": {
+   "example": "// UpdateSubscriptionFor: Update a subscription for a user.\n// \n// You must be a Zoo admin to perform this request.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `body`: A struct of Zoo product subscriptions a user can request.\n// \n// UpdateSubscriptionFor: Update a subscription for a user.\n// You must be a Zoo admin to perform this request.\n//\n// Parameters\n//\n//   - `id`\n//   - `body`: A struct of Zoo product subscriptions a user can request.\nfunc ExampleUserService_UpdateSubscriptionFor() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.UpdateSubscriptionFor(\"some-string\", kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: \"\", PayAnnually: true})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.UpdateSubscriptionFor"
+  },
+  "op": "add",
+  "path": "/paths/~1users~1{id}~1payment~1subscriptions/put/x-go"
+ },
+ {
+  "value": {
    "example": "// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted\n// \n// users and is not authenticated.\n// \n// \n// Parameters\n// \n// \t- `body`: The form for a public inquiry submission.\n// \n// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted\n// users and is not authenticated.\n//\n// Parameters\n//\n//   - `body`: The form for a public inquiry submission.\nfunc ExampleUserService_PutPublicForm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutPublicForm(kittycad.InquiryForm{Company: \"some-string\", Email: \"example@example.com\", FirstName: \"some-string\", Industry: \"some-string\", InquiryType: \"\", LastName: \"some-string\", Message: \"some-string\", Phone: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutPublicForm"
   },
