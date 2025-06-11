@@ -459,7 +459,9 @@ func ExampleFileService_CreateCenterOfMass() {
 }
 
 // CreateConversionOptions: Convert CAD file from one format to another.
-// This takes a HTTP multipart body with these fields in this order: 1. The input format, with options (as JSON) 2. The output format, with options (as JSON) 3. The main file, in raw binary (in whatever format you specified in field (1) i.e. input format) 4. Any additional files
+// This takes a HTTP multipart body with these fields in any order:
+//
+//   - The input and output format options (as JSON), name is 'body'.  - The files to convert, in raw binary. Must supply filenames.
 //
 // This starts a conversion job and returns the `id` of the operation. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
