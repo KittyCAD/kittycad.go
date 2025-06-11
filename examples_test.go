@@ -458,6 +458,31 @@ func ExampleFileService_CreateCenterOfMass() {
 
 }
 
+// CreateConversionOptions: Convert CAD file from one format to another.
+// This takes a HTTP multipart body with these fields in this order: 1. The input format, with options (as JSON) 2. The output format, with options (as JSON) 3. The main file, in raw binary (in whatever format you specified in field (1) i.e. input format) 4. Any additional files
+//
+// This starts a conversion job and returns the `id` of the operation. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `body`: Describes the file to convert (src) and what it should be converted into (output).
+func ExampleFileService_CreateConversionOptions() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	buf := new(bytes.Buffer)
+
+	result, err := client.File.CreateConversionOptions(buf)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateConversion: Convert CAD file with defaults.
 // If you wish to specify the conversion options, use the `/file/conversion` endpoint instead.
 //
