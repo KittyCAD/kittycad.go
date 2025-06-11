@@ -926,6 +926,54 @@ func (s *FileService) CreateCenterOfMass(outputUnit UnitLength, srcFormat FileIm
 
 }
 
+// CreateConversionOptions: Convert CAD file from one format to another.
+// This takes a HTTP multipart body with these fields in this order: 1. The input format, with options (as JSON) 2. The output format, with options (as JSON) 3. The main file, in raw binary (in whatever format you specified in field (1) i.e. input format) 4. Any additional files
+//
+// This starts a conversion job and returns the `id` of the operation. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `body`: Describes the file to convert (src) and what it should be converted into (output).
+func (s *FileService) CreateConversionOptions(body *bytes.Buffer) (*FileConversion, error) {
+	// Create the url.
+	path := "/file/conversion"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, body)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "multipart/form-data")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FileConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateConversion: Convert CAD file with defaults.
 // If you wish to specify the conversion options, use the `/file/conversion` endpoint instead.
 //

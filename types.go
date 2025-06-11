@@ -1004,6 +1004,14 @@ type ComponentTransform struct {
 	Translate string `json:"translate" yaml:"translate" schema:"translate"`
 }
 
+// ConversionParams: Describes the file to convert (src) and what it should be converted into (output).
+type ConversionParams struct {
+	// OutputFormat: Describes the output file(s).
+	OutputFormat any `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// SrcFormat: Describes the input file(s).
+	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+}
+
 // Coupon: The resource representing a Coupon.
 type Coupon struct {
 	// AmountOff: Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
