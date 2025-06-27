@@ -2476,23 +2476,6 @@ func ExampleUserService_GetOauth2ProvidersFor() {
 
 }
 
-// GetOnboardingSelf: Get your user's onboarding status.
-// Checks key part of their api usage to determine their onboarding progress
-func ExampleUserService_GetOnboardingSelf() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.User.GetOnboardingSelf()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // GetUser: Get a user's org.
 // This endpoint requires authentication by any Zoo user. It gets the authenticated user's org.
 //

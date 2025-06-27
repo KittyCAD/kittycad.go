@@ -897,14 +897,6 @@
  },
  {
   "value": {
-   "example": "// GetOnboardingSelf: Get your user's onboarding status.\n// \n// Checks key part of their api usage to determine their onboarding progress\n// \n// GetOnboardingSelf: Get your user's onboarding status.\n// Checks key part of their api usage to determine their onboarding progress\nfunc ExampleUserService_GetOnboardingSelf() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetOnboardingSelf()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetOnboardingSelf"
-  },
-  "op": "add",
-  "path": "/paths/~1user~1onboarding/get/x-go"
- },
- {
-  "value": {
    "example": "// GetUser: Get a user's org.\n// \n// This endpoint requires authentication by any Zoo user. It gets the authenticated user's org.\n// \n// If the user is not a member of an org, this endpoint will return a 404.\n// \n// GetUser: Get a user's org.\n// This endpoint requires authentication by any Zoo user. It gets the authenticated user's org.\n//\n// If the user is not a member of an org, this endpoint will return a 404.\nfunc ExampleOrgService_GetUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetUser()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.GetUser"
   },
