@@ -5533,45 +5533,6 @@ func (s *UserService) GetOauth2ProvidersFor() (*[]AccountProvider, error) {
 
 }
 
-// GetOnboardingSelf: Get your user's onboarding status.
-// Checks key part of their api usage to determine their onboarding progress
-func (s *UserService) GetOnboardingSelf() (*Onboarding, error) {
-	// Create the url.
-	path := "/user/onboarding"
-	uri := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded Onboarding
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // GetUser: Get a user's org.
 // This endpoint requires authentication by any Zoo user. It gets the authenticated user's org.
 //
