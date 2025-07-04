@@ -294,6 +294,23 @@ func ExampleAPICallService_GetAsyncOperation() {
 
 }
 
+// AuthAPIKey: Authenticate using an api-key. This is disabled on production but can be used in dev to login without email magic.
+// This returns a session token.
+func ExampleHiddenService_AuthAPIKey() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Hidden.AuthAPIKey()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // AuthEmail: Create an email verification request for a user.
 // Parameters
 //

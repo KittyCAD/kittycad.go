@@ -555,6 +555,45 @@ func (s *APICallService) GetAsyncOperation(id UUID) (*any, error) {
 
 }
 
+// AuthAPIKey: Authenticate using an api-key. This is disabled on production but can be used in dev to login without email magic.
+// This returns a session token.
+func (s *HiddenService) AuthAPIKey() (*AuthAPIKeyResponse, error) {
+	// Create the url.
+	path := "/auth/api-key"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AuthAPIKeyResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // AuthEmail: Create an email verification request for a user.
 // Parameters
 //

@@ -97,6 +97,14 @@
  },
  {
   "value": {
+   "example": "// AuthAPIKey: Authenticate using an api-key. This is disabled on production but can be used in dev to login without email magic.\n// \n// This returns a session token.\n// \n// AuthAPIKey: Authenticate using an api-key. This is disabled on production but can be used in dev to login without email magic.\n// This returns a session token.\nfunc ExampleHiddenService_AuthAPIKey() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Hidden.AuthAPIKey()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.AuthAPIKey"
+  },
+  "op": "add",
+  "path": "/paths/~1auth~1api-key/post/x-go"
+ },
+ {
+  "value": {
    "example": "// AuthEmail: Create an email verification request for a user.\n// \n// \n// Parameters\n// \n// \t- `body`: The body of the form for email authentication.\n// \n// AuthEmail: Create an email verification request for a user.\n// Parameters\n//\n//   - `body`: The body of the form for email authentication.\nfunc ExampleHiddenService_AuthEmail() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Hidden.AuthEmail(kittycad.EmailAuthenticationForm{CallbackUrl: kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, Email: \"example@example.com\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.AuthEmail"
   },
