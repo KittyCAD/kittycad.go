@@ -674,6 +674,12 @@ const (
 	AsyncAPICallTypeTextToCadMultiFileIteration AsyncAPICallType = "text_to_cad_multi_file_iteration"
 )
 
+// AuthAPIKeyResponse: The response from the `/auth/api-key` endpoint.
+type AuthAPIKeyResponse struct {
+	// SessionToken: The session token
+	SessionToken string `json:"session_token" yaml:"session_token" schema:"session_token,required"`
+}
+
 // AuthCallback: The authentication callback from the OAuth 2.0 client. This is typically posted to the redirect URL as query params after authenticating.
 type AuthCallback struct {
 	// Code: The authorization code.
