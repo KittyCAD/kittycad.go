@@ -2637,7 +2637,7 @@ const (
 // ModelingAppSubscriptionTier: A subscription tier we offer for the Modeling App.
 type ModelingAppSubscriptionTier struct {
 	// AnnualDiscount: Annual discount. The percentage off the monthly price if the user pays annually.
-	AnnualDiscount int `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
+	AnnualDiscount float64 `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
 	// Description: A description of the tier.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
 	// EndpointsIncluded: The Zoo API endpoints that are included when through an approved zoo tool.
@@ -6778,7 +6778,7 @@ const (
 // ZooProductSubscription: A subscription to the modeling app.
 type ZooProductSubscription struct {
 	// AnnualDiscount: Annual discount. The percentage off the monthly price if the user pays annually.
-	AnnualDiscount int `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
+	AnnualDiscount float64 `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
 	// Description: A description of the tier.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
 	// EndpointsIncluded: The Zoo API endpoints that are included when through an approved zoo tool.
