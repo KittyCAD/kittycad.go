@@ -348,6 +348,25 @@ func ExampleHiddenService_AuthEmailCallback() {
 
 }
 
+// GetAuthSamlByOrg: GET /auth/saml/{org_id}
+// Redirects the browser straight to the org’s SAML IdP.
+//
+// Parameters
+//
+//   - `orgId`: A UUID usually v4 or v7
+//   - `callbackUrl`
+func ExampleHiddenService_GetAuthSamlByOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Hidden.GetAuthSamlByOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}); err != nil {
+		panic(err)
+	}
+
+}
+
 // GetAuthSaml: Get a redirect straight to the SAML IdP.
 // The UI uses this to avoid having to ask the API anything about the IdP. It already knows the SAML IdP ID from the path, so it can just link to this path and rely on the API to redirect to the actual IdP.
 //

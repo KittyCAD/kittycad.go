@@ -121,6 +121,14 @@
  },
  {
   "value": {
+   "example": "// GetAuthSamlByOrg: GET /auth/saml/{org_id}\n// \n// Redirects the browser straight to the org’s SAML IdP.\n// \n// \n// Parameters\n// \n// \t- `orgId`: A UUID usually v4 or v7\n// \t- `callbackUrl`\n// \n// GetAuthSamlByOrg: GET /auth/saml/{org_id}\n// Redirects the browser straight to the org’s SAML IdP.\n//\n// Parameters\n//\n//   - `orgId`: A UUID usually v4 or v7\n//   - `callbackUrl`\nfunc ExampleHiddenService_GetAuthSamlByOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.GetAuthSamlByOrg(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.GetAuthSamlByOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1auth~1saml~1org~1{org_id}~1login/get/x-go"
+ },
+ {
+  "value": {
    "example": "// GetAuthSaml: Get a redirect straight to the SAML IdP.\n// \n// The UI uses this to avoid having to ask the API anything about the IdP. It already knows the SAML IdP ID from the path, so it can just link to this path and rely on the API to redirect to the actual IdP.\n// \n// \n// Parameters\n// \n// \t- `providerId`: A UUID usually v4 or v7\n// \t- `callbackUrl`\n// \n// GetAuthSaml: Get a redirect straight to the SAML IdP.\n// The UI uses this to avoid having to ask the API anything about the IdP. It already knows the SAML IdP ID from the path, so it can just link to this path and rely on the API to redirect to the actual IdP.\n//\n// Parameters\n//\n//   - `providerId`: A UUID usually v4 or v7\n//   - `callbackUrl`\nfunc ExampleHiddenService_GetAuthSaml() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.GetAuthSaml(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.GetAuthSaml"
   },

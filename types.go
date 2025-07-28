@@ -606,6 +606,8 @@ type AsyncAPICallOutputSrcFormat struct {
 type AsyncAPICallOutputSrcFormatOptions struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The conversation ID Conversations group different prompts together.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
 	// CreatedAt: The time and date the API call was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Error: The error the function returned, if any.
@@ -2530,6 +2532,8 @@ const (
 type MlPrompt struct {
 	// CompletedAt: When the prompt was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The id for the conversation related to this prompt.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id"`
 	// CreatedAt: The date and time the ML prompt was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Error: The error message if the prompt failed.
@@ -2608,6 +2612,8 @@ type ModelingAppIndividualSubscriptionTier string
 const (
 	// ModelingAppIndividualSubscriptionTierFree: The free tier.
 	ModelingAppIndividualSubscriptionTierFree ModelingAppIndividualSubscriptionTier = "free"
+	// ModelingAppIndividualSubscriptionTierPlus: The plus tier.
+	ModelingAppIndividualSubscriptionTierPlus ModelingAppIndividualSubscriptionTier = "plus"
 	// ModelingAppIndividualSubscriptionTierPro: The pro tier.
 	ModelingAppIndividualSubscriptionTierPro ModelingAppIndividualSubscriptionTier = "pro"
 )
@@ -2672,6 +2678,8 @@ type ModelingAppSubscriptionTierName string
 const (
 	// ModelingAppSubscriptionTierNameFree: The free tier.
 	ModelingAppSubscriptionTierNameFree ModelingAppSubscriptionTierName = "free"
+	// ModelingAppSubscriptionTierNamePlus: The plus tier.
+	ModelingAppSubscriptionTierNamePlus ModelingAppSubscriptionTierName = "plus"
 	// ModelingAppSubscriptionTierNamePro: The pro tier.
 	ModelingAppSubscriptionTierNamePro ModelingAppSubscriptionTierName = "pro"
 	// ModelingAppSubscriptionTierNameTeam: The team tier.
@@ -3474,7 +3482,7 @@ type ModelingCmdOrigin struct {
 type ModelingCmdPath struct {
 	// Distance: How far off the plane to extrude
 	Distance float64 `json:"distance" yaml:"distance" schema:"distance,required"`
-	// ExtrudeMethod: Should the extrusion create a new object or be part of the existing object. If a new object is created, the command id will be the id of the newly created object.
+	// ExtrudeMethod: Should the extrusion create a new object or be part of the existing object.
 	ExtrudeMethod ExtrudeMethod `json:"extrude_method" yaml:"extrude_method" schema:"extrude_method"`
 	// Faces: Which IDs should the new faces have? If this isn't given, the engine will generate IDs.
 	Faces ExtrudedFaceInfo `json:"faces" yaml:"faces" schema:"faces"`
@@ -5803,6 +5811,8 @@ const (
 type TextToCadMultiFileIteration struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The conversation ID Conversations group different prompts together.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
 	// CreatedAt: The time and date the API call was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Error: The error the function returned, if any.
@@ -5839,6 +5849,8 @@ type TextToCadMultiFileIteration struct {
 
 // TextToCadMultiFileIterationBody: Body for iterating on models from text prompts.
 type TextToCadMultiFileIterationBody struct {
+	// ConversationID: The conversation ID Conversations group different prompts together. This should be omitted when starting a new conversation. The conversation_id returned in the response should be used to link future messages in the same conversation.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id"`
 	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
 	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
 	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.

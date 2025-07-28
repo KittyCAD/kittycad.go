@@ -687,6 +687,49 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 
 }
 
+// GetAuthSamlByOrg: GET /auth/saml/{org_id}
+// Redirects the browser straight to the org’s SAML IdP.
+//
+// Parameters
+//
+//   - `orgId`: A UUID usually v4 or v7
+//   - `callbackUrl`
+func (s *HiddenService) GetAuthSamlByOrg(orgId UUID, callbackUrl URL) error {
+	// Create the url.
+	path := "/auth/saml/org/{{.org_id}}/login"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"org_id":       orgId.String(),
+		"callback_url": callbackUrl.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // GetAuthSaml: Get a redirect straight to the SAML IdP.
 // The UI uses this to avoid having to ask the API anything about the IdP. It already knows the SAML IdP ID from the path, so it can just link to this path and rely on the API to redirect to the actual IdP.
 //
