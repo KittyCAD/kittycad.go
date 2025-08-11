@@ -1650,6 +1650,66 @@ func (s *MlService) GetPrompt(id UUID) (*MlPrompt, error) {
 
 }
 
+// ListConversationsForUser: List conversations
+// This endpoint requires authentication by any Zoo user. It returns the conversations for the authenticated user.
+//
+// The conversations are returned in order of creation, with the most recently created conversations first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *MlService) ListConversationsForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*ConversationResultsPage, error) {
+	// Create the url.
+	path := "/ml/conversations"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ConversationResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateProprietaryToKcl: Converts a proprietary CAD format to KCL.
 // This endpoint is used to convert a proprietary CAD format to KCL. The file passed MUST have feature tree data.
 //
@@ -6621,8 +6681,10 @@ func (s *UserService) DeleteShortlink(key string) error {
 //
 //     Currently, we only support scanning in ascending order.
 //
+//   - `conversationId`: A UUID usually v4 or v7
+//
 //   - `noModels`
-func (s *MlService) ListTextToCadModelsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, noModels bool) (*TextToCadResultsPage, error) {
+func (s *MlService) ListTextToCadModelsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, conversationId UUID, noModels bool) (*TextToCadResponseResultsPage, error) {
 	// Create the url.
 	path := "/user/text-to-cad"
 	uri := resolveRelative(s.client.server, path)
@@ -6635,10 +6697,11 @@ func (s *MlService) ListTextToCadModelsForUser(limit int, pageToken string, sort
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-		"no_models":  strconv.FormatBool(noModels),
+		"limit":           strconv.Itoa(limit),
+		"page_token":      pageToken,
+		"sort_by":         string(sortBy),
+		"conversation_id": conversationId.String(),
+		"no_models":       strconv.FormatBool(noModels),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -6659,7 +6722,7 @@ func (s *MlService) ListTextToCadModelsForUser(limit int, pageToken string, sort
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded TextToCadResultsPage
+	var decoded TextToCadResponseResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -6675,7 +6738,7 @@ func (s *MlService) ListTextToCadModelsForUser(limit int, pageToken string, sort
 // Parameters
 //
 //   - `id`
-func (s *MlService) GetTextToCadModelForUser(id UUID) (*TextToCad, error) {
+func (s *MlService) GetTextToCadModelForUser(id UUID) (*any, error) {
 	// Create the url.
 	path := "/user/text-to-cad/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -6709,7 +6772,7 @@ func (s *MlService) GetTextToCadModelForUser(id UUID) (*TextToCad, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded TextToCad
+	var decoded any
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -7314,6 +7377,47 @@ func (s *UserService) PutPublicSubscribe(body Subscribe) error {
 func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/executor/term"
+	uri := resolveRelative(s.client.server, path)
+
+	headers := http.Header{}
+	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
+
+	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(uri, "https://", "wss://"), headers)
+	if err != nil {
+		return nil, err
+	}
+
+	return conn, nil
+}
+
+// CopilotWs: Open a websocket to prompt the ML copilot.
+// Parameters
+//
+//   - `body`: The types of messages that can be sent by the client to the server.
+func (s *MlService) CopilotWs(body any) (*websocket.Conn, error) {
+	// Create the url.
+	path := "/ws/ml/copilot"
+	uri := resolveRelative(s.client.server, path)
+
+	headers := http.Header{}
+	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
+
+	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(uri, "https://", "wss://"), headers)
+	if err != nil {
+		return nil, err
+	}
+
+	return conn, nil
+}
+
+// ReasoningWs: Open a websocket to prompt the ML copilot.
+// Parameters
+//
+//   - `id`
+//   - `body`: The types of messages that can be sent by the client to the server.
+func (s *MlService) ReasoningWs(id UUID, body any) (*websocket.Conn, error) {
+	// Create the url.
+	path := "/ws/ml/reasoning/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
 
 	headers := http.Header{}

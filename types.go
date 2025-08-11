@@ -332,6 +332,9 @@ type AsyncAPICall struct {
 	Worker string `json:"worker" yaml:"worker" schema:"worker"`
 }
 
+// AsyncAPICallOutput: AsyncAPICallOutput: The output from the async API call.
+type AsyncAPICallOutput any
+
 // AsyncAPICallOutputCompletedAt: A file conversion.
 type AsyncAPICallOutputCompletedAt struct {
 	// CompletedAt: The time and date the API call was completed.
@@ -715,6 +718,21 @@ type AxisDirectionPair struct {
 	Direction Direction `json:"direction" yaml:"direction" schema:"direction,required"`
 }
 
+// BatchResponse: BatchResponse: Websocket responses can either be successful or unsuccessful. Slightly different schemas in either case.
+type BatchResponse any
+
+// BatchResponseErrors: Response sent when a request did not succeed.
+type BatchResponseErrors struct {
+	// Errors: Errors that occurred during the modeling command.
+	Errors []APIError `json:"errors" yaml:"errors" schema:"errors,required"`
+}
+
+// BatchResponseResponse: Response sent when a request succeeded.
+type BatchResponseResponse struct {
+	// Response: Response to the modeling command.
+	Response any `json:"response" yaml:"response" schema:"response,required"`
+}
+
 // BillingInfo: The billing information for payments.
 type BillingInfo struct {
 	// Address: The address of the customer.
@@ -1012,6 +1030,28 @@ type ComponentTransform struct {
 	Translate TransformByForPoint3D `json:"translate" yaml:"translate" schema:"translate"`
 }
 
+// Conversation: A conversation composed of many ML prompts.
+type Conversation struct {
+	// CreatedAt: The date and time the conversation was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// FirstPrompt: The prompt that started this conversation.
+	FirstPrompt string `json:"first_prompt" yaml:"first_prompt" schema:"first_prompt,required"`
+	// ID: The unique identifier for the conversation.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// UpdatedAt: The date and time the conversation was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the conversation.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// ConversationResultsPage: A single page of results
+type ConversationResultsPage struct {
+	// Items: list of items on this page of results
+	Items []Conversation `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
 // ConversionParams: Describes the file to convert (src) and what it should be converted into (output).
 type ConversionParams struct {
 	// OutputFormat: Describes the output file(s).
@@ -1258,6 +1298,12 @@ type DefaultCameraZoom struct {
 	Settings CameraSettings `json:"settings" yaml:"settings" schema:"settings,required"`
 }
 
+// Delta is the type definition for a Delta.
+type Delta struct {
+	// Delta: The delta text, which is a part of the response that is being streamed.
+	Delta string `json:"delta" yaml:"delta" schema:"delta,required"`
+}
+
 // Density: The density response.
 type Density struct {
 	// Density: The density.
@@ -1326,6 +1372,9 @@ type DiscountCode struct {
 	PercentOff int `json:"percent_off" yaml:"percent_off" schema:"percent_off,required"`
 }
 
+// DistanceType: DistanceType: The type of distance Distances can vary depending on the objects used as input.
+type DistanceType any
+
 // DistanceTypeAxis: The distance between objects along the specified axis
 type DistanceTypeAxis struct {
 	// Axis: Global axis
@@ -1380,11 +1429,20 @@ type EnableDryRun struct {
 type EnableSketchMode struct {
 }
 
+// EndOfStream is the type definition for a EndOfStream.
+type EndOfStream struct {
+	// WholeResponse: The whole response text, which is the final output of the AI. This is only relevant if in copilot mode, where the AI is expected to return the whole response at once.
+	WholeResponse string `json:"whole_response" yaml:"whole_response" schema:"whole_response"`
+}
+
 // EngineUtilEvaluatePath: The response of the `EngineUtilEvaluatePath` endpoint
 type EngineUtilEvaluatePath struct {
 	// Pos: The evaluated path curve position
 	Pos Point3D `json:"pos" yaml:"pos" schema:"pos,required"`
 }
+
+// EnterpriseSubscriptionTierPrice: EnterpriseSubscriptionTierPrice: The price for an enterprise subscription.
+type EnterpriseSubscriptionTierPrice any
 
 // EnterpriseSubscriptionTierPriceInterval: A flat price that we publicly list.
 type EnterpriseSubscriptionTierPriceInterval struct {
@@ -2113,6 +2171,9 @@ type IceServer struct {
 	Username string `json:"username" yaml:"username" schema:"username"`
 }
 
+// IdpMetadataSource: IdpMetadataSource: The source of an identity provider metadata descriptor.
+type IdpMetadataSource any
+
 // IdpMetadataSourceIdpMetadataSourceUrl: A base64 encoded XML document containing the identity provider metadata descriptor.
 type IdpMetadataSourceIdpMetadataSourceUrl struct {
 	// Data: The base64 encoded XML document containing the identity provider metadata descriptor.
@@ -2160,6 +2221,15 @@ type ImportedGeometry struct {
 	// Value: The original file paths that held the geometry.
 	Value []string `json:"value" yaml:"value" schema:"value,required"`
 }
+
+// Info is the type definition for a Info.
+type Info struct {
+	// Text: The informational text.
+	Text string `json:"text" yaml:"text" schema:"text,required"`
+}
+
+// InputFormat3D: InputFormat3D: Input format specifier.
+type InputFormat3D any
 
 // InputFormat3Dcoords: ISO 10303-21 (STEP) format.
 type InputFormat3Dcoords struct {
@@ -2514,6 +2584,94 @@ const (
 	MethodExtension Method = "EXTENSION"
 )
 
+// MlCopilotClientMessage: MlCopilotClientMessage: The types of messages that can be sent by the client to the server.
+type MlCopilotClientMessage any
+
+// MlCopilotClientMessageContent: The system message, which can be used to set the context or instructions for the AI.
+type MlCopilotClientMessageContent struct {
+	// Command: The content of the system message.
+	Command MlCopilotSystemCommand `json:"command" yaml:"command" schema:"command,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotClientMessageHeaders: Authentication header request.
+type MlCopilotClientMessageHeaders struct {
+	// Headers: The authentication header.
+	Headers map[string]string `json:"headers" yaml:"headers" schema:"headers,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotClientMessageMlCopilotClientMessageHeaders: The user message, which contains the content of the user's input.
+type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
+	// Content: The content of the user's message.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// CurrentFiles: The current files in the project, if any. This can be used to provide context for the AI. This should be sent in binary format, if the files are not text files, like an imported binary file.
+	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files"`
+	// ProjectName: The project name, if any. This can be used to associate the message with a specific project.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
+	// SourceRanges: The source ranges the user suggested to change. If empty, the content (prompt) will be used and is required.
+	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotServerMessage: MlCopilotServerMessage: The types of messages that can be sent by the server to the client.
+type MlCopilotServerMessage any
+
+// MlCopilotServerMessageDelta: Delta of the response, e.g. a chunk of text/tokens.
+type MlCopilotServerMessageDelta struct {
+	// Delta:
+	Delta Delta `json:"delta" yaml:"delta" schema:"delta,required"`
+}
+
+// MlCopilotServerMessageEndOfStream: Marks the end of a streamed answer.
+type MlCopilotServerMessageEndOfStream struct {
+	// EndOfStream:
+	EndOfStream EndOfStream `json:"end_of_stream" yaml:"end_of_stream" schema:"end_of_stream,required"`
+}
+
+// MlCopilotServerMessageError: Error sent by server.
+type MlCopilotServerMessageError struct {
+	// Error:
+	Error Error `json:"error" yaml:"error" schema:"error,required"`
+}
+
+// MlCopilotServerMessageErrorError is the type definition for a MlCopilotServerMessageErrorError.
+type MlCopilotServerMessageErrorError struct {
+	// Detail: The error message.
+	Detail string `json:"detail" yaml:"detail" schema:"detail,required"`
+}
+
+// MlCopilotServerMessageInfo: Log / banner text.
+type MlCopilotServerMessageInfo struct {
+	// Info:
+	Info Info `json:"info" yaml:"info" schema:"info,required"`
+}
+
+// MlCopilotServerMessageReasoning: Assistant reasoning / chain-of-thought (if you expose it).
+type MlCopilotServerMessageReasoning struct {
+	// Reasoning: A message containing reasoning information.
+	Reasoning any `json:"reasoning" yaml:"reasoning" schema:"reasoning,required"`
+}
+
+// MlCopilotServerMessageToolOutput: Completed tool call result.
+type MlCopilotServerMessageToolOutput struct {
+	// ToolOutput:
+	ToolOutput ToolOutput `json:"tool_output" yaml:"tool_output" schema:"tool_output,required"`
+}
+
+// MlCopilotSystemCommand: The type of system command that can be sent to the ML Copilot.
+type MlCopilotSystemCommand string
+
+const (
+	// MlCopilotSystemCommandNew: Reset the conversation state, by creating a new state.
+	MlCopilotSystemCommandNew MlCopilotSystemCommand = "new"
+	// MlCopilotSystemCommandBye: Disconnect the client, which can be used to end the session.
+	MlCopilotSystemCommandBye MlCopilotSystemCommand = "bye"
+)
+
 // MlFeedback: Human feedback on an ML response.
 type MlFeedback string
 
@@ -2597,6 +2755,45 @@ const (
 	// MlPromptTypeTextToKclMultiFileIteration: Text to KCL iteration with multiple files.
 	MlPromptTypeTextToKclMultiFileIteration MlPromptType = "text_to_kcl_multi_file_iteration"
 )
+
+// MlToolResult: MlToolResult: Responses from tools.
+type MlToolResult any
+
+// MlToolResultError: Response from the `TextToCad` tool.
+type MlToolResultError struct {
+	// Error: Any error that occurred during the tool execution.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// Outputs: The output files. Returns a map of the file name to the file contents. The file contents are not encoded since kcl files are not binary.
+	Outputs map[string]string `json:"outputs" yaml:"outputs" schema:"outputs"`
+	// ProjectName: The name of the project, if any.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
+	// StatusCode: The status code of the tool execution.
+	StatusCode int `json:"status_code" yaml:"status_code" schema:"status_code,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlToolResultOutputs: Response from the `EditKclCode` tool.
+type MlToolResultOutputs struct {
+	// Error: Any error that occurred during the tool execution.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// Outputs: The output files. Returns a map of the file name to the file contents. The file contents are not encoded since kcl files are not binary.
+	Outputs map[string]string `json:"outputs" yaml:"outputs" schema:"outputs"`
+	// ProjectName: The name of the project, if any.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
+	// StatusCode: The status code of the tool execution.
+	StatusCode int `json:"status_code" yaml:"status_code" schema:"status_code,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlToolResultProjectName: Mechanical knowledge base response.
+type MlToolResultProjectName struct {
+	// Response: The response from the mechanical knowledge base.
+	Response string `json:"response" yaml:"response" schema:"response,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
 
 // ModelingAppEventType: Type for modeling-app events
 type ModelingAppEventType string
@@ -2687,6 +2884,9 @@ const (
 	// ModelingAppSubscriptionTierNameEnterprise: The enterprise tier.
 	ModelingAppSubscriptionTierNameEnterprise ModelingAppSubscriptionTierName = "enterprise"
 )
+
+// ModelingCmd: ModelingCmd: Commands that the KittyCAD engine can execute.
+type ModelingCmd any
 
 // ModelingCmdAngle: Create a pattern using this entity by specifying the transform for each desired repetition. Transformations are performed in the following order (first applied to last applied): scale, rotate, translate.
 type ModelingCmdAngle struct {
@@ -3866,6 +4066,9 @@ type ObjectSetMaterialParamsPbr struct {
 type ObjectVisible struct {
 }
 
+// OkModelingCmdResponse: OkModelingCmdResponse: A successful response from a modeling command. This can be one of several types of responses, depending on the command.
+type OkModelingCmdResponse any
+
 // OkModelingCmdResponseCameraDragEnd is the type definition for a OkModelingCmdResponseCameraDragEnd.
 type OkModelingCmdResponseCameraDragEnd struct {
 	// Data: The response from the 'SetGridScale'.
@@ -4440,6 +4643,9 @@ type OkModelingCmdResponseUpdateAnnotation struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// OkWebSocketResponseData: OkWebSocketResponseData: The websocket messages this server sends.
+type OkWebSocketResponseData any
+
 // OkWebSocketResponseDataData: Information about the ICE servers.
 type OkWebSocketResponseDataData struct {
 	// Data:
@@ -4608,6 +4814,9 @@ type OrientToFace struct {
 	Settings CameraSettings `json:"settings" yaml:"settings" schema:"settings,required"`
 }
 
+// OriginType: OriginType: The type of origin
+type OriginType any
+
 // OriginTypeGlobal: Global Origin (0, 0, 0).
 type OriginTypeGlobal struct {
 	// Type:
@@ -4646,6 +4855,9 @@ type OutputFormat2D struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
+
+// OutputFormat3D: OutputFormat3D: Output 3D format specifier.
+type OutputFormat3D any
 
 // OutputFormat3Dcreated: Autodesk Filmbox (FBX) format.
 type OutputFormat3Dcreated struct {
@@ -4803,6 +5015,9 @@ type PathGetVertexUuids struct {
 	VertexIds []UUID `json:"vertex_ids" yaml:"vertex_ids" schema:"vertex_ids,required"`
 }
 
+// PathSegment: PathSegment: A segment of a path. Paths are composed of many segments.
+type PathSegment any
+
 // PathSegmentArc: Adds a generic conic section specified by the end point, interior point and tangents at the start and end of the section.
 type PathSegmentArc struct {
 	// End: End point of the conic.
@@ -4921,9 +5136,9 @@ type PathSegmentStart struct {
 	Center Point2D `json:"center" yaml:"center" schema:"center,required"`
 	// EndAngle: End of the path along the perimeter of the ellipse.
 	EndAngle Angle `json:"end_angle" yaml:"end_angle" schema:"end_angle,required"`
-	// MajorRadius: Major radius of the ellipse (along the x axis).
-	MajorRadius float64 `json:"major_radius" yaml:"major_radius" schema:"major_radius,required"`
-	// MinorRadius: Minor radius of the ellipse (along the y axis).
+	// MajorAxis: Major axis of the ellipse.
+	MajorAxis Point2D `json:"major_axis" yaml:"major_axis" schema:"major_axis,required"`
+	// MinorRadius: Minor radius of the ellipse.
 	MinorRadius float64 `json:"minor_radius" yaml:"minor_radius" schema:"minor_radius,required"`
 	// StartAngle: Start of the path along the perimeter of the ellipse.
 	StartAngle Angle `json:"start_angle" yaml:"start_angle" schema:"start_angle,required"`
@@ -5113,6 +5328,14 @@ type RawFile struct {
 	Name string `json:"name" yaml:"name" schema:"name,required"`
 }
 
+// ReasoningMessage: Plain text reasoning.
+type ReasoningMessage struct {
+	// Content: The content of the reasoning.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // ReconfigureStream: The response from the `ReconfigureStream` endpoint.
 type ReconfigureStream struct {
 }
@@ -5296,6 +5519,9 @@ type SelectWithPoint struct {
 	// EntityID: The UUID of the entity that was selected.
 	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id"`
 }
+
+// Selection: Selection: Data item selection.
+type Selection any
 
 // SelectionDefaultScene: Visit the default scene.
 type SelectionDefaultScene struct {
@@ -5590,6 +5816,9 @@ type SubscriptionTierFeature struct {
 	Info string `json:"info" yaml:"info" schema:"info,required"`
 }
 
+// SubscriptionTierPrice: SubscriptionTierPrice: The price for a subscription tier.
+type SubscriptionTierPrice any
+
 // SubscriptionTierPriceFlat: Enterprise: The price is not listed and the user needs to contact sales.
 type SubscriptionTierPriceFlat struct {
 	// Type:
@@ -5615,6 +5844,9 @@ type SubscriptionTierPricePrice struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
+
+// SubscriptionTierType: SubscriptionTierType: An enum representing a subscription tier type.
+type SubscriptionTierType any
 
 // SubscriptionTierTypeIndividual: A subscription tier that can be applied to individuals only.
 type SubscriptionTierTypeIndividual struct {
@@ -5861,10 +6093,13 @@ type TextToCadMultiFileIterationBody struct {
 	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
 }
 
-// TextToCadResultsPage: A single page of results
-type TextToCadResultsPage struct {
+// TextToCadResponse: TextToCadResponse: Type that encompasses all Text-to-CAD response types, including iteration and multi-file iteration.
+type TextToCadResponse any
+
+// TextToCadResponseResultsPage: A single page of results
+type TextToCadResponseResultsPage struct {
 	// Items: list of items on this page of results
-	Items []TextToCad `json:"items" yaml:"items" schema:"items,required"`
+	Items []TextToCadResponse `json:"items" yaml:"items" schema:"items,required"`
 	// NextPage: token used to fetch the next page of results (if any)
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
@@ -5877,6 +6112,12 @@ type TokenRevokeRequestForm struct {
 	ClientSecret string `json:"client_secret" yaml:"client_secret" schema:"client_secret"`
 	// Token: The token to revoke.
 	Token string `json:"token" yaml:"token" schema:"token,required"`
+}
+
+// ToolOutput is the type definition for a ToolOutput.
+type ToolOutput struct {
+	// Result: The result of the tool call.
+	Result any `json:"result" yaml:"result" schema:"result,required"`
 }
 
 // Transform: Ways to transform each solid being replicated in a repeating pattern.
@@ -6711,6 +6952,9 @@ type Volume struct {
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume,required"`
 }
 
+// WebSocketRequest: WebSocketRequest: The websocket messages the server receives.
+type WebSocketRequest any
+
 // WebSocketRequestBatchID: Authentication header request.
 type WebSocketRequestBatchID struct {
 	// Headers: The authentication header.
@@ -6776,6 +7020,9 @@ type WebSocketRequestTrickleIce struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
+
+// WebSocketResponse: WebSocketResponse: Websocket responses can either be successful or unsuccessful. Slightly different schemas in either case.
+type WebSocketResponse any
 
 // WorldCoordinateSystem is the type definition for a WorldCoordinateSystem.
 type WorldCoordinateSystem string

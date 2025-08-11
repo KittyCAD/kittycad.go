@@ -794,6 +794,35 @@ func ExampleMlService_GetPrompt() {
 
 }
 
+// ListConversationsForUser: List conversations
+// This endpoint requires authentication by any Zoo user. It returns the conversations for the authenticated user.
+//
+// The conversations are returned in order of creation, with the most recently created conversations first.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleMlService_ListConversationsForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ml.ListConversationsForUser(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateProprietaryToKcl: Converts a proprietary CAD format to KCL.
 // This endpoint is used to convert a proprietary CAD format to KCL. The file passed MUST have feature tree data.
 //
@@ -837,7 +866,7 @@ func ExampleMlService_CreateKclCodeCompletions() {
 		panic(err)
 	}
 
-	result, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: "some-string", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: "some-string", Prompt: "some-string", Stop: []string{"some-string"}, Stream: true, Suffix: "some-string", Temperature: 123.45, TopP: 123.45})
+	result, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: "some-string", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: "some-string", Prompt: "some-string", Stop: []string{}, Stream: true, Suffix: "some-string", Temperature: 123.45, TopP: 123.45})
 	if err != nil {
 		panic(err)
 	}
@@ -864,7 +893,7 @@ func ExampleMlService_CreateTextToCadIteration() {
 		panic(err)
 	}
 
-	result, err := client.Ml.CreateTextToCadIteration(kittycad.TextToCadIterationBody{KclVersion: "some-string", OriginalSourceCode: "some-string", ProjectName: "some-string", Prompt: "some-string", SourceRanges: []kittycad.SourceRangePrompt{{File: "some-string", Prompt: "some-string", Range: kittycad.SourceRange{End: kittycad.SourcePosition{Column: 123, Line: 123}, Start: kittycad.SourcePosition{Column: 123, Line: 123}}}}})
+	result, err := client.Ml.CreateTextToCadIteration(kittycad.TextToCadIterationBody{KclVersion: "some-string", OriginalSourceCode: "some-string", ProjectName: "some-string", Prompt: "some-string", SourceRanges: []kittycad.SourceRangePrompt{}})
 	if err != nil {
 		panic(err)
 	}
@@ -2956,6 +2985,8 @@ func ExampleUserService_DeleteShortlink() {
 //
 //     Currently, we only support scanning in ascending order.
 //
+//   - `conversationId`: A UUID usually v4 or v7
+//
 //   - `noModels`
 func ExampleMlService_ListTextToCadModelsForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -2963,7 +2994,7 @@ func ExampleMlService_ListTextToCadModelsForUser() {
 		panic(err)
 	}
 
-	result, err := client.Ml.ListTextToCadModelsForUser(123, "some-string", "", true)
+	result, err := client.Ml.ListTextToCadModelsForUser(123, "some-string", "", kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true)
 	if err != nil {
 		panic(err)
 	}
@@ -3260,6 +3291,143 @@ func ExampleExecutorService_CreateTerm() {
 
 	// Create the websocket connection.
 	ws, err := client.Executor.CreateTerm()
+	if err != nil {
+		panic(err)
+	}
+
+	defer ws.Close()
+
+	done := make(chan struct{})
+
+	go func() {
+		defer close(done)
+		for {
+			_, message, err := ws.ReadMessage()
+			if err != nil {
+				log.Println("read:", err)
+				return
+			}
+			log.Printf("recv: %s", message)
+		}
+	}()
+
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+
+	for {
+		select {
+		case <-done:
+			return
+		case t := <-ticker.C:
+			err := ws.WriteMessage(websocket.TextMessage, []byte(t.String()))
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
+		case <-interrupt:
+			log.Println("interrupt")
+
+			// Cleanly close the connection by sending a close message and then
+			// waiting (with timeout) for the server to close the connection.
+			err := ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+			if err != nil {
+				log.Println("write close:", err)
+				return
+			}
+			select {
+			case <-done:
+			case <-time.After(time.Second):
+			}
+			return
+		}
+	}
+
+}
+
+// CopilotWs: Open a websocket to prompt the ML copilot.
+// Parameters
+//
+//   - `body`: The types of messages that can be sent by the client to the server.
+func ExampleMlService_CopilotWs() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	// Create the websocket connection.
+	ws, err := client.Ml.CopilotWs("")
+	if err != nil {
+		panic(err)
+	}
+
+	defer ws.Close()
+
+	done := make(chan struct{})
+
+	go func() {
+		defer close(done)
+		for {
+			_, message, err := ws.ReadMessage()
+			if err != nil {
+				log.Println("read:", err)
+				return
+			}
+			log.Printf("recv: %s", message)
+		}
+	}()
+
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+
+	for {
+		select {
+		case <-done:
+			return
+		case t := <-ticker.C:
+			err := ws.WriteMessage(websocket.TextMessage, []byte(t.String()))
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
+		case <-interrupt:
+			log.Println("interrupt")
+
+			// Cleanly close the connection by sending a close message and then
+			// waiting (with timeout) for the server to close the connection.
+			err := ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+			if err != nil {
+				log.Println("write close:", err)
+				return
+			}
+			select {
+			case <-done:
+			case <-time.After(time.Second):
+			}
+			return
+		}
+	}
+
+}
+
+// ReasoningWs: Open a websocket to prompt the ML copilot.
+// Parameters
+//
+//   - `id`
+//   - `body`: The types of messages that can be sent by the client to the server.
+func ExampleMlService_ReasoningWs() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	// Create the websocket connection.
+	ws, err := client.Ml.ReasoningWs(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "")
 	if err != nil {
 		panic(err)
 	}
