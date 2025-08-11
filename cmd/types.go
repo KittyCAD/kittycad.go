@@ -86,7 +86,10 @@ func (data *Data) generateSchemaType(name string, s *openapi3.Schema, spec *open
 			return err
 		}
 	} else if s.AnyOf != nil {
-		logrus.Warnf("TODO: skipping type for %q, since it is a ANYOF", name)
+		// Treat it like a one of.
+		if err := data.generateAnyOfType(name, s, spec); err != nil {
+			return err
+		}
 	} else if s.AllOf != nil {
 		logrus.Warnf("TODO: skipping type for %q, since it is a ALLOF", name)
 	}
@@ -245,7 +248,6 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 
 		if v.Value.Deprecated {
 			objectValue.Description += "\n//\n// Deprecated: " + printProperty(k) + " is deprecated."
-
 		}
 
 		object.Values[k] = objectValue
@@ -336,6 +338,10 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 		}
 	}
 
+	// Create the union type definition
+	unionTypeStr := fmt.Sprintf("// %s: %s\ntype %s any\n", name, getTypeDescription(name, s), name)
+	data.Types[name] = unionTypeStr
+
 	for index, oneOf := range s.OneOf {
 		// Check if we already have this type defined.
 		iname := printProperty(types[index])
@@ -368,9 +374,34 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 	return nil
 }
 
-func getReferenceSchema(v *openapi3.SchemaRef) string {
+func getReferenceSchema(v *openapi3.SchemaRef, spec *openapi3.T) string {
+	// Find the schema in the spec and make sure it's not just wrapping another schema.
 	if v.Ref != "" {
 		ref := strings.TrimPrefix(v.Ref, "#/components/schemas/")
+
+		value, ok := spec.Components.Schemas[ref]
+		if ok {
+			// Check if this is a oneOf or an allOf.
+			if value.Value.OneOf != nil {
+				// Only do this if we have a oneOf with a single item.
+				if len(value.Value.OneOf) == 1 {
+					// Check if the oneOf is a reference.
+					if value.Value.OneOf[0].Ref != "" {
+						return getReferenceSchema(value.Value.OneOf[0], spec)
+					}
+				}
+			}
+			if value.Value.AllOf != nil {
+				// Only do this if we have an allOf with a single item.
+				if len(value.Value.AllOf) == 1 {
+					// Check if the allOf is a reference.
+					if value.Value.AllOf[0].Ref != "" {
+						return getReferenceSchema(value.Value.AllOf[0], spec)
+					}
+				}
+			}
+		}
+
 		if len(v.Value.Enum) > 0 {
 			return printProperty(makeSingular(ref))
 		}
@@ -450,10 +481,11 @@ func printOneOf(property string, r *openapi3.SchemaRef, spec *openapi3.T) (strin
 				Type:        "string",
 				Description: s.Description,
 				Enum:        enumeration,
-			}}
+			},
+		}
 
 		if r.Ref != "" {
-			return getReferenceSchema(newSchema), nil
+			return getReferenceSchema(newSchema, spec), nil
 		}
 		return printType(property, newSchema, spec)
 	}
@@ -480,7 +512,7 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 		if reference.Value.OneOf != nil {
 			return printOneOf(property, r, spec)
 		} else if reference.Value.Type == "object" || reference.Value.Type == "string" && len(reference.Value.Enum) > 0 {
-			return getReferenceSchema(r), nil
+			return getReferenceSchema(r, spec), nil
 		}
 
 		// Otherwise, we need to recurse.
@@ -501,7 +533,7 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 	}
 
 	if t == "string" {
-		reference := getReferenceSchema(r)
+		reference := getReferenceSchema(r, spec)
 		if reference != "" {
 			return reference, nil
 		}
@@ -514,7 +546,7 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 	} else if t == "boolean" {
 		return "bool", nil
 	} else if t == "array" {
-		reference := getReferenceSchema(s.Items)
+		reference := getReferenceSchema(s.Items, spec)
 		if reference != "" {
 			return fmt.Sprintf("[]%s", reference), nil
 		}
@@ -702,27 +734,32 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 	} else if typet == "boolean" {
 		return "true", nil
 	} else if typet == "array" {
+		reference := getReferenceSchema(schema.Items, spec)
+		if reference != "" {
+			return fmt.Sprintf("[]kittycad.%s{}", reference), nil
+		}
+
 		// Get the type name.
 		typeName, err := printType(name, schema.Items, spec)
 		if err != nil {
 			return "", err
 		}
 
-		// Get an example for the items.
-		items, err := data.generateExampleValue(name, schema.Items, spec, true)
-		if err != nil {
-			return "", err
-		}
-
 		if schema.Items.Ref != "" {
-			t := fmt.Sprintf("[]kittycad.%s{%s}", typeName, items)
+			t := fmt.Sprintf("[]kittycad.%s{}", typeName)
 			if required {
 				return t, nil
 			}
 			return fmt.Sprintf("&%s", t), nil
 		}
 
-		t := fmt.Sprintf("[]%s{%s}", typeName, items)
+		// Check if we need to add the package prefix
+		prefixedTypeName := typeName
+		if !isTypeToString(typeName) && typeName != "string" && typeName != "int" && typeName != "float64" && typeName != "bool" && !strings.HasPrefix(typeName, "[]") && !strings.HasPrefix(typeName, "map[") {
+			prefixedTypeName = fmt.Sprintf("kittycad.%s", typeName)
+		}
+
+		t := fmt.Sprintf("[]%s{}", prefixedTypeName)
 		if required {
 			return t, nil
 		}
@@ -789,4 +826,110 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 	}
 
 	return `""`, nil
+}
+
+func (data *Data) generateAnyOfType(name string, s *openapi3.Schema, spec *openapi3.T) error {
+	// Check if this is an enum with descriptions.
+	isEnumWithDocs := false
+	enumDocs := map[string]string{}
+	enumeration := []interface{}{}
+	for _, anyOf := range s.AnyOf {
+		if anyOf.Value.Type == "string" && anyOf.Value.Enum != nil && len(anyOf.Value.Enum) == 1 {
+			// Get the description for this enum.
+			isEnumWithDocs = true
+			enumDocs[anyOf.Value.Enum[0].(string)] = anyOf.Value.Description
+			enumeration = append(enumeration, anyOf.Value.Enum[0])
+		} else {
+			isEnumWithDocs = false
+			break
+		}
+	}
+
+	if isEnumWithDocs {
+		return data.generateEnumType(name, &openapi3.Schema{
+			Type:        "string",
+			Description: s.Description,
+			Enum:        enumeration,
+		}, enumDocs)
+	}
+
+	if len(s.AnyOf) == 1 && s.AnyOf[0].Value.Type == "object" {
+		// We need to generate the one of type.
+		return data.generateSchemaType(name, s.AnyOf[0].Value, spec)
+	}
+
+	// Check if they all have a type.
+	types := []string{}
+	typeName := ""
+	for _, v := range s.AnyOf {
+		if v.Value.AllOf != nil {
+			if len(v.Value.AllOf) > 1 {
+				return fmt.Errorf("anyOf for %q has more than 1 item", name)
+			}
+			v = v.Value.AllOf[0]
+		}
+		if v.Ref != "" {
+			// Get the schema for the reference.
+			ref := strings.TrimPrefix(v.Ref, "#/components/schemas/")
+			types = append(types, ref)
+
+		} else if v.Value.Type == "object" {
+			keys := []string{}
+			for k := range v.Value.Properties {
+				keys = append(keys, k)
+			}
+			sort.Strings(keys)
+			for _, propName := range keys {
+				value := v.Value.Properties[propName]
+				// Check if all the objects have a enum of one type.
+				if value.Value.Type == "string" && value.Value.Enum != nil && len(value.Value.Enum) == 1 {
+					if typeName == "" {
+						typeName = propName
+					} else if typeName != propName {
+						return fmt.Errorf("one of %q has a different type than the others: %q", name, value.Value.Enum[0].(string))
+					}
+					types = append(types, name+" "+value.Value.Enum[0].(string))
+				} else {
+					types = append(types, name+" "+propName)
+				}
+			}
+		} else if v.Value.Type == "string" && v.Value.Enum != nil && len(v.Value.Enum) == 1 {
+			types = append(types, v.Value.Enum[0].(string))
+		}
+	}
+
+	// Create the union type definition
+	unionTypeStr := fmt.Sprintf("// %s: %s\ntype %s any\n", name, getTypeDescription(name, s), name)
+	data.Types[name] = unionTypeStr
+
+	for index, anyOf := range s.AnyOf {
+		// Check if we already have this type defined.
+		iname := printProperty(types[index])
+		if _, ok := data.Types[iname]; ok {
+			// We should name the type after the one of.
+			iname = printProperty(name + " " + types[index])
+		}
+
+		// Check if we already have a schema for this one of.
+		reference, ok := spec.Components.Schemas[types[index]]
+		if !ok {
+			if err := data.generateSchemaType(iname, anyOf.Value, spec); err != nil {
+				return err
+			}
+		}
+
+		// Remove the type from the properties.
+		properties := anyOf.Value.Properties
+		delete(properties, typeName)
+
+		// Make sure they are equal.
+		if reference != nil && reference.Value != nil && reference.Value.Properties != nil && properties != nil && reflect.DeepEqual(reference.Value.Properties, properties) {
+			// We need to generate the one of type.
+			if err := data.generateSchemaType(fmt.Sprintf("%s %s", name, types[index]), anyOf.Value, spec); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
