@@ -5328,8 +5328,63 @@ type RawFile struct {
 	Name string `json:"name" yaml:"name" schema:"name,required"`
 }
 
-// ReasoningMessage: Plain text reasoning.
-type ReasoningMessage struct {
+// ReasoningMessage: ReasoningMessage: A message containing reasoning information.
+type ReasoningMessage any
+
+// ReasoningMessageCode: A KCL file that is being deleted by the AI.
+type ReasoningMessageCode struct {
+	// FileName: The file name.
+	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageContent: Plain text reasoning.
+type ReasoningMessageContent struct {
+	// Content: The content of the reasoning.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageFeatureTreeOutline: A KCL file that is being updated by the AI. This might contain invalid KCL code.
+type ReasoningMessageFeatureTreeOutline struct {
+	// Content: The content of the file.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// FileName: The file name.
+	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageKclCodeExamples: Reasoning containing an error message from executing the KCL code.
+type ReasoningMessageKclCodeExamples struct {
+	// Error: The error message.
+	Error string `json:"error" yaml:"error" schema:"error,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageKclDocs: Reasoning that contains a feature tree outline.
+type ReasoningMessageKclDocs struct {
+	// Content: The content of the reasoning.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageReasoningMessageContent: A KCL file that is being created by the AI. This might contain invalid KCL code.
+type ReasoningMessageReasoningMessageContent struct {
+	// Content: The content of the file.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// FileName: The file name.
+	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageText: Reasoning that contains the KCL docs relevant to the reasoning.
+type ReasoningMessageText struct {
 	// Content: The content of the reasoning.
 	Content string `json:"content" yaml:"content" schema:"content,required"`
 	// Type:
