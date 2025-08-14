@@ -533,6 +533,8 @@ type AsyncAPICallOutputOutputs struct {
 	Code string `json:"code" yaml:"code" schema:"code"`
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The conversation ID Conversations group different prompts together.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
 	// CreatedAt: The time and date the API call was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Error: The error the function returned, if any.
@@ -573,6 +575,8 @@ type AsyncAPICallOutputSrcFormat struct {
 	Code string `json:"code" yaml:"code" schema:"code,required"`
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The conversation ID Conversations group different prompts together.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
 	// CreatedAt: The time and date the API call was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Error: The error the function returned, if any.
@@ -5990,6 +5994,8 @@ type TextToCad struct {
 	Code string `json:"code" yaml:"code" schema:"code"`
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The conversation ID Conversations group different prompts together.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
 	// CreatedAt: The time and date the API call was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Error: The error the function returned, if any.
@@ -6038,6 +6044,8 @@ type TextToCadIteration struct {
 	Code string `json:"code" yaml:"code" schema:"code,required"`
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The conversation ID Conversations group different prompts together.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
 	// CreatedAt: The time and date the API call was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Error: The error the function returned, if any.
