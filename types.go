@@ -6995,8 +6995,8 @@ type VerificationTokenResponse struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Identifier: The identifier for the user. This is typically the user's email address since that is what we are verifying.
 	Identifier string `json:"identifier" yaml:"identifier" schema:"identifier"`
-	// SamlRedirectUrl: The URL to redirect to if the user requires SAML authentication.
-	SamlRedirectUrl URL `json:"saml_redirect_url" yaml:"saml_redirect_url" schema:"saml_redirect_url"`
+	// RedirectUrl: The URL to redirect to if the user requires SAML authentication or belongs somewhere else.
+	RedirectUrl URL `json:"redirect_url" yaml:"redirect_url" schema:"redirect_url"`
 	// UpdatedAt: The date and time the verification token was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
