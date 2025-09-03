@@ -5236,6 +5236,14 @@ const (
 	PlanIntervalYear PlanInterval = "year"
 )
 
+// PlanStep: A step in the design plan.
+type PlanStep struct {
+	// EditInstructions: The edit instructions for the step.
+	EditInstructions string `json:"edit_instructions" yaml:"edit_instructions" schema:"edit_instructions,required"`
+	// FilepathToEdit: The file path it's editing.
+	FilepathToEdit string `json:"filepath_to_edit" yaml:"filepath_to_edit" schema:"filepath_to_edit,required"`
+}
+
 // PlaneIntersectAndProject: Corresponding coordinates of given window coordinates, intersected on given plane.
 type PlaneIntersectAndProject struct {
 	// PlaneCoordinates: Corresponding coordinates of given window coordinates, intersected on given plane.
@@ -5335,14 +5343,6 @@ type RawFile struct {
 // ReasoningMessage: ReasoningMessage: A message containing reasoning information.
 type ReasoningMessage any
 
-// ReasoningMessageCode: A KCL file that is being deleted by the AI.
-type ReasoningMessageCode struct {
-	// FileName: The file name.
-	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
 // ReasoningMessageContent: Plain text reasoning.
 type ReasoningMessageContent struct {
 	// Content: The content of the reasoning.
@@ -5351,7 +5351,15 @@ type ReasoningMessageContent struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ReasoningMessageFeatureTreeOutline: A KCL file that is being updated by the AI. This might contain invalid KCL code.
+// ReasoningMessageDesignPlan: A KCL file that is being deleted by the AI.
+type ReasoningMessageDesignPlan struct {
+	// FileName: The file name.
+	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageFeatureTreeOutline: A KCL file that is being created by the AI. This might contain invalid KCL code.
 type ReasoningMessageFeatureTreeOutline struct {
 	// Content: The content of the file.
 	Content string `json:"content" yaml:"content" schema:"content,required"`
@@ -5361,10 +5369,10 @@ type ReasoningMessageFeatureTreeOutline struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ReasoningMessageKclCodeExamples: Reasoning containing an error message from executing the KCL code.
+// ReasoningMessageKclCodeExamples: Reasoning that contains potential KCL code, this code has not been executed yet. It might not even compile or be valid KCL code.
 type ReasoningMessageKclCodeExamples struct {
-	// Error: The error message.
-	Error string `json:"error" yaml:"error" schema:"error,required"`
+	// Code: The content of the reasoning.
+	Code string `json:"code" yaml:"code" schema:"code,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5377,8 +5385,16 @@ type ReasoningMessageKclDocs struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ReasoningMessageReasoningMessageContent: A KCL file that is being created by the AI. This might contain invalid KCL code.
+// ReasoningMessageReasoningMessageContent: Reasoning containing an error message from executing the KCL code.
 type ReasoningMessageReasoningMessageContent struct {
+	// Error: The error message.
+	Error string `json:"error" yaml:"error" schema:"error,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageSteps: A KCL file that is being updated by the AI. This might contain invalid KCL code.
+type ReasoningMessageSteps struct {
 	// Content: The content of the file.
 	Content string `json:"content" yaml:"content" schema:"content,required"`
 	// FileName: The file name.
