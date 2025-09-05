@@ -6175,6 +6175,130 @@ type TextToCadMultiFileIterationBody struct {
 // TextToCadResponse: TextToCadResponse: Type that encompasses all Text-to-CAD response types, including iteration and multi-file iteration.
 type TextToCadResponse any
 
+// TextToCadResponseCode: A response from a text to CAD prompt.
+type TextToCadResponseCode struct {
+	// Code: The code for the model. This is optional but will be required in the future once we are at v1.
+	Code string `json:"code" yaml:"code" schema:"code"`
+	// CompletedAt: The time and date the API call was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The conversation ID Conversations group different prompts together.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
+	// CreatedAt: The time and date the API call was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// Feedback: Feedback from the user, if any.
+	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
+	// ID: The unique identifier of the API call.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// KclVersion: The version of kcl requested.
+	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
+	// Model: The model being used.
+	Model TextToCadModel `json:"model" yaml:"model" schema:"model,required"`
+	// ModelVersion: The version of the model.
+	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
+	// OutputFormat: The output format of the model.
+	OutputFormat FileExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
+	// Outputs: The output of the model in the given file format the user requested, base64 encoded. The key of the map is the path of the output file.
+	Outputs map[string]Base64 `json:"outputs" yaml:"outputs" schema:"outputs"`
+	// Prompt: The prompt.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
+	// StartedAt: The time and date the API call was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the API call.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// UpdatedAt: The time and date the API call was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the API call.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// TextToCadResponseCompletedAt: A response from a text to CAD iteration.
+type TextToCadResponseCompletedAt struct {
+	// Code: The code for the new model.
+	Code string `json:"code" yaml:"code" schema:"code,required"`
+	// CompletedAt: The time and date the API call was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The conversation ID Conversations group different prompts together.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
+	// CreatedAt: The time and date the API call was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// Feedback: Feedback from the user, if any.
+	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
+	// ID: The unique identifier of the API call.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Model: The model being used.
+	Model TextToCadModel `json:"model" yaml:"model" schema:"model,required"`
+	// ModelVersion: The version of the model.
+	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
+	// OriginalSourceCode: The original source code for the model, previous to the changes.
+	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code,required"`
+	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
+	// SourceRanges: The source ranges the user suggested to change.
+	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
+	// StartedAt: The time and date the API call was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the API call.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// UpdatedAt: The time and date the API call was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the API call.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// TextToCadResponseConversationID: A response from a text to CAD multi-file iteration.
+type TextToCadResponseConversationID struct {
+	// CompletedAt: The time and date the API call was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The conversation ID Conversations group different prompts together.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
+	// CreatedAt: The time and date the API call was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// Feedback: Feedback from the user, if any.
+	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
+	// ID: The unique identifier of the API call.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
+	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
+	// Model: The model being used.
+	Model TextToCadModel `json:"model" yaml:"model" schema:"model,required"`
+	// ModelVersion: The version of the model.
+	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
+	// Outputs: The output files. Returns a map of the file name to the file contents. The file contents are not encoded since kcl files are not binary.
+	Outputs map[string]string `json:"outputs" yaml:"outputs" schema:"outputs"`
+	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
+	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges. This will apply to all the files.
+	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
+	// SourceRanges: The source ranges the user suggested to change.
+	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
+	// StartedAt: The time and date the API call was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the API call.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// UpdatedAt: The time and date the API call was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the API call.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
 // TextToCadResponseResultsPage: A single page of results
 type TextToCadResponseResultsPage struct {
 	// Items: list of items on this page of results
