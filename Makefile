@@ -15,9 +15,9 @@ VERSION := $(shell cat $(CURDIR)/VERSION.txt)
 
 .PHONY: generate
 generate:
-	go install golang.org/x/tools/cmd/goimports@latest || go get -u golang.org/x/tools/cmd/goimports
-	go install golang.org/x/lint/golint || go get -u golang.org/x/lint/golint
-	go install github.com/sirupsen/logrus || go get github.com/sirupsen/logrus
+	@# Ensure goimports is available, but avoid network if already installed
+	@command -v goimports >/dev/null 2>&1 || go install golang.org/x/tools/cmd/goimports@latest
+	@# Build the code generator
 	go build -o $(CURDIR)/generate $(CURDIR)/cmd
 	./generate
 	goimports -w *.go
@@ -43,6 +43,7 @@ fmt: ## Verifies all files have been `gofmt`ed.
 .PHONY: lint
 lint: ## Verifies `golint` passes.
 	@echo "+ $@"
+	@command -v golint >/dev/null 2>&1 || go install golang.org/x/lint/golint@latest
 	@if [[ ! -z "$(shell golint ./... | grep -v '.pb.go:' | grep -v '.twirp.go:' | grep -v vendor | tee /dev/stderr)" ]]; then \
 		exit 1; \
 	fi
