@@ -1048,6 +1048,12 @@ type Conversation struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
+// ConversationID is the type definition for a ConversationID.
+type ConversationID struct {
+	// ConversationID: The unique identifier for the conversation.
+	ConversationID string `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
+}
+
 // ConversationResultsPage: A single page of results
 type ConversationResultsPage struct {
 	// Items: list of items on this page of results
@@ -2613,6 +2619,8 @@ type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 	Content string `json:"content" yaml:"content" schema:"content,required"`
 	// CurrentFiles: The current files in the project, if any. This can be used to provide context for the AI. This should be sent in binary format, if the files are not text files, like an imported binary file.
 	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files"`
+	// ForcedTools: The user can force specific tools to be used for this message.
+	ForcedTools []MlCopilotTool `json:"forced_tools" yaml:"forced_tools" schema:"forced_tools"`
 	// ProjectName: The project name, if any. This can be used to associate the message with a specific project.
 	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
 	// SourceRanges: The source ranges the user suggested to change. If empty, the content (prompt) will be used and is required.
@@ -2623,6 +2631,12 @@ type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 
 // MlCopilotServerMessage: MlCopilotServerMessage: The types of messages that can be sent by the server to the client.
 type MlCopilotServerMessage any
+
+// MlCopilotServerMessageConversationID: The ID of the conversation, which can be used to track the session.
+type MlCopilotServerMessageConversationID struct {
+	// ConversationID:
+	ConversationID ConversationID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
+}
 
 // MlCopilotServerMessageDelta: Delta of the response, e.g. a chunk of text/tokens.
 type MlCopilotServerMessageDelta struct {
@@ -2674,6 +2688,22 @@ const (
 	MlCopilotSystemCommandNew MlCopilotSystemCommand = "new"
 	// MlCopilotSystemCommandBye: Disconnect the client, which can be used to end the session.
 	MlCopilotSystemCommandBye MlCopilotSystemCommand = "bye"
+)
+
+// MlCopilotTool: The tools that can be used by the ML Copilot.
+type MlCopilotTool string
+
+const (
+	// MlCopilotToolEditKclCode: The tool for generating or editing KCL code based on user prompts.
+	MlCopilotToolEditKclCode MlCopilotTool = "edit_kcl_code"
+	// MlCopilotToolTextToCad: The tool for generating CAD models from textual descriptions.
+	MlCopilotToolTextToCad MlCopilotTool = "text_to_cad"
+	// MlCopilotToolMechanicalKnowledgeBase: The tool for querying a mechanical knowledge base.
+	MlCopilotToolMechanicalKnowledgeBase MlCopilotTool = "mechanical_knowledge_base"
+	// MlCopilotToolExplainKclFile: The tool for explaining a KCL file(s).
+	MlCopilotToolExplainKclFile MlCopilotTool = "explain_kcl_file"
+	// MlCopilotToolWebSearch: The tool for searching the web for information.
+	MlCopilotToolWebSearch MlCopilotTool = "web_search"
 )
 
 // MlFeedback: Human feedback on an ML response.
@@ -2794,6 +2824,14 @@ type MlToolResultOutputs struct {
 // MlToolResultProjectName: Mechanical knowledge base response.
 type MlToolResultProjectName struct {
 	// Response: The response from the mechanical knowledge base.
+	Response string `json:"response" yaml:"response" schema:"response,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlToolResultStatusCode: Explain KCL file response.
+type MlToolResultStatusCode struct {
+	// Response: The response from explaining the kcl file.
 	Response string `json:"response" yaml:"response" schema:"response,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
@@ -5351,15 +5389,7 @@ type ReasoningMessageContent struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ReasoningMessageDesignPlan: A KCL file that is being deleted by the AI.
-type ReasoningMessageDesignPlan struct {
-	// FileName: The file name.
-	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ReasoningMessageFeatureTreeOutline: A KCL file that is being created by the AI. This might contain invalid KCL code.
+// ReasoningMessageFeatureTreeOutline: A KCL file that is being updated by the AI. This might contain invalid KCL code.
 type ReasoningMessageFeatureTreeOutline struct {
 	// Content: The content of the file.
 	Content string `json:"content" yaml:"content" schema:"content,required"`
@@ -5369,32 +5399,32 @@ type ReasoningMessageFeatureTreeOutline struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ReasoningMessageKclCodeExamples: Reasoning that contains potential KCL code, this code has not been executed yet. It might not even compile or be valid KCL code.
+// ReasoningMessageKclCodeExamples: Reasoning containing an error message from executing the KCL code.
 type ReasoningMessageKclCodeExamples struct {
-	// Code: The content of the reasoning.
-	Code string `json:"code" yaml:"code" schema:"code,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ReasoningMessageKclDocs: Reasoning that contains a feature tree outline.
-type ReasoningMessageKclDocs struct {
-	// Content: The content of the reasoning.
-	Content string `json:"content" yaml:"content" schema:"content,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// ReasoningMessageReasoningMessageContent: Reasoning containing an error message from executing the KCL code.
-type ReasoningMessageReasoningMessageContent struct {
 	// Error: The error message.
 	Error string `json:"error" yaml:"error" schema:"error,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ReasoningMessageSteps: A KCL file that is being updated by the AI. This might contain invalid KCL code.
-type ReasoningMessageSteps struct {
+// ReasoningMessageKclDocs: Reasoning that contains a design plan with steps.
+type ReasoningMessageKclDocs struct {
+	// Steps: The steps in the design plan.
+	Steps []PlanStep `json:"steps" yaml:"steps" schema:"steps,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageMarkdown: Reasoning that contains the KCL code examples relevant to the reasoning.
+type ReasoningMessageMarkdown struct {
+	// Content: The content of the reasoning.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageReasoningMessageContent: A KCL file that is being created by the AI. This might contain invalid KCL code.
+type ReasoningMessageReasoningMessageContent struct {
 	// Content: The content of the file.
 	Content string `json:"content" yaml:"content" schema:"content,required"`
 	// FileName: The file name.
@@ -5403,7 +5433,15 @@ type ReasoningMessageSteps struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ReasoningMessageText: Reasoning that contains the KCL docs relevant to the reasoning.
+// ReasoningMessageSteps: A KCL file that is being deleted by the AI.
+type ReasoningMessageSteps struct {
+	// FileName: The file name.
+	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageText: Markdown formatted reasoning.
 type ReasoningMessageText struct {
 	// Content: The content of the reasoning.
 	Content string `json:"content" yaml:"content" schema:"content,required"`
@@ -5495,7 +5533,7 @@ type RtcSessionDescription struct {
 
 // SamlIdentityProvider: A SAML identity provider.
 type SamlIdentityProvider struct {
-	// AcsUrl: The ACS (Assertion Consumer Service) url.
+	// AcsUrl: The ACS (Assertion Consumer Service) URL.
 	AcsUrl URL `json:"acs_url" yaml:"acs_url" schema:"acs_url,required"`
 	// CreatedAt: The date and time the SAML identity provider was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
@@ -5511,7 +5549,7 @@ type SamlIdentityProvider struct {
 	PrivateKey Base64 `json:"private_key" yaml:"private_key" schema:"private_key"`
 	// PublicCert: The public certificate for the SAML identity provider. This is the PEM corresponding to the X509 pair.
 	PublicCert Base64 `json:"public_cert" yaml:"public_cert" schema:"public_cert"`
-	// SloUrl: The SLO (Single Logout) url.
+	// SloUrl: The SLO (Single Logout) URL.
 	SloUrl URL `json:"slo_url" yaml:"slo_url" schema:"slo_url,required"`
 	// TechnicalContactEmail: The technical contact email address for the SAML identity provider.
 	TechnicalContactEmail string `json:"technical_contact_email" yaml:"technical_contact_email" schema:"technical_contact_email"`
