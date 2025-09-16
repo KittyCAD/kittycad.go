@@ -2700,8 +2700,6 @@ const (
 	MlCopilotToolTextToCad MlCopilotTool = "text_to_cad"
 	// MlCopilotToolMechanicalKnowledgeBase: The tool for querying a mechanical knowledge base.
 	MlCopilotToolMechanicalKnowledgeBase MlCopilotTool = "mechanical_knowledge_base"
-	// MlCopilotToolExplainKclFile: The tool for explaining a KCL file(s).
-	MlCopilotToolExplainKclFile MlCopilotTool = "explain_kcl_file"
 	// MlCopilotToolWebSearch: The tool for searching the web for information.
 	MlCopilotToolWebSearch MlCopilotTool = "web_search"
 )
@@ -2824,14 +2822,6 @@ type MlToolResultOutputs struct {
 // MlToolResultProjectName: Mechanical knowledge base response.
 type MlToolResultProjectName struct {
 	// Response: The response from the mechanical knowledge base.
-	Response string `json:"response" yaml:"response" schema:"response,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// MlToolResultStatusCode: Explain KCL file response.
-type MlToolResultStatusCode struct {
-	// Response: The response from explaining the kcl file.
 	Response string `json:"response" yaml:"response" schema:"response,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
