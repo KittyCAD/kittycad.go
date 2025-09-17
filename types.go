@@ -1441,6 +1441,10 @@ type EnableSketchMode struct {
 
 // EndOfStream is the type definition for a EndOfStream.
 type EndOfStream struct {
+	// CompletedAt: This indicates the time that the server has finished processing the request. This can be used by the client to measure the total time taken for the request. Although this might be passed in other contexts, outside of copilot mode, it is only relevant in copilot mode.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// StartedAt: This indicates the time that the server had started processing the request. This can be used by the client to measure the total time taken for the request. Although this might be passed in other contexts, outside of copilot mode, it is only relevant in copilot mode.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// WholeResponse: The whole response text, which is the final output of the AI. This is only relevant if in copilot mode, where the AI is expected to return the whole response at once.
 	WholeResponse string `json:"whole_response" yaml:"whole_response" schema:"whole_response"`
 }
