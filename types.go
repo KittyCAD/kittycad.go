@@ -6076,7 +6076,7 @@ type TextToCad struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
-// TextToCadCreateBody: Body for generating models from text.
+// TextToCadCreateBody: Body for generating parts from text.
 type TextToCadCreateBody struct {
 	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
 	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
@@ -6124,7 +6124,7 @@ type TextToCadIteration struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
-// TextToCadIterationBody: Body for generating models from text.
+// TextToCadIterationBody: Body for generating parts from text.
 type TextToCadIterationBody struct {
 	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
 	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`

@@ -84,7 +84,7 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 }
 
 // CreateTextToCad: Generate a CAD model from text.
-// Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.
+// Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated parts. Any other formats you request here will also be returned when you list your generated parts.
 //
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
@@ -94,7 +94,7 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 //
 //   - `outputFormat`: The valid types of output file formats.
 //   - `kcl`
-//   - `body`: Body for generating models from text.
+//   - `body`: Body for generating parts from text.
 func (s *MlService) CreateTextToCad(outputFormat FileExportFormat, kcl bool, body TextToCadCreateBody) (*TextToCad, error) {
 	// Create the url.
 	path := "/ai/text-to-cad/{{.output_format}}"
@@ -1834,7 +1834,7 @@ func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*Kc
 //
 // Parameters
 //
-//   - `body`: Body for generating models from text.
+//   - `body`: Body for generating parts from text.
 func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*TextToCadIteration, error) {
 	// Create the url.
 	path := "/ml/text-to-cad/iteration"
@@ -1882,7 +1882,7 @@ func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*Text
 }
 
 // CreateTextToCadMultiFileIteration: Iterate on a multi-file CAD model with a prompt.
-// This endpoint can iterate on multi-file models.
+// This endpoint can iterate on multi-file projects.
 //
 // Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
 //
@@ -6664,12 +6664,12 @@ func (s *UserService) DeleteShortlink(key string) error {
 
 }
 
-// ListTextToCadModelsForUser: List text-to-CAD models you've generated.
+// ListTextToCadPartsForUser: List text-to-CAD parts you've generated.
 // This will always return the STEP file contents as well as the format the user originally requested.
 //
-// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD parts for the authenticated user.
 //
-// The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.
+// The text-to-CAD parts are returned in order of creation, with the most recently created text-to-CAD parts first.
 //
 // Parameters
 //
@@ -6684,7 +6684,7 @@ func (s *UserService) DeleteShortlink(key string) error {
 //   - `conversationId`: A UUID usually v4 or v7
 //
 //   - `noModels`
-func (s *MlService) ListTextToCadModelsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, conversationId UUID, noModels bool) (*TextToCadResponseResultsPage, error) {
+func (s *MlService) ListTextToCadPartsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, conversationId UUID, noModels bool) (*TextToCadResponseResultsPage, error) {
 	// Create the url.
 	path := "/user/text-to-cad"
 	uri := resolveRelative(s.client.server, path)
@@ -6732,13 +6732,13 @@ func (s *MlService) ListTextToCadModelsForUser(limit int, pageToken string, sort
 
 }
 
-// GetTextToCadModelForUser: Get a text-to-CAD response.
+// GetTextToCadPartsForUser: Get a text-to-CAD response.
 // This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model.
 //
 // Parameters
 //
 //   - `id`
-func (s *MlService) GetTextToCadModelForUser(id UUID) (*any, error) {
+func (s *MlService) GetTextToCadPartsForUser(id UUID) (*any, error) {
 	// Create the url.
 	path := "/user/text-to-cad/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
@@ -6782,7 +6782,7 @@ func (s *MlService) GetTextToCadModelForUser(id UUID) (*any, error) {
 
 }
 
-// CreateTextToCadModelFeedback: Give feedback to a specific ML response.
+// CreateTextToCadPartFeedback: Give feedback to a specific ML response.
 // This can be a text-to-CAD creation or iteration.
 //
 // This endpoint requires authentication by any Zoo user. The user must be the owner of the ML response, in order to give feedback.
@@ -6791,7 +6791,7 @@ func (s *MlService) GetTextToCadModelForUser(id UUID) (*any, error) {
 //
 //   - `id`
 //   - `feedback`: Human feedback on an ML response.
-func (s *MlService) CreateTextToCadModelFeedback(id UUID, feedback MlFeedback) error {
+func (s *MlService) CreateTextToCadPartFeedback(id UUID, feedback MlFeedback) error {
 	// Create the url.
 	path := "/user/text-to-cad/{{.id}}"
 	uri := resolveRelative(s.client.server, path)
