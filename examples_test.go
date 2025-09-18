@@ -80,7 +80,7 @@ func ExampleMetaService_GetIpinfo() {
 }
 
 // CreateTextToCad: Generate a CAD model from text.
-// Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated models. Any other formats you request here will also be returned when you list your generated models.
+// Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated parts. Any other formats you request here will also be returned when you list your generated parts.
 //
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
@@ -90,7 +90,7 @@ func ExampleMetaService_GetIpinfo() {
 //
 //   - `outputFormat`: The valid types of output file formats.
 //   - `kcl`
-//   - `body`: Body for generating models from text.
+//   - `body`: Body for generating parts from text.
 func ExampleMlService_CreateTextToCad() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -886,7 +886,7 @@ func ExampleMlService_CreateKclCodeCompletions() {
 //
 // Parameters
 //
-//   - `body`: Body for generating models from text.
+//   - `body`: Body for generating parts from text.
 func ExampleMlService_CreateTextToCadIteration() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -903,7 +903,7 @@ func ExampleMlService_CreateTextToCadIteration() {
 }
 
 // CreateTextToCadMultiFileIteration: Iterate on a multi-file CAD model with a prompt.
-// This endpoint can iterate on multi-file models.
+// This endpoint can iterate on multi-file projects.
 //
 // Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
 //
@@ -2968,12 +2968,12 @@ func ExampleUserService_DeleteShortlink() {
 
 }
 
-// ListTextToCadModelsForUser: List text-to-CAD models you've generated.
+// ListTextToCadPartsForUser: List text-to-CAD parts you've generated.
 // This will always return the STEP file contents as well as the format the user originally requested.
 //
-// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD models for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It returns the text-to-CAD parts for the authenticated user.
 //
-// The text-to-CAD models are returned in order of creation, with the most recently created text-to-CAD models first.
+// The text-to-CAD parts are returned in order of creation, with the most recently created text-to-CAD parts first.
 //
 // Parameters
 //
@@ -2988,13 +2988,13 @@ func ExampleUserService_DeleteShortlink() {
 //   - `conversationId`: A UUID usually v4 or v7
 //
 //   - `noModels`
-func ExampleMlService_ListTextToCadModelsForUser() {
+func ExampleMlService_ListTextToCadPartsForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ml.ListTextToCadModelsForUser(123, "some-string", "", kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true)
+	result, err := client.Ml.ListTextToCadPartsForUser(123, "some-string", "", kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true)
 	if err != nil {
 		panic(err)
 	}
@@ -3003,19 +3003,19 @@ func ExampleMlService_ListTextToCadModelsForUser() {
 
 }
 
-// GetTextToCadModelForUser: Get a text-to-CAD response.
+// GetTextToCadPartsForUser: Get a text-to-CAD response.
 // This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model.
 //
 // Parameters
 //
 //   - `id`
-func ExampleMlService_GetTextToCadModelForUser() {
+func ExampleMlService_GetTextToCadPartsForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ml.GetTextToCadModelForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.Ml.GetTextToCadPartsForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -3024,7 +3024,7 @@ func ExampleMlService_GetTextToCadModelForUser() {
 
 }
 
-// CreateTextToCadModelFeedback: Give feedback to a specific ML response.
+// CreateTextToCadPartFeedback: Give feedback to a specific ML response.
 // This can be a text-to-CAD creation or iteration.
 //
 // This endpoint requires authentication by any Zoo user. The user must be the owner of the ML response, in order to give feedback.
@@ -3033,13 +3033,13 @@ func ExampleMlService_GetTextToCadModelForUser() {
 //
 //   - `id`
 //   - `feedback`: Human feedback on an ML response.
-func ExampleMlService_CreateTextToCadModelFeedback() {
+func ExampleMlService_CreateTextToCadPartFeedback() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.Ml.CreateTextToCadModelFeedback(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ""); err != nil {
+	if err := client.Ml.CreateTextToCadPartFeedback(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ""); err != nil {
 		panic(err)
 	}
 
