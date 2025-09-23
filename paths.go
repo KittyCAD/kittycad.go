@@ -7391,10 +7391,14 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 }
 
 // CopilotWs: Open a websocket to prompt the ML copilot.
+// This endpoint accepts typed query parameters via `MlCopilotQuery`. See the field documentation on that struct for details, including replay behavior and wire format.
+//
 // Parameters
 //
+//   - `conversationId`
+//   - `replay`
 //   - `body`: The types of messages that can be sent by the client to the server.
-func (s *MlService) CopilotWs(body any) (*websocket.Conn, error) {
+func (s *MlService) CopilotWs(conversationId UUID, replay bool, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/ml/copilot"
 	uri := resolveRelative(s.client.server, path)

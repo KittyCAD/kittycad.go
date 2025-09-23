@@ -3348,8 +3348,12 @@ func ExampleExecutorService_CreateTerm() {
 }
 
 // CopilotWs: Open a websocket to prompt the ML copilot.
+// This endpoint accepts typed query parameters via `MlCopilotQuery`. See the field documentation on that struct for details, including replay behavior and wire format.
+//
 // Parameters
 //
+//   - `conversationId`
+//   - `replay`
 //   - `body`: The types of messages that can be sent by the client to the server.
 func ExampleMlService_CopilotWs() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -3358,7 +3362,7 @@ func ExampleMlService_CopilotWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Ml.CopilotWs("")
+	ws, err := client.Ml.CopilotWs(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, "")
 	if err != nil {
 		panic(err)
 	}
