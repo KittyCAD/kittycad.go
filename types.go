@@ -1443,6 +1443,10 @@ type EnableSketchMode struct {
 type EndOfStream struct {
 	// CompletedAt: This indicates the time that the server has finished processing the request. This can be used by the client to measure the total time taken for the request. Although this might be passed in other contexts, outside of copilot mode, it is only relevant in copilot mode.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// ConversationID: The conversation id for this session.
+	ConversationID string `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id"`
+	// ID: The ML prompt id for this turn.
+	ID UUID `json:"id" yaml:"id" schema:"id"`
 	// StartedAt: This indicates the time that the server had started processing the request. This can be used by the client to measure the total time taken for the request. Although this might be passed in other contexts, outside of copilot mode, it is only relevant in copilot mode.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// WholeResponse: The whole response text, which is the final output of the AI. This is only relevant if in copilot mode, where the AI is expected to return the whole response at once.
@@ -2678,6 +2682,22 @@ type MlCopilotServerMessageReasoning struct {
 	Reasoning any `json:"reasoning" yaml:"reasoning" schema:"reasoning,required"`
 }
 
+// MlCopilotServerMessageReplay: Replay containing raw bytes for previously-saved messages for a conversation. Includes server messages and client `User` messages.
+// Invariants: - Includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, and `EndOfStream { .. }`. - Also includes client `User` messages. - The following are NEVER included: `SessionData`, `ConversationId`, or `Delta`. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
+//
+// Wire format: - Each element is canonical serialized bytes (typically JSON) for either a `MlCopilotServerMessage` or a `MlCopilotClientMessage::User`. - When delivered as an initial replay over the websocket (upon `?replay=true&conversation_id=<uuid>`), the server sends a single WebSocket Binary frame containing a BSON-encoded document of this enum: `Replay { messages }`.
+type MlCopilotServerMessageReplay struct {
+	// Replay:
+	Replay Replay `json:"replay" yaml:"replay" schema:"replay,required"`
+}
+
+// MlCopilotServerMessageSessionData: Session metadata sent by the server right after authentication.
+// Semantics: - This message is NOT persisted in the database and will NEVER appear in a subsequent `Replay` message. However, we do have the `api_call_id` in the database. - Timing: sent immediately after a client is authenticated on a websocket. Useful for correlating logs and traces.
+type MlCopilotServerMessageSessionData struct {
+	// SessionData:
+	SessionData SessionData `json:"session_data" yaml:"session_data" schema:"session_data,required"`
+}
+
 // MlCopilotServerMessageToolOutput: Completed tool call result.
 type MlCopilotServerMessageToolOutput struct {
 	// ToolOutput:
@@ -2748,6 +2768,8 @@ type MlPrompt struct {
 	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
 	// Prompt: The prompt.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
+	// Seconds: Sum of EndOfStream durations, in seconds. Nullable to allow lazy backfill.
+	Seconds int `json:"seconds" yaml:"seconds" schema:"seconds"`
 	// StartedAt: When the prompt was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: The status of the prompt.
@@ -2768,6 +2790,8 @@ type MlPromptMetadata struct {
 	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code"`
 	// SourceRanges: The source ranges the user suggested to change.
 	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
+	// UpstreamConversationID: The upstream conversation ID, if any.
+	UpstreamConversationID string `json:"upstream_conversation_id" yaml:"upstream_conversation_id" schema:"upstream_conversation_id"`
 }
 
 // MlPromptResultsPage: A single page of results
@@ -2790,6 +2814,8 @@ const (
 	MlPromptTypeTextToKclIteration MlPromptType = "text_to_kcl_iteration"
 	// MlPromptTypeTextToKclMultiFileIteration: Text to KCL iteration with multiple files.
 	MlPromptTypeTextToKclMultiFileIteration MlPromptType = "text_to_kcl_multi_file_iteration"
+	// MlPromptTypeCopilot: Copilot chat/assist prompts.
+	MlPromptTypeCopilot MlPromptType = "copilot"
 )
 
 // MlToolResult: MlToolResult: Responses from tools.
@@ -5461,6 +5487,12 @@ const (
 type RemoveSceneObjects struct {
 }
 
+// Replay is the type definition for a Replay.
+type Replay struct {
+	// Messages: Canonical bytes (usually JSON) for each message, ordered by prompt creation time, then message sequence number.
+	Messages [][]int `json:"messages" yaml:"messages" schema:"messages,required"`
+}
+
 // ResponseError: Error information from a response.
 type ResponseError struct {
 	// ErrorCode:
@@ -5715,6 +5747,12 @@ type Session struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user that the session belongs to.
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// SessionData is the type definition for a SessionData.
+type SessionData struct {
+	// APICallID: The API call id associated with this websocket session.
+	APICallID string `json:"api_call_id" yaml:"api_call_id" schema:"api_call_id,required"`
 }
 
 // SetBackgroundColor: The response from the `SetBackgroundColor` endpoint.
