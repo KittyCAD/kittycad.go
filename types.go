@@ -2515,17 +2515,19 @@ type KclCodeCompletionRequest struct {
 	Extra KclCodeCompletionParams `json:"extra" yaml:"extra" schema:"extra"`
 	// MaxTokens: The maximum number of tokens that can be generated for the completions. The total length of input tokens and generated tokens is limited by the model’s context length.
 	MaxTokens int `json:"max_tokens" yaml:"max_tokens" schema:"max_tokens"`
+	// ModelVersion: Zoo provided model, or fine-tuned model which should be used to process this request.
+	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version"`
 	// N: How many completion choices to generate for each input message.
 	N int `json:"n" yaml:"n" schema:"n"`
 	// Nwo: For GitHub copilot this is the `{org}/{repo}`. This does not do anything yet. But we wanted the same API as GitHub Copilot. It might be used in the future.
 	Nwo string `json:"nwo" yaml:"nwo" schema:"nwo"`
-	// Prompt: The prompt for the model.
+	// Prompt: The prompt for the desired part.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
 	// Stop: Up to 4 sequences where the API will stop generating further tokens.
 	Stop []string `json:"stop" yaml:"stop" schema:"stop"`
 	// Stream: If set, partial message deltas will be sent, like in ChatGPT or OpenAPI. Tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a data: [DONE] message.
 	Stream bool `json:"stream" yaml:"stream" schema:"stream"`
-	// Suffix: The suffix for the model.
+	// Suffix: The suffix for the desired part.
 	Suffix string `json:"suffix" yaml:"suffix" schema:"suffix"`
 	// Temperature: The temperature for the model.
 	Temperature float64 `json:"temperature" yaml:"temperature" schema:"temperature"`
@@ -6118,9 +6120,11 @@ type TextToCad struct {
 type TextToCadCreateBody struct {
 	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
 	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
+	// ModelVersion: Zoo provided model, or fine-tuned model which should be used to process this request.
+	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version"`
 	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
 	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
-	// Prompt: The prompt for the model.
+	// Prompt: The prompt for the desired part.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
 }
 

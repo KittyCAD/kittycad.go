@@ -6684,7 +6684,9 @@ func (s *UserService) DeleteShortlink(key string) error {
 //   - `conversationId`: A UUID usually v4 or v7
 //
 //   - `noModels`
-func (s *MlService) ListTextToCadPartsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, conversationId UUID, noModels bool) (*TextToCadResponseResultsPage, error) {
+//
+//   - `noParts`
+func (s *MlService) ListTextToCadPartsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, conversationId UUID, noModels bool, noParts bool) (*TextToCadResponseResultsPage, error) {
 	// Create the url.
 	path := "/user/text-to-cad"
 	uri := resolveRelative(s.client.server, path)
@@ -6702,6 +6704,7 @@ func (s *MlService) ListTextToCadPartsForUser(limit int, pageToken string, sortB
 		"sort_by":         string(sortBy),
 		"conversation_id": conversationId.String(),
 		"no_models":       strconv.FormatBool(noModels),
+		"no_parts":        strconv.FormatBool(noParts),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -6732,13 +6735,13 @@ func (s *MlService) ListTextToCadPartsForUser(limit int, pageToken string, sortB
 
 }
 
-// GetTextToCadPartsForUser: Get a text-to-CAD response.
+// GetTextToCadPartForUser: Get a text-to-CAD response.
 // This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model.
 //
 // Parameters
 //
 //   - `id`
-func (s *MlService) GetTextToCadPartsForUser(id UUID) (*any, error) {
+func (s *MlService) GetTextToCadPartForUser(id UUID) (*any, error) {
 	// Create the url.
 	path := "/user/text-to-cad/{{.id}}"
 	uri := resolveRelative(s.client.server, path)

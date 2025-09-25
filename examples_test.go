@@ -97,7 +97,7 @@ func ExampleMlService_CreateTextToCad() {
 		panic(err)
 	}
 
-	result, err := client.Ml.CreateTextToCad("", true, kittycad.TextToCadCreateBody{KclVersion: "some-string", ProjectName: "some-string", Prompt: "some-string"})
+	result, err := client.Ml.CreateTextToCad("", true, kittycad.TextToCadCreateBody{KclVersion: "some-string", ModelVersion: "some-string", ProjectName: "some-string", Prompt: "some-string"})
 	if err != nil {
 		panic(err)
 	}
@@ -866,7 +866,7 @@ func ExampleMlService_CreateKclCodeCompletions() {
 		panic(err)
 	}
 
-	result, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: "some-string", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, N: 123, Nwo: "some-string", Prompt: "some-string", Stop: []string{}, Stream: true, Suffix: "some-string", Temperature: 123.45, TopP: 123.45})
+	result, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: "some-string", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, ModelVersion: "some-string", N: 123, Nwo: "some-string", Prompt: "some-string", Stop: []string{}, Stream: true, Suffix: "some-string", Temperature: 123.45, TopP: 123.45})
 	if err != nil {
 		panic(err)
 	}
@@ -2988,13 +2988,15 @@ func ExampleUserService_DeleteShortlink() {
 //   - `conversationId`: A UUID usually v4 or v7
 //
 //   - `noModels`
+//
+//   - `noParts`
 func ExampleMlService_ListTextToCadPartsForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ml.ListTextToCadPartsForUser(123, "some-string", "", kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true)
+	result, err := client.Ml.ListTextToCadPartsForUser(123, "some-string", "", kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, true)
 	if err != nil {
 		panic(err)
 	}
@@ -3003,19 +3005,19 @@ func ExampleMlService_ListTextToCadPartsForUser() {
 
 }
 
-// GetTextToCadPartsForUser: Get a text-to-CAD response.
+// GetTextToCadPartForUser: Get a text-to-CAD response.
 // This endpoint requires authentication by any Zoo user. The user must be the owner of the text-to-CAD model.
 //
 // Parameters
 //
 //   - `id`
-func ExampleMlService_GetTextToCadPartsForUser() {
+func ExampleMlService_GetTextToCadPartForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ml.GetTextToCadPartsForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.Ml.GetTextToCadPartForUser(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
