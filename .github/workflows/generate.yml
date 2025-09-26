@@ -10,7 +10,6 @@ on:
       - 'generate/**.go'
       - VERSION.txt
   workflow_dispatch:
-    inputs:
 jobs:
   format:
     # Check if the PR is not from a fork
@@ -30,16 +29,9 @@ jobs:
         env:
           KITTYCAD_API_TOKEN: ${{secrets.KITTYCAD_API_TOKEN}}
 
-      - name: Check for modified files
-        id: git-check
-        run: echo "modified=$(if [[ -z $(git status --porcelain --untracked-files=no --ignore-submodules) ]]; then echo "false"; else echo "true"; fi)" >> "$GITHUB_OUTPUT"
-
-      - name: Commit changes, if any
-        if: steps.git-check.outputs.modified == 'true'
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git fetch origin
-          git commit -am "I have generated the latest API!" || true
-          git push origin ${{github.event.pull_request.head.ref }} || true
+      - name: Commit generated files
+        uses: KittyCAD/gha-actions-public/pr-commit@main
+        with:
+          app-id: ${{ secrets.GH_ORG_APP_ID }}
+          private-key: ${{ secrets.GH_ORG_APP_PRIVATE_KEY }}
+          commit-message: "I have generated the latest API!"
