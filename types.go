@@ -77,6 +77,8 @@ type APICallWithPrice struct {
 	RequestQueryParams string `json:"request_query_params" yaml:"request_query_params" schema:"request_query_params"`
 	// ResponseBody: The response body returned by the API call. We do not store this information if it is above a certain size.
 	ResponseBody string `json:"response_body" yaml:"response_body" schema:"response_body"`
+	// Seconds: The number of seconds the API call was billed for.
+	Seconds int `json:"seconds" yaml:"seconds" schema:"seconds"`
 	// StartedAt: The date and time the API call started billing.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// StatusCode: The status code returned by the API call.
@@ -2914,10 +2916,10 @@ type ModelingAppSubscriptionTier struct {
 	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month. This is equivalent to the monetary value divided by the price of an API credit.
 	MonthlyPayAsYouGoAPICredits int `json:"monthly_pay_as_you_go_api_credits" yaml:"monthly_pay_as_you_go_api_credits" schema:"monthly_pay_as_you_go_api_credits"`
 	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month.
-	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value,required"`
+	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value"`
 	// Name: The name of the tier.
 	Name ModelingAppSubscriptionTierName `json:"name" yaml:"name" schema:"name,required"`
-	// PayAsYouGoAPICreditPrice: The price of an API credit (meaning 1 credit = 1 minute of API usage).
+	// PayAsYouGoAPICreditPrice: The price of an API credit (meaning 1 credit = 1 second of API usage).
 	PayAsYouGoAPICreditPrice float64 `json:"pay_as_you_go_api_credit_price" yaml:"pay_as_you_go_api_credit_price" schema:"pay_as_you_go_api_credit_price"`
 	// Price: The price of the tier per month. If this is for an individual, this is the price they pay. If this is for an organization, this is the price the organization pays per member in the org. This is in USD.
 	Price any `json:"price" yaml:"price" schema:"price,required"`
@@ -7324,10 +7326,10 @@ type ZooProductSubscription struct {
 	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month. This is equivalent to the monetary value divided by the price of an API credit.
 	MonthlyPayAsYouGoAPICredits int `json:"monthly_pay_as_you_go_api_credits" yaml:"monthly_pay_as_you_go_api_credits" schema:"monthly_pay_as_you_go_api_credits"`
 	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month.
-	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value,required"`
+	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value"`
 	// Name: The name of the tier.
 	Name ModelingAppSubscriptionTierName `json:"name" yaml:"name" schema:"name,required"`
-	// PayAsYouGoAPICreditPrice: The price of an API credit (meaning 1 credit = 1 minute of API usage).
+	// PayAsYouGoAPICreditPrice: The price of an API credit (meaning 1 credit = 1 second of API usage).
 	PayAsYouGoAPICreditPrice float64 `json:"pay_as_you_go_api_credit_price" yaml:"pay_as_you_go_api_credit_price" schema:"pay_as_you_go_api_credit_price"`
 	// Price: The price of the tier per month. If this is for an individual, this is the price they pay. If this is for an organization, this is the price the organization pays per member in the org. This is in USD.
 	Price any `json:"price" yaml:"price" schema:"price,required"`
