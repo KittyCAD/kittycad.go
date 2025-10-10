@@ -2517,7 +2517,7 @@ type KclCodeCompletionRequest struct {
 	Extra KclCodeCompletionParams `json:"extra" yaml:"extra" schema:"extra"`
 	// MaxTokens: The maximum number of tokens that can be generated for the completions. The total length of input tokens and generated tokens is limited by the model’s context length.
 	MaxTokens int `json:"max_tokens" yaml:"max_tokens" schema:"max_tokens"`
-	// ModelVersion: Zoo provided model, or fine-tuned model which should be used to process this request.
+	// ModelVersion: Zoo provided model, or custom model which should be used to process this request.
 	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version"`
 	// N: How many completion choices to generate for each input message.
 	N int `json:"n" yaml:"n" schema:"n"`
@@ -6122,7 +6122,7 @@ type TextToCad struct {
 type TextToCadCreateBody struct {
 	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
 	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
-	// ModelVersion: Zoo provided model, or fine-tuned model which should be used to process this request.
+	// ModelVersion: Zoo provided model, or custom model which should be used to process this request.
 	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version"`
 	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
 	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
