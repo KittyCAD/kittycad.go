@@ -23,7 +23,7 @@ jobs:
           private-key: ${{ secrets.GH_ORG_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
       - uses: actions/checkout@v5
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: '1.22.x'
       - name: make generate
