@@ -993,7 +993,7 @@
  },
  {
   "value": {
-   "example": "// DeleteMethodForUser: Delete a payment method for your user.\n// \n// This endpoint requires authentication by any Zoo user. It deletes the specified payment method for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// DeleteMethodForUser: Delete a payment method for your user.\n// This endpoint requires authentication by any Zoo user. It deletes the specified payment method for the authenticated user.\n//\n// Parameters\n//\n//   - `id`\nfunc ExamplePaymentService_DeleteMethodForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.DeleteMethodForUser(\"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "example": "// DeleteMethodForUser: Delete a payment method for your user.\n// \n// This endpoint requires authentication by any Zoo user. It deletes the specified payment method for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `force`\n// \n// DeleteMethodForUser: Delete a payment method for your user.\n// This endpoint requires authentication by any Zoo user. It deletes the specified payment method for the authenticated user.\n//\n// Parameters\n//\n//   - `id`\n//   - `force`\nfunc ExamplePaymentService_DeleteMethodForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.DeleteMethodForUser(\"some-string\", true); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.DeleteMethodForUser"
   },
   "op": "add",
