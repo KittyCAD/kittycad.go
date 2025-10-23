@@ -665,6 +665,14 @@
  },
  {
   "value": {
+   "example": "// AdminDetailsList: Get admin-only details for an organization.\n// \n// Zoo admins can retrieve extended information about any organization, while non-admins receive a 404 to avoid leaking existence.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// AdminDetailsList: Get admin-only details for an organization.\n// Zoo admins can retrieve extended information about any organization, while non-admins receive a 404 to avoid leaking existence.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_AdminDetailsList() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.AdminDetailsList(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.AdminDetailsList"
+  },
+  "op": "add",
+  "path": "/paths/~1orgs~1{id}~1admin~1details/get/x-go"
+ },
+ {
+  "value": {
    "example": "// UpdateEnterprisePricingFor: Set the enterprise price for an organization.\n// \n// You must be a Zoo admin to perform this request.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`: The price for an enterprise subscription.\n// \n// UpdateEnterprisePricingFor: Set the enterprise price for an organization.\n// You must be a Zoo admin to perform this request.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`: The price for an enterprise subscription.\nfunc ExampleOrgService_UpdateEnterprisePricingFor() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.UpdateEnterprisePricingFor(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.UpdateEnterprisePricingFor"
   },
@@ -1150,6 +1158,14 @@
   },
   "op": "add",
   "path": "/paths/~1users~1{id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// AdminDetailsList: Get admin-only details for a user.\n// \n// Zoo admins can retrieve extended information about any user, while non-admins receive a 404 to avoid leaking the existence of the resource.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// AdminDetailsList: Get admin-only details for a user.\n// Zoo admins can retrieve extended information about any user, while non-admins receive a 404 to avoid leaking the existence of the resource.\n//\n// Parameters\n//\n//   - `id`\nfunc ExampleUserService_AdminDetailsList() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.AdminDetailsList(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.AdminDetailsList"
+  },
+  "op": "add",
+  "path": "/paths/~1users~1{id}~1admin~1details/get/x-go"
  },
  {
   "value": {

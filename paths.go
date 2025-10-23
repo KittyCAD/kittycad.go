@@ -4074,6 +4074,56 @@ func (s *OrgService) GetAny(id UUID) (*Org, error) {
 
 }
 
+// AdminDetailsList: Get admin-only details for an organization.
+// Zoo admins can retrieve extended information about any organization, while non-admins receive a 404 to avoid leaking existence.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) AdminDetailsList(id UUID) (*OrgAdminDetails, error) {
+	// Create the url.
+	path := "/orgs/{{.id}}/admin/details"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgAdminDetails
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // UpdateEnterprisePricingFor: Set the enterprise price for an organization.
 // You must be a Zoo admin to perform this request.
 //
@@ -7051,6 +7101,56 @@ func (s *UserService) Get(id string) (*User, error) {
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded User
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// AdminDetailsList: Get admin-only details for a user.
+// Zoo admins can retrieve extended information about any user, while non-admins receive a 404 to avoid leaking the existence of the resource.
+//
+// Parameters
+//
+//   - `id`
+func (s *UserService) AdminDetailsList(id string) (*UserAdminDetails, error) {
+	// Create the url.
+	path := "/users/{{.id}}/admin/details"
+	uri := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UserAdminDetails
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

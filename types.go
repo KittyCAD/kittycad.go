@@ -184,6 +184,30 @@ type AddOrgMember struct {
 	Role UserOrgRole `json:"role" yaml:"role" schema:"role,required"`
 }
 
+// Address: An address for a user.
+type Address struct {
+	// City: The city component.
+	City string `json:"city" yaml:"city" schema:"city"`
+	// Country: The country component. This is a two-letter ISO country code.
+	Country string `json:"country" yaml:"country" schema:"country,required"`
+	// CreatedAt: The time and date the address was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// ID: The unique identifier of the address.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// State: The state component.
+	State string `json:"state" yaml:"state" schema:"state"`
+	// Street1: The first street component.
+	Street1 string `json:"street1" yaml:"street1" schema:"street1"`
+	// Street2: The second street component.
+	Street2 string `json:"street2" yaml:"street2" schema:"street2"`
+	// UpdatedAt: The time and date the address was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID that this address belongs to.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+	// Zip: The zip component.
+	Zip string `json:"zip" yaml:"zip" schema:"zip"`
+}
+
 // AddressDetails: Address details.
 type AddressDetails struct {
 	// City: The city component.
@@ -5188,6 +5212,50 @@ type Org struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
+// OrgAddress: An address for an organization.
+type OrgAddress struct {
+	// City: The city component.
+	City string `json:"city" yaml:"city" schema:"city"`
+	// Country: The country component. This is a two-letter ISO country code.
+	Country string `json:"country" yaml:"country" schema:"country,required"`
+	// CreatedAt: The time and date the address was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// ID: The unique identifier of the address.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// OrgID: The org ID that this address belongs to.
+	OrgID UUID `json:"org_id" yaml:"org_id" schema:"org_id,required"`
+	// State: The state component.
+	State string `json:"state" yaml:"state" schema:"state"`
+	// Street1: The first street component.
+	Street1 string `json:"street1" yaml:"street1" schema:"street1"`
+	// Street2: The second street component.
+	Street2 string `json:"street2" yaml:"street2" schema:"street2"`
+	// UpdatedAt: The time and date the address was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// Zip: The zip component.
+	Zip string `json:"zip" yaml:"zip" schema:"zip"`
+}
+
+// OrgAdminDetails: Extra admin-only details for an organization.
+type OrgAdminDetails struct {
+	// Address: Latest billing address stored for the organization.
+	Address OrgAddress `json:"address" yaml:"address" schema:"address"`
+	// AddressSummary: Readable billing address summary.
+	AddressSummary string `json:"address_summary" yaml:"address_summary" schema:"address_summary"`
+	// Block: Block reason when the org is blocked.
+	Block BlockReason `json:"block" yaml:"block" schema:"block"`
+	// BlockMessage: Human-friendly block reason message.
+	BlockMessage string `json:"block_message" yaml:"block_message" schema:"block_message"`
+	// PaymentMethods: Known payment methods on file.
+	PaymentMethods []PaymentMethod `json:"payment_methods" yaml:"payment_methods" schema:"payment_methods,required"`
+	// PaymentMethodsSummary: Summaries of the known payment methods.
+	PaymentMethodsSummary []string `json:"payment_methods_summary" yaml:"payment_methods_summary" schema:"payment_methods_summary,required"`
+	// StripeCustomerID: Stripe customer identifier if one exists.
+	StripeCustomerID string `json:"stripe_customer_id" yaml:"stripe_customer_id" schema:"stripe_customer_id"`
+	// StripeDashboardUrl: Direct link to the Stripe customer dashboard.
+	StripeDashboardUrl string `json:"stripe_dashboard_url" yaml:"stripe_dashboard_url" schema:"stripe_dashboard_url"`
+}
+
 // OrgDetails: The user-modifiable parts of an organization.
 type OrgDetails struct {
 	// AllowUsersInDomainToAutoJoin: If we should allow all future users who are created with email addresses from this domain to join the org.
@@ -7551,6 +7619,28 @@ type User struct {
 	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 	// UpdatedAt: The date and time the user was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// UserAdminDetails: Extra admin-only details for a user.
+type UserAdminDetails struct {
+	// Address: Latest billing address stored for the user.
+	Address Address `json:"address" yaml:"address" schema:"address"`
+	// AddressSummary: Readable billing address summary.
+	AddressSummary string `json:"address_summary" yaml:"address_summary" schema:"address_summary"`
+	// Block: Block reason when the user is blocked.
+	Block BlockReason `json:"block" yaml:"block" schema:"block"`
+	// BlockMessage: Human-friendly block reason message.
+	BlockMessage string `json:"block_message" yaml:"block_message" schema:"block_message"`
+	// HubspotContactUrl: Direct or search link to the HubSpot contact record.
+	HubspotContactUrl string `json:"hubspot_contact_url" yaml:"hubspot_contact_url" schema:"hubspot_contact_url"`
+	// PaymentMethods: Known payment methods on file.
+	PaymentMethods []PaymentMethod `json:"payment_methods" yaml:"payment_methods" schema:"payment_methods,required"`
+	// PaymentMethodsSummary: Summaries of the known payment methods.
+	PaymentMethodsSummary []string `json:"payment_methods_summary" yaml:"payment_methods_summary" schema:"payment_methods_summary,required"`
+	// StripeCustomerID: Stripe customer identifier if one exists.
+	StripeCustomerID string `json:"stripe_customer_id" yaml:"stripe_customer_id" schema:"stripe_customer_id"`
+	// StripeDashboardUrl: Direct link to the Stripe customer dashboard.
+	StripeDashboardUrl string `json:"stripe_dashboard_url" yaml:"stripe_dashboard_url" schema:"stripe_dashboard_url"`
 }
 
 // UserOrgInfo: A user's information about an org, including their role.
