@@ -1860,6 +1860,27 @@ func ExampleOrgService_GetAny() {
 
 }
 
+// AdminDetailsList: Get admin-only details for an organization.
+// Zoo admins can retrieve extended information about any organization, while non-admins receive a 404 to avoid leaking existence.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_AdminDetailsList() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.AdminDetailsList(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // UpdateEnterprisePricingFor: Set the enterprise price for an organization.
 // You must be a Zoo admin to perform this request.
 //
@@ -3148,6 +3169,27 @@ func ExampleUserService_Get() {
 	}
 
 	result, err := client.User.Get("some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// AdminDetailsList: Get admin-only details for a user.
+// Zoo admins can retrieve extended information about any user, while non-admins receive a 404 to avoid leaking the existence of the resource.
+//
+// Parameters
+//
+//   - `id`
+func ExampleUserService_AdminDetailsList() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.AdminDetailsList("some-string")
 	if err != nil {
 		panic(err)
 	}
