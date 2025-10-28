@@ -4243,7 +4243,7 @@ func (s *PaymentService) GetBalanceForAnyOrg(includeTotalDue bool, id UUID) (*Cu
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `includeTotalDue`
-//   - `body`: The data for updating a balance.
+//   - `body`: Payload for updating a user's balance.
 func (s *PaymentService) UpdateBalanceForAnyOrg(id UUID, includeTotalDue bool, body UpdatePaymentBalance) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/orgs/{{.id}}/payment/balance"
@@ -7286,7 +7286,7 @@ func (s *PaymentService) GetBalanceForAnyUser(id string, includeTotalDue bool) (
 //
 //   - `id`
 //   - `includeTotalDue`
-//   - `body`: The data for updating a balance.
+//   - `body`: Payload for updating a user's balance.
 func (s *PaymentService) UpdateBalanceForAnyUser(id string, includeTotalDue bool, body UpdatePaymentBalance) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/users/{{.id}}/payment/balance"
