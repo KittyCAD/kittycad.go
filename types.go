@@ -1364,27 +1364,15 @@ type Customer struct {
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// ID: The unique identifier for the balance.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// MapID: The mapping id of the user or org.
-	MapID UUID `json:"map_id" yaml:"map_id" schema:"map_id,required"`
 	// ModelingAppEnterprisePrice: The enterprise price for the Modeling App subscription, if they are on the enterprise plan.
 	ModelingAppEnterprisePrice any `json:"modeling_app_enterprise_price" yaml:"modeling_app_enterprise_price" schema:"modeling_app_enterprise_price"`
-	// MonthlyAPICreditsRemaining: The number of monthly API credits remaining in the balance. This is the number of credits remaining in the balance.
-	//
-	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
+	// MonthlyAPICreditsRemaining: The number of monthly API credits remaining in the balance.
 	MonthlyAPICreditsRemaining int `json:"monthly_api_credits_remaining" yaml:"monthly_api_credits_remaining" schema:"monthly_api_credits_remaining,required"`
-	// MonthlyAPICreditsRemainingMonetaryValue: The monetary value of the monthly API credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month.
-	//
-	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
+	// MonthlyAPICreditsRemainingMonetaryValue: The monetary value of the monthly API credits remaining in the balance.
 	MonthlyAPICreditsRemainingMonetaryValue float64 `json:"monthly_api_credits_remaining_monetary_value" yaml:"monthly_api_credits_remaining_monetary_value" schema:"monthly_api_credits_remaining_monetary_value,required"`
-	// StableAPICreditsRemaining: The number of stable API credits remaining in the balance. These do not get reset or re-upped every month. This is separate from the monthly credits. Credits will first pull from the monthly credits, then the stable credits. Stable just means that they do not get reset every month. A user will have stable credits if a Zoo employee granted them credits.
-	//
-	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
+	// StableAPICreditsRemaining: The number of stable API credits remaining in the balance.
 	StableAPICreditsRemaining int `json:"stable_api_credits_remaining" yaml:"stable_api_credits_remaining" schema:"stable_api_credits_remaining,required"`
-	// StableAPICreditsRemainingMonetaryValue: The monetary value of stable API credits remaining in the balance. These do not get reset or re-upped every month. This is separate from the monthly credits. Credits will first pull from the monthly credits, then the stable credits. Stable just means that they do not get reset every month. A user will have stable credits if a Zoo employee granted them credits.
-	//
-	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
+	// StableAPICreditsRemainingMonetaryValue: The monetary value of stable API credits remaining in the balance.
 	StableAPICreditsRemainingMonetaryValue float64 `json:"stable_api_credits_remaining_monetary_value" yaml:"stable_api_credits_remaining_monetary_value" schema:"stable_api_credits_remaining_monetary_value,required"`
 	// SubscriptionDetails: Details about the subscription.
 	SubscriptionDetails ZooProductSubscriptions `json:"subscription_details" yaml:"subscription_details" schema:"subscription_details"`
@@ -7545,7 +7533,7 @@ type UpdateMemberToOrgBody struct {
 	Role UserOrgRole `json:"role" yaml:"role" schema:"role,required"`
 }
 
-// UpdatePaymentBalance: The data for updating a balance.
+// UpdatePaymentBalance: Payload for updating a user's balance.
 type UpdatePaymentBalance struct {
 	// MonthlyAPICreditsRemainingMonetaryValue: The monetary value of the monthy API credits remaining in the balance. This gets re-upped every month,
 	MonthlyAPICreditsRemainingMonetaryValue float64 `json:"monthly_api_credits_remaining_monetary_value" yaml:"monthly_api_credits_remaining_monetary_value" schema:"monthly_api_credits_remaining_monetary_value"`

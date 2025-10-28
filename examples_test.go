@@ -1932,7 +1932,7 @@ func ExamplePaymentService_GetBalanceForAnyOrg() {
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `includeTotalDue`
-//   - `body`: The data for updating a balance.
+//   - `body`: Payload for updating a user's balance.
 func ExamplePaymentService_UpdateBalanceForAnyOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -3262,7 +3262,7 @@ func ExamplePaymentService_GetBalanceForAnyUser() {
 //
 //   - `id`
 //   - `includeTotalDue`
-//   - `body`: The data for updating a balance.
+//   - `body`: Payload for updating a user's balance.
 func ExamplePaymentService_UpdateBalanceForAnyUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
