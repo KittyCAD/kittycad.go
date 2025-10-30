@@ -1539,7 +1539,7 @@ func ExamplePaymentService_CreateOrgSubscription() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateOrgSubscription(kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: "", PayAnnually: true})
+	result, err := client.Payment.CreateOrgSubscription(kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: "some-string", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -1560,7 +1560,7 @@ func ExamplePaymentService_UpdateOrgSubscription() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateOrgSubscription(kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: "", PayAnnually: true})
+	result, err := client.Payment.UpdateOrgSubscription(kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: "some-string", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -2790,7 +2790,7 @@ func ExamplePaymentService_CreateUserSubscription() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "", PayAnnually: true})
+	result, err := client.Payment.CreateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "some-string", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -2811,7 +2811,7 @@ func ExamplePaymentService_UpdateUserSubscription() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "", PayAnnually: true})
+	result, err := client.Payment.UpdateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "some-string", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -3291,7 +3291,7 @@ func ExampleUserService_UpdateSubscriptionFor() {
 		panic(err)
 	}
 
-	result, err := client.User.UpdateSubscriptionFor("some-string", kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "", PayAnnually: true})
+	result, err := client.User.UpdateSubscriptionFor("some-string", kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "some-string", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}

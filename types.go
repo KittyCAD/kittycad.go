@@ -1366,13 +1366,21 @@ type CustomerBalance struct {
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// ModelingAppEnterprisePrice: The enterprise price for the Modeling App subscription, if they are on the enterprise plan.
 	ModelingAppEnterprisePrice any `json:"modeling_app_enterprise_price" yaml:"modeling_app_enterprise_price" schema:"modeling_app_enterprise_price"`
-	// MonthlyAPICreditsRemaining: The number of monthly API credits remaining in the balance.
+	// MonthlyAPICreditsRemaining: The number of monthly API credits remaining in the balance. This is the number of credits remaining in the balance.
+	//
+	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
 	MonthlyAPICreditsRemaining int `json:"monthly_api_credits_remaining" yaml:"monthly_api_credits_remaining" schema:"monthly_api_credits_remaining,required"`
-	// MonthlyAPICreditsRemainingMonetaryValue: The monetary value of the monthly API credits remaining in the balance.
+	// MonthlyAPICreditsRemainingMonetaryValue: The monetary value of the monthly API credits remaining in the balance. This gets re-upped every month, but if the credits are not used for a month they do not carry over to the next month.
+	//
+	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
 	MonthlyAPICreditsRemainingMonetaryValue float64 `json:"monthly_api_credits_remaining_monetary_value" yaml:"monthly_api_credits_remaining_monetary_value" schema:"monthly_api_credits_remaining_monetary_value,required"`
-	// StableAPICreditsRemaining: The number of stable API credits remaining in the balance.
+	// StableAPICreditsRemaining: The number of stable API credits remaining in the balance. These do not get reset or re-upped every month. This is separate from the monthly credits. Credits will first pull from the monthly credits, then the stable credits. Stable just means that they do not get reset every month. A user will have stable credits if a Zoo employee granted them credits.
+	//
+	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
 	StableAPICreditsRemaining int `json:"stable_api_credits_remaining" yaml:"stable_api_credits_remaining" schema:"stable_api_credits_remaining,required"`
-	// StableAPICreditsRemainingMonetaryValue: The monetary value of stable API credits remaining in the balance.
+	// StableAPICreditsRemainingMonetaryValue: The monetary value of stable API credits remaining in the balance. These do not get reset or re-upped every month. This is separate from the monthly credits. Credits will first pull from the monthly credits, then the stable credits. Stable just means that they do not get reset every month. A user will have stable credits if a Zoo employee granted them credits.
+	//
+	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
 	StableAPICreditsRemainingMonetaryValue float64 `json:"stable_api_credits_remaining_monetary_value" yaml:"stable_api_credits_remaining_monetary_value" schema:"stable_api_credits_remaining_monetary_value,required"`
 	// SubscriptionDetails: Details about the subscription.
 	SubscriptionDetails ZooProductSubscriptions `json:"subscription_details" yaml:"subscription_details" schema:"subscription_details"`
@@ -2979,8 +2987,12 @@ type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files"`
 	// ForcedTools: The user can force specific tools to be used for this message.
 	ForcedTools []MlCopilotTool `json:"forced_tools" yaml:"forced_tools" schema:"forced_tools"`
+	// Model: Override the default model with another.
+	Model MlCopilotSupportedModel `json:"model" yaml:"model" schema:"model"`
 	// ProjectName: The project name, if any. This can be used to associate the message with a specific project.
 	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
+	// ReasoningEffort: Change the default reasoning effort.
+	ReasoningEffort MlReasoningEffort `json:"reasoning_effort" yaml:"reasoning_effort" schema:"reasoning_effort"`
 	// SourceRanges: The source ranges the user suggested to change. If empty, the content (prompt) will be used and is required.
 	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
 	// Type:
@@ -3053,6 +3065,22 @@ type MlCopilotServerMessageToolOutput struct {
 	// ToolOutput:
 	ToolOutput ToolOutput `json:"tool_output" yaml:"tool_output" schema:"tool_output,required"`
 }
+
+// MlCopilotSupportedModel: AI models that we support using with the system. In theory any model with reasoning capabilities can work.
+type MlCopilotSupportedModel string
+
+const (
+	// MlCopilotSupportedModelGpt5Nano: gpt-5-nano
+	MlCopilotSupportedModelGpt5Nano MlCopilotSupportedModel = "gpt5_nano"
+	// MlCopilotSupportedModelGpt5Mini: gpt-5-mini
+	MlCopilotSupportedModelGpt5Mini MlCopilotSupportedModel = "gpt5_mini"
+	// MlCopilotSupportedModelGpt5Codex: gpt-5-codex
+	MlCopilotSupportedModelGpt5Codex MlCopilotSupportedModel = "gpt5_codex"
+	// MlCopilotSupportedModelGpt5: gpt-5
+	MlCopilotSupportedModelGpt5 MlCopilotSupportedModel = "gpt5"
+	// MlCopilotSupportedModelO3: o3
+	MlCopilotSupportedModelO3 MlCopilotSupportedModel = "o3"
+)
 
 // MlCopilotSystemCommand: The type of system command that can be sent to the ML Copilot.
 type MlCopilotSystemCommand string
@@ -3168,6 +3196,18 @@ const (
 	MlPromptTypeCopilot MlPromptType = "copilot"
 )
 
+// MlReasoningEffort: Specify the amount of effort used in reasoning. Read the following for more info: https://platform.openai.com/docs/guides/reasoning#how-reasoning-works
+type MlReasoningEffort string
+
+const (
+	// MlReasoningEffortLow: Low reasoning
+	MlReasoningEffortLow MlReasoningEffort = "low"
+	// MlReasoningEffortMedium: Medium reasoning
+	MlReasoningEffortMedium MlReasoningEffort = "medium"
+	// MlReasoningEffortHigh: High reasoning
+	MlReasoningEffortHigh MlReasoningEffort = "high"
+)
+
 // MlToolResult: MlToolResult: Responses from tools.
 type MlToolResult any
 
@@ -3215,46 +3255,26 @@ const (
 	ModelingAppEventTypeSuccessfulCompileBeforeClose ModelingAppEventType = "successful_compile_before_close"
 )
 
-// ModelingAppIndividualSubscriptionTier: The subscription tiers we offer for the Modeling App to individuals.
-type ModelingAppIndividualSubscriptionTier string
-
-const (
-	// ModelingAppIndividualSubscriptionTierFree: The free tier.
-	ModelingAppIndividualSubscriptionTierFree ModelingAppIndividualSubscriptionTier = "free"
-	// ModelingAppIndividualSubscriptionTierPlus: The plus tier.
-	ModelingAppIndividualSubscriptionTierPlus ModelingAppIndividualSubscriptionTier = "plus"
-	// ModelingAppIndividualSubscriptionTierPro: The pro tier.
-	ModelingAppIndividualSubscriptionTierPro ModelingAppIndividualSubscriptionTier = "pro"
-)
-
-// ModelingAppOrganizationSubscriptionTier: The subscription tiers we offer for the Modeling App to organizations.
-type ModelingAppOrganizationSubscriptionTier string
-
-const (
-	// ModelingAppOrganizationSubscriptionTierTeam: The team tier.
-	ModelingAppOrganizationSubscriptionTierTeam ModelingAppOrganizationSubscriptionTier = "team"
-	// ModelingAppOrganizationSubscriptionTierEnterprise: The enterprise tier.
-	ModelingAppOrganizationSubscriptionTierEnterprise ModelingAppOrganizationSubscriptionTier = "enterprise"
-)
-
-// ModelingAppShareLinks: The options for sharable links through the modeling app.
+// ModelingAppShareLinks: Modeling App share link capabilities.
 type ModelingAppShareLinks string
 
 const (
-	// ModelingAppShareLinksPublic: Public.
+	// ModelingAppShareLinksPublic: Publicly accessible share links.
 	ModelingAppShareLinksPublic ModelingAppShareLinks = "public"
-	// ModelingAppShareLinksPasswordProtected: Password protected.
+	// ModelingAppShareLinksPasswordProtected: Share links guarded by a password.
 	ModelingAppShareLinksPasswordProtected ModelingAppShareLinks = "password_protected"
-	// ModelingAppShareLinksOrganizationOnly: Organization only. Links can be made only available to members of the organization.
+	// ModelingAppShareLinksOrganizationOnly: Share links restricted to members of the organization.
 	ModelingAppShareLinksOrganizationOnly ModelingAppShareLinks = "organization_only"
 )
 
-// ModelingAppSubscriptionTier: A subscription tier we offer for the Modeling App.
+// ModelingAppSubscriptionTier: Rich information about a Modeling App subscription tier.
 type ModelingAppSubscriptionTier struct {
 	// AnnualDiscount: Annual discount. The percentage off the monthly price if the user pays annually.
 	AnnualDiscount float64 `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
 	// Description: A description of the tier.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// DisplayName: The display name of the tier.
+	DisplayName string `json:"display_name" yaml:"display_name" schema:"display_name"`
 	// EndpointsIncluded: The Zoo API endpoints that are included when through an approved zoo tool.
 	EndpointsIncluded []APIEndpoint `json:"endpoints_included" yaml:"endpoints_included" schema:"endpoints_included"`
 	// Features: Features that are included in the subscription.
@@ -3264,7 +3284,7 @@ type ModelingAppSubscriptionTier struct {
 	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month.
 	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value"`
 	// Name: The name of the tier.
-	Name ModelingAppSubscriptionTierName `json:"name" yaml:"name" schema:"name,required"`
+	Name string `json:"name" yaml:"name" schema:"name,required"`
 	// PayAsYouGoAPICreditPrice: The price of an API credit (meaning 1 credit = 1 second of API usage).
 	PayAsYouGoAPICreditPrice float64 `json:"pay_as_you_go_api_credit_price" yaml:"pay_as_you_go_api_credit_price" schema:"pay_as_you_go_api_credit_price"`
 	// Price: The price of the tier per month. If this is for an individual, this is the price they pay. If this is for an organization, this is the price the organization pays per member in the org. This is in USD.
@@ -3280,22 +3300,6 @@ type ModelingAppSubscriptionTier struct {
 	// ZooToolsIncluded: The Zoo tools that you can call unlimited times with this tier.
 	ZooToolsIncluded []ZooTool `json:"zoo_tools_included" yaml:"zoo_tools_included" schema:"zoo_tools_included"`
 }
-
-// ModelingAppSubscriptionTierName: An enum representing a Modeling App subscription tier name.
-type ModelingAppSubscriptionTierName string
-
-const (
-	// ModelingAppSubscriptionTierNameFree: The free tier.
-	ModelingAppSubscriptionTierNameFree ModelingAppSubscriptionTierName = "free"
-	// ModelingAppSubscriptionTierNamePlus: The plus tier.
-	ModelingAppSubscriptionTierNamePlus ModelingAppSubscriptionTierName = "plus"
-	// ModelingAppSubscriptionTierNamePro: The pro tier.
-	ModelingAppSubscriptionTierNamePro ModelingAppSubscriptionTierName = "pro"
-	// ModelingAppSubscriptionTierNameTeam: The team tier.
-	ModelingAppSubscriptionTierNameTeam ModelingAppSubscriptionTierName = "team"
-	// ModelingAppSubscriptionTierNameEnterprise: The enterprise tier.
-	ModelingAppSubscriptionTierNameEnterprise ModelingAppSubscriptionTierName = "enterprise"
-)
 
 // ModelingCmd: ModelingCmd: Commands that the KittyCAD engine can execute.
 type ModelingCmd any
@@ -7797,6 +7801,8 @@ type ZooProductSubscription struct {
 	AnnualDiscount float64 `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
 	// Description: A description of the tier.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// DisplayName: The display name of the tier.
+	DisplayName string `json:"display_name" yaml:"display_name" schema:"display_name"`
 	// EndpointsIncluded: The Zoo API endpoints that are included when through an approved zoo tool.
 	EndpointsIncluded []APIEndpoint `json:"endpoints_included" yaml:"endpoints_included" schema:"endpoints_included"`
 	// Features: Features that are included in the subscription.
@@ -7806,7 +7812,7 @@ type ZooProductSubscription struct {
 	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month.
 	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value"`
 	// Name: The name of the tier.
-	Name ModelingAppSubscriptionTierName `json:"name" yaml:"name" schema:"name,required"`
+	Name string `json:"name" yaml:"name" schema:"name,required"`
 	// PayAsYouGoAPICreditPrice: The price of an API credit (meaning 1 credit = 1 second of API usage).
 	PayAsYouGoAPICreditPrice float64 `json:"pay_as_you_go_api_credit_price" yaml:"pay_as_you_go_api_credit_price" schema:"pay_as_you_go_api_credit_price"`
 	// Price: The price of the tier per month. If this is for an individual, this is the price they pay. If this is for an organization, this is the price the organization pays per member in the org. This is in USD.
@@ -7831,16 +7837,16 @@ type ZooProductSubscriptions struct {
 
 // ZooProductSubscriptionsOrgRequest: A struct of Zoo product subscriptions an organization can request.
 type ZooProductSubscriptionsOrgRequest struct {
-	// ModelingApp: A modeling app subscription.
-	ModelingApp ModelingAppOrganizationSubscriptionTier `json:"modeling_app" yaml:"modeling_app" schema:"modeling_app"`
+	// ModelingApp: Slug of the modeling app subscription tier requested.
+	ModelingApp string `json:"modeling_app" yaml:"modeling_app" schema:"modeling_app,required"`
 	// PayAnnually: If the customer chooses to pay annually or monthly, we can add that here. The annual discount will apply if there is a discount for the subscription.
 	PayAnnually bool `json:"pay_annually" yaml:"pay_annually" schema:"pay_annually"`
 }
 
 // ZooProductSubscriptionsUserRequest: A struct of Zoo product subscriptions a user can request.
 type ZooProductSubscriptionsUserRequest struct {
-	// ModelingApp: A modeling app subscription.
-	ModelingApp ModelingAppIndividualSubscriptionTier `json:"modeling_app" yaml:"modeling_app" schema:"modeling_app"`
+	// ModelingApp: Slug of the modeling app subscription tier requested.
+	ModelingApp string `json:"modeling_app" yaml:"modeling_app" schema:"modeling_app,required"`
 	// PayAnnually: If the customer chooses to pay annually or monthly, we can add that here. The annual discount will apply if there is a discount for the subscription.
 	PayAnnually bool `json:"pay_annually" yaml:"pay_annually" schema:"pay_annually"`
 }
