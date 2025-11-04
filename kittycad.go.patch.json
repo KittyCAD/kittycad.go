@@ -489,7 +489,7 @@
  },
  {
   "value": {
-   "example": "// GetBalanceForOrg: Get balance for your org.\n// \n// This endpoint requires authentication by an org admin. It gets the balance information for the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `includeTotalDue`\n// \n// GetBalanceForOrg: Get balance for your org.\n// This endpoint requires authentication by an org admin. It gets the balance information for the authenticated user's org.\n//\n// Parameters\n//\n//   - `includeTotalDue`\nfunc ExamplePaymentService_GetBalanceForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetBalanceForOrg(true)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetBalanceForOrg: Get balance for your org.\n// \n// This endpoint requires authentication by any member of an org. It gets the balance information for the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `includeTotalDue`\n// \n// GetBalanceForOrg: Get balance for your org.\n// This endpoint requires authentication by any member of an org. It gets the balance information for the authenticated user's org.\n//\n// Parameters\n//\n//   - `includeTotalDue`\nfunc ExamplePaymentService_GetBalanceForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetBalanceForOrg(true)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetBalanceForOrg"
   },
   "op": "add",
@@ -529,7 +529,7 @@
  },
  {
   "value": {
-   "example": "// GetOrgSubscription: Get the subscription for an org.\n// \n// This endpoint requires authentication by an org admin. It gets the subscription for the authenticated user's org.\n// \n// GetOrgSubscription: Get the subscription for an org.\n// This endpoint requires authentication by an org admin. It gets the subscription for the authenticated user's org.\nfunc ExamplePaymentService_GetOrgSubscription() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetOrgSubscription()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetOrgSubscription: Get the subscription for an org.\n// \n// This endpoint requires authentication by any member of an org. It gets the subscription for the authenticated user's org.\n// \n// GetOrgSubscription: Get the subscription for an org.\n// This endpoint requires authentication by any member of an org. It gets the subscription for the authenticated user's org.\nfunc ExamplePaymentService_GetOrgSubscription() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetOrgSubscription()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetOrgSubscription"
   },
   "op": "add",

@@ -3061,7 +3061,7 @@ func (s *PaymentService) DeleteInformationForOrg() error {
 }
 
 // GetBalanceForOrg: Get balance for your org.
-// This endpoint requires authentication by an org admin. It gets the balance information for the authenticated user's org.
+// This endpoint requires authentication by any member of an org. It gets the balance information for the authenticated user's org.
 //
 // Parameters
 //
@@ -3269,7 +3269,7 @@ func (s *PaymentService) DeleteMethodForOrg(id string) error {
 }
 
 // GetOrgSubscription: Get the subscription for an org.
-// This endpoint requires authentication by an org admin. It gets the subscription for the authenticated user's org.
+// This endpoint requires authentication by any member of an org. It gets the subscription for the authenticated user's org.
 func (s *PaymentService) GetOrgSubscription() (*ZooProductSubscriptions, error) {
 	// Create the url.
 	path := "/org/payment/subscriptions"
