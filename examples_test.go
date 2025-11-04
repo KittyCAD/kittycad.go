@@ -1421,7 +1421,7 @@ func ExamplePaymentService_DeleteInformationForOrg() {
 }
 
 // GetBalanceForOrg: Get balance for your org.
-// This endpoint requires authentication by an org admin. It gets the balance information for the authenticated user's org.
+// This endpoint requires authentication by any member of an org. It gets the balance information for the authenticated user's org.
 //
 // Parameters
 //
@@ -1511,7 +1511,7 @@ func ExamplePaymentService_DeleteMethodForOrg() {
 }
 
 // GetOrgSubscription: Get the subscription for an org.
-// This endpoint requires authentication by an org admin. It gets the subscription for the authenticated user's org.
+// This endpoint requires authentication by any member of an org. It gets the subscription for the authenticated user's org.
 func ExamplePaymentService_GetOrgSubscription() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
