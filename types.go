@@ -1364,8 +1364,6 @@ type Customer struct {
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// ModelingAppEnterprisePrice: The enterprise price for the Modeling App subscription, if they are on the enterprise plan.
-	ModelingAppEnterprisePrice any `json:"modeling_app_enterprise_price" yaml:"modeling_app_enterprise_price" schema:"modeling_app_enterprise_price"`
 	// MonthlyAPICreditsRemaining: The number of monthly API credits remaining in the balance. This is the number of credits remaining in the balance.
 	//
 	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
@@ -2987,17 +2985,29 @@ type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files"`
 	// ForcedTools: The user can force specific tools to be used for this message.
 	ForcedTools []MlCopilotTool `json:"forced_tools" yaml:"forced_tools" schema:"forced_tools"`
-	// Model: Override the default model with another.
+	// Mode: Pick a mode for the agent to operate in. Defaults to a fast mode.
+	Mode MlCopilotMode `json:"mode" yaml:"mode" schema:"mode"`
+	// Model: Override the default or mode model with another.
 	Model MlCopilotSupportedModel `json:"model" yaml:"model" schema:"model"`
 	// ProjectName: The project name, if any. This can be used to associate the message with a specific project.
 	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
-	// ReasoningEffort: Change the default reasoning effort.
+	// ReasoningEffort: Change the default or mode reasoning effort.
 	ReasoningEffort MlReasoningEffort `json:"reasoning_effort" yaml:"reasoning_effort" schema:"reasoning_effort"`
 	// SourceRanges: The source ranges the user suggested to change. If empty, the content (prompt) will be used and is required.
 	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
+
+// MlCopilotMode: The mode to have the agent work in.
+type MlCopilotMode string
+
+const (
+	// MlCopilotModeFast: Use a combination of models and reasoning effort for fast results.
+	MlCopilotModeFast MlCopilotMode = "fast"
+	// MlCopilotModeThoughtful: Use a model and effort that results in thoughtful responses.
+	MlCopilotModeThoughtful MlCopilotMode = "thoughtful"
+)
 
 // MlCopilotServerMessage: MlCopilotServerMessage: The types of messages that can be sent by the server to the client.
 type MlCopilotServerMessage any
