@@ -2597,6 +2597,10 @@ type Invoice struct {
 	//
 	// An invoice is not attempted until 1 hour after the `invoice.created` webhook, for example, so you might not want to display that invoice as unpaid to your users.
 	Attempted bool `json:"attempted" yaml:"attempted" schema:"attempted"`
+	// BillingReason: Why this invoice was created (e.g. `subscription_cycle`).
+	BillingReason string `json:"billing_reason" yaml:"billing_reason" schema:"billing_reason"`
+	// CollectionMethod: Invoice collection method as returned by Stripe.
+	CollectionMethod string `json:"collection_method" yaml:"collection_method" schema:"collection_method"`
 	// CreatedAt: Time at which the object was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -2633,6 +2637,8 @@ type Invoice struct {
 	StatementDescriptor string `json:"statement_descriptor" yaml:"statement_descriptor" schema:"statement_descriptor"`
 	// Status: The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
 	Status InvoiceStatus `json:"status" yaml:"status" schema:"status"`
+	// SubscriptionID: Subscription ID tied to this invoice, when available.
+	SubscriptionID string `json:"subscription_id" yaml:"subscription_id" schema:"subscription_id"`
 	// Subtotal: Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.
 	//
 	// Item discounts are already incorporated.
@@ -7883,8 +7889,6 @@ type ZooTool string
 const (
 	// ZooToolModelingApp: The modeling app.
 	ZooToolModelingApp ZooTool = "modeling_app"
-	// ZooToolDiffChromeExtension: The Diff Chrome Extension.
-	ZooToolDiffChromeExtension ZooTool = "diff_chrome_extension"
 	// ZooToolTextToCad: The Text-to-CAD UI.
 	ZooToolTextToCad ZooTool = "text_to_cad"
 )
