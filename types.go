@@ -3115,6 +3115,12 @@ const (
 	MlCopilotSupportedModelGpt5 MlCopilotSupportedModel = "gpt5"
 	// MlCopilotSupportedModelO3Mini: o3-mini
 	MlCopilotSupportedModelO3Mini MlCopilotSupportedModel = "o3_mini"
+	// MlCopilotSupportedModelAzureO3Mini: azure o3-mini
+	MlCopilotSupportedModelAzureO3Mini MlCopilotSupportedModel = "azure_o3_mini"
+	// MlCopilotSupportedModelAzureGpt4O: azure gpt-4o
+	MlCopilotSupportedModelAzureGpt4O MlCopilotSupportedModel = "azure_gpt4o"
+	// MlCopilotSupportedModelAzureGpt4OMini: azure gpt-4o-mini
+	MlCopilotSupportedModelAzureGpt4OMini MlCopilotSupportedModel = "azure_gpt4o_mini"
 )
 
 // MlCopilotSystemCommand: The type of system command that can be sent to the ML Copilot.
