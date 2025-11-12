@@ -281,6 +281,38 @@
  },
  {
   "value": {
+   "example": "// CreateCustomModel: Create a custom ML model that is backed by one or more org datasets.\n// \n// Dataset readiness is enforced via `OrgDatasetFileConversion::status_counts_for_datasets`: - At least one conversion must have status `success`. - No conversions may remain in `queued`. If even a single file is still queued the dataset is treated as “not ready for training.” - A dataset consisting only of `canceled` or `error_*` entries is rejected because there’s nothing usable.\n// \n// \n// Parameters\n// \n// \t- `body`: Body for creating a custom ML model.\n// \n// CreateCustomModel: Create a custom ML model that is backed by one or more org datasets.\n// Dataset readiness is enforced via `OrgDatasetFileConversion::status_counts_for_datasets`: - At least one conversion must have status `success`. - No conversions may remain in `queued`. If even a single file is still queued the dataset is treated as “not ready for training.” - A dataset consisting only of `canceled` or `error_*` entries is rejected because there’s nothing usable.\n//\n// Parameters\n//\n//   - `body`: Body for creating a custom ML model.\nfunc ExampleMlService_CreateCustomModel() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.CreateCustomModel(kittycad.CreateCustomModel{DatasetIds: []kittycad.UUID{}, Name: \"some-string\", SystemPrompt: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.CreateCustomModel"
+  },
+  "op": "add",
+  "path": "/paths/~1ml~1custom~1models/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetCustomModel: Retrieve the details of a single custom ML model so long as it belongs to the caller’s organization.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// GetCustomModel: Retrieve the details of a single custom ML model so long as it belongs to the caller’s organization.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleMlService_GetCustomModel() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.GetCustomModel(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.GetCustomModel"
+  },
+  "op": "add",
+  "path": "/paths/~1ml~1custom~1models~1{id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// UpdateCustomModel: Update mutable metadata (name, system prompt) for a custom ML model owned by the caller's organization.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`: Body for updating a custom ML model.\n// \n// UpdateCustomModel: Update mutable metadata (name, system prompt) for a custom ML model owned by the caller's organization.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`: Body for updating a custom ML model.\nfunc ExampleMlService_UpdateCustomModel() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.UpdateCustomModel(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdateCustomModel{Name: \"some-string\", SystemPrompt: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.UpdateCustomModel"
+  },
+  "op": "add",
+  "path": "/paths/~1ml~1custom~1models~1{id}/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListOrgDatasetsForModel: List the org datasets that are currently attached to a custom ML model owned by the caller’s organization.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// ListOrgDatasetsForModel: List the org datasets that are currently attached to a custom ML model owned by the caller’s organization.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleMlService_ListOrgDatasetsForModel() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.ListOrgDatasetsForModel(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.ListOrgDatasetsForModel"
+  },
+  "op": "add",
+  "path": "/paths/~1ml~1custom~1models~1{id}~1datasets/get/x-go"
+ },
+ {
+  "value": {
    "example": "// CreateKclCodeCompletions: Generate code completions for KCL.\n// \n// \n// Parameters\n// \n// \t- `body`: A request to generate KCL code completions.\n// \n// CreateKclCodeCompletions: Generate code completions for KCL.\n// Parameters\n//\n//   - `body`: A request to generate KCL code completions.\nfunc ExampleMlService_CreateKclCodeCompletions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: \"some-string\", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, ModelVersion: \"some-string\", N: 123, Nwo: \"some-string\", Prompt: \"some-string\", Stop: []string{}, Stream: true, Suffix: \"some-string\", Temperature: 123.45, TopP: 123.45})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.CreateKclCodeCompletions"
   },
@@ -414,6 +446,86 @@
   },
   "op": "add",
   "path": "/paths/~1org~1api-calls~1{id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// DatasetS3Policies: Return the IAM policies customers should apply when onboarding an S3 dataset.\n// \n// \n// Parameters\n// \n// \t- `roleArn`\n// \t- `uri`\n// \n// DatasetS3Policies: Return the IAM policies customers should apply when onboarding an S3 dataset.\n// Parameters\n//\n//   - `roleArn`\n//   - `uri`\nfunc ExampleOrgService_DatasetS3Policies() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.DatasetS3Policies(\"some-string\", \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.DatasetS3Policies"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1dataset~1s3~1policies/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListDatasets: List every dataset that belongs to the caller's organization.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListDatasets: List every dataset that belongs to the caller's organization.\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleOrgService_ListDatasets() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.ListDatasets(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.ListDatasets"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateDataset: Register a new S3 dataset that Zoo can assume into on behalf of the caller's org.\n// \n// If the dataset lives in S3, call `/org/dataset/s3/policies` first so you can generate the trust, permission, and bucket policies scoped to your dataset before invoking this endpoint.\n// \n// \n// Parameters\n// \n// \t- `body`: Payload for creating an org dataset.\n// \n// CreateDataset: Register a new S3 dataset that Zoo can assume into on behalf of the caller's org.\n// If the dataset lives in S3, call `/org/dataset/s3/policies` first so you can generate the trust, permission, and bucket policies scoped to your dataset before invoking this endpoint.\n//\n// Parameters\n//\n//   - `body`: Payload for creating an org dataset.\nfunc ExampleOrgService_CreateDataset() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.CreateDataset(kittycad.CreateOrgDataset{Name: \"some-string\", Source: kittycad.OrgDatasetSource{AccessRoleArn: \"some-string\", Provider: \"\", Uri: \"some-string\"}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.CreateDataset"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetDataset: Fetch a single dataset by id so long as it belongs to the authenticated org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// GetDataset: Fetch a single dataset by id so long as it belongs to the authenticated org.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_GetDataset() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetDataset(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.GetDataset"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// UpdateDataset: Update dataset metadata or storage credentials for the caller's organization.\n// \n// IMPORTANT: Use this endpoint to fix connectivity to the same underlying storage location (e.g. rotating credentials or correcting a typo). Do not repoint an existing dataset at a completely different bucket or provider—create a new dataset instead so conversions in flight keep their original source. This warning applies to every storage backend, not just S3.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`: Payload for updating an org dataset.\n// \n// UpdateDataset: Update dataset metadata or storage credentials for the caller's organization.\n// IMPORTANT: Use this endpoint to fix connectivity to the same underlying storage location (e.g. rotating credentials or correcting a typo). Do not repoint an existing dataset at a completely different bucket or provider—create a new dataset instead so conversions in flight keep their original source. This warning applies to every storage backend, not just S3.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`: Payload for updating an org dataset.\nfunc ExampleOrgService_UpdateDataset() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.UpdateDataset(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdateOrgDataset{Name: \"some-string\", Source: kittycad.UpdateOrgDatasetSource{AccessRoleArn: \"some-string\", Provider: \"\", Uri: \"some-string\"}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.UpdateDataset"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleOrgService_ListDatasetConversions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.ListDatasetConversions(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.ListDatasetConversions"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}~1conversions/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetDatasetConversion: Fetch the metadata and converted output for a single dataset conversion.\n// \n// \n// Parameters\n// \n// \t- `conversionId`: A UUID usually v4 or v7\n// \t- `id`: A UUID usually v4 or v7\n// \n// GetDatasetConversion: Fetch the metadata and converted output for a single dataset conversion.\n// Parameters\n//\n//   - `conversionId`: A UUID usually v4 or v7\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_GetDatasetConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetDatasetConversion(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.GetDatasetConversion"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}~1conversions~1{conversion_id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// RetryDatasetConversion: Retry a specific dataset conversion that failed previously for the caller's org.\n// \n// \n// Parameters\n// \n// \t- `conversionId`: A UUID usually v4 or v7\n// \t- `id`: A UUID usually v4 or v7\n// \n// RetryDatasetConversion: Retry a specific dataset conversion that failed previously for the caller's org.\n// Parameters\n//\n//   - `conversionId`: A UUID usually v4 or v7\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_RetryDatasetConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.RetryDatasetConversion(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.RetryDatasetConversion"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}~1conversions~1{conversion_id}~1retry/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_RescanDataset() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.RescanDataset(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.RescanDataset"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}~1rescan/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetDatasetConversionStats: Return aggregate conversion stats for a dataset owned by the caller's org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// GetDatasetConversionStats: Return aggregate conversion stats for a dataset owned by the caller's org.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_GetDatasetConversionStats() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetDatasetConversionStats(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.GetDatasetConversionStats"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}~1stats/get/x-go"
  },
  {
   "value": {
@@ -673,7 +785,7 @@
  },
  {
   "value": {
-   "example": "// UpdateEnterprisePricingFor: Set the enterprise price for an organization.\n// \n// You must be a Zoo admin to perform this request.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`: The price for an enterprise subscription.\n// \n// UpdateEnterprisePricingFor: Set the enterprise price for an organization.\n// You must be a Zoo admin to perform this request.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`: The price for an enterprise subscription.\nfunc ExampleOrgService_UpdateEnterprisePricingFor() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.UpdateEnterprisePricingFor(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// UpdateEnterprisePricingFor: Set the enterprise price for an organization.\n// \n// You must be a Zoo admin to perform this request.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`: The price for a subscription tier.\n// \n// UpdateEnterprisePricingFor: Set the enterprise price for an organization.\n// You must be a Zoo admin to perform this request.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`: The price for a subscription tier.\nfunc ExampleOrgService_UpdateEnterprisePricingFor() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.UpdateEnterprisePricingFor(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.UpdateEnterprisePricingFor"
   },
   "op": "add",

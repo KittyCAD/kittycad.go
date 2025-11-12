@@ -2,7 +2,7 @@
 func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -}}{{if .RequestBody}}body {{.RequestBody.Type}}{{end}}) {{if .Response}}(*{{.Response.Type}}, error){{else}}error{{end}} {
 	// Create the url.
     path := "{{.Path}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
     {{if .RequestBody}}
         {{if eq .RequestBody.MediaType "application/json"}}
@@ -31,7 +31,7 @@ func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -
     {{end}}
 
 	// Create the request.
-    req, err := http.NewRequest("{{.Method}}", uri, {{if .RequestBody}}b{{else}}nil{{end}})
+    req, err := http.NewRequest("{{.Method}}", targetURL, {{if .RequestBody}}b{{else}}nil{{end}})
 	if err != nil {
         return {{if .Response}}nil,{{end}} fmt.Errorf("error creating request: %v", err)
 	}
