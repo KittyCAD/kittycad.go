@@ -1250,6 +1250,24 @@ type Coupon struct {
 	PercentOff float64 `json:"percent_off" yaml:"percent_off" schema:"percent_off"`
 }
 
+// CreateCustomModel: Body for creating a custom ML model.
+type CreateCustomModel struct {
+	// DatasetIds: Org dataset IDs that should be linked to the model. Must contain at least one dataset owned by the org.
+	DatasetIds []UUID `json:"dataset_ids" yaml:"dataset_ids" schema:"dataset_ids,required"`
+	// Name: The model's display name.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
+	// SystemPrompt: The model's system prompt.
+	SystemPrompt string `json:"system_prompt" yaml:"system_prompt" schema:"system_prompt"`
+}
+
+// CreateOrgDataset: Payload for creating an org dataset.
+type CreateOrgDataset struct {
+	// Name: The dataset's display name.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
+	// Source: Details for accessing the dataset.
+	Source OrgDatasetSource `json:"source" yaml:"source" schema:"source,required"`
+}
+
 // CreateShortlinkRequest: Request to create a shortlink.
 type CreateShortlinkRequest struct {
 	// Password: The password for the shortlink, if you want to restrict access to it. This can only be set if your subscription allows for it. Otherwise, it will return an error. When you access the link it will be required to enter this password through basic auth. The username will be `{anything}` and the password will be the password you set here.
@@ -1329,6 +1347,22 @@ const (
 type Custom struct {
 	// Path: The path that will be used for the custom profile.
 	Path UUID `json:"path" yaml:"path" schema:"path,required"`
+}
+
+// CustomModel: Custom ML model created by a user for an organization.
+type CustomModel struct {
+	// CreatedAt: The date and time the model was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// ID: The unique identifier for the model.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Name: User-provided display name. This is mutable; lookup by ID instead.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
+	// OrgID: The ID of the org owning the model.
+	OrgID UUID `json:"org_id" yaml:"org_id" schema:"org_id,required"`
+	// SystemPrompt: User-provided LLM system prompt. This is akin to `AGENTS.md`.
+	SystemPrompt string `json:"system_prompt" yaml:"system_prompt" schema:"system_prompt,required"`
+	// UpdatedAt: The date and time the model was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
 // Customer: The resource representing a payment "Customer".
@@ -1437,6 +1471,16 @@ type CutTypeV2Fillet struct {
 type Data struct {
 	// Name: Instance name. This may or may not mean something.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
+}
+
+// DatasetS3Policies: Aggregated AWS policies required for onboarding an org dataset stored in S3.
+type DatasetS3Policies struct {
+	// BucketPolicy: Optional S3 bucket policy that scopes Zoo's access to the dataset prefix.
+	BucketPolicy any `json:"bucket_policy" yaml:"bucket_policy" schema:"bucket_policy,required"`
+	// PermissionPolicy: Inline IAM permission policy the customer should attach to their role.
+	PermissionPolicy any `json:"permission_policy" yaml:"permission_policy" schema:"permission_policy,required"`
+	// TrustPolicy: IAM trust policy that allows Zoo's account to assume the customer's role.
+	TrustPolicy any `json:"trust_policy" yaml:"trust_policy" schema:"trust_policy,required"`
 }
 
 // DefaultCameraCenterToScene: The response from the `DefaultCameraCenterToScene` endpoint.
@@ -1638,29 +1682,6 @@ type EndOfStream struct {
 type EngineUtilEvaluatePath struct {
 	// Pos: The evaluated path curve position
 	Pos Point3D `json:"pos" yaml:"pos" schema:"pos,required"`
-}
-
-// EnterpriseSubscriptionTierPrice: EnterpriseSubscriptionTierPrice: The price for an enterprise subscription.
-type EnterpriseSubscriptionTierPrice any
-
-// EnterpriseSubscriptionTierPriceInterval: A flat price that we publicly list.
-type EnterpriseSubscriptionTierPriceInterval struct {
-	// Interval: The interval the price is charged.
-	Interval PlanInterval `json:"interval" yaml:"interval" schema:"interval,required"`
-	// Price: The price.
-	Price float64 `json:"price" yaml:"price" schema:"price,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// EnterpriseSubscriptionTierPricePrice: A per user price that we publicly list.
-type EnterpriseSubscriptionTierPricePrice struct {
-	// Interval: The interval the price is charged.
-	Interval PlanInterval `json:"interval" yaml:"interval" schema:"interval,required"`
-	// Price: The price.
-	Price float64 `json:"price" yaml:"price" schema:"price,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // EntityCircularPattern: The response from the `EntityCircularPattern` command.
@@ -3293,6 +3314,10 @@ type ModelingAppSubscriptionTier struct {
 	EndpointsIncluded []APIEndpoint `json:"endpoints_included" yaml:"endpoints_included" schema:"endpoints_included"`
 	// Features: Features that are included in the subscription.
 	Features []SubscriptionTierFeature `json:"features" yaml:"features" schema:"features"`
+	// IsCustomQuote: Indicates whether this plan uses custom-quoted pricing.
+	IsCustomQuote bool `json:"is_custom_quote" yaml:"is_custom_quote" schema:"is_custom_quote"`
+	// MlCustomModels: Indicates whether the plan enables custom ML models.
+	MlCustomModels bool `json:"ml_custom_models" yaml:"ml_custom_models" schema:"ml_custom_models"`
 	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month. This is equivalent to the monetary value divided by the price of an API credit.
 	MonthlyPayAsYouGoAPICredits int `json:"monthly_pay_as_you_go_api_credits" yaml:"monthly_pay_as_you_go_api_credits" schema:"monthly_pay_as_you_go_api_credits"`
 	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month.
@@ -5204,6 +5229,8 @@ type OkWebSocketResponseDataTrickleIce struct {
 type Org struct {
 	// AllowUsersInDomainToAutoJoin: If we should allow all future users who are created with email addresses from this domain to join the org.
 	AllowUsersInDomainToAutoJoin bool `json:"allow_users_in_domain_to_auto_join" yaml:"allow_users_in_domain_to_auto_join" schema:"allow_users_in_domain_to_auto_join"`
+	// AwsExternalID: ExternalId our workers supply when assuming customer roles, following AWS guidance for avoiding the [confused deputy problem](https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html). Required before an org can register external datasets.
+	AwsExternalID UUID `json:"aws_external_id" yaml:"aws_external_id" schema:"aws_external_id"`
 	// BillingEmail: The billing email address of the org.
 	BillingEmail string `json:"billing_email" yaml:"billing_email" schema:"billing_email,required"`
 	// BillingEmailVerified: The date and time the billing email address was verified.
@@ -5272,6 +5299,156 @@ type OrgAdminDetails struct {
 	StripeCustomerID string `json:"stripe_customer_id" yaml:"stripe_customer_id" schema:"stripe_customer_id"`
 	// StripeDashboardUrl: Direct link to the Stripe customer dashboard.
 	StripeDashboardUrl string `json:"stripe_dashboard_url" yaml:"stripe_dashboard_url" schema:"stripe_dashboard_url"`
+}
+
+// OrgDataset: Dataset owned by an organization, reusable across multiple features.
+type OrgDataset struct {
+	// AccessRoleArn: Identity we assume when accessing the dataset (AWS role ARN today). Pair this with the org's `aws_external_id` to mitigate the AWS confused deputy risk. See <https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html>.
+	AccessRoleArn string `json:"access_role_arn" yaml:"access_role_arn" schema:"access_role_arn,required"`
+	// CreatedAt: The date and time the dataset was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// ID: The unique identifier for the dataset.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// LastSyncError: Last recorded sync error message, if dataset access failed.
+	LastSyncError string `json:"last_sync_error" yaml:"last_sync_error" schema:"last_sync_error"`
+	// LastSyncErrorAt: Timestamp for the last sync error.
+	LastSyncErrorAt Time `json:"last_sync_error_at" yaml:"last_sync_error_at" schema:"last_sync_error_at"`
+	// Name: User-provided display name. This is mutable; lookup by ID instead.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
+	// OrgID: The ID of the org owning the dataset.
+	OrgID UUID `json:"org_id" yaml:"org_id" schema:"org_id,required"`
+	// SourceUri: Fully-qualified URI to the dataset location (e.g. s3://bucket/prefix).
+	SourceUri string `json:"source_uri" yaml:"source_uri" schema:"source_uri,required"`
+	// StorageProvider: Storage provider identifier.
+	StorageProvider StorageProvider `json:"storage_provider" yaml:"storage_provider" schema:"storage_provider,required"`
+	// UpdatedAt: The date and time the dataset was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// OrgDatasetConversionStatsResponse: Summary statistics for an org dataset's conversions.
+type OrgDatasetConversionStatsResponse struct {
+	// ByStatus: Raw counts keyed by conversion status for diagnostics.
+	ByStatus map[string]int `json:"by_status" yaml:"by_status" schema:"by_status,required"`
+	// DatasetID: Dataset identifier.
+	DatasetID UUID `json:"dataset_id" yaml:"dataset_id" schema:"dataset_id,required"`
+	// Failures: Number of conversions currently in an error state.
+	Failures int `json:"failures" yaml:"failures" schema:"failures,required"`
+	// Successes: Number of conversions that completed successfully.
+	Successes int `json:"successes" yaml:"successes" schema:"successes,required"`
+	// Total: Total number of tracked conversions.
+	Total int `json:"total" yaml:"total" schema:"total,required"`
+}
+
+// OrgDatasetFileConversion: Tracks state of `OrgDataset` file conversions.
+type OrgDatasetFileConversion struct {
+	// CompletedAt: The date and time the conversion got its current `status`.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The date and time the conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// DatasetID: The ID of the dataset this file is being converted from.
+	DatasetID UUID `json:"dataset_id" yaml:"dataset_id" schema:"dataset_id,required"`
+	// FileEtag: File's ETag from dataset bucket, for detecting whether a file needs to be converted again can be reused when creating new custom ML models.
+	FileEtag string `json:"file_etag" yaml:"file_etag" schema:"file_etag,required"`
+	// FilePath: Location within dataset `path`.
+	FilePath string `json:"file_path" yaml:"file_path" schema:"file_path,required"`
+	// FileSize: Number of bytes, for measuring throughput and debugging conversion errors.
+	FileSize int `json:"file_size" yaml:"file_size" schema:"file_size,required"`
+	// ID: The unique identifier for the conversion.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// ImporterVersion: Tracks which version the file was processed with. If conversion failed due to an internal error, then it will be retried on converter version change.
+	ImporterVersion string `json:"importer_version" yaml:"importer_version" schema:"importer_version"`
+	// OutputPath: Path where the processed file output is stored, when available.
+	OutputPath string `json:"output_path" yaml:"output_path" schema:"output_path"`
+	// StartedAt: The date and time the conversion started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: Conversion status.
+	Status OrgDatasetFileConversionStatus `json:"status" yaml:"status" schema:"status,required"`
+	// StatusMessage: Details associated with `status`.
+	StatusMessage string `json:"status_message" yaml:"status_message" schema:"status_message"`
+	// UpdatedAt: The date and time the conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// OrgDatasetFileConversionDetails: Detailed response that bundles conversion metadata with the converted file contents.
+type OrgDatasetFileConversionDetails struct {
+	// Conversion: Conversion metadata without storage pointers.
+	Conversion OrgDatasetFileConversionSummary `json:"conversion" yaml:"conversion" schema:"conversion,required"`
+	// Output: Plain-text contents of the converted artifact.
+	Output string `json:"output" yaml:"output" schema:"output,required"`
+}
+
+// OrgDatasetFileConversionStatus: `OrgDatasetFileConversion` status.
+type OrgDatasetFileConversionStatus string
+
+const (
+	// OrgDatasetFileConversionStatusQueued: Pending conversion.
+	OrgDatasetFileConversionStatusQueued OrgDatasetFileConversionStatus = "queued"
+	// OrgDatasetFileConversionStatusCanceled: The file will not be converted.
+	OrgDatasetFileConversionStatusCanceled OrgDatasetFileConversionStatus = "canceled"
+	// OrgDatasetFileConversionStatusInProgress: The file is currently being converted. If `started_at` passes a certain threshold, we assume it got dropped and will retry.
+	OrgDatasetFileConversionStatusInProgress OrgDatasetFileConversionStatus = "in_progress"
+	// OrgDatasetFileConversionStatusSuccess: Conversion finished with the result available at `output_path`.
+	OrgDatasetFileConversionStatusSuccess OrgDatasetFileConversionStatus = "success"
+	// OrgDatasetFileConversionStatusErrorUser: Conversion failed due to user providing a broken file, such as it being empty.
+	OrgDatasetFileConversionStatusErrorUser OrgDatasetFileConversionStatus = "error_user"
+	// OrgDatasetFileConversionStatusErrorUnsupported: Conversion failed because we didn't know how to handle the file. The conversion should be retried with a new converter version.
+	OrgDatasetFileConversionStatusErrorUnsupported OrgDatasetFileConversionStatus = "error_unsupported"
+	// OrgDatasetFileConversionStatusErrorInternal: Conversion failed with some other unrecoverable error. The conversion should be retried with a new converter version.
+	OrgDatasetFileConversionStatusErrorInternal OrgDatasetFileConversionStatus = "error_internal"
+)
+
+// OrgDatasetFileConversionSummary: Publicly exposed view of a dataset file conversion that omits storage-specific fields.
+type OrgDatasetFileConversionSummary struct {
+	// CompletedAt: The date and time the conversion got its current `status`.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The date and time the conversion was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// DatasetID: The ID of the dataset this file is being converted from.
+	DatasetID UUID `json:"dataset_id" yaml:"dataset_id" schema:"dataset_id,required"`
+	// FileEtag: File's ETag from dataset bucket, for detecting whether a file needs to be reconverted.
+	FileEtag string `json:"file_etag" yaml:"file_etag" schema:"file_etag,required"`
+	// FilePath: Location within dataset `path`.
+	FilePath string `json:"file_path" yaml:"file_path" schema:"file_path,required"`
+	// FileSize: Number of bytes, for measuring throughput and debugging conversion errors.
+	FileSize int `json:"file_size" yaml:"file_size" schema:"file_size,required"`
+	// ID: The unique identifier for the conversion.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// ImporterVersion: Tracks which version processed this file when available.
+	ImporterVersion string `json:"importer_version" yaml:"importer_version" schema:"importer_version"`
+	// StartedAt: The date and time the conversion started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: Conversion status.
+	Status OrgDatasetFileConversionStatus `json:"status" yaml:"status" schema:"status,required"`
+	// StatusMessage: Details associated with `status`.
+	StatusMessage string `json:"status_message" yaml:"status_message" schema:"status_message"`
+	// UpdatedAt: The date and time the conversion was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// OrgDatasetFileConversionSummaryResultsPage: A single page of results
+type OrgDatasetFileConversionSummaryResultsPage struct {
+	// Items: list of items on this page of results
+	Items []OrgDatasetFileConversionSummary `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// OrgDatasetResultsPage: A single page of results
+type OrgDatasetResultsPage struct {
+	// Items: list of items on this page of results
+	Items []OrgDataset `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// OrgDatasetSource: Details for accessing an org dataset.
+type OrgDatasetSource struct {
+	// AccessRoleArn: Identity we assume when accessing the dataset. Must be configured with the org's `aws_external_id` per AWS confused deputy guidance. See <https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html>.
+	AccessRoleArn string `json:"access_role_arn" yaml:"access_role_arn" schema:"access_role_arn,required"`
+	// Provider: Storage provider identifier.
+	Provider StorageProvider `json:"provider" yaml:"provider" schema:"provider,required"`
+	// Uri: Fully-qualified URI for the dataset contents.
+	Uri string `json:"uri" yaml:"uri" schema:"uri,required"`
 }
 
 // OrgDetails: The user-modifiable parts of an organization.
@@ -6439,6 +6616,14 @@ const (
 	StlStorageBinary StlStorage = "binary"
 )
 
+// StorageProvider: Storage provider identifier for org datasets.
+type StorageProvider string
+
+const (
+	// StorageProviderS3: Amazon Simple Storage Service.
+	StorageProviderS3 StorageProvider = "s3"
+)
+
 // StoreCouponParams: The parameters for a new store coupon.
 type StoreCouponParams struct {
 	// PercentOff: The percentage off.
@@ -7563,10 +7748,36 @@ type UnitVolumeConversion struct {
 type UpdateAnnotation struct {
 }
 
+// UpdateCustomModel: Body for updating a custom ML model.
+type UpdateCustomModel struct {
+	// Name: The model's display name.
+	Name string `json:"name" yaml:"name" schema:"name"`
+	// SystemPrompt: The model's system prompt.
+	SystemPrompt string `json:"system_prompt" yaml:"system_prompt" schema:"system_prompt"`
+}
+
 // UpdateMemberToOrgBody: Data for updating a member of an org.
 type UpdateMemberToOrgBody struct {
 	// Role: The organization role to give the user.
 	Role UserOrgRole `json:"role" yaml:"role" schema:"role,required"`
+}
+
+// UpdateOrgDataset: Payload for updating an org dataset.
+type UpdateOrgDataset struct {
+	// Name: Optional new display name.
+	Name string `json:"name" yaml:"name" schema:"name"`
+	// Source: Optional storage connection overrides.
+	Source UpdateOrgDatasetSource `json:"source" yaml:"source" schema:"source"`
+}
+
+// UpdateOrgDatasetSource: Partial update payload for dataset storage details.
+type UpdateOrgDatasetSource struct {
+	// AccessRoleArn: Updated identity Zoo should assume when reading the dataset.
+	AccessRoleArn string `json:"access_role_arn" yaml:"access_role_arn" schema:"access_role_arn"`
+	// Provider: Updated storage provider identifier.
+	Provider StorageProvider `json:"provider" yaml:"provider" schema:"provider"`
+	// Uri: Updated fully-qualified URI for the dataset contents.
+	Uri string `json:"uri" yaml:"uri" schema:"uri"`
 }
 
 // UpdatePaymentBalance: Payload for updating a user's balance.
@@ -7839,6 +8050,10 @@ type ZooProductSubscription struct {
 	EndpointsIncluded []APIEndpoint `json:"endpoints_included" yaml:"endpoints_included" schema:"endpoints_included"`
 	// Features: Features that are included in the subscription.
 	Features []SubscriptionTierFeature `json:"features" yaml:"features" schema:"features"`
+	// IsCustomQuote: Indicates whether this plan uses custom-quoted pricing.
+	IsCustomQuote bool `json:"is_custom_quote" yaml:"is_custom_quote" schema:"is_custom_quote"`
+	// MlCustomModels: Indicates whether the plan enables custom ML models.
+	MlCustomModels bool `json:"ml_custom_models" yaml:"ml_custom_models" schema:"ml_custom_models"`
 	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month. This is equivalent to the monetary value divided by the price of an API credit.
 	MonthlyPayAsYouGoAPICredits int `json:"monthly_pay_as_you_go_api_credits" yaml:"monthly_pay_as_you_go_api_credits" schema:"monthly_pay_as_you_go_api_credits"`
 	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month.

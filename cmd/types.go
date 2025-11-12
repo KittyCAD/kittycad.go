@@ -378,6 +378,9 @@ func getReferenceSchema(v *openapi3.SchemaRef, spec *openapi3.T) string {
 	// Find the schema in the spec and make sure it's not just wrapping another schema.
 	if v.Ref != "" {
 		ref := strings.TrimPrefix(v.Ref, "#/components/schemas/")
+		if strings.EqualFold(ref, "Uuid") {
+			return "UUID"
+		}
 
 		value, ok := spec.Components.Schemas[ref]
 		if ok {
@@ -558,19 +561,19 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 		}
 
 		return fmt.Sprintf("[]%s", innerType), nil
-    } else if t == "object" {
-        if s.AdditionalProperties.Schema != nil && (s.Properties == nil || len(s.Properties) == 0) {
-            // get the inner type.
-            innerType, err := printType(property, s.AdditionalProperties.Schema, spec)
-            if err != nil {
-                return "", err
-            }
-            // Now make it a map.
-            return fmt.Sprintf("map[string]%s", innerType), nil
-        }
-        // Most likely this is a local object, we will handle it.
-        return printProperty(property), nil
-    }
+	} else if t == "object" {
+		if s.AdditionalProperties.Schema != nil && (s.Properties == nil || len(s.Properties) == 0) {
+			// get the inner type.
+			innerType, err := printType(property, s.AdditionalProperties.Schema, spec)
+			if err != nil {
+				return "", err
+			}
+			// Now make it a map.
+			return fmt.Sprintf("map[string]%s", innerType), nil
+		}
+		// Most likely this is a local object, we will handle it.
+		return printProperty(property), nil
+	}
 
 	return "any", nil
 }

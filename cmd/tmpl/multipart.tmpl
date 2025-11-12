@@ -2,11 +2,11 @@
 func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -}} body *bytes.Buffer) {{if .Response}}(*{{.Response.Type}}, error){{else}}error{{end}} {
 	// Create the url.
     path := "{{.Path}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 
 	// Create the request.
-    req, err := http.NewRequest("{{.Method}}", uri, body)
+    req, err := http.NewRequest("{{.Method}}", targetURL, body)
 	if err != nil {
         return {{if .Response}}nil,{{end}} fmt.Errorf("error creating request: %v", err)
 	}

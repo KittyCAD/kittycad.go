@@ -864,6 +864,85 @@ func ExampleMlService_CreateProprietaryToKcl() {
 
 }
 
+// CreateCustomModel: Create a custom ML model that is backed by one or more org datasets.
+// Dataset readiness is enforced via `OrgDatasetFileConversion::status_counts_for_datasets`: - At least one conversion must have status `success`. - No conversions may remain in `queued`. If even a single file is still queued the dataset is treated as “not ready for training.” - A dataset consisting only of `canceled` or `error_*` entries is rejected because there’s nothing usable.
+//
+// Parameters
+//
+//   - `body`: Body for creating a custom ML model.
+func ExampleMlService_CreateCustomModel() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ml.CreateCustomModel(kittycad.CreateCustomModel{DatasetIds: []kittycad.UUID{}, Name: "some-string", SystemPrompt: "some-string"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetCustomModel: Retrieve the details of a single custom ML model so long as it belongs to the caller’s organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleMlService_GetCustomModel() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ml.GetCustomModel(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateCustomModel: Update mutable metadata (name, system prompt) for a custom ML model owned by the caller's organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Body for updating a custom ML model.
+func ExampleMlService_UpdateCustomModel() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ml.UpdateCustomModel(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateCustomModel{Name: "some-string", SystemPrompt: "some-string"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListOrgDatasetsForModel: List the org datasets that are currently attached to a custom ML model owned by the caller’s organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleMlService_ListOrgDatasetsForModel() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Ml.ListOrgDatasetsForModel(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateKclCodeCompletions: Generate code completions for KCL.
 // Parameters
 //
@@ -1212,6 +1291,218 @@ func ExampleAPICallService_GetForOrg() {
 	}
 
 	result, err := client.APICall.GetForOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DatasetS3Policies: Return the IAM policies customers should apply when onboarding an S3 dataset.
+// Parameters
+//
+//   - `roleArn`
+//   - `uri`
+func ExampleOrgService_DatasetS3Policies() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.DatasetS3Policies("some-string", "some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListDatasets: List every dataset that belongs to the caller's organization.
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleOrgService_ListDatasets() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.ListDatasets(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateDataset: Register a new S3 dataset that Zoo can assume into on behalf of the caller's org.
+// If the dataset lives in S3, call `/org/dataset/s3/policies` first so you can generate the trust, permission, and bucket policies scoped to your dataset before invoking this endpoint.
+//
+// Parameters
+//
+//   - `body`: Payload for creating an org dataset.
+func ExampleOrgService_CreateDataset() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.CreateDataset(kittycad.CreateOrgDataset{Name: "some-string", Source: kittycad.OrgDatasetSource{AccessRoleArn: "some-string", Provider: "", Uri: "some-string"}})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetDataset: Fetch a single dataset by id so long as it belongs to the authenticated org.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_GetDataset() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.GetDataset(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateDataset: Update dataset metadata or storage credentials for the caller's organization.
+// IMPORTANT: Use this endpoint to fix connectivity to the same underlying storage location (e.g. rotating credentials or correcting a typo). Do not repoint an existing dataset at a completely different bucket or provider—create a new dataset instead so conversions in flight keep their original source. This warning applies to every storage backend, not just S3.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Payload for updating an org dataset.
+func ExampleOrgService_UpdateDataset() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.UpdateDataset(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOrgDataset{Name: "some-string", Source: kittycad.UpdateOrgDatasetSource{AccessRoleArn: "some-string", Provider: "", Uri: "some-string"}})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleOrgService_ListDatasetConversions() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.ListDatasetConversions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetDatasetConversion: Fetch the metadata and converted output for a single dataset conversion.
+// Parameters
+//
+//   - `conversionId`: A UUID usually v4 or v7
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_GetDatasetConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.GetDatasetConversion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// RetryDatasetConversion: Retry a specific dataset conversion that failed previously for the caller's org.
+// Parameters
+//
+//   - `conversionId`: A UUID usually v4 or v7
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_RetryDatasetConversion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.RetryDatasetConversion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_RescanDataset() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.RescanDataset(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetDatasetConversionStats: Return aggregate conversion stats for a dataset owned by the caller's org.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_GetDatasetConversionStats() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.GetDatasetConversionStats(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -1887,7 +2178,7 @@ func ExampleOrgService_AdminDetailsList() {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-//   - `body`: The price for an enterprise subscription.
+//   - `body`: The price for a subscription tier.
 func ExampleOrgService_UpdateEnterprisePricingFor() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {

@@ -20,10 +20,10 @@ import (
 func (s *MetaService) GetSchema() error {
 	// Create the url.
 	path := "/"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -49,10 +49,10 @@ func (s *MetaService) GetSchema() error {
 func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 	// Create the url.
 	path := "/_meta/ipinfo"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -98,7 +98,7 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 func (s *MlService) CreateTextToCad(outputFormat FileExportFormat, kcl bool, body TextToCadCreateBody) (*TextToCad, error) {
 	// Create the url.
 	path := "/ai/text-to-cad/{{.output_format}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -107,7 +107,7 @@ func (s *MlService) CreateTextToCad(outputFormat FileExportFormat, kcl bool, bod
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -158,10 +158,10 @@ func (s *MlService) CreateTextToCad(outputFormat FileExportFormat, kcl bool, bod
 func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQueryGroup, error) {
 	// Create the url.
 	path := "/api-call-metrics"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -214,10 +214,10 @@ func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQuer
 func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/api-calls"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -270,10 +270,10 @@ func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortM
 func (s *APICallService) Get(id UUID) (*APICallWithPrice, error) {
 	// Create the url.
 	path := "/api-calls/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -322,7 +322,7 @@ func (s *APICallService) Get(id UUID) (*APICallWithPrice, error) {
 func (s *AppService) GithubCallback(body any) error {
 	// Create the url.
 	path := "/apps/github/callback"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -331,7 +331,7 @@ func (s *AppService) GithubCallback(body any) error {
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, b)
+	req, err := http.NewRequest("GET", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -363,10 +363,10 @@ func (s *AppService) GithubCallback(body any) error {
 func (s *AppService) GithubConsent() (*AppClientInfo, error) {
 	// Create the url.
 	path := "/apps/github/consent"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -406,12 +406,12 @@ func (s *AppService) GithubConsent() (*AppClientInfo, error) {
 func (s *AppService) GithubWebhook(body []byte) error {
 	// Create the url.
 	path := "/apps/github/webhook"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -455,10 +455,10 @@ func (s *AppService) GithubWebhook(body []byte) error {
 func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy CreatedAtSortMode, status APICallStatus) (*AsyncAPICallResultsPage, error) {
 	// Create the url.
 	path := "/async/operations"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -514,10 +514,10 @@ func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy
 func (s *APICallService) GetAsyncOperation(id UUID) (*any, error) {
 	// Create the url.
 	path := "/async/operations/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -560,10 +560,10 @@ func (s *APICallService) GetAsyncOperation(id UUID) (*any, error) {
 func (s *HiddenService) AuthAPIKey() (*AuthAPIKeyResponse, error) {
 	// Create the url.
 	path := "/auth/api-key"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -601,7 +601,7 @@ func (s *HiddenService) AuthAPIKey() (*AuthAPIKeyResponse, error) {
 func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTokenResponse, error) {
 	// Create the url.
 	path := "/auth/email"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -610,7 +610,7 @@ func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTo
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -653,10 +653,10 @@ func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTo
 func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token string) error {
 	// Create the url.
 	path := "/auth/email/callback"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -697,10 +697,10 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 func (s *HiddenService) GetAuthSamlByOrg(orgId UUID, callbackUrl URL) error {
 	// Create the url.
 	path := "/auth/saml/org/{{.org_id}}/login"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -740,10 +740,10 @@ func (s *HiddenService) GetAuthSamlByOrg(orgId UUID, callbackUrl URL) error {
 func (s *HiddenService) GetAuthSaml(providerId UUID, callbackUrl URL) error {
 	// Create the url.
 	path := "/auth/saml/provider/{{.provider_id}}/login"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -781,12 +781,12 @@ func (s *HiddenService) GetAuthSaml(providerId UUID, callbackUrl URL) error {
 func (s *HiddenService) PostAuthSaml(providerId UUID, body []byte) error {
 	// Create the url.
 	path := "/auth/saml/provider/{{.provider_id}}/login"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -826,10 +826,10 @@ func (s *HiddenService) PostAuthSaml(providerId UUID, body []byte) error {
 func (s *MetaService) CommunitySso(sig string, sso string) error {
 	// Create the url.
 	path := "/community/sso"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -868,10 +868,10 @@ func (s *MetaService) CommunitySso(sig string, sso string) error {
 func (s *MetaService) CreateDebugUploads(body *bytes.Buffer) (*[]URL, error) {
 	// Create the url.
 	path := "/debug/uploads"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, body)
+	req, err := http.NewRequest("POST", targetURL, body)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -914,10 +914,10 @@ func (s *MetaService) CreateDebugUploads(body *bytes.Buffer) (*[]URL, error) {
 func (s *MetaService) CreateEvent(body *bytes.Buffer) error {
 	// Create the url.
 	path := "/events"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, body)
+	req, err := http.NewRequest("POST", targetURL, body)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -961,12 +961,12 @@ func (s *MetaService) CreateEvent(body *bytes.Buffer) error {
 func (s *FileService) CreateCenterOfMass(outputUnit UnitLength, srcFormat FileImportFormat, body []byte) (*FileCenterOfMass, error) {
 	// Create the url.
 	path := "/file/center-of-mass"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1021,10 +1021,10 @@ func (s *FileService) CreateCenterOfMass(outputUnit UnitLength, srcFormat FileIm
 func (s *FileService) CreateConversionOptions(body *bytes.Buffer) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, body)
+	req, err := http.NewRequest("POST", targetURL, body)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1075,12 +1075,12 @@ func (s *FileService) CreateConversionOptions(body *bytes.Buffer) (*FileConversi
 func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat FileImportFormat, body []byte) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{{.src_format}}/{{.output_format}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1143,12 +1143,12 @@ func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat 
 func (s *FileService) CreateDensity(materialMass float64, materialMassUnit UnitMas, outputUnit UnitDensity, srcFormat FileImportFormat, body []byte) (*FileDensity, error) {
 	// Create the url.
 	path := "/file/density"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1207,12 +1207,12 @@ func (s *FileService) CreateDensity(materialMass float64, materialMassUnit UnitM
 func (s *ExecutorService) CreateFileExecution(lang CodeLanguage, output string, body []byte) (*CodeOutput, error) {
 	// Create the url.
 	path := "/file/execute/{{.lang}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1275,12 +1275,12 @@ func (s *ExecutorService) CreateFileExecution(lang CodeLanguage, output string, 
 func (s *FileService) CreateMass(materialDensity float64, materialDensityUnit UnitDensity, outputUnit UnitMas, srcFormat FileImportFormat, body []byte) (*FileMass, error) {
 	// Create the url.
 	path := "/file/mass"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1343,12 +1343,12 @@ func (s *FileService) CreateMass(materialDensity float64, materialDensityUnit Un
 func (s *FileService) CreateSurfaceArea(outputUnit UnitArea, srcFormat FileImportFormat, body []byte) (*FileSurfaceArea, error) {
 	// Create the url.
 	path := "/file/surface-area"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1409,12 +1409,12 @@ func (s *FileService) CreateSurfaceArea(outputUnit UnitArea, srcFormat FileImpor
 func (s *FileService) CreateVolume(outputUnit UnitVolume, srcFormat FileImportFormat, body []byte) (*FileVolume, error) {
 	// Create the url.
 	path := "/file/volume"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	b := bytes.NewReader(body)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1467,10 +1467,10 @@ func (s *FileService) CreateVolume(outputUnit UnitVolume, srcFormat FileImportFo
 func (s *MetaService) InternalGetAPITokenForDiscordUser(discordId string) (*APIToken, error) {
 	// Create the url.
 	path := "/internal/discord/api-token/{{.discord_id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1513,10 +1513,10 @@ func (s *MetaService) InternalGetAPITokenForDiscordUser(discordId string) (*APIT
 func (s *HiddenService) Logout() error {
 	// Create the url.
 	path := "/logout"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -1557,10 +1557,10 @@ func (s *HiddenService) Logout() error {
 func (s *MlService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSortMode) (*MlPromptResultsPage, error) {
 	// Create the url.
 	path := "/ml-prompts"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1609,10 +1609,10 @@ func (s *MlService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSor
 func (s *MlService) GetPrompt(id UUID) (*MlPrompt, error) {
 	// Create the url.
 	path := "/ml-prompts/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1667,10 +1667,10 @@ func (s *MlService) GetPrompt(id UUID) (*MlPrompt, error) {
 func (s *MlService) ListConversationsForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*ConversationResultsPage, error) {
 	// Create the url.
 	path := "/ml/conversations"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1737,10 +1737,10 @@ func (s *MlService) ListConversationsForUser(limit int, pageToken string, sortBy
 func (s *MlService) CreateProprietaryToKcl(codeOption CodeOption, body *bytes.Buffer) (*KclModel, error) {
 	// Create the url.
 	path := "/ml/convert/proprietary-to-kcl"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, body)
+	req, err := http.NewRequest("POST", targetURL, body)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1781,14 +1781,16 @@ func (s *MlService) CreateProprietaryToKcl(codeOption CodeOption, body *bytes.Bu
 
 }
 
-// CreateKclCodeCompletions: Generate code completions for KCL.
+// CreateCustomModel: Create a custom ML model that is backed by one or more org datasets.
+// Dataset readiness is enforced via `OrgDatasetFileConversion::status_counts_for_datasets`: - At least one conversion must have status `success`. - No conversions may remain in `queued`. If even a single file is still queued the dataset is treated as “not ready for training.” - A dataset consisting only of `canceled` or `error_*` entries is rejected because there’s nothing usable.
+//
 // Parameters
 //
-//   - `body`: A request to generate KCL code completions.
-func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*KclCodeCompletionResponse, error) {
+//   - `body`: Body for creating a custom ML model.
+func (s *MlService) CreateCustomModel(body CreateCustomModel) (*CustomModel, error) {
 	// Create the url.
-	path := "/ml/kcl/completions"
-	uri := resolveRelative(s.client.server, path)
+	path := "/ml/custom/models"
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -1797,7 +1799,211 @@ func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*Kc
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded CustomModel
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetCustomModel: Retrieve the details of a single custom ML model so long as it belongs to the caller’s organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *MlService) GetCustomModel(id UUID) (*CustomModel, error) {
+	// Create the url.
+	path := "/ml/custom/models/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded CustomModel
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateCustomModel: Update mutable metadata (name, system prompt) for a custom ML model owned by the caller's organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Body for updating a custom ML model.
+func (s *MlService) UpdateCustomModel(id UUID, body UpdateCustomModel) (*CustomModel, error) {
+	// Create the url.
+	path := "/ml/custom/models/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded CustomModel
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListOrgDatasetsForModel: List the org datasets that are currently attached to a custom ML model owned by the caller’s organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *MlService) ListOrgDatasetsForModel(id UUID) (*[]OrgDataset, error) {
+	// Create the url.
+	path := "/ml/custom/models/{{.id}}/datasets"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []OrgDataset
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateKclCodeCompletions: Generate code completions for KCL.
+// Parameters
+//
+//   - `body`: A request to generate KCL code completions.
+func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*KclCodeCompletionResponse, error) {
+	// Create the url.
+	path := "/ml/kcl/completions"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1846,7 +2052,7 @@ func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*Kc
 func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*TextToCadIteration, error) {
 	// Create the url.
 	path := "/ml/text-to-cad/iteration"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -1855,7 +2061,7 @@ func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*Text
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1906,10 +2112,10 @@ func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*Text
 func (s *MlService) CreateTextToCadMultiFileIteration(body *bytes.Buffer) (*TextToCadMultiFileIteration, error) {
 	// Create the url.
 	path := "/ml/text-to-cad/multi-file/iteration"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, body)
+	req, err := http.NewRequest("POST", targetURL, body)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -1952,7 +2158,7 @@ func (s *MlService) CreateTextToCadMultiFileIteration(body *bytes.Buffer) (*Text
 func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) error {
 	// Create the url.
 	path := "/oauth2/device/auth"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as a form.
 	form := url.Values{}
@@ -1964,7 +2170,7 @@ func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) error {
 	b := strings.NewReader(form.Encode())
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -1998,7 +2204,7 @@ func (s *Oauth2Service) DeviceAuthRequest(body DeviceAuthRequestForm) error {
 func (s *Oauth2Service) DeviceAuthConfirm(body DeviceAuthConfirmParams) error {
 	// Create the url.
 	path := "/oauth2/device/confirm"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -2007,7 +2213,7 @@ func (s *Oauth2Service) DeviceAuthConfirm(body DeviceAuthConfirmParams) error {
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -2041,7 +2247,7 @@ func (s *Oauth2Service) DeviceAuthConfirm(body DeviceAuthConfirmParams) error {
 func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) error {
 	// Create the url.
 	path := "/oauth2/device/token"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as a form.
 	form := url.Values{}
@@ -2053,7 +2259,7 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) err
 	b := strings.NewReader(form.Encode())
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -2088,10 +2294,10 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) err
 func (s *Oauth2Service) DeviceAuthVerify(appName string, userCode string) error {
 	// Create the url.
 	path := "/oauth2/device/verify"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -2132,10 +2338,10 @@ func (s *Oauth2Service) DeviceAuthVerify(appName string, userCode string) error 
 func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, idToken string, state string, user string) error {
 	// Create the url.
 	path := "/oauth2/provider/{{.provider}}/callback"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -2178,7 +2384,7 @@ func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, 
 func (s *Oauth2Service) ProviderCallbackCreate(provider AccountProvider, body AuthCallback) error {
 	// Create the url.
 	path := "/oauth2/provider/{{.provider}}/callback"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as a form.
 	form := url.Values{}
@@ -2190,7 +2396,7 @@ func (s *Oauth2Service) ProviderCallbackCreate(provider AccountProvider, body Au
 	b := strings.NewReader(form.Encode())
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -2230,10 +2436,10 @@ func (s *Oauth2Service) ProviderCallbackCreate(provider AccountProvider, body Au
 func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl string) (*Oauth2ClientInfo, error) {
 	// Create the url.
 	path := "/oauth2/provider/{{.provider}}/consent"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2281,7 +2487,7 @@ func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl st
 func (s *Oauth2Service) TokenRevoke(body TokenRevokeRequestForm) error {
 	// Create the url.
 	path := "/oauth2/token/revoke"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as a form.
 	form := url.Values{}
@@ -2293,7 +2499,7 @@ func (s *Oauth2Service) TokenRevoke(body TokenRevokeRequestForm) error {
 	b := strings.NewReader(form.Encode())
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -2323,10 +2529,10 @@ func (s *Oauth2Service) TokenRevoke(body TokenRevokeRequestForm) error {
 func (s *OrgService) Get() (*Org, error) {
 	// Create the url.
 	path := "/org"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2366,7 +2572,7 @@ func (s *OrgService) Get() (*Org, error) {
 func (s *OrgService) Create(body OrgDetails) (*Org, error) {
 	// Create the url.
 	path := "/org"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -2375,7 +2581,7 @@ func (s *OrgService) Create(body OrgDetails) (*Org, error) {
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2418,7 +2624,7 @@ func (s *OrgService) Create(body OrgDetails) (*Org, error) {
 func (s *OrgService) Update(body OrgDetails) (*Org, error) {
 	// Create the url.
 	path := "/org"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -2427,7 +2633,7 @@ func (s *OrgService) Update(body OrgDetails) (*Org, error) {
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2470,10 +2676,10 @@ func (s *OrgService) Update(body OrgDetails) (*Org, error) {
 func (s *OrgService) Delete() error {
 	// Create the url.
 	path := "/org"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -2514,10 +2720,10 @@ func (s *OrgService) Delete() error {
 func (s *APICallService) OrgList(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/org/api-calls"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2566,10 +2772,10 @@ func (s *APICallService) OrgList(limit int, pageToken string, sortBy CreatedAtSo
 func (s *APICallService) GetForOrg(id UUID) (*APICallWithPrice, error) {
 	// Create the url.
 	path := "/org/api-calls/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2607,6 +2813,527 @@ func (s *APICallService) GetForOrg(id UUID) (*APICallWithPrice, error) {
 
 }
 
+// DatasetS3Policies: Return the IAM policies customers should apply when onboarding an S3 dataset.
+// Parameters
+//
+//   - `roleArn`
+//   - `uri`
+func (s *OrgService) DatasetS3Policies(roleArn string, uri string) (*DatasetS3Policies, error) {
+	// Create the url.
+	path := "/org/dataset/s3/policies"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"role_arn": roleArn,
+		"uri":      uri,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded DatasetS3Policies
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListDatasets: List every dataset that belongs to the caller's organization.
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *OrgService) ListDatasets(limit int, pageToken string, sortBy CreatedAtSortMode) (*OrgDatasetResultsPage, error) {
+	// Create the url.
+	path := "/org/datasets"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgDatasetResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateDataset: Register a new S3 dataset that Zoo can assume into on behalf of the caller's org.
+// If the dataset lives in S3, call `/org/dataset/s3/policies` first so you can generate the trust, permission, and bucket policies scoped to your dataset before invoking this endpoint.
+//
+// Parameters
+//
+//   - `body`: Payload for creating an org dataset.
+func (s *OrgService) CreateDataset(body CreateOrgDataset) (*OrgDataset, error) {
+	// Create the url.
+	path := "/org/datasets"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgDataset
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetDataset: Fetch a single dataset by id so long as it belongs to the authenticated org.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) GetDataset(id UUID) (*OrgDataset, error) {
+	// Create the url.
+	path := "/org/datasets/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgDataset
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateDataset: Update dataset metadata or storage credentials for the caller's organization.
+// IMPORTANT: Use this endpoint to fix connectivity to the same underlying storage location (e.g. rotating credentials or correcting a typo). Do not repoint an existing dataset at a completely different bucket or provider—create a new dataset instead so conversions in flight keep their original source. This warning applies to every storage backend, not just S3.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Payload for updating an org dataset.
+func (s *OrgService) UpdateDataset(id UUID, body UpdateOrgDataset) (*OrgDataset, error) {
+	// Create the url.
+	path := "/org/datasets/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgDataset
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *OrgService) ListDatasetConversions(id UUID, limit int, pageToken string, sortBy CreatedAtSortMode) (*OrgDatasetFileConversionSummaryResultsPage, error) {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/conversions"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":         id.String(),
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgDatasetFileConversionSummaryResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetDatasetConversion: Fetch the metadata and converted output for a single dataset conversion.
+// Parameters
+//
+//   - `conversionId`: A UUID usually v4 or v7
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) GetDatasetConversion(conversionId UUID, id UUID) (*OrgDatasetFileConversionDetails, error) {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/conversions/{{.conversion_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"conversion_id": conversionId.String(),
+		"id":            id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgDatasetFileConversionDetails
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// RetryDatasetConversion: Retry a specific dataset conversion that failed previously for the caller's org.
+// Parameters
+//
+//   - `conversionId`: A UUID usually v4 or v7
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) RetryDatasetConversion(conversionId UUID, id UUID) (*OrgDatasetFileConversion, error) {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/conversions/{{.conversion_id}}/retry"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"conversion_id": conversionId.String(),
+		"id":            id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgDatasetFileConversion
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) RescanDataset(id UUID) (*OrgDataset, error) {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/rescan"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgDataset
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetDatasetConversionStats: Return aggregate conversion stats for a dataset owned by the caller's org.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) GetDatasetConversionStats(id UUID) (*OrgDatasetConversionStatsResponse, error) {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/stats"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgDatasetConversionStatsResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // ListMembers: List members of your org.
 // This endpoint requires authentication by an org admin. It lists the members of the authenticated user's org.
 //
@@ -2624,10 +3351,10 @@ func (s *APICallService) GetForOrg(id UUID) (*APICallWithPrice, error) {
 func (s *OrgService) ListMembers(limit int, pageToken string, sortBy CreatedAtSortMode, role UserOrgRole) (*OrgMemberResultsPage, error) {
 	// Create the url.
 	path := "/org/members"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2685,7 +3412,7 @@ func (s *OrgService) ListMembers(limit int, pageToken string, sortBy CreatedAtSo
 func (s *OrgService) CreateMember(body AddOrgMember) (*OrgMember, error) {
 	// Create the url.
 	path := "/org/members"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -2694,7 +3421,7 @@ func (s *OrgService) CreateMember(body AddOrgMember) (*OrgMember, error) {
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2737,10 +3464,10 @@ func (s *OrgService) CreateMember(body AddOrgMember) (*OrgMember, error) {
 func (s *OrgService) GetMember(userId UUID) (*OrgMember, error) {
 	// Create the url.
 	path := "/org/members/{{.user_id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2788,7 +3515,7 @@ func (s *OrgService) GetMember(userId UUID) (*OrgMember, error) {
 func (s *OrgService) UpdateMember(userId UUID, body UpdateMemberToOrgBody) (*OrgMember, error) {
 	// Create the url.
 	path := "/org/members/{{.user_id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -2797,7 +3524,7 @@ func (s *OrgService) UpdateMember(userId UUID, body UpdateMemberToOrgBody) (*Org
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2847,10 +3574,10 @@ func (s *OrgService) UpdateMember(userId UUID, body UpdateMemberToOrgBody) (*Org
 func (s *OrgService) DeleteMember(userId UUID) error {
 	// Create the url.
 	path := "/org/members/{{.user_id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -2886,10 +3613,10 @@ func (s *OrgService) DeleteMember(userId UUID) error {
 func (s *PaymentService) GetInformationForOrg() (*Customer, error) {
 	// Create the url.
 	path := "/org/payment"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2931,7 +3658,7 @@ func (s *PaymentService) GetInformationForOrg() (*Customer, error) {
 func (s *PaymentService) CreateInformationForOrg(body BillingInfo) (*Customer, error) {
 	// Create the url.
 	path := "/org/payment"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -2940,7 +3667,7 @@ func (s *PaymentService) CreateInformationForOrg(body BillingInfo) (*Customer, e
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -2985,7 +3712,7 @@ func (s *PaymentService) CreateInformationForOrg(body BillingInfo) (*Customer, e
 func (s *PaymentService) UpdateInformationForOrg(body BillingInfo) (*Customer, error) {
 	// Create the url.
 	path := "/org/payment"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -2994,7 +3721,7 @@ func (s *PaymentService) UpdateInformationForOrg(body BillingInfo) (*Customer, e
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3035,10 +3762,10 @@ func (s *PaymentService) UpdateInformationForOrg(body BillingInfo) (*Customer, e
 func (s *PaymentService) DeleteInformationForOrg() error {
 	// Create the url.
 	path := "/org/payment"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -3069,10 +3796,10 @@ func (s *PaymentService) DeleteInformationForOrg() error {
 func (s *PaymentService) GetBalanceForOrg(includeTotalDue bool) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/org/payment/balance"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3115,10 +3842,10 @@ func (s *PaymentService) GetBalanceForOrg(includeTotalDue bool) (*CustomerBalanc
 func (s *PaymentService) CreateIntentForOrg() (*PaymentIntent, error) {
 	// Create the url.
 	path := "/org/payment/intent"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3154,10 +3881,10 @@ func (s *PaymentService) CreateIntentForOrg() (*PaymentIntent, error) {
 func (s *PaymentService) ListInvoicesForOrg() (*[]Invoice, error) {
 	// Create the url.
 	path := "/org/payment/invoices"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3193,10 +3920,10 @@ func (s *PaymentService) ListInvoicesForOrg() (*[]Invoice, error) {
 func (s *PaymentService) ListMethodsForOrg() (*[]PaymentMethod, error) {
 	// Create the url.
 	path := "/org/payment/methods"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3236,10 +3963,10 @@ func (s *PaymentService) ListMethodsForOrg() (*[]PaymentMethod, error) {
 func (s *PaymentService) DeleteMethodForOrg(id string) error {
 	// Create the url.
 	path := "/org/payment/methods/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -3273,10 +4000,10 @@ func (s *PaymentService) DeleteMethodForOrg(id string) error {
 func (s *PaymentService) GetOrgSubscription() (*ZooProductSubscriptions, error) {
 	// Create the url.
 	path := "/org/payment/subscriptions"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3316,7 +4043,7 @@ func (s *PaymentService) GetOrgSubscription() (*ZooProductSubscriptions, error) 
 func (s *PaymentService) CreateOrgSubscription(body ZooProductSubscriptionsOrgRequest) (*ZooProductSubscriptions, error) {
 	// Create the url.
 	path := "/org/payment/subscriptions"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -3325,7 +4052,7 @@ func (s *PaymentService) CreateOrgSubscription(body ZooProductSubscriptionsOrgRe
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3368,7 +4095,7 @@ func (s *PaymentService) CreateOrgSubscription(body ZooProductSubscriptionsOrgRe
 func (s *PaymentService) UpdateOrgSubscription(body ZooProductSubscriptionsOrgRequest) (*ZooProductSubscriptions, error) {
 	// Create the url.
 	path := "/org/payment/subscriptions"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -3377,7 +4104,7 @@ func (s *PaymentService) UpdateOrgSubscription(body ZooProductSubscriptionsOrgRe
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3416,10 +4143,10 @@ func (s *PaymentService) UpdateOrgSubscription(body ZooProductSubscriptionsOrgRe
 func (s *PaymentService) ValidateCustomerTaxInformationForOrg() error {
 	// Create the url.
 	path := "/org/payment/tax"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -3446,10 +4173,10 @@ func (s *PaymentService) ValidateCustomerTaxInformationForOrg() error {
 func (s *OrgService) GetPrivacySettings() (*PrivacySettings, error) {
 	// Create the url.
 	path := "/org/privacy"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3489,7 +4216,7 @@ func (s *OrgService) GetPrivacySettings() (*PrivacySettings, error) {
 func (s *OrgService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySettings, error) {
 	// Create the url.
 	path := "/org/privacy"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -3498,7 +4225,7 @@ func (s *OrgService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySettin
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3537,10 +4264,10 @@ func (s *OrgService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySettin
 func (s *OrgService) GetSamlIdp() (*SamlIdentityProvider, error) {
 	// Create the url.
 	path := "/org/saml/idp"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3580,7 +4307,7 @@ func (s *OrgService) GetSamlIdp() (*SamlIdentityProvider, error) {
 func (s *OrgService) CreateSamlIdp(body SamlIdentityProviderCreate) (*SamlIdentityProvider, error) {
 	// Create the url.
 	path := "/org/saml/idp"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -3589,7 +4316,7 @@ func (s *OrgService) CreateSamlIdp(body SamlIdentityProviderCreate) (*SamlIdenti
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3632,7 +4359,7 @@ func (s *OrgService) CreateSamlIdp(body SamlIdentityProviderCreate) (*SamlIdenti
 func (s *OrgService) UpdateSamlIdp(body SamlIdentityProviderCreate) (*SamlIdentityProvider, error) {
 	// Create the url.
 	path := "/org/saml/idp"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -3641,7 +4368,7 @@ func (s *OrgService) UpdateSamlIdp(body SamlIdentityProviderCreate) (*SamlIdenti
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3680,10 +4407,10 @@ func (s *OrgService) UpdateSamlIdp(body SamlIdentityProviderCreate) (*SamlIdenti
 func (s *OrgService) DeleteSamlIdp() error {
 	// Create the url.
 	path := "/org/saml/idp"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -3722,10 +4449,10 @@ func (s *OrgService) DeleteSamlIdp() error {
 func (s *ServiceAccountService) ListForOrg(limit int, pageToken string, sortBy CreatedAtSortMode) (*ServiceAccountResultsPage, error) {
 	// Create the url.
 	path := "/org/service-accounts"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3774,10 +4501,10 @@ func (s *ServiceAccountService) ListForOrg(limit int, pageToken string, sortBy C
 func (s *ServiceAccountService) CreateForOrg(label string) (*ServiceAccount, error) {
 	// Create the url.
 	path := "/org/service-accounts"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3824,10 +4551,10 @@ func (s *ServiceAccountService) CreateForOrg(label string) (*ServiceAccount, err
 func (s *ServiceAccountService) GetForOrg(token string) (*ServiceAccount, error) {
 	// Create the url.
 	path := "/org/service-accounts/{{.token}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3876,10 +4603,10 @@ func (s *ServiceAccountService) GetForOrg(token string) (*ServiceAccount, error)
 func (s *ServiceAccountService) DeleteForOrg(token string) error {
 	// Create the url.
 	path := "/org/service-accounts/{{.token}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -3923,10 +4650,10 @@ func (s *ServiceAccountService) DeleteForOrg(token string) error {
 func (s *OrgService) GetShortlinks(limit int, pageToken string, sortBy CreatedAtSortMode) (*ShortlinkResultsPage, error) {
 	// Create the url.
 	path := "/org/shortlinks"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -3981,10 +4708,10 @@ func (s *OrgService) GetShortlinks(limit int, pageToken string, sortBy CreatedAt
 func (s *OrgService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*OrgResultsPage, error) {
 	// Create the url.
 	path := "/orgs"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4033,10 +4760,10 @@ func (s *OrgService) List(limit int, pageToken string, sortBy CreatedAtSortMode)
 func (s *OrgService) GetAny(id UUID) (*Org, error) {
 	// Create the url.
 	path := "/orgs/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4083,10 +4810,10 @@ func (s *OrgService) GetAny(id UUID) (*Org, error) {
 func (s *OrgService) AdminDetailsList(id UUID) (*OrgAdminDetails, error) {
 	// Create the url.
 	path := "/orgs/{{.id}}/admin/details"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4130,11 +4857,11 @@ func (s *OrgService) AdminDetailsList(id UUID) (*OrgAdminDetails, error) {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-//   - `body`: The price for an enterprise subscription.
+//   - `body`: The price for a subscription tier.
 func (s *OrgService) UpdateEnterprisePricingFor(id UUID, body any) (*ZooProductSubscriptions, error) {
 	// Create the url.
 	path := "/orgs/{{.id}}/enterprise/pricing"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -4143,7 +4870,7 @@ func (s *OrgService) UpdateEnterprisePricingFor(id UUID, body any) (*ZooProductS
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4194,10 +4921,10 @@ func (s *OrgService) UpdateEnterprisePricingFor(id UUID, body any) (*ZooProductS
 func (s *PaymentService) GetBalanceForAnyOrg(includeTotalDue bool, id UUID) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/orgs/{{.id}}/payment/balance"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4247,7 +4974,7 @@ func (s *PaymentService) GetBalanceForAnyOrg(includeTotalDue bool, id UUID) (*Cu
 func (s *PaymentService) UpdateBalanceForAnyOrg(id UUID, includeTotalDue bool, body UpdatePaymentBalance) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/orgs/{{.id}}/payment/balance"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -4256,7 +4983,7 @@ func (s *PaymentService) UpdateBalanceForAnyOrg(id UUID, includeTotalDue bool, b
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4302,10 +5029,10 @@ func (s *PaymentService) UpdateBalanceForAnyOrg(id UUID, includeTotalDue bool, b
 func (s *MetaService) Ping() (*Pong, error) {
 	// Create the url.
 	path := "/ping"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4341,10 +5068,10 @@ func (s *MetaService) Ping() (*Pong, error) {
 func (s *MetaService) GetPricingSubscriptions() (*map[string][]ZooProductSubscription, error) {
 	// Create the url.
 	path := "/pricing/subscriptions"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4384,7 +5111,7 @@ func (s *MetaService) GetPricingSubscriptions() (*map[string][]ZooProductSubscri
 func (s *StoreService) CreateCoupon(body StoreCouponParams) (*DiscountCode, error) {
 	// Create the url.
 	path := "/store/coupon"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -4393,7 +5120,7 @@ func (s *StoreService) CreateCoupon(body StoreCouponParams) (*DiscountCode, erro
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4438,10 +5165,10 @@ func (s *StoreService) CreateCoupon(body StoreCouponParams) (*DiscountCode, erro
 func (s *UnitService) GetAngleConversion(inputUnit UnitAngle, outputUnit UnitAngle, value float64) (*UnitAngleConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/angle/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4492,10 +5219,10 @@ func (s *UnitService) GetAngleConversion(inputUnit UnitAngle, outputUnit UnitAng
 func (s *UnitService) GetAreaConversion(inputUnit UnitArea, outputUnit UnitArea, value float64) (*UnitAreaConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/area/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4546,10 +5273,10 @@ func (s *UnitService) GetAreaConversion(inputUnit UnitArea, outputUnit UnitArea,
 func (s *UnitService) GetCurrentConversion(inputUnit UnitCurrent, outputUnit UnitCurrent, value float64) (*UnitCurrentConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/current/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4600,10 +5327,10 @@ func (s *UnitService) GetCurrentConversion(inputUnit UnitCurrent, outputUnit Uni
 func (s *UnitService) GetEnergyConversion(inputUnit UnitEnergy, outputUnit UnitEnergy, value float64) (*UnitEnergyConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/energy/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4654,10 +5381,10 @@ func (s *UnitService) GetEnergyConversion(inputUnit UnitEnergy, outputUnit UnitE
 func (s *UnitService) GetForceConversion(inputUnit UnitForce, outputUnit UnitForce, value float64) (*UnitForceConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/force/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4708,10 +5435,10 @@ func (s *UnitService) GetForceConversion(inputUnit UnitForce, outputUnit UnitFor
 func (s *UnitService) GetFrequencyConversion(inputUnit UnitFrequency, outputUnit UnitFrequency, value float64) (*UnitFrequencyConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/frequency/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4762,10 +5489,10 @@ func (s *UnitService) GetFrequencyConversion(inputUnit UnitFrequency, outputUnit
 func (s *UnitService) GetLengthConversion(inputUnit UnitLength, outputUnit UnitLength, value float64) (*UnitLengthConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/length/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4816,10 +5543,10 @@ func (s *UnitService) GetLengthConversion(inputUnit UnitLength, outputUnit UnitL
 func (s *UnitService) GetMassConversion(inputUnit UnitMas, outputUnit UnitMas, value float64) (*UnitMassConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/mass/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4870,10 +5597,10 @@ func (s *UnitService) GetMassConversion(inputUnit UnitMas, outputUnit UnitMas, v
 func (s *UnitService) GetPowerConversion(inputUnit UnitPower, outputUnit UnitPower, value float64) (*UnitPowerConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/power/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4924,10 +5651,10 @@ func (s *UnitService) GetPowerConversion(inputUnit UnitPower, outputUnit UnitPow
 func (s *UnitService) GetPressureConversion(inputUnit UnitPressure, outputUnit UnitPressure, value float64) (*UnitPressureConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/pressure/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -4978,10 +5705,10 @@ func (s *UnitService) GetPressureConversion(inputUnit UnitPressure, outputUnit U
 func (s *UnitService) GetTemperatureConversion(inputUnit UnitTemperature, outputUnit UnitTemperature, value float64) (*UnitTemperatureConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/temperature/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5032,10 +5759,10 @@ func (s *UnitService) GetTemperatureConversion(inputUnit UnitTemperature, output
 func (s *UnitService) GetTorqueConversion(inputUnit UnitTorque, outputUnit UnitTorque, value float64) (*UnitTorqueConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/torque/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5086,10 +5813,10 @@ func (s *UnitService) GetTorqueConversion(inputUnit UnitTorque, outputUnit UnitT
 func (s *UnitService) GetVolumeConversion(inputUnit UnitVolume, outputUnit UnitVolume, value float64) (*UnitVolumeConversion, error) {
 	// Create the url.
 	path := "/unit/conversion/volume/{{.input_unit}}/{{.output_unit}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5136,10 +5863,10 @@ func (s *UnitService) GetVolumeConversion(inputUnit UnitVolume, outputUnit UnitV
 func (s *UserService) GetSelf() (*User, error) {
 	// Create the url.
 	path := "/user"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5179,7 +5906,7 @@ func (s *UserService) GetSelf() (*User, error) {
 func (s *UserService) UpdateSelf(body UpdateUser) (*User, error) {
 	// Create the url.
 	path := "/user"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -5188,7 +5915,7 @@ func (s *UserService) UpdateSelf(body UpdateUser) (*User, error) {
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5229,10 +5956,10 @@ func (s *UserService) UpdateSelf(body UpdateUser) (*User, error) {
 func (s *UserService) DeleteSelf() error {
 	// Create the url.
 	path := "/user"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -5271,10 +5998,10 @@ func (s *UserService) DeleteSelf() error {
 func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/user/api-calls"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5323,10 +6050,10 @@ func (s *APICallService) UserList(limit int, pageToken string, sortBy CreatedAtS
 func (s *APICallService) GetForUser(id UUID) (*APICallWithPrice, error) {
 	// Create the url.
 	path := "/user/api-calls/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5381,10 +6108,10 @@ func (s *APICallService) GetForUser(id UUID) (*APICallWithPrice, error) {
 func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy CreatedAtSortMode) (*APITokenResultsPage, error) {
 	// Create the url.
 	path := "/user/api-tokens"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5433,10 +6160,10 @@ func (s *APITokenService) ListForUser(limit int, pageToken string, sortBy Create
 func (s *APITokenService) CreateForUser(label string) (*APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5483,10 +6210,10 @@ func (s *APITokenService) CreateForUser(label string) (*APIToken, error) {
 func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
 	// Create the url.
 	path := "/user/api-tokens/{{.token}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5535,10 +6262,10 @@ func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
 func (s *APITokenService) DeleteForUser(token string) error {
 	// Create the url.
 	path := "/user/api-tokens/{{.token}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -5574,7 +6301,7 @@ func (s *APITokenService) DeleteForUser(token string) error {
 func (s *UserService) PatchCrm(body CrmData) error {
 	// Create the url.
 	path := "/user/crm"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -5583,7 +6310,7 @@ func (s *UserService) PatchCrm(body CrmData) error {
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PATCH", uri, b)
+	req, err := http.NewRequest("PATCH", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -5615,10 +6342,10 @@ func (s *UserService) PatchCrm(body CrmData) error {
 func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 	// Create the url.
 	path := "/user/extended"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5658,7 +6385,7 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 func (s *UserService) PutFormSelf(body InquiryForm) error {
 	// Create the url.
 	path := "/user/form"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -5667,7 +6394,7 @@ func (s *UserService) PutFormSelf(body InquiryForm) error {
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -5699,10 +6426,10 @@ func (s *UserService) PutFormSelf(body InquiryForm) error {
 func (s *UserService) GetOauth2ProvidersFor() (*[]AccountProvider, error) {
 	// Create the url.
 	path := "/user/oauth2/providers"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5740,10 +6467,10 @@ func (s *UserService) GetOauth2ProvidersFor() (*[]AccountProvider, error) {
 func (s *OrgService) GetUser() (*UserOrgInfo, error) {
 	// Create the url.
 	path := "/user/org"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5781,10 +6508,10 @@ func (s *OrgService) GetUser() (*UserOrgInfo, error) {
 func (s *PaymentService) GetInformationForUser() (*Customer, error) {
 	// Create the url.
 	path := "/user/payment"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5826,7 +6553,7 @@ func (s *PaymentService) GetInformationForUser() (*Customer, error) {
 func (s *PaymentService) CreateInformationForUser(body BillingInfo) (*Customer, error) {
 	// Create the url.
 	path := "/user/payment"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -5835,7 +6562,7 @@ func (s *PaymentService) CreateInformationForUser(body BillingInfo) (*Customer, 
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5880,7 +6607,7 @@ func (s *PaymentService) CreateInformationForUser(body BillingInfo) (*Customer, 
 func (s *PaymentService) UpdateInformationForUser(body BillingInfo) (*Customer, error) {
 	// Create the url.
 	path := "/user/payment"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -5889,7 +6616,7 @@ func (s *PaymentService) UpdateInformationForUser(body BillingInfo) (*Customer, 
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -5930,10 +6657,10 @@ func (s *PaymentService) UpdateInformationForUser(body BillingInfo) (*Customer, 
 func (s *PaymentService) DeleteInformationForUser() error {
 	// Create the url.
 	path := "/user/payment"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -5964,10 +6691,10 @@ func (s *PaymentService) DeleteInformationForUser() error {
 func (s *PaymentService) GetBalanceForUser(includeTotalDue bool) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/user/payment/balance"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6010,10 +6737,10 @@ func (s *PaymentService) GetBalanceForUser(includeTotalDue bool) (*CustomerBalan
 func (s *PaymentService) CreateIntentForUser() (*PaymentIntent, error) {
 	// Create the url.
 	path := "/user/payment/intent"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6049,10 +6776,10 @@ func (s *PaymentService) CreateIntentForUser() (*PaymentIntent, error) {
 func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
 	// Create the url.
 	path := "/user/payment/invoices"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6088,10 +6815,10 @@ func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
 func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
 	// Create the url.
 	path := "/user/payment/methods"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6132,10 +6859,10 @@ func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
 func (s *PaymentService) DeleteMethodForUser(id string, force bool) error {
 	// Create the url.
 	path := "/user/payment/methods/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -6170,10 +6897,10 @@ func (s *PaymentService) DeleteMethodForUser(id string, force bool) error {
 func (s *PaymentService) GetUserSubscription() (*ZooProductSubscriptions, error) {
 	// Create the url.
 	path := "/user/payment/subscriptions"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6213,7 +6940,7 @@ func (s *PaymentService) GetUserSubscription() (*ZooProductSubscriptions, error)
 func (s *PaymentService) CreateUserSubscription(body ZooProductSubscriptionsUserRequest) (*ZooProductSubscriptions, error) {
 	// Create the url.
 	path := "/user/payment/subscriptions"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -6222,7 +6949,7 @@ func (s *PaymentService) CreateUserSubscription(body ZooProductSubscriptionsUser
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6265,7 +6992,7 @@ func (s *PaymentService) CreateUserSubscription(body ZooProductSubscriptionsUser
 func (s *PaymentService) UpdateUserSubscription(body ZooProductSubscriptionsUserRequest) (*ZooProductSubscriptions, error) {
 	// Create the url.
 	path := "/user/payment/subscriptions"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -6274,7 +7001,7 @@ func (s *PaymentService) UpdateUserSubscription(body ZooProductSubscriptionsUser
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6313,10 +7040,10 @@ func (s *PaymentService) UpdateUserSubscription(body ZooProductSubscriptionsUser
 func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
 	// Create the url.
 	path := "/user/payment/tax"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -6343,10 +7070,10 @@ func (s *PaymentService) ValidateCustomerTaxInformationForUser() error {
 func (s *UserService) GetPrivacySettings() (*PrivacySettings, error) {
 	// Create the url.
 	path := "/user/privacy"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6386,7 +7113,7 @@ func (s *UserService) GetPrivacySettings() (*PrivacySettings, error) {
 func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySettings, error) {
 	// Create the url.
 	path := "/user/privacy"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -6395,7 +7122,7 @@ func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySetti
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6438,10 +7165,10 @@ func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySetti
 func (s *UserService) GetSessionFor(token string) (*Session, error) {
 	// Create the url.
 	path := "/user/session/{{.token}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6494,10 +7221,10 @@ func (s *UserService) GetSessionFor(token string) (*Session, error) {
 func (s *UserService) GetShortlinks(limit int, pageToken string, sortBy CreatedAtSortMode) (*ShortlinkResultsPage, error) {
 	// Create the url.
 	path := "/user/shortlinks"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6546,7 +7273,7 @@ func (s *UserService) GetShortlinks(limit int, pageToken string, sortBy CreatedA
 func (s *UserService) CreateShortlink(body CreateShortlinkRequest) (*CreateShortlinkResponse, error) {
 	// Create the url.
 	path := "/user/shortlinks"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -6555,7 +7282,7 @@ func (s *UserService) CreateShortlink(body CreateShortlinkRequest) (*CreateShort
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, b)
+	req, err := http.NewRequest("POST", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6598,10 +7325,10 @@ func (s *UserService) CreateShortlink(body CreateShortlinkRequest) (*CreateShort
 func (s *HiddenService) RedirectUserShortlink(key string) error {
 	// Create the url.
 	path := "/user/shortlinks/{{.key}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -6642,7 +7369,7 @@ func (s *HiddenService) RedirectUserShortlink(key string) error {
 func (s *UserService) UpdateShortlink(key string, body UpdateShortlinkRequest) error {
 	// Create the url.
 	path := "/user/shortlinks/{{.key}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -6651,7 +7378,7 @@ func (s *UserService) UpdateShortlink(key string, body UpdateShortlinkRequest) e
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -6692,10 +7419,10 @@ func (s *UserService) UpdateShortlink(key string, body UpdateShortlinkRequest) e
 func (s *UserService) DeleteShortlink(key string) error {
 	// Create the url.
 	path := "/user/shortlinks/{{.key}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("DELETE", uri, nil)
+	req, err := http.NewRequest("DELETE", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -6749,10 +7476,10 @@ func (s *UserService) DeleteShortlink(key string) error {
 func (s *MlService) ListTextToCadPartsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, conversationId UUID, noModels bool, noParts bool) (*TextToCadResponseResultsPage, error) {
 	// Create the url.
 	path := "/user/text-to-cad"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6804,10 +7531,10 @@ func (s *MlService) ListTextToCadPartsForUser(limit int, pageToken string, sortB
 func (s *MlService) GetTextToCadPartForUser(id UUID) (*any, error) {
 	// Create the url.
 	path := "/user/text-to-cad/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6857,10 +7584,10 @@ func (s *MlService) GetTextToCadPartForUser(id UUID) (*any, error) {
 func (s *MlService) CreateTextToCadPartFeedback(id UUID, feedback MlFeedback) error {
 	// Create the url.
 	path := "/user/text-to-cad/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("POST", uri, nil)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -6905,10 +7632,10 @@ func (s *MlService) CreateTextToCadPartFeedback(id UUID, feedback MlFeedback) er
 func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*UserResultsPage, error) {
 	// Create the url.
 	path := "/users"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -6963,10 +7690,10 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAtSortMode) (*ExtendedUserResultsPage, error) {
 	// Create the url.
 	path := "/users-extended"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -7017,10 +7744,10 @@ func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAt
 func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 	// Create the url.
 	path := "/users-extended/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -7069,10 +7796,10 @@ func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 func (s *UserService) Get(id string) (*User, error) {
 	// Create the url.
 	path := "/users/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -7119,10 +7846,10 @@ func (s *UserService) Get(id string) (*User, error) {
 func (s *UserService) AdminDetailsList(id string) (*UserAdminDetails, error) {
 	// Create the url.
 	path := "/users/{{.id}}/admin/details"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -7183,10 +7910,10 @@ func (s *UserService) AdminDetailsList(id string) (*UserAdminDetails, error) {
 func (s *APICallService) ListForUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
 	// Create the url.
 	path := "/users/{{.id}}/api-calls"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -7237,10 +7964,10 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 func (s *PaymentService) GetBalanceForAnyUser(id string, includeTotalDue bool) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/users/{{.id}}/payment/balance"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", uri, nil)
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -7290,7 +8017,7 @@ func (s *PaymentService) GetBalanceForAnyUser(id string, includeTotalDue bool) (
 func (s *PaymentService) UpdateBalanceForAnyUser(id string, includeTotalDue bool, body UpdatePaymentBalance) (*CustomerBalance, error) {
 	// Create the url.
 	path := "/users/{{.id}}/payment/balance"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -7299,7 +8026,7 @@ func (s *PaymentService) UpdateBalanceForAnyUser(id string, includeTotalDue bool
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -7351,7 +8078,7 @@ func (s *PaymentService) UpdateBalanceForAnyUser(id string, includeTotalDue bool
 func (s *UserService) UpdateSubscriptionFor(id string, body ZooProductSubscriptionsUserRequest) (*ZooProductSubscriptions, error) {
 	// Create the url.
 	path := "/users/{{.id}}/payment/subscriptions"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -7360,7 +8087,7 @@ func (s *UserService) UpdateSubscriptionFor(id string, body ZooProductSubscripti
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
@@ -7410,7 +8137,7 @@ func (s *UserService) UpdateSubscriptionFor(id string, body ZooProductSubscripti
 func (s *UserService) PutPublicForm(body InquiryForm) error {
 	// Create the url.
 	path := "/website/form"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -7419,7 +8146,7 @@ func (s *UserService) PutPublicForm(body InquiryForm) error {
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -7451,7 +8178,7 @@ func (s *UserService) PutPublicForm(body InquiryForm) error {
 func (s *UserService) PutPublicSubscribe(body Subscribe) error {
 	// Create the url.
 	path := "/website/subscribe"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
 	b := new(bytes.Buffer)
@@ -7460,7 +8187,7 @@ func (s *UserService) PutPublicSubscribe(body Subscribe) error {
 	}
 
 	// Create the request.
-	req, err := http.NewRequest("PUT", uri, b)
+	req, err := http.NewRequest("PUT", targetURL, b)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -7490,12 +8217,12 @@ func (s *UserService) PutPublicSubscribe(body Subscribe) error {
 func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/executor/term"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	headers := http.Header{}
 	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
 
-	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(uri, "https://", "wss://"), headers)
+	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(targetURL, "https://", "wss://"), headers)
 	if err != nil {
 		return nil, err
 	}
@@ -7514,12 +8241,12 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 func (s *MlService) CopilotWs(conversationId UUID, replay bool, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/ml/copilot"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	headers := http.Header{}
 	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
 
-	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(uri, "https://", "wss://"), headers)
+	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(targetURL, "https://", "wss://"), headers)
 	if err != nil {
 		return nil, err
 	}
@@ -7535,12 +8262,12 @@ func (s *MlService) CopilotWs(conversationId UUID, replay bool, body any) (*webs
 func (s *MlService) ReasoningWs(id UUID, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/ml/reasoning/{{.id}}"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	headers := http.Header{}
 	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
 
-	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(uri, "https://", "wss://"), headers)
+	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(targetURL, "https://", "wss://"), headers)
 	if err != nil {
 		return nil, err
 	}
@@ -7567,12 +8294,12 @@ func (s *MlService) ReasoningWs(id UUID, body any) (*websocket.Conn, error) {
 func (s *ModelingService) CommandsWs(apicallId string, fps int, pool string, postEffect PostEffectType, replay string, showGrid bool, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
-	uri := resolveRelative(s.client.server, path)
+	targetURL := resolveRelative(s.client.server, path)
 
 	headers := http.Header{}
 	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
 
-	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(uri, "https://", "wss://"), headers)
+	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(targetURL, "https://", "wss://"), headers)
 	if err != nil {
 		return nil, err
 	}
