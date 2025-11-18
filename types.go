@@ -3073,6 +3073,12 @@ type MlCopilotServerMessageInfo struct {
 	Info Info `json:"info" yaml:"info" schema:"info,required"`
 }
 
+// MlCopilotServerMessageProjectUpdated: Notification that the KCL project has been updated.
+type MlCopilotServerMessageProjectUpdated struct {
+	// ProjectUpdated:
+	ProjectUpdated ProjectUpdated `json:"project_updated" yaml:"project_updated" schema:"project_updated,required"`
+}
+
 // MlCopilotServerMessageReasoning: Assistant reasoning / chain-of-thought (if you expose it).
 type MlCopilotServerMessageReasoning struct {
 	// Reasoning: A message containing reasoning information.
@@ -3080,7 +3086,7 @@ type MlCopilotServerMessageReasoning struct {
 }
 
 // MlCopilotServerMessageReplay: Replay containing raw bytes for previously-saved messages for a conversation. Includes server messages and client `User` messages.
-// Invariants: - Includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, and `EndOfStream { .. }`. - Also includes client `User` messages. - The following are NEVER included: `SessionData`, `ConversationId`, or `Delta`. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
+// Invariants: - Includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Also includes client `User` messages. - The following are NEVER included: `SessionData`, `ConversationId`, or `Delta`. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
 //
 // Wire format: - Each element is canonical serialized bytes (typically JSON) for either a `MlCopilotServerMessage` or a `MlCopilotClientMessage::User`. - When delivered as an initial replay over the websocket (upon `?replay=true&conversation_id=<uuid>`), the server sends a single WebSocket Binary frame containing a BSON-encoded document of this enum: `Replay { messages }`.
 type MlCopilotServerMessageReplay struct {
@@ -6057,6 +6063,12 @@ type ProjectEntityToPlane struct {
 type ProjectPointsToPlane struct {
 	// ProjectedPoints: Projected points.
 	ProjectedPoints []Point3D `json:"projected_points" yaml:"projected_points" schema:"projected_points,required"`
+}
+
+// ProjectUpdated is the type definition for a ProjectUpdated.
+type ProjectUpdated struct {
+	// Files: Map of file paths to their latest contents. The file contents are not encoded since kcl files are not binary.
+	Files map[string]string `json:"files" yaml:"files" schema:"files,required"`
 }
 
 // RawFile: A raw file with unencoded contents to be passed over binary websockets. When raw files come back for exports it is sent as binary/bson, not text/json.
