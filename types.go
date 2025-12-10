@@ -1234,8 +1234,6 @@ type ConversionParams struct {
 type Coupon struct {
 	// AmountOff: Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
 	AmountOff float64 `json:"amount_off" yaml:"amount_off" schema:"amount_off"`
-	// Deleted: Always true for a deleted object.
-	Deleted bool `json:"deleted" yaml:"deleted" schema:"deleted"`
 	// ID: Unique identifier for the object.
 	ID string `json:"id" yaml:"id" schema:"id"`
 	// Metadata: Set of key-value pairs.
@@ -2560,6 +2558,8 @@ type InputFormat3Dunits struct {
 
 // InquiryForm: The form for a public inquiry submission.
 type InquiryForm struct {
+	// CadPlatforms: The CAD platforms (used for pilot inquiries).
+	CadPlatforms []string `json:"cad_platforms" yaml:"cad_platforms" schema:"cad_platforms"`
 	// Company: The company name.
 	Company string `json:"company" yaml:"company" schema:"company"`
 	// Email: The email address of the user.
@@ -2570,10 +2570,14 @@ type InquiryForm struct {
 	Industry string `json:"industry" yaml:"industry" schema:"industry"`
 	// InquiryType: The type of inquiry.
 	InquiryType InquiryType `json:"inquiry_type" yaml:"inquiry_type" schema:"inquiry_type,required"`
+	// JobTitle: The job title (used for pilot inquiries).
+	JobTitle string `json:"job_title" yaml:"job_title" schema:"job_title"`
 	// LastName: The last name of the user.
 	LastName string `json:"last_name" yaml:"last_name" schema:"last_name,required"`
 	// Message: The message content.
 	Message string `json:"message" yaml:"message" schema:"message,required"`
+	// NumCadUsers: The number of CAD users (used for pilot inquiries).
+	NumCadUsers string `json:"num_cad_users" yaml:"num_cad_users" schema:"num_cad_users"`
 	// Phone: The phone number of the user.
 	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 }
@@ -2582,6 +2586,8 @@ type InquiryForm struct {
 type InquiryType string
 
 const (
+	// InquiryTypePilotInquiry: Inquiries related to pilots (on the enterprise page).
+	InquiryTypePilotInquiry InquiryType = "pilot_inquiry"
 	// InquiryTypeGeneralInquiry: General inquiry about the service or product.
 	InquiryTypeGeneralInquiry InquiryType = "general_inquiry"
 	// InquiryTypeSalesQuestion: Questions related to sales or purchasing.
@@ -2704,6 +2710,8 @@ const (
 	InvoiceStatusUncollectible InvoiceStatus = "uncollectible"
 	// InvoiceStatusVoid: Void.
 	InvoiceStatusVoid InvoiceStatus = "void"
+	// InvoiceStatusUnknown: Unknown.
+	InvoiceStatusUnknown InvoiceStatus = "unknown"
 )
 
 // IpAddrInfo: Information about an ip address. Represents geographical and network-related information.
@@ -3137,6 +3145,8 @@ const (
 	MlCopilotSystemCommandNew MlCopilotSystemCommand = "new"
 	// MlCopilotSystemCommandBye: Disconnect the client, which can be used to end the session.
 	MlCopilotSystemCommandBye MlCopilotSystemCommand = "bye"
+	// MlCopilotSystemCommandInterrupt: Interrupt the current prompt that is being processed.
+	MlCopilotSystemCommandInterrupt MlCopilotSystemCommand = "interrupt"
 )
 
 // MlCopilotTool: The tools that can be used by the ML Copilot.
@@ -3527,6 +3537,14 @@ type ModelingCmdClosePath struct {
 	Strategy CutStrategy `json:"strategy" yaml:"strategy" schema:"strategy"`
 	// Tolerance: The maximum acceptable surface gap computed between the cut surfaces. Must be positive (i.e. greater than zero).
 	Tolerance float64 `json:"tolerance" yaml:"tolerance" schema:"tolerance,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdCylinderID: Render transparent surfaces more accurately, but this might make rendering slower. Because it can interfere with runtime performance, it defaults to false.
+type ModelingCmdCylinderID struct {
+	// Enabled: Enables or disables OIT. If not given, toggles it.
+	Enabled bool `json:"enabled" yaml:"enabled" schema:"enabled"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -4063,6 +4081,8 @@ type ModelingCmdModelingCmdSequence struct {
 type ModelingCmdModelingCmdTarget struct {
 	// AmbientOcclusion: Ambient Occlusion of the new material
 	AmbientOcclusion float64 `json:"ambient_occlusion" yaml:"ambient_occlusion" schema:"ambient_occlusion,required"`
+	// BackfaceColor: Color of the backface
+	BackfaceColor Color `json:"backface_color" yaml:"backface_color" schema:"backface_color"`
 	// Color: Color of the new material
 	Color Color `json:"color" yaml:"color" schema:"color,required"`
 	// Metalness: Metalness of the new material
@@ -4595,6 +4615,14 @@ type ObjectVisible struct {
 
 // OkModelingCmdResponse: OkModelingCmdResponse: A successful response from a modeling command. This can be one of several types of responses, depending on the command.
 type OkModelingCmdResponse any
+
+// OkModelingCmdResponseCameraDragEnd is the type definition for a OkModelingCmdResponseCameraDragEnd.
+type OkModelingCmdResponseCameraDragEnd struct {
+	// Data: The response from the 'SetOrderIndependentTransparency'.
+	Data SetOrderIndependentTransparency `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
 
 // OkModelingCmdResponseCameraDragMove is the type definition for a OkModelingCmdResponseCameraDragMove.
 type OkModelingCmdResponseCameraDragMove struct {
@@ -5961,6 +5989,8 @@ const (
 	PlanIntervalWeek PlanInterval = "week"
 	// PlanIntervalYear: Year.
 	PlanIntervalYear PlanInterval = "year"
+	// PlanIntervalUnknown: Don't use.
+	PlanIntervalUnknown PlanInterval = "unknown"
 )
 
 // PlanStep: A step in the design plan.
@@ -6468,6 +6498,12 @@ type SetGridScale struct {
 
 // SetObjectTransform: The response from the `SetObjectTransform` command.
 type SetObjectTransform struct {
+}
+
+// SetOrderIndependentTransparency: The response from the 'SetOrderIndependentTransparency'.
+type SetOrderIndependentTransparency struct {
+	// Enabled: Is it now enabled, or disabled?
+	Enabled bool `json:"enabled" yaml:"enabled" schema:"enabled,required"`
 }
 
 // SetSceneUnits: The response from the `SetSceneUnits` endpoint.
@@ -7894,6 +7930,18 @@ type UserAdminDetails struct {
 	StripeCustomerID string `json:"stripe_customer_id" yaml:"stripe_customer_id" schema:"stripe_customer_id"`
 	// StripeDashboardUrl: Direct link to the Stripe customer dashboard.
 	StripeDashboardUrl string `json:"stripe_dashboard_url" yaml:"stripe_dashboard_url" schema:"stripe_dashboard_url"`
+}
+
+// UserFeatureEntry: Enabled features surfaced to end users.
+type UserFeatureEntry struct {
+	// ID: Stable identifier for the feature flag (snake_case).
+	ID string `json:"id" yaml:"id" schema:"id,required"`
+}
+
+// UserFeatureList: User features response payload.
+type UserFeatureList struct {
+	// Features: Features that are active and safe to expose to the current user.
+	Features []UserFeatureEntry `json:"features" yaml:"features" schema:"features,required"`
 }
 
 // UserOrgInfo: A user's information about an org, including their role.
