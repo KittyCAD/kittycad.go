@@ -6376,6 +6376,45 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 
 }
 
+// FeaturesList: List user-visible feature flags enabled for the authenticated user.
+// Returns only features that are marked as safe for exposure to clients and currently resolved to `true` for the requesting user (including org overrides).
+func (s *UserService) FeaturesList() (*UserFeatureList, error) {
+	// Create the url.
+	path := "/user/features"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UserFeatureList
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.
 // It gets attached to the user's account.
 //
@@ -8282,6 +8321,7 @@ func (s *MlService) ReasoningWs(id UUID, body any) (*websocket.Conn, error) {
 //
 //   - `apicallId`
 //   - `fps`
+//   - `orderIndependentTransparency`
 //   - `pool`
 //   - `postEffect`: Post effect type
 //   - `replay`
@@ -8291,7 +8331,7 @@ func (s *MlService) ReasoningWs(id UUID, body any) (*websocket.Conn, error) {
 //   - `videoResWidth`
 //   - `webrtc`
 //   - `body`: The websocket messages the server receives.
-func (s *ModelingService) CommandsWs(apicallId string, fps int, pool string, postEffect PostEffectType, replay string, showGrid bool, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, body any) (*websocket.Conn, error) {
+func (s *ModelingService) CommandsWs(apicallId string, fps int, orderIndependentTransparency bool, pool string, postEffect PostEffectType, replay string, showGrid bool, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
 	targetURL := resolveRelative(s.client.server, path)

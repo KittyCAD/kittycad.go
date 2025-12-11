@@ -2824,6 +2824,23 @@ func ExampleUserService_GetSelfExtended() {
 
 }
 
+// FeaturesList: List user-visible feature flags enabled for the authenticated user.
+// Returns only features that are marked as safe for exposure to clients and currently resolved to `true` for the requesting user (including org overrides).
+func ExampleUserService_FeaturesList() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.FeaturesList()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.
 // It gets attached to the user's account.
 //
@@ -2836,7 +2853,7 @@ func ExampleUserService_PutFormSelf() {
 		panic(err)
 	}
 
-	if err := client.User.PutFormSelf(kittycad.InquiryForm{Company: "some-string", Email: "example@example.com", FirstName: "some-string", Industry: "some-string", InquiryType: "", LastName: "some-string", Message: "some-string", Phone: "some-string"}); err != nil {
+	if err := client.User.PutFormSelf(kittycad.InquiryForm{CadPlatforms: []string{}, Company: "some-string", Email: "example@example.com", FirstName: "some-string", Industry: "some-string", InquiryType: "", JobTitle: "some-string", LastName: "some-string", Message: "some-string", NumCadUsers: "some-string", Phone: "some-string"}); err != nil {
 		panic(err)
 	}
 
@@ -3603,7 +3620,7 @@ func ExampleUserService_PutPublicForm() {
 		panic(err)
 	}
 
-	if err := client.User.PutPublicForm(kittycad.InquiryForm{Company: "some-string", Email: "example@example.com", FirstName: "some-string", Industry: "some-string", InquiryType: "", LastName: "some-string", Message: "some-string", Phone: "some-string"}); err != nil {
+	if err := client.User.PutPublicForm(kittycad.InquiryForm{CadPlatforms: []string{}, Company: "some-string", Email: "example@example.com", FirstName: "some-string", Industry: "some-string", InquiryType: "", JobTitle: "some-string", LastName: "some-string", Message: "some-string", NumCadUsers: "some-string", Phone: "some-string"}); err != nil {
 		panic(err)
 	}
 
@@ -3839,6 +3856,7 @@ func ExampleMlService_ReasoningWs() {
 //
 //   - `apicallId`
 //   - `fps`
+//   - `orderIndependentTransparency`
 //   - `pool`
 //   - `postEffect`: Post effect type
 //   - `replay`
@@ -3855,7 +3873,7 @@ func ExampleModelingService_CommandsWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Modeling.CommandsWs("some-string", 123, "some-string", kittycad.PostEffectTypePhosphor, "some-string", true, true, 123, 123, true, "")
+	ws, err := client.Modeling.CommandsWs("some-string", 123, true, "some-string", kittycad.PostEffectTypePhosphor, "some-string", true, true, 123, 123, true, "")
 	if err != nil {
 		panic(err)
 	}
