@@ -23316,6 +23316,17 @@
               "nullable": true,
               "type": "boolean"
             }
+          },
+          {
+            "in": "query",
+            "name": "pr",
+            "description": "Optional Pull Request number to route traffic.",
+            "schema": {
+              "nullable": true,
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0
+            }
           }
         ],
         "requestBody": {
@@ -23493,6 +23504,17 @@
             "description": "If true, will start a webrtc connection.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pr",
+            "description": "Optional Pull Request number to route traffic.",
+            "schema": {
+              "nullable": true,
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0
             }
           }
         ],
@@ -42767,6 +42789,25 @@
           "email"
         ]
       },
+      "SubscriptionActionType": {
+        "description": "Indicates which kind of Stripe intent requires customer action during subscription creation.",
+        "oneOf": [
+          {
+            "description": "The client secret belongs to a PaymentIntent (initial invoice payment).",
+            "type": "string",
+            "enum": [
+              "payment_intent"
+            ]
+          },
+          {
+            "description": "The client secret belongs to a SetupIntent (trial or setup-only flow).",
+            "type": "string",
+            "enum": [
+              "setup_intent"
+            ]
+          }
+        ]
+      },
       "SubscriptionTierFeature": {
         "description": "A subscription tier feature.",
         "type": "object",
@@ -46383,13 +46424,24 @@
           "payment_methods_summary"
         ]
       },
+      "UserFeature": {
+        "type": "string",
+        "enum": [
+          "proprietary_to_kcl_conversion_beta",
+          "new_sketch_mode"
+        ]
+      },
       "UserFeatureEntry": {
         "description": "Enabled features surfaced to end users.",
         "type": "object",
         "properties": {
           "id": {
             "description": "Stable identifier for the feature flag (snake_case).",
-            "type": "string"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserFeature"
+              }
+            ]
           }
         },
         "required": [
@@ -47007,6 +47059,20 @@
         "description": "A struct of Zoo product subscriptions.",
         "type": "object",
         "properties": {
+          "action_client_secret": {
+            "nullable": true,
+            "description": "Client secret to complete SCA/3DS for the current subscription change, when applicable.",
+            "type": "string"
+          },
+          "action_type": {
+            "nullable": true,
+            "description": "Type of intent associated with `action_client_secret`.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SubscriptionActionType"
+              }
+            ]
+          },
           "modeling_app": {
             "description": "A modeling app subscription.",
             "allOf": [
