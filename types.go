@@ -1230,6 +1230,24 @@ type ConversionParams struct {
 	SrcFormat any `json:"src_format" yaml:"src_format" schema:"src_format,required"`
 }
 
+// ConversionSortMode: Supported sort modes for org dataset conversions.
+type ConversionSortMode string
+
+const (
+	// ConversionSortModeCreatedAtAscending: Sort by created_at in increasing order.
+	ConversionSortModeCreatedAtAscending ConversionSortMode = "created_at_ascending"
+	// ConversionSortModeCreatedAtDescending: Sort by created_at in decreasing order.
+	ConversionSortModeCreatedAtDescending ConversionSortMode = "created_at_descending"
+	// ConversionSortModeStatusAscending: Sort by status in increasing order.
+	ConversionSortModeStatusAscending ConversionSortMode = "status_ascending"
+	// ConversionSortModeStatusDescending: Sort by status in decreasing order.
+	ConversionSortModeStatusDescending ConversionSortMode = "status_descending"
+	// ConversionSortModeUpdatedAtAscending: Sort by updated_at in increasing order.
+	ConversionSortModeUpdatedAtAscending ConversionSortMode = "updated_at_ascending"
+	// ConversionSortModeUpdatedAtDescending: Sort by updated_at in decreasing order.
+	ConversionSortModeUpdatedAtDescending ConversionSortMode = "updated_at_descending"
+)
+
 // Coupon: The resource representing a Coupon.
 type Coupon struct {
 	// AmountOff: Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
@@ -5359,6 +5377,8 @@ type OrgDataset struct {
 	OrgID UUID `json:"org_id" yaml:"org_id" schema:"org_id,required"`
 	// SourceUri: Fully-qualified URI to the dataset location (e.g. s3://bucket/prefix).
 	SourceUri string `json:"source_uri" yaml:"source_uri" schema:"source_uri,required"`
+	// Status: Lifecycle status for this dataset.
+	Status OrgDatasetStatus `json:"status" yaml:"status" schema:"status,required"`
 	// StorageProvider: Storage provider identifier.
 	StorageProvider StorageProvider `json:"storage_provider" yaml:"storage_provider" schema:"storage_provider,required"`
 	// UpdatedAt: The date and time the dataset was last updated.
@@ -5490,6 +5510,18 @@ type OrgDatasetSource struct {
 	// Uri: Fully-qualified URI for the dataset contents.
 	Uri string `json:"uri" yaml:"uri" schema:"uri,required"`
 }
+
+// OrgDatasetStatus: Lifecycle status for org datasets.
+type OrgDatasetStatus string
+
+const (
+	// OrgDatasetStatusActive: Dataset is active and can be used.
+	OrgDatasetStatusActive OrgDatasetStatus = "active"
+	// OrgDatasetStatusDeleting: Dataset is being deleted and should not be mutated or used.
+	OrgDatasetStatusDeleting OrgDatasetStatus = "deleting"
+	// OrgDatasetStatusErrored: Dataset encountered sync errors and needs attention.
+	OrgDatasetStatusErrored OrgDatasetStatus = "errored"
+)
 
 // OrgDetails: The user-modifiable parts of an organization.
 type OrgDetails struct {
@@ -6076,6 +6108,18 @@ const (
 	// PostEffectTypeNoeffect represents the PostEffectType `"noeffect"`.
 	PostEffectTypeNoeffect PostEffectType = "noeffect"
 )
+
+// PriceUpsertRequest: Create or update a price row for a subscription plan.
+type PriceUpsertRequest struct {
+	// Active: Whether the price should be active.
+	Active bool `json:"active" yaml:"active" schema:"active"`
+	// BillingModel: Billing model (flat or per-user).
+	BillingModel SubscriptionPlanBillingModel `json:"billing_model" yaml:"billing_model" schema:"billing_model,required"`
+	// Cadence: Cadence for billing (day, week, month, year).
+	Cadence PlanInterval `json:"cadence" yaml:"cadence" schema:"cadence,required"`
+	// UnitAmount: Amount in USD.
+	UnitAmount float64 `json:"unit_amount" yaml:"unit_amount" schema:"unit_amount,required"`
+}
 
 // PrivacySettings: Privacy settings for an org or user.
 type PrivacySettings struct {
@@ -6688,6 +6732,48 @@ type StoreCouponParams struct {
 type Subscribe struct {
 	// Email: The email
 	Email string `json:"email" yaml:"email" schema:"email,required"`
+}
+
+// SubscriptionActionType: Indicates which kind of Stripe intent requires customer action during subscription creation.
+type SubscriptionActionType string
+
+const (
+	// SubscriptionActionTypePaymentIntent: The client secret belongs to a PaymentIntent (initial invoice payment).
+	SubscriptionActionTypePaymentIntent SubscriptionActionType = "payment_intent"
+	// SubscriptionActionTypeSetupIntent: The client secret belongs to a SetupIntent (trial or setup-only flow).
+	SubscriptionActionTypeSetupIntent SubscriptionActionType = "setup_intent"
+)
+
+// SubscriptionPlanBillingModel: Billing model for a modeling-app plan price.
+type SubscriptionPlanBillingModel string
+
+const (
+	// SubscriptionPlanBillingModelFlat: A flat amount charged every interval.
+	SubscriptionPlanBillingModelFlat SubscriptionPlanBillingModel = "flat"
+	// SubscriptionPlanBillingModelPerUser: A per-seat amount charged every interval.
+	SubscriptionPlanBillingModelPerUser SubscriptionPlanBillingModel = "per_user"
+)
+
+// SubscriptionPlanPriceRecord: Diesel model representing a row in `subscription_plan_prices`.
+type SubscriptionPlanPriceRecord struct {
+	// Active: Whether this price is currently active.
+	Active bool `json:"active" yaml:"active" schema:"active,required"`
+	// BillingModel: Billing model persisted in the database (`flat`, `per_user`, or `enterprise`).
+	BillingModel SubscriptionPlanBillingModel `json:"billing_model" yaml:"billing_model" schema:"billing_model,required"`
+	// Cadence: Billing cadence string (for example `month` or `year`).
+	Cadence PlanInterval `json:"cadence" yaml:"cadence" schema:"cadence,required"`
+	// CreatedAt: Timestamp when the price row was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// ID: Unique identifier for the plan price entry.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// StripePriceID: Stripe price identifier, when synchronized.
+	StripePriceID string `json:"stripe_price_id" yaml:"stripe_price_id" schema:"stripe_price_id"`
+	// SubscriptionPlanID: Foreign key referencing the parent plan.
+	SubscriptionPlanID UUID `json:"subscription_plan_id" yaml:"subscription_plan_id" schema:"subscription_plan_id,required"`
+	// UnitAmount: Optional monetary amount associated with the price row.
+	UnitAmount string `json:"unit_amount" yaml:"unit_amount" schema:"unit_amount"`
+	// UpdatedAt: Timestamp when the price row was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
 // SubscriptionTierFeature: A subscription tier feature.
@@ -7932,10 +8018,20 @@ type UserAdminDetails struct {
 	StripeDashboardUrl string `json:"stripe_dashboard_url" yaml:"stripe_dashboard_url" schema:"stripe_dashboard_url"`
 }
 
+// UserFeature is the type definition for a UserFeature.
+type UserFeature string
+
+const (
+	// UserFeatureProprietaryToKclConversionBeta represents the UserFeature `"proprietary_to_kcl_conversion_beta"`.
+	UserFeatureProprietaryToKclConversionBeta UserFeature = "proprietary_to_kcl_conversion_beta"
+	// UserFeatureNewSketchMode represents the UserFeature `"new_sketch_mode"`.
+	UserFeatureNewSketchMode UserFeature = "new_sketch_mode"
+)
+
 // UserFeatureEntry: Enabled features surfaced to end users.
 type UserFeatureEntry struct {
 	// ID: Stable identifier for the feature flag (snake_case).
-	ID string `json:"id" yaml:"id" schema:"id,required"`
+	ID UserFeature `json:"id" yaml:"id" schema:"id,required"`
 }
 
 // UserFeatureList: User features response payload.
@@ -8144,6 +8240,10 @@ type ZooProductSubscription struct {
 
 // ZooProductSubscriptions: A struct of Zoo product subscriptions.
 type ZooProductSubscriptions struct {
+	// ActionClientSecret: Client secret to complete SCA/3DS for the current subscription change, when applicable.
+	ActionClientSecret string `json:"action_client_secret" yaml:"action_client_secret" schema:"action_client_secret"`
+	// ActionType: Type of intent associated with `action_client_secret`.
+	ActionType SubscriptionActionType `json:"action_type" yaml:"action_type" schema:"action_type"`
 	// ModelingApp: A modeling app subscription.
 	ModelingApp ModelingAppSubscriptionTier `json:"modeling_app" yaml:"modeling_app" schema:"modeling_app,required"`
 }

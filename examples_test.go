@@ -1406,18 +1406,33 @@ func ExampleOrgService_UpdateDataset() {
 
 }
 
+// DeleteDataset: Delete a dataset owned by the caller's organization.
+// This is a destructive operation that: - requires org admin authentication and the dataset must belong to the caller's org. - fails with a 409 Conflict if the dataset is still attached to any custom model. - deletes Zoo-managed artifacts for this dataset (converted outputs and embeddings). - does **not** delete or modify the customer's source bucket/prefix.
+//
+// All internal artifact deletions are strict; if any cleanup fails, the request fails.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_DeleteDataset() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Org.DeleteDataset(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
 // ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-//
 //   - `limit`
-//
 //   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
+//   - `sortBy`: Supported sort modes for org dataset conversions.
 func ExampleOrgService_ListDatasetConversions() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -2172,28 +2187,6 @@ func ExampleOrgService_AdminDetailsList() {
 
 }
 
-// UpdateEnterprisePricingFor: Set the enterprise price for an organization.
-// You must be a Zoo admin to perform this request.
-//
-// Parameters
-//
-//   - `id`: A UUID usually v4 or v7
-//   - `body`: The price for a subscription tier.
-func ExampleOrgService_UpdateEnterprisePricingFor() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Org.UpdateEnterprisePricingFor(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // GetBalanceForAnyOrg: Get balance for an org.
 // This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified org.
 //
@@ -2231,6 +2224,28 @@ func ExamplePaymentService_UpdateBalanceForAnyOrg() {
 	}
 
 	result, err := client.Payment.UpdateBalanceForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateOrgSubscriptionForAnyOrg: Update the subscription for any org (admin override).
+// This endpoint requires authentication by a Zoo admin. It updates the subscription for the specified org.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: A struct of Zoo product subscriptions an organization can request.
+func ExamplePaymentService_UpdateOrgSubscriptionForAnyOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.UpdateOrgSubscriptionForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: "some-string", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -2285,6 +2300,28 @@ func ExampleStoreService_CreateCoupon() {
 	}
 
 	result, err := client.Store.CreateCoupon(kittycad.StoreCouponParams{PercentOff: 123})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpsertSubscriptionPlanPrice: Create or update a price for a subscription plan.
+// You must be a Zoo admin to perform this request.
+//
+// Parameters
+//
+//   - `slug`
+//   - `body`: Create or update a price row for a subscription plan.
+func ExamplePaymentService_UpsertSubscriptionPlanPrice() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.UpsertSubscriptionPlanPrice("some-string", kittycad.PriceUpsertRequest{Active: true, BillingModel: "", Cadence: "", UnitAmount: 123.45})
 	if err != nil {
 		panic(err)
 	}
@@ -3069,6 +3106,24 @@ func ExamplePaymentService_DeleteMethodForUser() {
 
 }
 
+// SetDefaultMethodForUser: Set the default payment method for your user.
+// This endpoint requires authentication by any Zoo user. It sets the default payment method for the authenticated user.
+//
+// Parameters
+//
+//   - `id`
+func ExamplePaymentService_SetDefaultMethodForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Payment.SetDefaultMethodForUser("some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
 // GetUserSubscription: Get the subscription for a user.
 // This endpoint requires authentication by any Zoo user. It gets the subscription for the user.
 func ExamplePaymentService_GetUserSubscription() {
@@ -3715,6 +3770,7 @@ func ExampleExecutorService_CreateTerm() {
 //
 //   - `conversationId`
 //   - `replay`
+//   - `pr`
 //   - `body`: The types of messages that can be sent by the client to the server.
 func ExampleMlService_CopilotWs() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -3723,7 +3779,7 @@ func ExampleMlService_CopilotWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Ml.CopilotWs(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, "")
+	ws, err := client.Ml.CopilotWs(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, 123, "")
 	if err != nil {
 		panic(err)
 	}
@@ -3865,6 +3921,7 @@ func ExampleMlService_ReasoningWs() {
 //   - `videoResHeight`
 //   - `videoResWidth`
 //   - `webrtc`
+//   - `pr`
 //   - `body`: The websocket messages the server receives.
 func ExampleModelingService_CommandsWs() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -3873,7 +3930,7 @@ func ExampleModelingService_CommandsWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Modeling.CommandsWs("some-string", 123, true, "some-string", kittycad.PostEffectTypePhosphor, "some-string", true, true, 123, 123, true, "")
+	ws, err := client.Modeling.CommandsWs("some-string", 123, true, "some-string", kittycad.PostEffectTypePhosphor, "some-string", true, true, 123, 123, true, 123, "")
 	if err != nil {
 		panic(err)
 	}
