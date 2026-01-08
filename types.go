@@ -3380,7 +3380,7 @@ type ModelingAppSubscriptionTier struct {
 	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value"`
 	// Name: The name of the tier.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
-	// PayAsYouGoAPICreditPrice: The price of an API credit (meaning 1 credit = 1 second of API usage).
+	// PayAsYouGoAPICreditPrice: The price of an API credit.
 	PayAsYouGoAPICreditPrice float64 `json:"pay_as_you_go_api_credit_price" yaml:"pay_as_you_go_api_credit_price" schema:"pay_as_you_go_api_credit_price"`
 	// Price: The price of the tier per month. If this is for an individual, this is the price they pay. If this is for an organization, this is the price the organization pays per member in the org. This is in USD.
 	Price any `json:"price" yaml:"price" schema:"price,required"`
@@ -8224,7 +8224,7 @@ type ZooProductSubscription struct {
 	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value"`
 	// Name: The name of the tier.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
-	// PayAsYouGoAPICreditPrice: The price of an API credit (meaning 1 credit = 1 second of API usage).
+	// PayAsYouGoAPICreditPrice: The price of an API credit.
 	PayAsYouGoAPICreditPrice float64 `json:"pay_as_you_go_api_credit_price" yaml:"pay_as_you_go_api_credit_price" schema:"pay_as_you_go_api_credit_price"`
 	// Price: The price of the tier per month. If this is for an individual, this is the price they pay. If this is for an organization, this is the price the organization pays per member in the org. This is in USD.
 	Price any `json:"price" yaml:"price" schema:"price,required"`
