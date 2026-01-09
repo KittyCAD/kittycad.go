@@ -3181,6 +3181,10 @@ const (
 	MlCopilotSystemCommandBye MlCopilotSystemCommand = "bye"
 	// MlCopilotSystemCommandInterrupt: Interrupt the current prompt that is being processed.
 	MlCopilotSystemCommandInterrupt MlCopilotSystemCommand = "interrupt"
+	// MlCopilotSystemCommandCancel: Cancel the current prompt that is being processed.
+	MlCopilotSystemCommandCancel MlCopilotSystemCommand = "cancel"
+	// MlCopilotSystemCommandAnswerNow: Answer now, which forces the AI to finish the current response.
+	MlCopilotSystemCommandAnswerNow MlCopilotSystemCommand = "answer_now"
 )
 
 // MlCopilotTool: The tools that can be used by the ML Copilot.
