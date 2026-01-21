@@ -2346,6 +2346,12 @@ type FileVolume struct {
 	Volume float64 `json:"volume" yaml:"volume" schema:"volume"`
 }
 
+// Files is the type definition for a Files.
+type Files struct {
+	// Files: The list of files being sent.
+	Files []MlCopilotFile `json:"files" yaml:"files" schema:"files,required"`
+}
+
 // Fillet is the type definition for a Fillet.
 type Fillet struct {
 	// Radius: The radius of the fillet.
@@ -3028,8 +3034,8 @@ const (
 // MlCopilotClientMessage: MlCopilotClientMessage: The types of messages that can be sent by the client to the server.
 type MlCopilotClientMessage any
 
-// MlCopilotClientMessageContent: The system message, which can be used to set the context or instructions for the AI.
-type MlCopilotClientMessageContent struct {
+// MlCopilotClientMessageAdditionalFiles: The system message, which can be used to set the context or instructions for the AI.
+type MlCopilotClientMessageAdditionalFiles struct {
 	// Command: The content of the system message.
 	Command MlCopilotSystemCommand `json:"command" yaml:"command" schema:"command,required"`
 	// Type:
@@ -3046,6 +3052,8 @@ type MlCopilotClientMessageHeaders struct {
 
 // MlCopilotClientMessageMlCopilotClientMessageHeaders: The user message, which contains the content of the user's input.
 type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
+	// AdditionalFiles: The user can send additional files like images or PDFs to provide more context.
+	AdditionalFiles []MlCopilotFile `json:"additional_files" yaml:"additional_files" schema:"additional_files"`
 	// Content: The content of the user's message.
 	Content string `json:"content" yaml:"content" schema:"content,required"`
 	// CurrentFiles: The current files in the project, if any. This can be used to provide context for the AI. This should be sent in binary format, if the files are not text files, like an imported binary file.
@@ -3064,6 +3072,16 @@ type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotFile: A file that can be transferred between the client and server.
+type MlCopilotFile struct {
+	// Data: The file contents as binary data.
+	Data []int `json:"data" yaml:"data" schema:"data,required"`
+	// Mimetype: The MIME type of the file (e.g., "image/png", "application/pdf", "model/stl").
+	Mimetype string `json:"mimetype" yaml:"mimetype" schema:"mimetype,required"`
+	// Name: The name of the file.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
 }
 
 // MlCopilotMode: The mode to have the agent work in.
@@ -3107,6 +3125,12 @@ type MlCopilotServerMessageError struct {
 type MlCopilotServerMessageErrorError struct {
 	// Detail: The error message.
 	Detail string `json:"detail" yaml:"detail" schema:"detail,required"`
+}
+
+// MlCopilotServerMessageFiles: Files sent from the server to the client.
+type MlCopilotServerMessageFiles struct {
+	// Files:
+	Files Files `json:"files" yaml:"files" schema:"files,required"`
 }
 
 // MlCopilotServerMessageInfo: Log / banner text.
