@@ -1727,11 +1727,11 @@ func (s *MlService) ListConversationsForUser(limit int, pageToken string, sortBy
 //
 // Parameters
 //
-//   - `codeOption`: Code option for running and verifying kcl.
+//   - `codeOption`: `CodeOption`
 //
 //     <details><summary>JSON schema</summary>
 //
-//     ```json { "title": "CodeOption", "description": "Code option for running and verifying kcl.", "type": "string", "enum": [ "parse", "execute", "cleanup", "mock_execute" ] } ``` </details>
+//     ```json { "type": "string", "enum": [ "parse", "mock_execute", "execute" ] } ``` </details>
 //
 //   - `body`
 func (s *MlService) CreateProprietaryToKcl(codeOption CodeOption, body *bytes.Buffer) (*KclModel, error) {
@@ -4471,7 +4471,7 @@ func (s *OrgService) DeleteSamlIdp() error {
 }
 
 // ListForOrg: List service accounts for your org.
-// This endpoint requires authentication by an org admin. It returns the service accounts for the organization.
+// This endpoint requires authentication by an org member. It returns the service accounts for the organization.
 //
 // The service accounts are returned in order of creation, with the most recently created service accounts first.
 //
@@ -4531,7 +4531,7 @@ func (s *ServiceAccountService) ListForOrg(limit int, pageToken string, sortBy C
 }
 
 // CreateForOrg: Create a new service account for your org.
-// This endpoint requires authentication by an org admin. It creates a new service account for the organization.
+// This endpoint requires authentication by an org member. It creates a new service account for the organization.
 //
 // Parameters
 //
@@ -4581,7 +4581,7 @@ func (s *ServiceAccountService) CreateForOrg(label string) (*ServiceAccount, err
 }
 
 // GetForOrg: Get an service account for your org.
-// This endpoint requires authentication by an org admin. It returns details of the requested service account for the organization.
+// This endpoint requires authentication by an org member. It returns details of the requested service account for the organization.
 //
 // Parameters
 //
@@ -4631,7 +4631,7 @@ func (s *ServiceAccountService) GetForOrg(token string) (*ServiceAccount, error)
 }
 
 // DeleteForOrg: Delete an service account for your org.
-// This endpoint requires authentication by an org admin. It deletes the requested service account for the organization.
+// This endpoint requires authentication by an org member. It deletes the requested service account for the organization.
 //
 // This endpoint does not actually delete the service account from the database. It merely marks the token as invalid. We still want to keep the service account in the database for historical purposes.
 //
