@@ -3116,6 +3116,8 @@ type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 type MlCopilotFile struct {
 	// Data: The file contents as binary data.
 	Data []int `json:"data" yaml:"data" schema:"data,required"`
+	// Metadata: Optional metadata associated with the file.
+	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Mimetype: The MIME type of the file (e.g., "image/png", "application/pdf", "model/stl").
 	Mimetype string `json:"mimetype" yaml:"mimetype" schema:"mimetype,required"`
 	// Name: The name of the file.
