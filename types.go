@@ -3116,6 +3116,8 @@ type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 type MlCopilotFile struct {
 	// Data: The file contents as binary data.
 	Data []int `json:"data" yaml:"data" schema:"data,required"`
+	// DataRef: Optional blob storage path for the file contents.
+	DataRef string `json:"data_ref" yaml:"data_ref" schema:"data_ref"`
 	// Metadata: Optional metadata associated with the file.
 	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Mimetype: The MIME type of the file (e.g., "image/png", "application/pdf", "model/stl").
@@ -3198,7 +3200,7 @@ type MlCopilotServerMessageReasoning struct {
 }
 
 // MlCopilotServerMessageReplay: Replay containing raw bytes for previously-saved messages for a conversation. Includes server messages and client `User` messages.
-// Invariants: - Includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Also includes client `User` messages. - The following are NEVER included: `SessionData`, `ConversationId`, `Delta`, or `BackendShutdown`. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
+// Invariants: - Includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Also includes client `User` messages. - The following are NEVER included: `SessionData`, `ConversationId`, `Delta`, or `BackendShutdown`. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
 //
 // Wire format: - Each element is canonical serialized bytes (typically JSON) for either a `MlCopilotServerMessage` or a `MlCopilotClientMessage::User`. - When delivered as an initial replay over the websocket (upon `?replay=true&conversation_id=<uuid>`), the server sends a single WebSocket Binary frame containing a MsgPack-encoded document of this enum: `Replay { messages }`.
 type MlCopilotServerMessageReplay struct {
