@@ -2919,7 +2919,7 @@ func (s *OrgService) ListDatasets(limit int, pageToken string, sortBy CreatedAtS
 
 }
 
-// CreateDataset: Register a new S3 dataset that Zoo can assume into on behalf of the caller's org.
+// CreateDataset: Register a new org dataset.
 // If the dataset lives in S3, call `/org/dataset/s3/policies` first so you can generate the trust, permission, and bucket policies scoped to your dataset before invoking this endpoint.
 //
 // Parameters
@@ -3363,6 +3363,60 @@ func (s *OrgService) GetDatasetConversionStats(id UUID) (*OrgDatasetConversionSt
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded OrgDatasetConversionStatsResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UploadDatasetFiles: Upload source files into a Zoo-managed dataset.
+// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Paths are normalized and must be relative.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`
+func (s *OrgService) UploadDatasetFiles(id UUID, body *bytes.Buffer) (*UploadOrgDatasetFilesResponse, error) {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/uploads"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, body)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "multipart/form-data")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded UploadOrgDatasetFilesResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

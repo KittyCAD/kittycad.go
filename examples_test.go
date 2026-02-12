@@ -1344,7 +1344,7 @@ func ExampleOrgService_ListDatasets() {
 
 }
 
-// CreateDataset: Register a new S3 dataset that Zoo can assume into on behalf of the caller's org.
+// CreateDataset: Register a new org dataset.
 // If the dataset lives in S3, call `/org/dataset/s3/policies` first so you can generate the trust, permission, and bucket policies scoped to your dataset before invoking this endpoint.
 //
 // Parameters
@@ -1518,6 +1518,30 @@ func ExampleOrgService_GetDatasetConversionStats() {
 	}
 
 	result, err := client.Org.GetDatasetConversionStats(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UploadDatasetFiles: Upload source files into a Zoo-managed dataset.
+// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Paths are normalized and must be relative.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`
+func ExampleOrgService_UploadDatasetFiles() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	buf := new(bytes.Buffer)
+
+	result, err := client.Org.UploadDatasetFiles(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), buf)
 	if err != nil {
 		panic(err)
 	}

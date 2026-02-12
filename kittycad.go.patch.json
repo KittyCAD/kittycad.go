@@ -465,7 +465,7 @@
  },
  {
   "value": {
-   "example": "// CreateDataset: Register a new S3 dataset that Zoo can assume into on behalf of the caller's org.\n// \n// If the dataset lives in S3, call `/org/dataset/s3/policies` first so you can generate the trust, permission, and bucket policies scoped to your dataset before invoking this endpoint.\n// \n// \n// Parameters\n// \n// \t- `body`: Payload for creating an org dataset.\n// \n// CreateDataset: Register a new S3 dataset that Zoo can assume into on behalf of the caller's org.\n// If the dataset lives in S3, call `/org/dataset/s3/policies` first so you can generate the trust, permission, and bucket policies scoped to your dataset before invoking this endpoint.\n//\n// Parameters\n//\n//   - `body`: Payload for creating an org dataset.\nfunc ExampleOrgService_CreateDataset() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.CreateDataset(kittycad.CreateOrgDataset{Name: \"some-string\", Source: kittycad.OrgDatasetSource{AccessRoleArn: \"some-string\", Provider: \"\", Uri: \"some-string\"}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateDataset: Register a new org dataset.\n// \n// If the dataset lives in S3, call `/org/dataset/s3/policies` first so you can generate the trust, permission, and bucket policies scoped to your dataset before invoking this endpoint.\n// \n// \n// Parameters\n// \n// \t- `body`: Payload for creating an org dataset.\n// \n// CreateDataset: Register a new org dataset.\n// If the dataset lives in S3, call `/org/dataset/s3/policies` first so you can generate the trust, permission, and bucket policies scoped to your dataset before invoking this endpoint.\n//\n// Parameters\n//\n//   - `body`: Payload for creating an org dataset.\nfunc ExampleOrgService_CreateDataset() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.CreateDataset(kittycad.CreateOrgDataset{Name: \"some-string\", Source: kittycad.OrgDatasetSource{AccessRoleArn: \"some-string\", Provider: \"\", Uri: \"some-string\"}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.CreateDataset"
   },
   "op": "add",
@@ -534,6 +534,14 @@
   },
   "op": "add",
   "path": "/paths/~1org~1datasets~1{id}~1stats/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// UploadDatasetFiles: Upload source files into a Zoo-managed dataset.\n// \n// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Paths are normalized and must be relative.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`\n// \n// UploadDatasetFiles: Upload source files into a Zoo-managed dataset.\n// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Paths are normalized and must be relative.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`\nfunc ExampleOrgService_UploadDatasetFiles() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tbuf := new(bytes.Buffer)\n\n\tresult, err := client.Org.UploadDatasetFiles(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), buf)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.UploadDatasetFiles"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}~1uploads/post/x-go"
  },
  {
   "value": {

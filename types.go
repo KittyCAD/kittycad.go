@@ -3307,7 +3307,7 @@ type MlPrompt struct {
 	Metadata MlPromptMetadata `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// ModelVersion: The version of the model.
 	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
-	// OutputFile: The output file. In the case of TextToCad this is a link to a file in a GCP bucket.
+	// OutputFile: The output directory reference for generated files. Stored as `blob://bucket/key` for new rows; legacy rows may contain a key-only value.
 	OutputFile string `json:"output_file" yaml:"output_file" schema:"output_file"`
 	// ProjectName: The name of the project, if any. This allows us to group prompts together that come from the same project and user.
 	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
@@ -5611,7 +5611,7 @@ type OrgDatasetFileConversion struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// ImporterVersion: Tracks which version the file was processed with. If conversion failed due to an internal error, then it will be retried on converter version change.
 	ImporterVersion string `json:"importer_version" yaml:"importer_version" schema:"importer_version"`
-	// OutputPath: Path where the processed file output is stored, when available.
+	// OutputPath: Location reference where the processed file output is stored, when available. New records use `blob://bucket/key`; legacy records may still contain key-only values.
 	OutputPath string `json:"output_path" yaml:"output_path" schema:"output_path"`
 	// StartedAt: The date and time the conversion started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
@@ -5697,12 +5697,12 @@ type OrgDatasetResultsPage struct {
 
 // OrgDatasetSource: Details for accessing an org dataset.
 type OrgDatasetSource struct {
-	// AccessRoleArn: Identity we assume when accessing the dataset. Must be configured with the org's `aws_external_id` per AWS confused deputy guidance. See <https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html>.
-	AccessRoleArn string `json:"access_role_arn" yaml:"access_role_arn" schema:"access_role_arn,required"`
+	// AccessRoleArn: Identity we assume when accessing the dataset. Required when `provider` is `s3`; ignored for Zoo-managed datasets. Must be configured with the org's `aws_external_id` per AWS confused deputy guidance. See <https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html>.
+	AccessRoleArn string `json:"access_role_arn" yaml:"access_role_arn" schema:"access_role_arn"`
 	// Provider: Storage provider identifier.
 	Provider StorageProvider `json:"provider" yaml:"provider" schema:"provider,required"`
-	// Uri: Fully-qualified URI for the dataset contents.
-	Uri string `json:"uri" yaml:"uri" schema:"uri,required"`
+	// Uri: Fully-qualified URI for the dataset contents. Required when `provider` is `s3`; ignored for Zoo-managed datasets.
+	Uri string `json:"uri" yaml:"uri" schema:"uri"`
 }
 
 // OrgDatasetStatus: Lifecycle status for org datasets.
@@ -6962,6 +6962,8 @@ type StorageProvider string
 const (
 	// StorageProviderS3: Amazon Simple Storage Service.
 	StorageProviderS3 StorageProvider = "s3"
+	// StorageProviderZooManaged: Zoo-managed dataset storage backed by the API's internal object store.
+	StorageProviderZooManaged StorageProvider = "zoo_managed"
 )
 
 // StoreCouponParams: The parameters for a new store coupon.
@@ -8196,6 +8198,14 @@ type UpdateUser struct {
 	LastName string `json:"last_name" yaml:"last_name" schema:"last_name"`
 	// Phone: The user's phone number.
 	Phone string `json:"phone" yaml:"phone" schema:"phone"`
+}
+
+// UploadOrgDatasetFilesResponse: Response payload for uploading files into a Zoo-managed dataset.
+type UploadOrgDatasetFilesResponse struct {
+	// QueuedConversions: Number of conversion jobs newly queued.
+	QueuedConversions int `json:"queued_conversions" yaml:"queued_conversions" schema:"queued_conversions,required"`
+	// UploadedFiles: Number of files accepted and stored.
+	UploadedFiles int `json:"uploaded_files" yaml:"uploaded_files" schema:"uploaded_files,required"`
 }
 
 // User: A user.
