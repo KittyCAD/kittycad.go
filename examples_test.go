@@ -1492,13 +1492,39 @@ func ExampleOrgService_RetryDatasetConversion() {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
+//   - `statuses`
 func ExampleOrgService_RescanDataset() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Org.RescanDataset(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.Org.RescanDataset(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// SearchDatasetConversions: Search dataset conversions by conversion ID or file path.
+// Supports partial and full matching and may return multiple results.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `limit`
+//   - `pageToken`
+//   - `q`
+//   - `sortBy`: Supported sort modes for org dataset conversions.
+func ExampleOrgService_SearchDatasetConversions() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.SearchDatasetConversions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "some-string", "")
 	if err != nil {
 		panic(err)
 	}
