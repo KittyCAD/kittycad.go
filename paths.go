@@ -3280,7 +3280,8 @@ func (s *OrgService) RetryDatasetConversion(conversionId UUID, id UUID) (*OrgDat
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-func (s *OrgService) RescanDataset(id UUID) (*OrgDataset, error) {
+//   - `statuses`
+func (s *OrgService) RescanDataset(id UUID, statuses string) (*OrgDataset, error) {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/rescan"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3293,7 +3294,8 @@ func (s *OrgService) RescanDataset(id UUID) (*OrgDataset, error) {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id.String(),
+		"id":       id.String(),
+		"statuses": statuses,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -3315,6 +3317,64 @@ func (s *OrgService) RescanDataset(id UUID) (*OrgDataset, error) {
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded OrgDataset
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// SearchDatasetConversions: Search dataset conversions by conversion ID or file path.
+// Supports partial and full matching and may return multiple results.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `limit`
+//   - `pageToken`
+//   - `q`
+//   - `sortBy`: Supported sort modes for org dataset conversions.
+func (s *OrgService) SearchDatasetConversions(id UUID, limit int, pageToken string, q string, sortBy ConversionSortMode) (*OrgDatasetFileConversionSummaryResultsPage, error) {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/search/conversions"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":         id.String(),
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"q":          q,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded OrgDatasetFileConversionSummaryResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

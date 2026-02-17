@@ -521,11 +521,19 @@
  },
  {
   "value": {
-   "example": "// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_RescanDataset() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.RescanDataset(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `statuses`\n// \n// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `statuses`\nfunc ExampleOrgService_RescanDataset() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.RescanDataset(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.RescanDataset"
   },
   "op": "add",
   "path": "/paths/~1org~1datasets~1{id}~1rescan/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// SearchDatasetConversions: Search dataset conversions by conversion ID or file path.\n// \n// Supports partial and full matching and may return multiple results.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `pageToken`\n// \t- `q`\n// \t- `sortBy`: Supported sort modes for org dataset conversions.\n// \n// SearchDatasetConversions: Search dataset conversions by conversion ID or file path.\n// Supports partial and full matching and may return multiple results.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `limit`\n//   - `pageToken`\n//   - `q`\n//   - `sortBy`: Supported sort modes for org dataset conversions.\nfunc ExampleOrgService_SearchDatasetConversions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.SearchDatasetConversions(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\", \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.SearchDatasetConversions"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}~1search~1conversions/get/x-go"
  },
  {
   "value": {
