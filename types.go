@@ -5615,7 +5615,7 @@ type OrgDatasetFileConversionDetails struct {
 	Metadata any `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// OriginalSnapshotImages: Snapshot images for the original source model.
 	OriginalSnapshotImages []OrgDatasetSnapshotImage `json:"original_snapshot_images" yaml:"original_snapshot_images" schema:"original_snapshot_images,required"`
-	// Output: Plain-text contents of the converted artifact.
+	// Output: Plain-text contents of the converted artifact, when available.
 	Output string `json:"output" yaml:"output" schema:"output"`
 	// Phase: Current step in the conversion pipeline.
 	Phase OrgDatasetFileConversionPhase `json:"phase" yaml:"phase" schema:"phase,required"`
