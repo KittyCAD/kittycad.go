@@ -3287,11 +3287,23 @@ const (
 	MlFeedbackRejected MlFeedback = "rejected"
 )
 
-// MlPrompt: A ML prompt.
-type MlPrompt struct {
+// MlPromptMetadata: Metadata for a ML prompt.
+type MlPromptMetadata struct {
+	// Code: Code for the model.
+	Code string `json:"code" yaml:"code" schema:"code"`
+	// OriginalSourceCode: The original source code for the model.
+	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code"`
+	// SourceRanges: The source ranges the user suggested to change.
+	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
+	// UpstreamConversationID: The upstream conversation ID, if any.
+	UpstreamConversationID string `json:"upstream_conversation_id" yaml:"upstream_conversation_id" schema:"upstream_conversation_id"`
+}
+
+// MlPromptResponse: ML prompt response payload for admin endpoints. This schema intentionally excludes internal linkage fields.
+type MlPromptResponse struct {
 	// CompletedAt: When the prompt was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
-	// ConversationID: The id for the conversation related to this prompt.
+	// ConversationID: The conversation associated with this prompt, if any.
 	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id"`
 	// CreatedAt: The date and time the ML prompt was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
@@ -3307,13 +3319,13 @@ type MlPrompt struct {
 	Metadata MlPromptMetadata `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// ModelVersion: The version of the model.
 	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
-	// OutputFile: The output directory reference for generated files. Stored as `blob://bucket/key` for new rows; legacy rows may contain a key-only value.
+	// OutputFile: The output directory reference for generated files.
 	OutputFile string `json:"output_file" yaml:"output_file" schema:"output_file"`
-	// ProjectName: The name of the project, if any. This allows us to group prompts together that come from the same project and user.
+	// ProjectName: The name of the project, if any.
 	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
 	// Prompt: The prompt.
 	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
-	// Seconds: Sum of EndOfStream durations, in seconds. Nullable to allow lazy backfill.
+	// Seconds: Sum of EndOfStream durations, in seconds.
 	Seconds int `json:"seconds" yaml:"seconds" schema:"seconds"`
 	// StartedAt: When the prompt was started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
@@ -3327,22 +3339,10 @@ type MlPrompt struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
-// MlPromptMetadata: Metadata for a ML prompt.
-type MlPromptMetadata struct {
-	// Code: Code for the model.
-	Code string `json:"code" yaml:"code" schema:"code"`
-	// OriginalSourceCode: The original source code for the model.
-	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code"`
-	// SourceRanges: The source ranges the user suggested to change.
-	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
-	// UpstreamConversationID: The upstream conversation ID, if any.
-	UpstreamConversationID string `json:"upstream_conversation_id" yaml:"upstream_conversation_id" schema:"upstream_conversation_id"`
-}
-
-// MlPromptResultsPage: A single page of results
-type MlPromptResultsPage struct {
+// MlPromptResponseResultsPage: A single page of results
+type MlPromptResponseResultsPage struct {
 	// Items: list of items on this page of results
-	Items []MlPrompt `json:"items" yaml:"items" schema:"items,required"`
+	Items []MlPromptResponse `json:"items" yaml:"items" schema:"items,required"`
 	// NextPage: token used to fetch the next page of results (if any)
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
@@ -5643,25 +5643,17 @@ type OrgDatasetFileConversionPhase string
 const (
 	// OrgDatasetFileConversionPhaseQueued: Phase index `0`: waiting for a worker to begin processing this conversion.
 	OrgDatasetFileConversionPhaseQueued OrgDatasetFileConversionPhase = "queued"
-	// OrgDatasetFileConversionPhaseZooGeneratedOriginalMetadata: Phase index `1`: generating original file metadata.
-	OrgDatasetFileConversionPhaseZooGeneratedOriginalMetadata OrgDatasetFileConversionPhase = "zoo_generated_original_metadata"
-	// OrgDatasetFileConversionPhaseSnapshotOriginal: Phase index `2`: creating a snapshot of the original source model.
+	// OrgDatasetFileConversionPhaseSnapshotOriginal: Phase index `1`: creating a snapshot of the original source model.
 	OrgDatasetFileConversionPhaseSnapshotOriginal OrgDatasetFileConversionPhase = "snapshot_original"
-	// OrgDatasetFileConversionPhaseUserProvidedMetadata: Phase index `3`: discovering optional user-provided metadata files (`.json`, `.yaml`, `.yml`, `.toml`, `.txt`) stored next to the source CAD file.
-	OrgDatasetFileConversionPhaseUserProvidedMetadata OrgDatasetFileConversionPhase = "user_provided_metadata"
-	// OrgDatasetFileConversionPhaseConvertRawKcl: Phase index `4`: converting the source model into raw KCL.
+	// OrgDatasetFileConversionPhaseConvertRawKcl: Phase index `2`: converting the source model into raw KCL.
 	OrgDatasetFileConversionPhaseConvertRawKcl OrgDatasetFileConversionPhase = "convert_raw_kcl"
-	// OrgDatasetFileConversionPhaseZooGeneratedRawKclMetadata: Phase index `5`: generating raw KCL metadata.
-	OrgDatasetFileConversionPhaseZooGeneratedRawKclMetadata OrgDatasetFileConversionPhase = "zoo_generated_raw_kcl_metadata"
-	// OrgDatasetFileConversionPhaseSnapshotRawKcl: Phase index `6`: creating a snapshot of the raw KCL result.
+	// OrgDatasetFileConversionPhaseSnapshotRawKcl: Phase index `3`: creating a snapshot of the raw KCL result.
 	OrgDatasetFileConversionPhaseSnapshotRawKcl OrgDatasetFileConversionPhase = "snapshot_raw_kcl"
-	// OrgDatasetFileConversionPhaseSalon: Phase index `7`: running the salon/refactor step that produces polished KCL.
+	// OrgDatasetFileConversionPhaseSalon: Phase index `4`: running the salon/refactor step that produces polished KCL.
 	OrgDatasetFileConversionPhaseSalon OrgDatasetFileConversionPhase = "salon"
-	// OrgDatasetFileConversionPhaseZooGeneratedSalonKclMetadata: Phase index `8`: generating salon KCL metadata.
-	OrgDatasetFileConversionPhaseZooGeneratedSalonKclMetadata OrgDatasetFileConversionPhase = "zoo_generated_salon_kcl_metadata"
-	// OrgDatasetFileConversionPhaseSnapshotSalonKcl: Phase index `9`: creating a snapshot of the salon/refactored KCL.
+	// OrgDatasetFileConversionPhaseSnapshotSalonKcl: Phase index `5`: creating a snapshot of the salon/refactored KCL.
 	OrgDatasetFileConversionPhaseSnapshotSalonKcl OrgDatasetFileConversionPhase = "snapshot_salon_kcl"
-	// OrgDatasetFileConversionPhaseCompleted: Phase index `10`: conversion finished successfully.
+	// OrgDatasetFileConversionPhaseCompleted: Phase index `6`: conversion finished successfully.
 	OrgDatasetFileConversionPhaseCompleted OrgDatasetFileConversionPhase = "completed"
 )
 
