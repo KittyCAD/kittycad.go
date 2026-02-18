@@ -1427,11 +1427,12 @@ func ExampleOrgService_DeleteDataset() {
 }
 
 // ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
-// This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed.
+// This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed. Use the optional `filter` query parameter to filter results (example: `?filter=status:success`).
 //
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
+//   - `filter`
 //   - `limit`
 //   - `pageToken`
 //   - `sortBy`: Supported sort modes for org dataset conversions.
@@ -1441,7 +1442,7 @@ func ExampleOrgService_ListDatasetConversions() {
 		panic(err)
 	}
 
-	result, err := client.Org.ListDatasetConversions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "")
+	result, err := client.Org.ListDatasetConversions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "some-string", 123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}

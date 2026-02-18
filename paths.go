@@ -3123,15 +3123,16 @@ func (s *OrgService) DeleteDataset(id UUID) error {
 }
 
 // ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
-// This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed.
+// This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed. Use the optional `filter` query parameter to filter results (example: `?filter=status:success`).
 //
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
+//   - `filter`
 //   - `limit`
 //   - `pageToken`
 //   - `sortBy`: Supported sort modes for org dataset conversions.
-func (s *OrgService) ListDatasetConversions(id UUID, limit int, pageToken string, sortBy ConversionSortMode) (*OrgDatasetFileConversionSummaryResultsPage, error) {
+func (s *OrgService) ListDatasetConversions(id UUID, filter string, limit int, pageToken string, sortBy ConversionSortMode) (*OrgDatasetFileConversionSummaryResultsPage, error) {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/conversions"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3145,6 +3146,7 @@ func (s *OrgService) ListDatasetConversions(id UUID, limit int, pageToken string
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
 		"id":         id.String(),
+		"filter":     filter,
 		"limit":      strconv.Itoa(limit),
 		"page_token": pageToken,
 		"sort_by":    string(sortBy),
