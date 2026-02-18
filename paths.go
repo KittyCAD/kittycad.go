@@ -1554,7 +1554,7 @@ func (s *HiddenService) Logout() error {
 //   - `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
 //     Currently, we only support scanning in ascending order.
-func (s *MlService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSortMode) (*MlPromptResultsPage, error) {
+func (s *MlService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSortMode) (*MlPromptResponseResultsPage, error) {
 	// Create the url.
 	path := "/ml-prompts"
 	targetURL := resolveRelative(s.client.server, path)
@@ -1590,7 +1590,7 @@ func (s *MlService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSor
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded MlPromptResultsPage
+	var decoded MlPromptResponseResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -1606,7 +1606,7 @@ func (s *MlService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSor
 // Parameters
 //
 //   - `id`
-func (s *MlService) GetPrompt(id UUID) (*MlPrompt, error) {
+func (s *MlService) GetPrompt(id UUID) (*MlPromptResponse, error) {
 	// Create the url.
 	path := "/ml-prompts/{{.id}}"
 	targetURL := resolveRelative(s.client.server, path)
@@ -1640,7 +1640,7 @@ func (s *MlService) GetPrompt(id UUID) (*MlPrompt, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded MlPrompt
+	var decoded MlPromptResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
