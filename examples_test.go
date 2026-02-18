@@ -1427,6 +1427,8 @@ func ExampleOrgService_DeleteDataset() {
 }
 
 // ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
+// This endpoint returns lightweight conversion summaries only (including `phase` and `phase_index`), and intentionally omits converted KCL output and snapshot image payloads for speed.
+//
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
@@ -1449,6 +1451,8 @@ func ExampleOrgService_ListDatasetConversions() {
 }
 
 // GetDatasetConversion: Fetch the metadata and converted output for a single dataset conversion.
+// Unlike list/search endpoints, this returns the full conversion payload: latest output text plus decoded snapshot image payloads for original, raw-KCL, and salon-KCL stages.
+//
 // Parameters
 //
 //   - `conversionId`: A UUID usually v4 or v7
@@ -1468,43 +1472,37 @@ func ExampleOrgService_GetDatasetConversion() {
 
 }
 
-// RetryDatasetConversion: Retry a specific dataset conversion that failed previously for the caller's org.
+// RetriggerDatasetConversion: Retrigger a specific dataset conversion for the caller's org.
 // Parameters
 //
 //   - `conversionId`: A UUID usually v4 or v7
 //   - `id`: A UUID usually v4 or v7
-func ExampleOrgService_RetryDatasetConversion() {
+func ExampleOrgService_RetriggerDatasetConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Org.RetryDatasetConversion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
-	if err != nil {
+	if err := client.Org.RetriggerDatasetConversion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("%#v", result)
-
 }
 
-// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.
+// RetriggerDataset: Request a retrigger of conversions for a dataset that belongs to the caller's org.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `statuses`
-func ExampleOrgService_RescanDataset() {
+func ExampleOrgService_RetriggerDataset() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Org.RescanDataset(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "some-string")
-	if err != nil {
+	if err := client.Org.RetriggerDataset(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "some-string"); err != nil {
 		panic(err)
 	}
-
-	fmt.Printf("%#v", result)
 
 }
 

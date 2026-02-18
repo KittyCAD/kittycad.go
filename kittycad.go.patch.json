@@ -497,7 +497,7 @@
  },
  {
   "value": {
-   "example": "// ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported sort modes for org dataset conversions.\n// \n// ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `limit`\n//   - `pageToken`\n//   - `sortBy`: Supported sort modes for org dataset conversions.\nfunc ExampleOrgService_ListDatasetConversions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.ListDatasetConversions(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.\n// \n// This endpoint returns lightweight conversion summaries only (including `phase` and `phase_index`), and intentionally omits converted KCL output and snapshot image payloads for speed.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported sort modes for org dataset conversions.\n// \n// ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.\n// This endpoint returns lightweight conversion summaries only (including `phase` and `phase_index`), and intentionally omits converted KCL output and snapshot image payloads for speed.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `limit`\n//   - `pageToken`\n//   - `sortBy`: Supported sort modes for org dataset conversions.\nfunc ExampleOrgService_ListDatasetConversions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.ListDatasetConversions(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.ListDatasetConversions"
   },
   "op": "add",
@@ -505,7 +505,7 @@
  },
  {
   "value": {
-   "example": "// GetDatasetConversion: Fetch the metadata and converted output for a single dataset conversion.\n// \n// \n// Parameters\n// \n// \t- `conversionId`: A UUID usually v4 or v7\n// \t- `id`: A UUID usually v4 or v7\n// \n// GetDatasetConversion: Fetch the metadata and converted output for a single dataset conversion.\n// Parameters\n//\n//   - `conversionId`: A UUID usually v4 or v7\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_GetDatasetConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetDatasetConversion(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetDatasetConversion: Fetch the metadata and converted output for a single dataset conversion.\n// \n// Unlike list/search endpoints, this returns the full conversion payload: latest output text plus decoded snapshot image payloads for original, raw-KCL, and salon-KCL stages.\n// \n// \n// Parameters\n// \n// \t- `conversionId`: A UUID usually v4 or v7\n// \t- `id`: A UUID usually v4 or v7\n// \n// GetDatasetConversion: Fetch the metadata and converted output for a single dataset conversion.\n// Unlike list/search endpoints, this returns the full conversion payload: latest output text plus decoded snapshot image payloads for original, raw-KCL, and salon-KCL stages.\n//\n// Parameters\n//\n//   - `conversionId`: A UUID usually v4 or v7\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_GetDatasetConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetDatasetConversion(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.GetDatasetConversion"
   },
   "op": "add",
@@ -513,19 +513,19 @@
  },
  {
   "value": {
-   "example": "// RetryDatasetConversion: Retry a specific dataset conversion that failed previously for the caller's org.\n// \n// \n// Parameters\n// \n// \t- `conversionId`: A UUID usually v4 or v7\n// \t- `id`: A UUID usually v4 or v7\n// \n// RetryDatasetConversion: Retry a specific dataset conversion that failed previously for the caller's org.\n// Parameters\n//\n//   - `conversionId`: A UUID usually v4 or v7\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_RetryDatasetConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.RetryDatasetConversion(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.RetryDatasetConversion"
+   "example": "// RetriggerDatasetConversion: Retrigger a specific dataset conversion for the caller's org.\n// \n// \n// Parameters\n// \n// \t- `conversionId`: A UUID usually v4 or v7\n// \t- `id`: A UUID usually v4 or v7\n// \n// RetriggerDatasetConversion: Retrigger a specific dataset conversion for the caller's org.\n// Parameters\n//\n//   - `conversionId`: A UUID usually v4 or v7\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_RetriggerDatasetConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Org.RetriggerDatasetConversion(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.RetriggerDatasetConversion"
   },
   "op": "add",
-  "path": "/paths/~1org~1datasets~1{id}~1conversions~1{conversion_id}~1retry/post/x-go"
+  "path": "/paths/~1org~1datasets~1{id}~1conversions~1{conversion_id}~1retrigger/post/x-go"
  },
  {
   "value": {
-   "example": "// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `statuses`\n// \n// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `statuses`\nfunc ExampleOrgService_RescanDataset() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.RescanDataset(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.RescanDataset"
+   "example": "// RetriggerDataset: Request a retrigger of conversions for a dataset that belongs to the caller's org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `statuses`\n// \n// RetriggerDataset: Request a retrigger of conversions for a dataset that belongs to the caller's org.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `statuses`\nfunc ExampleOrgService_RetriggerDataset() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Org.RetriggerDataset(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.RetriggerDataset"
   },
   "op": "add",
-  "path": "/paths/~1org~1datasets~1{id}~1rescan/post/x-go"
+  "path": "/paths/~1org~1datasets~1{id}~1retrigger/post/x-go"
  },
  {
   "value": {

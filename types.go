@@ -5593,43 +5593,39 @@ type OrgDatasetConversionStatsResponse struct {
 	Total int `json:"total" yaml:"total" schema:"total,required"`
 }
 
-// OrgDatasetFileConversion: Tracks state of `OrgDataset` file conversions.
-type OrgDatasetFileConversion struct {
-	// CompletedAt: The date and time the conversion got its current `status`.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
-	// CreatedAt: The date and time the conversion was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// DatasetID: The ID of the dataset this file is being converted from.
-	DatasetID UUID `json:"dataset_id" yaml:"dataset_id" schema:"dataset_id,required"`
-	// FileEtag: File's ETag from dataset bucket, for detecting whether a file needs to be converted again can be reused when creating new custom ML models.
-	FileEtag string `json:"file_etag" yaml:"file_etag" schema:"file_etag,required"`
-	// FilePath: Location within dataset `path`.
-	FilePath string `json:"file_path" yaml:"file_path" schema:"file_path,required"`
-	// FileSize: Number of bytes, for measuring throughput and debugging conversion errors.
-	FileSize int `json:"file_size" yaml:"file_size" schema:"file_size,required"`
-	// ID: The unique identifier for the conversion.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// ImporterVersion: Tracks which version the file was processed with. If conversion failed due to an internal error, then it will be retried on converter version change.
-	ImporterVersion string `json:"importer_version" yaml:"importer_version" schema:"importer_version"`
-	// OutputPath: Location reference where the processed file output is stored, when available. New records use `blob://bucket/key`; legacy records may still contain key-only values.
-	OutputPath string `json:"output_path" yaml:"output_path" schema:"output_path"`
-	// StartedAt: The date and time the conversion started.
-	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
-	// Status: Conversion status.
-	Status OrgDatasetFileConversionStatus `json:"status" yaml:"status" schema:"status,required"`
-	// StatusMessage: Details associated with `status`.
-	StatusMessage string `json:"status_message" yaml:"status_message" schema:"status_message"`
-	// UpdatedAt: The date and time the conversion was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-}
-
-// OrgDatasetFileConversionDetails: Detailed response that bundles conversion metadata with the converted file contents.
+// OrgDatasetFileConversionDetails: Detailed response that bundles conversion metadata with converted file and snapshot contents.
 type OrgDatasetFileConversionDetails struct {
 	// Conversion: Conversion metadata without storage pointers.
 	Conversion OrgDatasetFileConversionSummary `json:"conversion" yaml:"conversion" schema:"conversion,required"`
+	// OriginalSnapshotImages: Snapshot images for the original source model.
+	OriginalSnapshotImages []OrgDatasetSnapshotImage `json:"original_snapshot_images" yaml:"original_snapshot_images" schema:"original_snapshot_images,required"`
 	// Output: Plain-text contents of the converted artifact.
 	Output string `json:"output" yaml:"output" schema:"output,required"`
+	// RawKclSnapshotImages: Snapshot images for the raw KCL model.
+	RawKclSnapshotImages []OrgDatasetSnapshotImage `json:"raw_kcl_snapshot_images" yaml:"raw_kcl_snapshot_images" schema:"raw_kcl_snapshot_images,required"`
+	// SalonKclSnapshotImages: Snapshot images for the salon/refactored KCL model.
+	SalonKclSnapshotImages []OrgDatasetSnapshotImage `json:"salon_kcl_snapshot_images" yaml:"salon_kcl_snapshot_images" schema:"salon_kcl_snapshot_images,required"`
 }
+
+// OrgDatasetFileConversionPhase: Fine-grained pipeline stage for org dataset file conversions.
+type OrgDatasetFileConversionPhase string
+
+const (
+	// OrgDatasetFileConversionPhaseQueued: Phase index `0`: waiting for a worker to begin processing this conversion.
+	OrgDatasetFileConversionPhaseQueued OrgDatasetFileConversionPhase = "queued"
+	// OrgDatasetFileConversionPhaseSnapshotOriginal: Phase index `1`: creating a snapshot of the original source model.
+	OrgDatasetFileConversionPhaseSnapshotOriginal OrgDatasetFileConversionPhase = "snapshot_original"
+	// OrgDatasetFileConversionPhaseConvertRawKcl: Phase index `2`: converting the source model into raw KCL.
+	OrgDatasetFileConversionPhaseConvertRawKcl OrgDatasetFileConversionPhase = "convert_raw_kcl"
+	// OrgDatasetFileConversionPhaseSnapshotRawKcl: Phase index `3`: creating a snapshot of the raw KCL result.
+	OrgDatasetFileConversionPhaseSnapshotRawKcl OrgDatasetFileConversionPhase = "snapshot_raw_kcl"
+	// OrgDatasetFileConversionPhaseSalon: Phase index `4`: running the salon/refactor step that produces polished KCL.
+	OrgDatasetFileConversionPhaseSalon OrgDatasetFileConversionPhase = "salon"
+	// OrgDatasetFileConversionPhaseSnapshotSalonKcl: Phase index `5`: creating a snapshot of the salon/refactored KCL.
+	OrgDatasetFileConversionPhaseSnapshotSalonKcl OrgDatasetFileConversionPhase = "snapshot_salon_kcl"
+	// OrgDatasetFileConversionPhaseCompleted: Phase index `6`: conversion finished successfully.
+	OrgDatasetFileConversionPhaseCompleted OrgDatasetFileConversionPhase = "completed"
+)
 
 // OrgDatasetFileConversionStatus: `OrgDatasetFileConversion` status.
 type OrgDatasetFileConversionStatus string
@@ -5669,6 +5665,14 @@ type OrgDatasetFileConversionSummary struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// ImporterVersion: Tracks which version processed this file when available.
 	ImporterVersion string `json:"importer_version" yaml:"importer_version" schema:"importer_version"`
+	// Metadata: Additional per-conversion metadata as string key-value pairs.
+	Metadata any `json:"metadata" yaml:"metadata" schema:"metadata"`
+	// Phase: Current step in the conversion pipeline.
+	Phase OrgDatasetFileConversionPhase `json:"phase" yaml:"phase" schema:"phase,required"`
+	// PhaseIndex: Numeric index for `phase` so clients do not need to hardcode enum ordering.
+	//
+	// Mapping: - `0`: `queued` - `1`: `snapshot_original` - `2`: `convert_raw_kcl` - `3`: `snapshot_raw_kcl` - `4`: `salon` - `5`: `snapshot_salon_kcl` - `6`: `completed`
+	PhaseIndex int `json:"phase_index" yaml:"phase_index" schema:"phase_index,required"`
 	// StartedAt: The date and time the conversion started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: Conversion status.
@@ -5693,6 +5697,14 @@ type OrgDatasetResultsPage struct {
 	Items []OrgDataset `json:"items" yaml:"items" schema:"items,required"`
 	// NextPage: token used to fetch the next page of results (if any)
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// OrgDatasetSnapshotImage: Detailed response that bundles conversion metadata with the converted file contents.
+type OrgDatasetSnapshotImage struct {
+	// DataBase64: Base64-encoded image bytes.
+	DataBase64 Base64 `json:"data_base64" yaml:"data_base64" schema:"data_base64,required"`
+	// MimeType: MIME type of the stored image.
+	MimeType string `json:"mime_type" yaml:"mime_type" schema:"mime_type,required"`
 }
 
 // OrgDatasetSource: Details for accessing an org dataset.

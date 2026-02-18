@@ -3123,6 +3123,8 @@ func (s *OrgService) DeleteDataset(id UUID) error {
 }
 
 // ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
+// This endpoint returns lightweight conversion summaries only (including `phase` and `phase_index`), and intentionally omits converted KCL output and snapshot image payloads for speed.
+//
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
@@ -3177,6 +3179,8 @@ func (s *OrgService) ListDatasetConversions(id UUID, limit int, pageToken string
 }
 
 // GetDatasetConversion: Fetch the metadata and converted output for a single dataset conversion.
+// Unlike list/search endpoints, this returns the full conversion payload: latest output text plus decoded snapshot image payloads for original, raw-KCL, and salon-KCL stages.
+//
 // Parameters
 //
 //   - `conversionId`: A UUID usually v4 or v7
@@ -3226,20 +3230,20 @@ func (s *OrgService) GetDatasetConversion(conversionId UUID, id UUID) (*OrgDatas
 
 }
 
-// RetryDatasetConversion: Retry a specific dataset conversion that failed previously for the caller's org.
+// RetriggerDatasetConversion: Retrigger a specific dataset conversion for the caller's org.
 // Parameters
 //
 //   - `conversionId`: A UUID usually v4 or v7
 //   - `id`: A UUID usually v4 or v7
-func (s *OrgService) RetryDatasetConversion(conversionId UUID, id UUID) (*OrgDatasetFileConversion, error) {
+func (s *OrgService) RetriggerDatasetConversion(conversionId UUID, id UUID) error {
 	// Create the url.
-	path := "/org/datasets/{{.id}}/conversions/{{.conversion_id}}/retry"
+	path := "/org/datasets/{{.id}}/conversions/{{.conversion_id}}/retrigger"
 	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
+		return fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add the parameters to the url.
@@ -3247,49 +3251,40 @@ func (s *OrgService) RetryDatasetConversion(conversionId UUID, id UUID) (*OrgDat
 		"conversion_id": conversionId.String(),
 		"id":            id.String(),
 	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
+		return fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return nil, err
+		return err
 	}
 
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded OrgDatasetFileConversion
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
+	// Return.
+	return nil
 
 }
 
-// RescanDataset: Request a rescan of a dataset that belongs to the caller's org.
+// RetriggerDataset: Request a retrigger of conversions for a dataset that belongs to the caller's org.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `statuses`
-func (s *OrgService) RescanDataset(id UUID, statuses string) (*OrgDataset, error) {
+func (s *OrgService) RetriggerDataset(id UUID, statuses string) error {
 	// Create the url.
-	path := "/org/datasets/{{.id}}/rescan"
+	path := "/org/datasets/{{.id}}/retrigger"
 	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
 	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
+		return fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add the parameters to the url.
@@ -3297,32 +3292,23 @@ func (s *OrgService) RescanDataset(id UUID, statuses string) (*OrgDataset, error
 		"id":       id.String(),
 		"statuses": statuses,
 	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
+		return fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return nil, err
+		return err
 	}
 
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded OrgDataset
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
+	// Return.
+	return nil
 
 }
 
