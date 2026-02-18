@@ -5669,10 +5669,6 @@ type OrgDatasetFileConversionSummary struct {
 	Metadata any `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Phase: Current step in the conversion pipeline.
 	Phase OrgDatasetFileConversionPhase `json:"phase" yaml:"phase" schema:"phase,required"`
-	// PhaseIndex: Numeric index for `phase` so clients do not need to hardcode enum ordering.
-	//
-	// Mapping: - `0`: `queued` - `1`: `snapshot_original` - `2`: `convert_raw_kcl` - `3`: `snapshot_raw_kcl` - `4`: `salon` - `5`: `snapshot_salon_kcl` - `6`: `completed`
-	PhaseIndex int `json:"phase_index" yaml:"phase_index" schema:"phase_index,required"`
 	// StartedAt: The date and time the conversion started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: Conversion status.

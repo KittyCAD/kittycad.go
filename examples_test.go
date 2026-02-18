@@ -1427,7 +1427,7 @@ func ExampleOrgService_DeleteDataset() {
 }
 
 // ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
-// This endpoint returns lightweight conversion summaries only (including `phase` and `phase_index`), and intentionally omits converted KCL output and snapshot image payloads for speed.
+// This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed.
 //
 // Parameters
 //
@@ -1507,7 +1507,7 @@ func ExampleOrgService_RetriggerDataset() {
 }
 
 // SearchDatasetConversions: Search dataset conversions by conversion ID or file path.
-// Supports partial and full matching and may return multiple results.
+// Supports exact conversion-ID matching and fuzzy file-path matching.
 //
 // Parameters
 //
