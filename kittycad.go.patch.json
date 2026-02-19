@@ -513,6 +513,14 @@
  },
  {
   "value": {
+   "example": "// DownloadDatasetConversionOriginal: Download the original source file for a specific dataset conversion.\n// \n// \n// Parameters\n// \n// \t- `conversionId`: A UUID usually v4 or v7\n// \t- `id`: A UUID usually v4 or v7\n// \n// DownloadDatasetConversionOriginal: Download the original source file for a specific dataset conversion.\n// Parameters\n//\n//   - `conversionId`: A UUID usually v4 or v7\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_DownloadDatasetConversionOriginal() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Org.DownloadDatasetConversionOriginal(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.DownloadDatasetConversionOriginal"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}~1conversions~1{conversion_id}~1original/get/x-go"
+ },
+ {
+  "value": {
    "example": "// RetriggerDatasetConversion: Retrigger a specific dataset conversion for the caller's org.\n// \n// \n// Parameters\n// \n// \t- `conversionId`: A UUID usually v4 or v7\n// \t- `id`: A UUID usually v4 or v7\n// \n// RetriggerDatasetConversion: Retrigger a specific dataset conversion for the caller's org.\n// Parameters\n//\n//   - `conversionId`: A UUID usually v4 or v7\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_RetriggerDatasetConversion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Org.RetriggerDatasetConversion(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.RetriggerDatasetConversion"
   },

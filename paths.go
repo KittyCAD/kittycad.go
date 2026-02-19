@@ -3232,6 +3232,47 @@ func (s *OrgService) GetDatasetConversion(conversionId UUID, id UUID) (*OrgDatas
 
 }
 
+// DownloadDatasetConversionOriginal: Download the original source file for a specific dataset conversion.
+// Parameters
+//
+//   - `conversionId`: A UUID usually v4 or v7
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) DownloadDatasetConversionOriginal(conversionId UUID, id UUID) error {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/conversions/{{.conversion_id}}/original"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"conversion_id": conversionId.String(),
+		"id":            id.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // RetriggerDatasetConversion: Retrigger a specific dataset conversion for the caller's org.
 // Parameters
 //

@@ -1473,6 +1473,23 @@ func ExampleOrgService_GetDatasetConversion() {
 
 }
 
+// DownloadDatasetConversionOriginal: Download the original source file for a specific dataset conversion.
+// Parameters
+//
+//   - `conversionId`: A UUID usually v4 or v7
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_DownloadDatasetConversionOriginal() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Org.DownloadDatasetConversionOriginal(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
 // RetriggerDatasetConversion: Retrigger a specific dataset conversion for the caller's org.
 // Parameters
 //
