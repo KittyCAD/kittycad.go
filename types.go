@@ -5643,17 +5643,25 @@ type OrgDatasetFileConversionPhase string
 const (
 	// OrgDatasetFileConversionPhaseQueued: Phase index `0`: waiting for a worker to begin processing this conversion.
 	OrgDatasetFileConversionPhaseQueued OrgDatasetFileConversionPhase = "queued"
-	// OrgDatasetFileConversionPhaseSnapshotOriginal: Phase index `1`: creating a snapshot of the original source model.
+	// OrgDatasetFileConversionPhaseZooGeneratedOriginalMetadata: Phase index `1`: generating original file metadata.
+	OrgDatasetFileConversionPhaseZooGeneratedOriginalMetadata OrgDatasetFileConversionPhase = "zoo_generated_original_metadata"
+	// OrgDatasetFileConversionPhaseSnapshotOriginal: Phase index `2`: creating a snapshot of the original source model.
 	OrgDatasetFileConversionPhaseSnapshotOriginal OrgDatasetFileConversionPhase = "snapshot_original"
-	// OrgDatasetFileConversionPhaseConvertRawKcl: Phase index `2`: converting the source model into raw KCL.
+	// OrgDatasetFileConversionPhaseUserProvidedMetadata: Phase index `3`: discovering optional user-provided metadata files (`.json`, `.yaml`, `.yml`, `.toml`, `.txt`) stored next to the source CAD file.
+	OrgDatasetFileConversionPhaseUserProvidedMetadata OrgDatasetFileConversionPhase = "user_provided_metadata"
+	// OrgDatasetFileConversionPhaseConvertRawKcl: Phase index `4`: converting the source model into raw KCL.
 	OrgDatasetFileConversionPhaseConvertRawKcl OrgDatasetFileConversionPhase = "convert_raw_kcl"
-	// OrgDatasetFileConversionPhaseSnapshotRawKcl: Phase index `3`: creating a snapshot of the raw KCL result.
+	// OrgDatasetFileConversionPhaseZooGeneratedRawKclMetadata: Phase index `5`: generating raw KCL metadata.
+	OrgDatasetFileConversionPhaseZooGeneratedRawKclMetadata OrgDatasetFileConversionPhase = "zoo_generated_raw_kcl_metadata"
+	// OrgDatasetFileConversionPhaseSnapshotRawKcl: Phase index `6`: creating a snapshot of the raw KCL result.
 	OrgDatasetFileConversionPhaseSnapshotRawKcl OrgDatasetFileConversionPhase = "snapshot_raw_kcl"
-	// OrgDatasetFileConversionPhaseSalon: Phase index `4`: running the salon/refactor step that produces polished KCL.
+	// OrgDatasetFileConversionPhaseSalon: Phase index `7`: running the salon/refactor step that produces polished KCL.
 	OrgDatasetFileConversionPhaseSalon OrgDatasetFileConversionPhase = "salon"
-	// OrgDatasetFileConversionPhaseSnapshotSalonKcl: Phase index `5`: creating a snapshot of the salon/refactored KCL.
+	// OrgDatasetFileConversionPhaseZooGeneratedSalonKclMetadata: Phase index `8`: generating salon KCL metadata.
+	OrgDatasetFileConversionPhaseZooGeneratedSalonKclMetadata OrgDatasetFileConversionPhase = "zoo_generated_salon_kcl_metadata"
+	// OrgDatasetFileConversionPhaseSnapshotSalonKcl: Phase index `9`: creating a snapshot of the salon/refactored KCL.
 	OrgDatasetFileConversionPhaseSnapshotSalonKcl OrgDatasetFileConversionPhase = "snapshot_salon_kcl"
-	// OrgDatasetFileConversionPhaseCompleted: Phase index `6`: conversion finished successfully.
+	// OrgDatasetFileConversionPhaseCompleted: Phase index `10`: conversion finished successfully.
 	OrgDatasetFileConversionPhaseCompleted OrgDatasetFileConversionPhase = "completed"
 )
 
