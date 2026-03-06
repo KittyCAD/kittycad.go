@@ -17,7 +17,11 @@ func (u IP) MarshalJSON() ([]byte, error) {
 }
 
 func (u IP) String() string {
-	return u.String()
+	if u.Addr == nil {
+		return ""
+	}
+
+	return u.Addr.String()
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.

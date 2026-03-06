@@ -16,13 +16,14 @@ import (
 func (data *Data) generatePaths(doc *openapi3.T) error {
 	// Iterate over all the paths in the spec and write the types.
 	// We want to ensure we keep the order so the diffs don't look like shit.
+	paths := pathItems(doc.Paths)
 	keys := make([]string, 0)
-	for k := range doc.Paths {
+	for k := range paths {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	for _, pathName := range keys {
-		path := doc.Paths[pathName]
+		path := paths[pathName]
 		if path.Ref != "" {
 			logrus.Warnf("TODO: skipping path for %q, since it is a reference", pathName)
 			continue
@@ -153,7 +154,7 @@ type Response struct {
 	Type string
 }
 
-func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string, operation *openapi3.Operation, isGetAllPages bool, spec *openapi3.T) error {
+func (data *Data) generateMethod(_ *openapi3.T, method string, pathName string, operation *openapi3.Operation, isGetAllPages bool, spec *openapi3.T) error {
 	if len(operation.Tags) == 0 {
 		return fmt.Errorf("operation at %q %q has no tags", pathName, method)
 	}
@@ -317,23 +318,16 @@ func (data *Data) generateMethod(doc *openapi3.T, method string, pathName string
 		"example":     fmt.Sprintf("// %s\n%s", function.getDescription(operation), example),
 		"libDocsLink": fmt.Sprintf("https://pkg.go.dev/github.com/kittycad/kittycad.go/#%sService.%s", function.Tag, function.Name),
 	}
-	if method == http.MethodGet {
-		doc.Paths[pathName].Get.Extensions["x-go"] = docInfo
-	} else if method == http.MethodPost {
-		doc.Paths[pathName].Post.Extensions["x-go"] = docInfo
-	} else if method == http.MethodPut {
-		doc.Paths[pathName].Put.Extensions["x-go"] = docInfo
-	} else if method == http.MethodDelete {
-		doc.Paths[pathName].Delete.Extensions["x-go"] = docInfo
-	} else if method == http.MethodPatch {
-		doc.Paths[pathName].Patch.Extensions["x-go"] = docInfo
+	if operation.Extensions == nil {
+		operation.Extensions = map[string]any{}
 	}
+	operation.Extensions["x-go"] = docInfo
 
 	return nil
 }
 
 func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool, spec *openapi3.T) (string, string, error) {
-	for name, response := range o.Responses {
+	for name, response := range responseRefs(o.Responses) {
 		if name == "default" {
 			name = "200"
 		}
@@ -377,7 +371,7 @@ func getSuccessResponseType(o *openapi3.Operation, isGetAllPages bool, spec *ope
 				return "", "", nil
 			}
 
-			if content.Schema.Value.Type == "array" {
+			if schemaRefTypeIncludes(content.Schema, "array") {
 				t, err := printType("", content.Schema, spec)
 				if err != nil {
 					return "", "", err

@@ -75,6 +75,9 @@ func run() error {
 		return fmt.Errorf("error processing template: %v", err)
 	}
 	data.Examples = append(data.Examples, clientInfo)
+	if doc.Info.Extensions == nil {
+		doc.Info.Extensions = map[string]any{}
+	}
 	doc.Info.Extensions["x-go"] = map[string]string{
 		"install": "go get github.com/kittycad/kittycad.go",
 		"client":  clientInfo,

@@ -644,6 +644,47 @@ func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTo
 
 }
 
+// AuthEmailMarketingConfirmCreate: Consume a confirmation token and finalize double opt-in.
+// Parameters
+//
+//   - `body`: Request payload for confirming a double-opt-in token.
+func (s *HiddenService) AuthEmailMarketingConfirmCreate(body EmailMarketingConfirmTokenBody) error {
+	// Create the url.
+	path := "/auth/email-marketing/confirm"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // AuthEmailCallback: Listen for callbacks for email authentication for users.
 // Parameters
 //
@@ -3094,6 +3135,45 @@ func (s *OrgService) DeleteDataset(id UUID) error {
 
 	// Create the request.
 	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// DownloadDatasetSuccessfulKclBulk: Bulk-download KCL outputs for successful dataset conversions.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) DownloadDatasetSuccessfulKclBulk(id UUID) error {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/bulk-download/kcl"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
@@ -6535,29 +6615,113 @@ func (s *APITokenService) DeleteForUser(token string) error {
 
 }
 
-// PatchCrm: Update properties in the CRM
-// Parameters
-//
-//   - `body`: The data for subscribing a user to the newsletter.
-func (s *UserService) PatchCrm(body CrmData) error {
+// EmailMarketingConsentList: Get email marketing consent state for the authenticated user.
+func (s *UserService) EmailMarketingConsentList() (*EmailMarketingConsentState, error) {
 	// Create the url.
-	path := "/user/crm"
+	path := "/user/email-marketing-consent"
 	targetURL := resolveRelative(s.client.server, path)
 
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(body); err != nil {
-		return fmt.Errorf("encoding json body request failed: %v", err)
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded EmailMarketingConsentState
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// EmailMarketingConsentDeclineCreate: Record explicit decline for email marketing consent.
+func (s *UserService) EmailMarketingConsentDeclineCreate() error {
+	// Create the url.
+	path := "/user/email-marketing-consent/decline"
+	targetURL := resolveRelative(s.client.server, path)
+
 	// Create the request.
-	req, err := http.NewRequest("PATCH", targetURL, b)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
 
-	// Add our headers.
-	req.Header.Add("Content-Type", "application/json")
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// EmailMarketingConsentRequestCreate: Request email marketing opt-in and send a confirmation email.
+func (s *UserService) EmailMarketingConsentRequestCreate() error {
+	// Create the url.
+	path := "/user/email-marketing-consent/request"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// EmailMarketingConsentSeenCreate: Mark the email-marketing modal as seen/dismissed for the authenticated user.
+func (s *UserService) EmailMarketingConsentSeenCreate() error {
+	// Create the url.
+	path := "/user/email-marketing-consent/seen"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -6653,49 +6817,6 @@ func (s *UserService) FeaturesList() (*UserFeatureList, error) {
 
 	// Return the response.
 	return &decoded, nil
-
-}
-
-// PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.
-// It gets attached to the user's account.
-//
-// Parameters
-//
-//   - `body`: The form for a public inquiry submission.
-func (s *UserService) PutFormSelf(body InquiryForm) error {
-	// Create the url.
-	path := "/user/form"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(body); err != nil {
-		return fmt.Errorf("encoding json body request failed: %v", err)
-	}
-
-	// Create the request.
-	req, err := http.NewRequest("PUT", targetURL, b)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add our headers.
-	req.Header.Add("Content-Type", "application/json")
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-
-	// Return.
-	return nil
 
 }
 
@@ -8449,15 +8570,13 @@ func (s *UserService) UpdateSubscriptionFor(id string, body ZooProductSubscripti
 
 }
 
-// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted
-// users and is not authenticated.
-//
+// PutPublicEmailMarketingConsentRequest: Requests public email marketing consent for an email address.
 // Parameters
 //
-//   - `body`: The form for a public inquiry submission.
-func (s *UserService) PutPublicForm(body InquiryForm) error {
+//   - `body`: The data for subscribing a user to the newsletter.
+func (s *UserService) PutPublicEmailMarketingConsentRequest(body PublicEmailMarketingConsentRequest) error {
 	// Create the url.
-	path := "/website/form"
+	path := "/website/email-marketing-consent/request"
 	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
@@ -8492,13 +8611,99 @@ func (s *UserService) PutPublicForm(body InquiryForm) error {
 
 }
 
-// PutPublicSubscribe: Subscribes a user to the newsletter.
+// PutCadInfoForm: Stores authenticated CAD user info form data for the current user.
 // Parameters
 //
-//   - `body`: The data for subscribing a user to the newsletter.
-func (s *UserService) PutPublicSubscribe(body Subscribe) error {
+//   - `body`: Request body for authenticated website CAD user info form submissions.
+func (s *UserService) PutCadInfoForm(body WebsiteCadUserInfoForm) error {
 	// Create the url.
-	path := "/website/subscribe"
+	path := "/website/forms/cad-user-info"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// PutPublicSalesForm: Creates a new sales ticket in the internal help desk from the website sales form.
+// This endpoint accepts optional authentication.
+//
+// Parameters
+//
+//   - `body`: Request body for website sales form submissions.
+func (s *UserService) PutPublicSalesForm(body WebsiteSalesForm) error {
+	// Create the url.
+	path := "/website/forms/sales"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// PutPublicSupportForm: Creates a new support ticket in the internal help desk from the website support form.
+// This endpoint accepts optional authentication.
+//
+// Parameters
+//
+//   - `body`: Request body for website support form submissions.
+func (s *UserService) PutPublicSupportForm(body WebsiteSupportForm) error {
+	// Create the url.
+	path := "/website/forms/support"
 	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.

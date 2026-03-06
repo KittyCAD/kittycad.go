@@ -113,6 +113,14 @@
  },
  {
   "value": {
+   "example": "// AuthEmailMarketingConfirmCreate: Consume a confirmation token and finalize double opt-in.\n// \n// \n// Parameters\n// \n// \t- `body`: Request payload for confirming a double-opt-in token.\n// \n// AuthEmailMarketingConfirmCreate: Consume a confirmation token and finalize double opt-in.\n// Parameters\n//\n//   - `body`: Request payload for confirming a double-opt-in token.\nfunc ExampleHiddenService_AuthEmailMarketingConfirmCreate() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.AuthEmailMarketingConfirmCreate(kittycad.EmailMarketingConfirmTokenBody{Token: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.AuthEmailMarketingConfirmCreate"
+  },
+  "op": "add",
+  "path": "/paths/~1auth~1email-marketing~1confirm/post/x-go"
+ },
+ {
+  "value": {
    "example": "// AuthEmailCallback: Listen for callbacks for email authentication for users.\n// \n// \n// Parameters\n// \n// \t- `callbackUrl`\n// \t- `email`\n// \t- `token`\n// \n// AuthEmailCallback: Listen for callbacks for email authentication for users.\n// Parameters\n//\n//   - `callbackUrl`\n//   - `email`\n//   - `token`\nfunc ExampleHiddenService_AuthEmailCallback() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.AuthEmailCallback(kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, \"example@example.com\", \"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.AuthEmailCallback"
   },
@@ -494,6 +502,14 @@
   },
   "op": "add",
   "path": "/paths/~1org~1datasets~1{id}/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// DownloadDatasetSuccessfulKclBulk: Bulk-download KCL outputs for successful dataset conversions.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// DownloadDatasetSuccessfulKclBulk: Bulk-download KCL outputs for successful dataset conversions.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_DownloadDatasetSuccessfulKclBulk() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Org.DownloadDatasetSuccessfulKclBulk(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.DownloadDatasetSuccessfulKclBulk"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}~1bulk-download~1kcl/get/x-go"
  },
  {
   "value": {
@@ -1049,11 +1065,35 @@
  },
  {
   "value": {
-   "example": "// PatchCrm: Update properties in the CRM\n// \n// \n// Parameters\n// \n// \t- `body`: The data for subscribing a user to the newsletter.\n// \n// PatchCrm: Update properties in the CRM\n// Parameters\n//\n//   - `body`: The data for subscribing a user to the newsletter.\nfunc ExampleUserService_PatchCrm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PatchCrm(kittycad.CrmData{CadIndustry: \"some-string\", CadUserType: \"some-string\", NumberOfCadUsers: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PatchCrm"
+   "example": "// EmailMarketingConsentList: Get email marketing consent state for the authenticated user.\n// \n// EmailMarketingConsentList: Get email marketing consent state for the authenticated user.\nfunc ExampleUserService_EmailMarketingConsentList() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.EmailMarketingConsentList()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.EmailMarketingConsentList"
   },
   "op": "add",
-  "path": "/paths/~1user~1crm/patch/x-go"
+  "path": "/paths/~1user~1email-marketing-consent/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// EmailMarketingConsentDeclineCreate: Record explicit decline for email marketing consent.\n// \n// EmailMarketingConsentDeclineCreate: Record explicit decline for email marketing consent.\nfunc ExampleUserService_EmailMarketingConsentDeclineCreate() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.EmailMarketingConsentDeclineCreate(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.EmailMarketingConsentDeclineCreate"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1email-marketing-consent~1decline/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// EmailMarketingConsentRequestCreate: Request email marketing opt-in and send a confirmation email.\n// \n// EmailMarketingConsentRequestCreate: Request email marketing opt-in and send a confirmation email.\nfunc ExampleUserService_EmailMarketingConsentRequestCreate() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.EmailMarketingConsentRequestCreate(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.EmailMarketingConsentRequestCreate"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1email-marketing-consent~1request/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// EmailMarketingConsentSeenCreate: Mark the email-marketing modal as seen/dismissed for the authenticated user.\n// \n// EmailMarketingConsentSeenCreate: Mark the email-marketing modal as seen/dismissed for the authenticated user.\nfunc ExampleUserService_EmailMarketingConsentSeenCreate() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.EmailMarketingConsentSeenCreate(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.EmailMarketingConsentSeenCreate"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1email-marketing-consent~1seen/post/x-go"
  },
  {
   "value": {
@@ -1070,14 +1110,6 @@
   },
   "op": "add",
   "path": "/paths/~1user~1features/get/x-go"
- },
- {
-  "value": {
-   "example": "// PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.\n// \n// It gets attached to the user's account.\n// \n// \n// Parameters\n// \n// \t- `body`: The form for a public inquiry submission.\n// \n// PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.\n// It gets attached to the user's account.\n//\n// Parameters\n//\n//   - `body`: The form for a public inquiry submission.\nfunc ExampleUserService_PutFormSelf() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutFormSelf(kittycad.InquiryForm{CadPlatforms: []string{}, Company: \"some-string\", Email: \"example@example.com\", FirstName: \"some-string\", Industry: \"some-string\", InquiryType: \"\", JobTitle: \"some-string\", LastName: \"some-string\", Message: \"some-string\", NumCadUsers: \"some-string\", Phone: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutFormSelf"
-  },
-  "op": "add",
-  "path": "/paths/~1user~1form/put/x-go"
  },
  {
   "value": {
@@ -1369,19 +1401,35 @@
  },
  {
   "value": {
-   "example": "// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted\n// \n// users and is not authenticated.\n// \n// \n// Parameters\n// \n// \t- `body`: The form for a public inquiry submission.\n// \n// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted\n// users and is not authenticated.\n//\n// Parameters\n//\n//   - `body`: The form for a public inquiry submission.\nfunc ExampleUserService_PutPublicForm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutPublicForm(kittycad.InquiryForm{CadPlatforms: []string{}, Company: \"some-string\", Email: \"example@example.com\", FirstName: \"some-string\", Industry: \"some-string\", InquiryType: \"\", JobTitle: \"some-string\", LastName: \"some-string\", Message: \"some-string\", NumCadUsers: \"some-string\", Phone: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutPublicForm"
+   "example": "// PutPublicEmailMarketingConsentRequest: Requests public email marketing consent for an email address.\n// \n// \n// Parameters\n// \n// \t- `body`: The data for subscribing a user to the newsletter.\n// \n// PutPublicEmailMarketingConsentRequest: Requests public email marketing consent for an email address.\n// Parameters\n//\n//   - `body`: The data for subscribing a user to the newsletter.\nfunc ExampleUserService_PutPublicEmailMarketingConsentRequest() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutPublicEmailMarketingConsentRequest(kittycad.PublicEmailMarketingConsentRequest{Email: \"example@example.com\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutPublicEmailMarketingConsentRequest"
   },
   "op": "add",
-  "path": "/paths/~1website~1form/put/x-go"
+  "path": "/paths/~1website~1email-marketing-consent~1request/put/x-go"
  },
  {
   "value": {
-   "example": "// PutPublicSubscribe: Subscribes a user to the newsletter.\n// \n// \n// Parameters\n// \n// \t- `body`: The data for subscribing a user to the newsletter.\n// \n// PutPublicSubscribe: Subscribes a user to the newsletter.\n// Parameters\n//\n//   - `body`: The data for subscribing a user to the newsletter.\nfunc ExampleUserService_PutPublicSubscribe() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutPublicSubscribe(kittycad.Subscribe{Email: \"example@example.com\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutPublicSubscribe"
+   "example": "// PutCadInfoForm: Stores authenticated CAD user info form data for the current user.\n// \n// \n// Parameters\n// \n// \t- `body`: Request body for authenticated website CAD user info form submissions.\n// \n// PutCadInfoForm: Stores authenticated CAD user info form data for the current user.\n// Parameters\n//\n//   - `body`: Request body for authenticated website CAD user info form submissions.\nfunc ExampleUserService_PutCadInfoForm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutCadInfoForm(kittycad.WebsiteCadUserInfoForm{CadIndustry: \"\", CadUserType: \"\", CompanySize: \"\", HowDidYouFindUs: \"\", HowDidYouFindUsOther: \"some-string\", NumberOfCadUsers: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutCadInfoForm"
   },
   "op": "add",
-  "path": "/paths/~1website~1subscribe/put/x-go"
+  "path": "/paths/~1website~1forms~1cad-user-info/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// PutPublicSalesForm: Creates a new sales ticket in the internal help desk from the website sales form.\n// \n// This endpoint accepts optional authentication.\n// \n// \n// Parameters\n// \n// \t- `body`: Request body for website sales form submissions.\n// \n// PutPublicSalesForm: Creates a new sales ticket in the internal help desk from the website sales form.\n// This endpoint accepts optional authentication.\n//\n// Parameters\n//\n//   - `body`: Request body for website sales form submissions.\nfunc ExampleUserService_PutPublicSalesForm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutPublicSalesForm(kittycad.WebsiteSalesForm{CadPlatforms: []string{}, Company: \"some-string\", Email: \"example@example.com\", FirstName: \"some-string\", Industry: \"some-string\", InquiryType: \"\", JobTitle: \"some-string\", LastName: \"some-string\", Message: \"some-string\", NumCadUsers: \"some-string\", Phone: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutPublicSalesForm"
+  },
+  "op": "add",
+  "path": "/paths/~1website~1forms~1sales/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// PutPublicSupportForm: Creates a new support ticket in the internal help desk from the website support form.\n// \n// This endpoint accepts optional authentication.\n// \n// \n// Parameters\n// \n// \t- `body`: Request body for website support form submissions.\n// \n// PutPublicSupportForm: Creates a new support ticket in the internal help desk from the website support form.\n// This endpoint accepts optional authentication.\n//\n// Parameters\n//\n//   - `body`: Request body for website support form submissions.\nfunc ExampleUserService_PutPublicSupportForm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.PutPublicSupportForm(kittycad.WebsiteSupportForm{Company: \"some-string\", Email: \"example@example.com\", FirstName: \"some-string\", InquiryType: \"\", LastName: \"some-string\", Message: \"some-string\", Phone: \"some-string\"}); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.PutPublicSupportForm"
+  },
+  "op": "add",
+  "path": "/paths/~1website~1forms~1support/put/x-go"
  },
  {
   "value": {

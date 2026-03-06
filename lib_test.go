@@ -7,6 +7,12 @@ import (
 )
 
 func getClient(t *testing.T) *Client {
+	t.Helper()
+
+	if os.Getenv(TokenEnvVar) == "" && os.Getenv("KITTYCAD_API_TOKEN") == "" {
+		t.Skipf("skipping integration test: set %s or KITTYCAD_API_TOKEN", TokenEnvVar)
+	}
+
 	client, err := NewClientFromEnv("kittycad.go/tests")
 	if err != nil {
 		t.Fatalf("creating the client failed: %v", err)

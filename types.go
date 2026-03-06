@@ -71,12 +71,8 @@ type APICallWithPrice struct {
 	Origin string `json:"origin" yaml:"origin" schema:"origin"`
 	// Price: The price of the API call.
 	Price float64 `json:"price" yaml:"price" schema:"price"`
-	// RequestBody: The request body sent by the API call.
-	RequestBody string `json:"request_body" yaml:"request_body" schema:"request_body"`
 	// RequestQueryParams: The request query params sent by the API call.
 	RequestQueryParams string `json:"request_query_params" yaml:"request_query_params" schema:"request_query_params"`
-	// ResponseBody: The response body returned by the API call. We do not store this information if it is above a certain size.
-	ResponseBody string `json:"response_body" yaml:"response_body" schema:"response_body"`
 	// Seconds: The number of seconds the API call was billed for.
 	Seconds int `json:"seconds" yaml:"seconds" schema:"seconds"`
 	// StartedAt: The date and time the API call started billing.
@@ -959,6 +955,70 @@ type BooleanUnion struct {
 	ExtraSolidIds []UUID `json:"extra_solid_ids" yaml:"extra_solid_ids" schema:"extra_solid_ids"`
 }
 
+// CadDiscoverySource: Strict acquisition-source enum used by the website CAD user info form.
+type CadDiscoverySource string
+
+const (
+	// CadDiscoverySourceGoogle: Found via Google search.
+	CadDiscoverySourceGoogle CadDiscoverySource = "google"
+	// CadDiscoverySourceX: Found via X/Twitter.
+	CadDiscoverySourceX CadDiscoverySource = "x"
+	// CadDiscoverySourceTiktok: Found via TikTok.
+	CadDiscoverySourceTiktok CadDiscoverySource = "tiktok"
+	// CadDiscoverySourceReddit: Found via Reddit.
+	CadDiscoverySourceReddit CadDiscoverySource = "reddit"
+	// CadDiscoverySourcePayloadSpace: Found via Payload Space.
+	CadDiscoverySourcePayloadSpace CadDiscoverySource = "payload_space"
+	// CadDiscoverySourceYoutube: Found via YouTube.
+	CadDiscoverySourceYoutube CadDiscoverySource = "youtube"
+	// CadDiscoverySourceInstagram: Found via Instagram.
+	CadDiscoverySourceInstagram CadDiscoverySource = "instagram"
+	// CadDiscoverySourceFacebook: Found via Facebook.
+	CadDiscoverySourceFacebook CadDiscoverySource = "facebook"
+	// CadDiscoverySourceWordOfMouth: Found through friend referral or word of mouth.
+	CadDiscoverySourceWordOfMouth CadDiscoverySource = "word_of_mouth"
+	// CadDiscoverySourceOther: Found through another source described in free text.
+	CadDiscoverySourceOther CadDiscoverySource = "other"
+)
+
+// CadIndustry: Strict CAD industry enum for onboarding/CRM form submissions.
+type CadIndustry string
+
+const (
+	// CadIndustryMechanicalEngineering: Mechanical engineering.
+	CadIndustryMechanicalEngineering CadIndustry = "mechanical_engineering"
+	// CadIndustryManufacturing: Manufacturing.
+	CadIndustryManufacturing CadIndustry = "manufacturing"
+	// CadIndustryAutomotive: Automotive.
+	CadIndustryAutomotive CadIndustry = "automotive"
+	// CadIndustryAerospace: Aerospace.
+	CadIndustryAerospace CadIndustry = "aerospace"
+	// CadIndustryCivilEngineering: Civil engineering.
+	CadIndustryCivilEngineering CadIndustry = "civil_engineering"
+	// CadIndustryElectricalEngineering: Electrical engineering.
+	CadIndustryElectricalEngineering CadIndustry = "electrical_engineering"
+	// CadIndustryConstruction: Construction.
+	CadIndustryConstruction CadIndustry = "construction"
+	// CadIndustryProductDesign: Product design.
+	CadIndustryProductDesign CadIndustry = "product_design"
+	// CadIndustryArchitecture: Architecture.
+	CadIndustryArchitecture CadIndustry = "architecture"
+	// CadIndustryOther: Other industry.
+	CadIndustryOther CadIndustry = "other"
+)
+
+// CadUserType: Strict CAD user-type enum for onboarding/CRM form submissions.
+type CadUserType string
+
+const (
+	// CadUserTypeStudentOrResearcher: Student or researcher persona.
+	CadUserTypeStudentOrResearcher CadUserType = "student_or_researcher"
+	// CadUserTypeHobbyist: Hobbyist persona.
+	CadUserTypeHobbyist CadUserType = "hobbyist"
+	// CadUserTypeProfessional: Professional persona.
+	CadUserTypeProfessional CadUserType = "professional"
+)
+
 // CameraDragEnd: The response from the `CameraDragEnd` command.
 type CameraDragEnd struct {
 	// Settings: Camera settings
@@ -1208,6 +1268,26 @@ type Color struct {
 	R float64 `json:"r" yaml:"r" schema:"r,required"`
 }
 
+// CompanySize: Strict company-size enum for onboarding/CRM form submissions.
+type CompanySize string
+
+const (
+	// CompanySizeOneToTen: 1-10 people.
+	CompanySizeOneToTen CompanySize = "one_to_ten"
+	// CompanySizeElevenToFifty: 11-50 people.
+	CompanySizeElevenToFifty CompanySize = "eleven_to_fifty"
+	// CompanySizeFiftyOneToTwoHundred: 51-200 people.
+	CompanySizeFiftyOneToTwoHundred CompanySize = "fifty_one_to_two_hundred"
+	// CompanySizeTwoHundredOneToFiveHundred: 201-500 people.
+	CompanySizeTwoHundredOneToFiveHundred CompanySize = "two_hundred_one_to_five_hundred"
+	// CompanySizeFiveHundredOneToOneThousand: 501-1000 people.
+	CompanySizeFiveHundredOneToOneThousand CompanySize = "five_hundred_one_to_one_thousand"
+	// CompanySizeOneThousandPlus: 1000+ people.
+	CompanySizeOneThousandPlus CompanySize = "one_thousand_plus"
+	// CompanySizeOther: Other company size.
+	CompanySizeOther CompanySize = "other"
+)
+
 // ComplementaryEdges: Struct to contain the edge information of a wall of an extrude/rotate/loft/sweep.
 type ComplementaryEdges struct {
 	// AdjacentIds: Every edge that shared one common vertex with the original edge.
@@ -1350,16 +1430,6 @@ const (
 	// CreatedAtSortModeCreatedAtDescending: Sort in decreasing order of "created_at".
 	CreatedAtSortModeCreatedAtDescending CreatedAtSortMode = "created_at_descending"
 )
-
-// CrmData: The data for subscribing a user to the newsletter.
-type CrmData struct {
-	// CadIndustry: The industry of the user.
-	CadIndustry string `json:"cad_industry" yaml:"cad_industry" schema:"cad_industry"`
-	// CadUserType: The user type.
-	CadUserType string `json:"cad_user_type" yaml:"cad_user_type" schema:"cad_user_type"`
-	// NumberOfCadUsers: The user count of the user.
-	NumberOfCadUsers string `json:"number_of_cad_users" yaml:"number_of_cad_users" schema:"number_of_cad_users"`
-}
 
 // CurveGetControlPoints: The response from the `CurveGetControlPoints` command.
 type CurveGetControlPoints struct {
@@ -1709,6 +1779,44 @@ type EmailAuthenticationForm struct {
 	// Email: The user's email.
 	Email string `json:"email" yaml:"email" schema:"email,required"`
 }
+
+// EmailMarketingConfirmTokenBody: Request payload for confirming a double-opt-in token.
+type EmailMarketingConfirmTokenBody struct {
+	// Token: The token id from the confirmation email.
+	Token string `json:"token" yaml:"token" schema:"token,required"`
+}
+
+// EmailMarketingConsentState: Public view of an authenticated user's email marketing consent state.
+type EmailMarketingConsentState struct {
+	// ConfirmedAt: Time the double opt-in confirmation completed.
+	ConfirmedAt Time `json:"confirmed_at" yaml:"confirmed_at" schema:"confirmed_at"`
+	// IsSubscribed: Whether the user is currently subscribed to marketing email.
+	IsSubscribed bool `json:"is_subscribed" yaml:"is_subscribed" schema:"is_subscribed,required"`
+	// PromptSeenAt: First time the in-app prompt was seen.
+	PromptSeenAt Time `json:"prompt_seen_at" yaml:"prompt_seen_at" schema:"prompt_seen_at"`
+	// RequestedAt: Time the latest opt-in request email was sent.
+	RequestedAt Time `json:"requested_at" yaml:"requested_at" schema:"requested_at"`
+	// ShouldShowPrompt: Whether the website should show the modal for this user.
+	ShouldShowPrompt bool `json:"should_show_prompt" yaml:"should_show_prompt" schema:"should_show_prompt,required"`
+	// Status: Current consent state.
+	Status EmailMarketingConsentStatus `json:"status" yaml:"status" schema:"status,required"`
+}
+
+// EmailMarketingConsentStatus: Email marketing consent state for a user.
+type EmailMarketingConsentStatus string
+
+const (
+	// EmailMarketingConsentStatusUnknown: No choice has been made yet.
+	EmailMarketingConsentStatusUnknown EmailMarketingConsentStatus = "unknown"
+	// EmailMarketingConsentStatusDismissed: User has seen and dismissed the modal without deciding.
+	EmailMarketingConsentStatusDismissed EmailMarketingConsentStatus = "dismissed"
+	// EmailMarketingConsentStatusPending: User requested opt-in and must confirm via email.
+	EmailMarketingConsentStatusPending EmailMarketingConsentStatus = "pending"
+	// EmailMarketingConsentStatusConfirmed: User explicitly confirmed via email flow.
+	EmailMarketingConsentStatusConfirmed EmailMarketingConsentStatus = "confirmed"
+	// EmailMarketingConsentStatusDeclined: User explicitly declined.
+	EmailMarketingConsentStatusDeclined EmailMarketingConsentStatus = "declined"
+)
 
 // EnableDryRun: The response from the `EnableDryRun` endpoint.
 type EnableDryRun struct {
@@ -2652,56 +2760,6 @@ type InputFormat3Dunits struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// InquiryForm: The form for a public inquiry submission.
-type InquiryForm struct {
-	// CadPlatforms: The CAD platforms (used for pilot inquiries).
-	CadPlatforms []string `json:"cad_platforms" yaml:"cad_platforms" schema:"cad_platforms"`
-	// Company: The company name.
-	Company string `json:"company" yaml:"company" schema:"company"`
-	// Email: The email address of the user.
-	Email string `json:"email" yaml:"email" schema:"email,required"`
-	// FirstName: The first name of the user.
-	FirstName string `json:"first_name" yaml:"first_name" schema:"first_name,required"`
-	// Industry: The industry of the user.
-	Industry string `json:"industry" yaml:"industry" schema:"industry"`
-	// InquiryType: The type of inquiry.
-	InquiryType InquiryType `json:"inquiry_type" yaml:"inquiry_type" schema:"inquiry_type,required"`
-	// JobTitle: The job title (used for pilot inquiries).
-	JobTitle string `json:"job_title" yaml:"job_title" schema:"job_title"`
-	// LastName: The last name of the user.
-	LastName string `json:"last_name" yaml:"last_name" schema:"last_name,required"`
-	// Message: The message content.
-	Message string `json:"message" yaml:"message" schema:"message,required"`
-	// NumCadUsers: The number of CAD users (used for pilot inquiries).
-	NumCadUsers string `json:"num_cad_users" yaml:"num_cad_users" schema:"num_cad_users"`
-	// Phone: The phone number of the user.
-	Phone string `json:"phone" yaml:"phone" schema:"phone"`
-}
-
-// InquiryType: The type of inquiry.
-type InquiryType string
-
-const (
-	// InquiryTypePilotInquiry: Inquiries related to pilots (on the enterprise page).
-	InquiryTypePilotInquiry InquiryType = "pilot_inquiry"
-	// InquiryTypeGeneralInquiry: General inquiry about the service or product.
-	InquiryTypeGeneralInquiry InquiryType = "general_inquiry"
-	// InquiryTypeSalesQuestion: Questions related to sales or purchasing.
-	InquiryTypeSalesQuestion InquiryType = "sales_question"
-	// InquiryTypeDeveloperInquiry: Inquiry from a developer, typically technical in nature.
-	InquiryTypeDeveloperInquiry InquiryType = "developer_inquiry"
-	// InquiryTypePartnershipOpportunity: Opportunity for partnership or collaboration.
-	InquiryTypePartnershipOpportunity InquiryType = "partnership_opportunity"
-	// InquiryTypeOtherSalesInquiry: Other inquiries related to sales that do not fit predefined categories.
-	InquiryTypeOtherSalesInquiry InquiryType = "other_sales_inquiry"
-	// InquiryTypeTechnicalSupport: Request for technical support or troubleshooting.
-	InquiryTypeTechnicalSupport InquiryType = "technical_support"
-	// InquiryTypeAccountManagement: Questions or requests related to account management.
-	InquiryTypeAccountManagement InquiryType = "account_management"
-	// InquiryTypeOtherSupportInquiry: Other support-related inquiries that do not fit predefined categories.
-	InquiryTypeOtherSupportInquiry InquiryType = "other_support_inquiry"
-)
-
 // Invoice: An invoice.
 type Invoice struct {
 	// AmountDue: Final amount due at this time for this invoice.
@@ -3391,6 +3449,8 @@ const (
 	MlReasoningEffortMedium MlReasoningEffort = "medium"
 	// MlReasoningEffortHigh: High reasoning
 	MlReasoningEffortHigh MlReasoningEffort = "high"
+	// MlReasoningEffortXhigh: Xhigh reasoning
+	MlReasoningEffortXhigh MlReasoningEffort = "xhigh"
 )
 
 // MlToolResult: MlToolResult: Responses from tools.
@@ -6431,6 +6491,12 @@ type ProjectUpdated struct {
 	Files map[string]string `json:"files" yaml:"files" schema:"files,required"`
 }
 
+// PublicEmailMarketingConsentRequest: The data for subscribing a user to the newsletter.
+type PublicEmailMarketingConsentRequest struct {
+	// Email: The email
+	Email string `json:"email" yaml:"email" schema:"email,required"`
+}
+
 // RawFile: A raw file with unencoded contents to be passed over binary websockets. When raw files come back for exports it is sent as binary/bson, not text/json.
 type RawFile struct {
 	// Contents: The contents of the file.
@@ -6597,6 +6663,24 @@ type RtcSessionDescription struct {
 	// Type: SDP type.
 	Type RtcSdpType `json:"type" yaml:"type" schema:"type,required"`
 }
+
+// SalesInquiryType: The type of sales inquiry for website sales forms.
+type SalesInquiryType string
+
+const (
+	// SalesInquiryTypePilotInquiry: Inquiries related to pilots (on the enterprise page).
+	SalesInquiryTypePilotInquiry SalesInquiryType = "pilot_inquiry"
+	// SalesInquiryTypeGeneralInquiry: General inquiry about the service or product.
+	SalesInquiryTypeGeneralInquiry SalesInquiryType = "general_inquiry"
+	// SalesInquiryTypeSalesQuestion: Questions related to sales or purchasing.
+	SalesInquiryTypeSalesQuestion SalesInquiryType = "sales_question"
+	// SalesInquiryTypeDeveloperInquiry: Inquiry from a developer, typically technical in nature.
+	SalesInquiryTypeDeveloperInquiry SalesInquiryType = "developer_inquiry"
+	// SalesInquiryTypePartnershipOpportunity: Opportunity for partnership or collaboration.
+	SalesInquiryTypePartnershipOpportunity SalesInquiryType = "partnership_opportunity"
+	// SalesInquiryTypeOtherSalesInquiry: Other inquiries related to sales that do not fit predefined categories.
+	SalesInquiryTypeOtherSalesInquiry SalesInquiryType = "other_sales_inquiry"
+)
 
 // SamlIdentityProvider: A SAML identity provider.
 type SamlIdentityProvider struct {
@@ -7076,12 +7160,6 @@ type StoreCouponParams struct {
 	PercentOff int `json:"percent_off" yaml:"percent_off" schema:"percent_off,required"`
 }
 
-// Subscribe: The data for subscribing a user to the newsletter.
-type Subscribe struct {
-	// Email: The email
-	Email string `json:"email" yaml:"email" schema:"email,required"`
-}
-
 // SubscriptionActionType: Indicates which kind of Stripe intent requires customer action during subscription creation.
 type SubscriptionActionType string
 
@@ -7197,6 +7275,18 @@ type SuccessWebSocketResponse struct {
 	// Success: Always true
 	Success bool `json:"success" yaml:"success" schema:"success,required"`
 }
+
+// SupportInquiryType: The type of support inquiry for website support forms.
+type SupportInquiryType string
+
+const (
+	// SupportInquiryTypeTechnicalSupport: Request for technical support or troubleshooting.
+	SupportInquiryTypeTechnicalSupport SupportInquiryType = "technical_support"
+	// SupportInquiryTypeAccountManagement: Questions or requests related to account management.
+	SupportInquiryTypeAccountManagement SupportInquiryType = "account_management"
+	// SupportInquiryTypeOtherSupportInquiry: Other support-related inquiries that do not fit predefined categories.
+	SupportInquiryTypeOtherSupportInquiry SupportInquiryType = "other_support_inquiry"
+)
 
 // SupportTier: The support tier the subscription provides.
 type SupportTier string
@@ -8358,6 +8448,12 @@ type User struct {
 
 // UserAdminDetails: Extra admin-only details for a user.
 type UserAdminDetails struct {
+	// ActiveAPITokensCount: Count of valid API tokens.
+	ActiveAPITokensCount int `json:"active_api_tokens_count" yaml:"active_api_tokens_count" schema:"active_api_tokens_count,required"`
+	// ActiveDeviceTokensCount: Count of active (non-expired) device access tokens.
+	ActiveDeviceTokensCount int `json:"active_device_tokens_count" yaml:"active_device_tokens_count" schema:"active_device_tokens_count,required"`
+	// ActiveSessionsCount: Count of active (non-expired) sessions.
+	ActiveSessionsCount int `json:"active_sessions_count" yaml:"active_sessions_count" schema:"active_sessions_count,required"`
 	// Address: Latest billing address stored for the user.
 	Address Address `json:"address" yaml:"address" schema:"address"`
 	// AddressSummary: Readable billing address summary.
@@ -8366,6 +8462,8 @@ type UserAdminDetails struct {
 	Block BlockReason `json:"block" yaml:"block" schema:"block"`
 	// BlockMessage: Human-friendly block reason message.
 	BlockMessage string `json:"block_message" yaml:"block_message" schema:"block_message"`
+	// CadUserInfo: CAD user info collected from website onboarding/CRM form.
+	CadUserInfo UserCadInfoAdminDetails `json:"cad_user_info" yaml:"cad_user_info" schema:"cad_user_info"`
 	// HubspotContactUrl: Direct or search link to the HubSpot contact record.
 	HubspotContactUrl string `json:"hubspot_contact_url" yaml:"hubspot_contact_url" schema:"hubspot_contact_url"`
 	// PaymentMethods: Known payment methods on file.
@@ -8376,6 +8474,22 @@ type UserAdminDetails struct {
 	StripeCustomerID string `json:"stripe_customer_id" yaml:"stripe_customer_id" schema:"stripe_customer_id"`
 	// StripeDashboardUrl: Direct link to the Stripe customer dashboard.
 	StripeDashboardUrl string `json:"stripe_dashboard_url" yaml:"stripe_dashboard_url" schema:"stripe_dashboard_url"`
+}
+
+// UserCadInfoAdminDetails: CAD user info details for admin surfaces.
+type UserCadInfoAdminDetails struct {
+	// CadIndustry: CAD industry selection.
+	CadIndustry CadIndustry `json:"cad_industry" yaml:"cad_industry" schema:"cad_industry"`
+	// CadUserType: CAD user persona/type.
+	CadUserType CadUserType `json:"cad_user_type" yaml:"cad_user_type" schema:"cad_user_type"`
+	// CompanySize: Company size selection.
+	CompanySize CompanySize `json:"company_size" yaml:"company_size" schema:"company_size"`
+	// HowDidYouFindUs: Acquisition source selection.
+	HowDidYouFindUs CadDiscoverySource `json:"how_did_you_find_us" yaml:"how_did_you_find_us" schema:"how_did_you_find_us"`
+	// HowDidYouFindUsOther: Free-text acquisition source when `other` was selected.
+	HowDidYouFindUsOther string `json:"how_did_you_find_us_other" yaml:"how_did_you_find_us_other" schema:"how_did_you_find_us_other"`
+	// NumberOfCadUsers: Number of CAD users.
+	NumberOfCadUsers string `json:"number_of_cad_users" yaml:"number_of_cad_users" schema:"number_of_cad_users"`
 }
 
 // UserFeature is the type definition for a UserFeature.
@@ -8549,6 +8663,66 @@ type WebSocketRequestTrickleIce struct {
 
 // WebSocketResponse: WebSocketResponse: Websocket responses can either be successful or unsuccessful. Slightly different schemas in either case.
 type WebSocketResponse any
+
+// WebsiteCadUserInfoForm: Request body for authenticated website CAD user info form submissions.
+type WebsiteCadUserInfoForm struct {
+	// CadIndustry: The industry of the user.
+	CadIndustry CadIndustry `json:"cad_industry" yaml:"cad_industry" schema:"cad_industry"`
+	// CadUserType: The user type.
+	CadUserType CadUserType `json:"cad_user_type" yaml:"cad_user_type" schema:"cad_user_type"`
+	// CompanySize: Optional company size metadata.
+	CompanySize CompanySize `json:"company_size" yaml:"company_size" schema:"company_size"`
+	// HowDidYouFindUs: How the user found Zoo.
+	HowDidYouFindUs CadDiscoverySource `json:"how_did_you_find_us" yaml:"how_did_you_find_us" schema:"how_did_you_find_us"`
+	// HowDidYouFindUsOther: Optional free-text value when "Other" is selected.
+	HowDidYouFindUsOther string `json:"how_did_you_find_us_other" yaml:"how_did_you_find_us_other" schema:"how_did_you_find_us_other"`
+	// NumberOfCadUsers: The number of CAD users.
+	NumberOfCadUsers string `json:"number_of_cad_users" yaml:"number_of_cad_users" schema:"number_of_cad_users"`
+}
+
+// WebsiteSalesForm: Request body for website sales form submissions.
+type WebsiteSalesForm struct {
+	// CadPlatforms: The CAD platforms (used for pilot inquiries).
+	CadPlatforms []string `json:"cad_platforms" yaml:"cad_platforms" schema:"cad_platforms"`
+	// Company: The company name.
+	Company string `json:"company" yaml:"company" schema:"company"`
+	// Email: The email address of the user.
+	Email string `json:"email" yaml:"email" schema:"email,required"`
+	// FirstName: The first name of the user.
+	FirstName string `json:"first_name" yaml:"first_name" schema:"first_name,required"`
+	// Industry: The industry of the user.
+	Industry string `json:"industry" yaml:"industry" schema:"industry"`
+	// InquiryType: The type of sales inquiry.
+	InquiryType SalesInquiryType `json:"inquiry_type" yaml:"inquiry_type" schema:"inquiry_type,required"`
+	// JobTitle: The job title (used for pilot inquiries).
+	JobTitle string `json:"job_title" yaml:"job_title" schema:"job_title"`
+	// LastName: The last name of the user.
+	LastName string `json:"last_name" yaml:"last_name" schema:"last_name,required"`
+	// Message: The message content.
+	Message string `json:"message" yaml:"message" schema:"message,required"`
+	// NumCadUsers: The number of CAD users (used for pilot inquiries).
+	NumCadUsers string `json:"num_cad_users" yaml:"num_cad_users" schema:"num_cad_users"`
+	// Phone: The phone number of the user.
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
+}
+
+// WebsiteSupportForm: Request body for website support form submissions.
+type WebsiteSupportForm struct {
+	// Company: Optional company metadata.
+	Company string `json:"company" yaml:"company" schema:"company"`
+	// Email: The email address of the user.
+	Email string `json:"email" yaml:"email" schema:"email,required"`
+	// FirstName: The first name of the user.
+	FirstName string `json:"first_name" yaml:"first_name" schema:"first_name,required"`
+	// InquiryType: The type of support inquiry.
+	InquiryType SupportInquiryType `json:"inquiry_type" yaml:"inquiry_type" schema:"inquiry_type,required"`
+	// LastName: The last name of the user.
+	LastName string `json:"last_name" yaml:"last_name" schema:"last_name,required"`
+	// Message: The message content.
+	Message string `json:"message" yaml:"message" schema:"message,required"`
+	// Phone: Optional phone metadata.
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
+}
 
 // WorldCoordinateSystem is the type definition for a WorldCoordinateSystem.
 type WorldCoordinateSystem string
