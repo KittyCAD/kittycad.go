@@ -4,8 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/google/uuid"
+	"time"
 )
 
 func getClient(t *testing.T) *Client {
@@ -74,24 +73,64 @@ func createTestFileConversion(t *testing.T, client *Client) *FileConversion {
 	return fc
 }
 
-func getAsyncOperationID(t *testing.T) UUID {
+func createTestTextToCadMultiFileIteration(t *testing.T, client *Client) *TextToCadMultiFileIteration {
 	t.Helper()
 
-	rawID := os.Getenv("ZOO_ASYNC_OPERATION_ID")
-	if rawID == "" {
-		rawID = os.Getenv("KITTYCAD_ASYNC_OPERATION_ID")
+	form := NewMultipartForm()
+
+	if err := form.WriteJSONField("body", TextToCadMultiFileIterationBody{
+		KclVersion:   "1.0",
+		ProjectName:  "kittycad.go async operation test",
+		Prompt:       "Add a simple cube to main.kcl and a cylinder to subdir/main.kcl",
+		SourceRanges: []SourceRangePrompt{},
+	}); err != nil {
+		t.Fatalf("writing the multipart JSON body failed: %v", err)
 	}
 
-	if rawID == "" {
-		t.Skipf("skipping async operation integration test: set %s or KITTYCAD_ASYNC_OPERATION_ID", "ZOO_ASYNC_OPERATION_ID")
+	if err := form.WriteFilePart("main.kcl", "main.kcl", "text/plain", []byte("// Glorious cube\n\nsideLength = 10\n")); err != nil {
+		t.Fatalf("writing the main.kcl attachment failed: %v", err)
 	}
 
-	parsedID, err := uuid.Parse(rawID)
+	if err := form.WriteFilePart("subdir/main.kcl", "subdir/main.kcl", "text/plain", []byte("// Glorious cylinder\n\nheight = 20\n")); err != nil {
+		t.Fatalf("writing the subdir/main.kcl attachment failed: %v", err)
+	}
+
+	created, err := client.Ml.CreateTextToCadMultiFileIteration(form)
 	if err != nil {
-		t.Fatalf("parsing the async operation ID failed: %v", err)
+		t.Fatalf("creating the async text-to-cad multi-file iteration failed: %v", err)
 	}
 
-	return UUID{UUID: &parsedID}
+	if created.ID.String() == "" {
+		t.Fatalf("the async text-to-cad multi-file iteration ID is empty")
+	}
+
+	return created
+}
+
+func getAsyncOperationResultMap(t *testing.T, result *any) map[string]any {
+	t.Helper()
+
+	if result == nil {
+		t.Fatalf("the async operation result is nil")
+	}
+
+	resultMap, ok := (*result).(map[string]any)
+	if !ok {
+		t.Fatalf("the async operation result has unexpected type: %T", *result)
+	}
+
+	return resultMap
+}
+
+func getAsyncOperationStringField(t *testing.T, resultMap map[string]any, field string) string {
+	t.Helper()
+
+	value, ok := resultMap[field].(string)
+	if !ok || value == "" {
+		t.Fatalf("the async operation result is missing %q: %#v", field, resultMap)
+	}
+
+	return value
 }
 
 func TestFileConversion(t *testing.T) {
@@ -125,33 +164,45 @@ func TestFileConversion(t *testing.T) {
 
 func TestAsyncOperationStatus(t *testing.T) {
 	client := getClient(t)
-	asyncOperationID := getAsyncOperationID(t)
+	created := createTestTextToCadMultiFileIteration(t, client)
 
-	result, err := client.APICall.GetAsyncOperation(asyncOperationID)
-	if err != nil {
-		t.Fatalf("getting the async operation failed: %v", err)
-	}
+	deadline := time.Now().Add(3 * time.Minute)
+	for {
+		result, err := client.APICall.GetAsyncOperation(created.ID)
+		if err != nil {
+			t.Fatalf("getting the async operation failed: %v", err)
+		}
 
-	if result == nil {
-		t.Fatalf("the async operation result is nil")
-	}
+		resultMap := getAsyncOperationResultMap(t, result)
 
-	resultMap, ok := (*result).(map[string]any)
-	if !ok {
-		t.Fatalf("the async operation result has unexpected type: %T", *result)
-	}
+		gotID := getAsyncOperationStringField(t, resultMap, "id")
+		if gotID != created.ID.String() {
+			t.Fatalf("the async operation ID mismatch, got %q want %q", gotID, created.ID.String())
+		}
 
-	gotID, ok := resultMap["id"].(string)
-	if !ok {
-		t.Fatalf("the async operation result is missing an id: %#v", resultMap)
-	}
-
-	if gotID != asyncOperationID.String() {
-		t.Fatalf("the async operation ID mismatch, got %q want %q", gotID, asyncOperationID.String())
-	}
-
-	status, ok := resultMap["status"].(string)
-	if !ok || status == "" {
-		t.Fatalf("the async operation result is missing a status: %#v", resultMap)
+		status := APICallStatus(getAsyncOperationStringField(t, resultMap, "status"))
+		switch status {
+		case APICallStatusCompleted:
+			outputs, ok := resultMap["outputs"].(map[string]any)
+			if !ok {
+				t.Fatalf("the completed async operation result is missing outputs: %#v", resultMap)
+			}
+			if _, ok := outputs["main.kcl"]; !ok {
+				t.Fatalf("the completed async operation result is missing main.kcl: %#v", outputs)
+			}
+			if _, ok := outputs["subdir/main.kcl"]; !ok {
+				t.Fatalf("the completed async operation result is missing subdir/main.kcl: %#v", outputs)
+			}
+			return
+		case APICallStatusFailed:
+			t.Fatalf("the async operation failed: %s", getAsyncOperationStringField(t, resultMap, "error"))
+		case APICallStatusQueued, APICallStatusUploaded, APICallStatusInProgress:
+			if time.Now().After(deadline) {
+				t.Fatalf("timed out waiting for the async operation to complete, last status: %s", status)
+			}
+			time.Sleep(2 * time.Second)
+		default:
+			t.Fatalf("unexpected async operation status: %s", status)
+		}
 	}
 }

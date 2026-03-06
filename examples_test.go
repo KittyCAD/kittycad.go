@@ -3,7 +3,6 @@
 package kittycad_test
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"net/url"
@@ -448,9 +447,9 @@ func ExampleMetaService_CreateDebugUploads() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	result, err := client.Meta.CreateDebugUploads(buf)
+	result, err := client.Meta.CreateDebugUploads(form)
 	if err != nil {
 		panic(err)
 	}
@@ -471,9 +470,9 @@ func ExampleMetaService_CreateEvent() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	if err := client.Meta.CreateEvent(buf); err != nil {
+	if err := client.Meta.CreateEvent(form); err != nil {
 		panic(err)
 	}
 
@@ -526,9 +525,9 @@ func ExampleFileService_CreateConversionOptions() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	result, err := client.File.CreateConversionOptions(buf)
+	result, err := client.File.CreateConversionOptions(form)
 	if err != nil {
 		panic(err)
 	}
@@ -869,9 +868,9 @@ func ExampleMlService_CreateProprietaryToKcl() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	result, err := client.Ml.CreateProprietaryToKcl(kittycad.CodeOptionParse, buf)
+	result, err := client.Ml.CreateProprietaryToKcl(kittycad.CodeOptionParse, form)
 	if err != nil {
 		panic(err)
 	}
@@ -1025,9 +1024,9 @@ func ExampleMlService_CreateTextToCadMultiFileIteration() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	result, err := client.Ml.CreateTextToCadMultiFileIteration(buf)
+	result, err := client.Ml.CreateTextToCadMultiFileIteration(form)
 	if err != nil {
 		panic(err)
 	}
@@ -1613,9 +1612,9 @@ func ExampleOrgService_UploadDatasetFiles() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	result, err := client.Org.UploadDatasetFiles(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), buf)
+	result, err := client.Org.UploadDatasetFiles(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), form)
 	if err != nil {
 		panic(err)
 	}

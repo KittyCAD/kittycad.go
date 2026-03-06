@@ -1,20 +1,25 @@
 // {{.Description}}
-func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -}} body *bytes.Buffer) {{if .Response}}(*{{.Response.Type}}, error){{else}}error{{end}} {
+func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -}} body *MultipartForm) {{if .Response}}(*{{.Response.Type}}, error){{else}}error{{end}} {
 	// Create the url.
     path := "{{.Path}}"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return {{if .Response}}nil,{{end}} errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return {{if .Response}}nil,{{end}} fmt.Errorf("closing multipart body failed: %v", err)
+	}
 
 	// Create the request.
-    req, err := http.NewRequest("{{.Method}}", targetURL, body)
+    req, err := http.NewRequest("{{.Method}}", targetURL, body.buffer)
 	if err != nil {
         return {{if .Response}}nil,{{end}} fmt.Errorf("error creating request: %v", err)
 	}
 
-    {{if .RequestBody}}
-        // Add our headers.
-        req.Header.Add("Content-Type", "{{.RequestBody.MediaType}}")
-    {{end}}
+    // Add our headers.
+    req.Header.Set("Content-Type", body.ContentType())
 
     {{if .Args}}
 	// Add the parameters to the url.

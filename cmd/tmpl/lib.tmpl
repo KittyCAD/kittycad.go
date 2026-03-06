@@ -2,9 +2,13 @@ package {{.PackageName}}
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"net/url"
 	"os"
 	"strings"
@@ -114,6 +118,116 @@ type userAgentTransport struct {
 	client    *Client
 }
 
+// MultipartForm builds multipart/form-data request bodies for generated endpoints.
+type MultipartForm struct {
+	buffer *bytes.Buffer
+	writer *multipart.Writer
+	closed bool
+}
+
+// NewMultipartForm creates a new multipart/form-data body.
+func NewMultipartForm() *MultipartForm {
+	buffer := new(bytes.Buffer)
+
+	return &MultipartForm{
+		buffer: buffer,
+		writer: multipart.NewWriter(buffer),
+	}
+}
+
+func (f *MultipartForm) ensureWritable() error {
+	if f == nil {
+		return errors.New("multipart form is nil")
+	}
+
+	if f.writer == nil {
+		return errors.New("multipart form writer is nil")
+	}
+
+	if f.closed {
+		return errors.New("multipart form is closed")
+	}
+
+	return nil
+}
+
+// WriteJSONField adds a JSON field to the multipart body.
+func (f *MultipartForm) WriteJSONField(field string, value any) error {
+	if err := f.ensureWritable(); err != nil {
+		return err
+	}
+
+	payload, err := json.Marshal(value)
+	if err != nil {
+		return fmt.Errorf("marshalling multipart JSON field %q failed: %v", field, err)
+	}
+
+	header := make(textproto.MIMEHeader)
+	header.Set("Content-Disposition", fmt.Sprintf(`form-data; name=%q; filename=%q`, field, field+".json"))
+	header.Set("Content-Type", "application/json")
+
+	part, err := f.writer.CreatePart(header)
+	if err != nil {
+		return fmt.Errorf("creating multipart JSON field %q failed: %v", field, err)
+	}
+
+	if _, err := part.Write(payload); err != nil {
+		return fmt.Errorf("writing multipart JSON field %q failed: %v", field, err)
+	}
+
+	return nil
+}
+
+// WriteFile adds a binary file part to the multipart body.
+func (f *MultipartForm) WriteFile(field, filename string, body []byte) error {
+	return f.WriteFilePart(field, filename, "application/octet-stream", body)
+}
+
+// WriteFilePart adds a file part with a custom content type.
+func (f *MultipartForm) WriteFilePart(field, filename, contentType string, body []byte) error {
+	if err := f.ensureWritable(); err != nil {
+		return err
+	}
+
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+
+	header := make(textproto.MIMEHeader)
+	header.Set("Content-Disposition", fmt.Sprintf(`form-data; name=%q; filename=%q`, field, filename))
+	header.Set("Content-Type", contentType)
+
+	part, err := f.writer.CreatePart(header)
+	if err != nil {
+		return fmt.Errorf("creating multipart file field %q failed: %v", field, err)
+	}
+
+	if _, err := part.Write(body); err != nil {
+		return fmt.Errorf("writing multipart file field %q failed: %v", field, err)
+	}
+
+	return nil
+}
+
+// Close finalizes the multipart body.
+func (f *MultipartForm) Close() error {
+	if f == nil || f.closed {
+		return nil
+	}
+
+	f.closed = true
+	return f.writer.Close()
+}
+
+// ContentType returns the multipart/form-data content type with boundary.
+func (f *MultipartForm) ContentType() string {
+	if f == nil || f.writer == nil {
+		return ""
+	}
+
+	return f.writer.FormDataContentType()
+}
+
 func (t userAgentTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	if t.base == nil {
 		return nil, errors.New("RoundTrip: no Transport specified")
@@ -128,8 +242,10 @@ func (t userAgentTransport) RoundTrip(req *http.Request) (*http.Response, error)
 	// Add the user agent header.
 	newReq.Header["User-Agent"] = []string{t.userAgent}
 
-	// Add the content-type header.
-	newReq.Header["Content-Type"] = []string{"application/json"}
+	// Default JSON requests should not clobber caller-provided content types.
+	if newReq.Header.Get("Content-Type") == "" {
+		newReq.Header["Content-Type"] = []string{"application/json"}
+	}
 
 	// Add the authorization header.
 	newReq.Header["Authorization"] = []string{fmt.Sprintf("Bearer %s", t.client.token)}

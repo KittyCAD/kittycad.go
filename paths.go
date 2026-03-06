@@ -906,19 +906,27 @@ func (s *MetaService) CommunitySso(sig string, sso string) error {
 // Parameters
 //
 //   - `body`
-func (s *MetaService) CreateDebugUploads(body *bytes.Buffer) (*[]URL, error) {
+func (s *MetaService) CreateDebugUploads(body *MultipartForm) (*[]URL, error) {
 	// Create the url.
 	path := "/debug/uploads"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -952,19 +960,27 @@ func (s *MetaService) CreateDebugUploads(body *bytes.Buffer) (*[]URL, error) {
 // Parameters
 //
 //   - `body`: Telemetry data we are collecting
-func (s *MetaService) CreateEvent(body *bytes.Buffer) error {
+func (s *MetaService) CreateEvent(body *MultipartForm) error {
 	// Create the url.
 	path := "/events"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -1059,19 +1075,27 @@ func (s *FileService) CreateCenterOfMass(outputUnit UnitLength, srcFormat FileIm
 // Parameters
 //
 //   - `body`: Describes the file to convert (src) and what it should be converted into (output).
-func (s *FileService) CreateConversionOptions(body *bytes.Buffer) (*FileConversion, error) {
+func (s *FileService) CreateConversionOptions(body *MultipartForm) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -1775,19 +1799,27 @@ func (s *MlService) ListConversationsForUser(limit int, pageToken string, sortBy
 //     ```json { "type": "string", "enum": [ "parse", "mock_execute", "execute" ] } ``` </details>
 //
 //   - `body`
-func (s *MlService) CreateProprietaryToKcl(codeOption CodeOption, body *bytes.Buffer) (*KclModel, error) {
+func (s *MlService) CreateProprietaryToKcl(codeOption CodeOption, body *MultipartForm) (*KclModel, error) {
 	// Create the url.
 	path := "/ml/convert/proprietary-to-kcl"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
@@ -2150,19 +2182,27 @@ func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*Text
 // Parameters
 //
 //   - `body`: Body for iterating on models from text prompts.
-func (s *MlService) CreateTextToCadMultiFileIteration(body *bytes.Buffer) (*TextToCadMultiFileIteration, error) {
+func (s *MlService) CreateTextToCadMultiFileIteration(body *MultipartForm) (*TextToCadMultiFileIteration, error) {
 	// Create the url.
 	path := "/ml/text-to-cad/multi-file/iteration"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -3548,19 +3588,27 @@ func (s *OrgService) GetDatasetConversionStats(id UUID) (*OrgDatasetConversionSt
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `body`
-func (s *OrgService) UploadDatasetFiles(id UUID, body *bytes.Buffer) (*UploadOrgDatasetFilesResponse, error) {
+func (s *OrgService) UploadDatasetFiles(id UUID, body *MultipartForm) (*UploadOrgDatasetFilesResponse, error) {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/uploads"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
