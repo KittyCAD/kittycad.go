@@ -14,13 +14,15 @@ GO_BIN_DIR := $(shell gobin="$$( $(GO) env GOBIN )"; if [ -n "$$gobin" ]; then p
 GOIMPORTS := $(or $(shell command -v goimports 2>/dev/null),$(GO_BIN_DIR)/goimports)
 GOLINT := $(or $(shell command -v golint 2>/dev/null),$(GO_BIN_DIR)/golint)
 STATICCHECK := $(or $(shell command -v staticcheck 2>/dev/null),$(GO_BIN_DIR)/staticcheck)
+GOIMPORTS_VERSION := v0.36.0
+STATICCHECK_VERSION := v0.6.1
 
 VERSION := $(shell cat $(CURDIR)/VERSION.txt)
 
 .PHONY: generate
 generate:
 	@# Ensure goimports is available, but avoid network if already installed
-	@[ -x "$(GOIMPORTS)" ] || $(GO) install golang.org/x/tools/cmd/goimports@latest
+	@[ -x "$(GOIMPORTS)" ] || $(GO) install golang.org/x/tools/cmd/goimports@$(GOIMPORTS_VERSION)
 	@# Build the code generator
 	go build -o $(CURDIR)/generate $(CURDIR)/cmd
 	./generate
@@ -69,7 +71,7 @@ vet: ## Verifies `go vet` passes.
 .PHONY: staticcheck
 staticcheck: ## Verifies `staticcheck` passes.
 	@echo "+ $@"
-	@[ -x "$(STATICCHECK)" ] || $(GO) install honnef.co/go/tools/cmd/staticcheck@latest
+	@[ -x "$(STATICCHECK)" ] || $(GO) install honnef.co/go/tools/cmd/staticcheck@$(STATICCHECK_VERSION)
 	@$(STATICCHECK) $(shell $(GO) list ./... | grep -v vendor | grep -v "src\/internal" | grep -v "src\/hash")
 
 .PHONY: cover
