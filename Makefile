@@ -10,17 +10,23 @@ endif
 
 # Set our default go compiler
 GO := go
+GO_BIN_DIR := $(shell gobin="$$( $(GO) env GOBIN )"; if [ -n "$$gobin" ]; then printf "%s" "$$gobin"; else printf "%s/bin" "$$( $(GO) env GOPATH )"; fi)
+GOIMPORTS := $(or $(shell command -v goimports 2>/dev/null),$(GO_BIN_DIR)/goimports)
+GOLINT := $(or $(shell command -v golint 2>/dev/null),$(GO_BIN_DIR)/golint)
+STATICCHECK := $(or $(shell command -v staticcheck 2>/dev/null),$(GO_BIN_DIR)/staticcheck)
+GOIMPORTS_VERSION := v0.36.0
+STATICCHECK_VERSION := v0.6.1
 
 VERSION := $(shell cat $(CURDIR)/VERSION.txt)
 
 .PHONY: generate
 generate:
 	@# Ensure goimports is available, but avoid network if already installed
-	@command -v goimports >/dev/null 2>&1 || go install golang.org/x/tools/cmd/goimports@latest
+	@[ -x "$(GOIMPORTS)" ] || $(GO) install golang.org/x/tools/cmd/goimports@$(GOIMPORTS_VERSION)
 	@# Build the code generator
 	go build -o $(CURDIR)/generate $(CURDIR)/cmd
 	./generate
-	goimports -w *.go
+	$(GOIMPORTS) -w *.go
 	gofmt -s -w *.go
 	go mod tidy
 
@@ -36,15 +42,19 @@ all: generate clean build fmt lint test staticcheck vet install ## Runs a clean,
 .PHONY: fmt
 fmt: ## Verifies all files have been `gofmt`ed.
 	@echo "+ $@"
-	@if [[ ! -z "$(shell gofmt -s -l . | grep -v '.pb.go:' | grep -v '.twirp.go:' | grep -v vendor | tee /dev/stderr)" ]]; then \
+	@out="$$(gofmt -s -l . | grep -v '.pb.go:' | grep -v '.twirp.go:' | grep -v vendor)"; \
+	if [ -n "$$out" ]; then \
+		printf '%s\n' "$$out" >&2; \
 		exit 1; \
 	fi
 
 .PHONY: lint
 lint: ## Verifies `golint` passes.
 	@echo "+ $@"
-	@command -v golint >/dev/null 2>&1 || go install golang.org/x/lint/golint@latest
-	@if [[ ! -z "$(shell golint ./... | grep -v '.pb.go:' | grep -v '.twirp.go:' | grep -v vendor | tee /dev/stderr)" ]]; then \
+	@[ -x "$(GOLINT)" ] || $(GO) install golang.org/x/lint/golint@latest
+	@out="$$( $(GOLINT) ./... | grep -v '.pb.go:' | grep -v '.twirp.go:' | grep -v vendor )"; \
+	if [ -n "$$out" ]; then \
+		printf '%s\n' "$$out" >&2; \
 		exit 1; \
 	fi
 
@@ -56,16 +66,13 @@ test: ## Runs the go tests.
 .PHONY: vet
 vet: ## Verifies `go vet` passes.
 	@echo "+ $@"
-	@if [[ ! -z "$(shell $(GO) vet $(shell $(GO) list ./... | grep -v vendor) | tee /dev/stderr)" ]]; then \
-		exit 1; \
-	fi
+	@$(GO) vet $(shell $(GO) list ./... | grep -v vendor)
 
 .PHONY: staticcheck
 staticcheck: ## Verifies `staticcheck` passes.
 	@echo "+ $@"
-	@if [[ ! -z "$(shell staticcheck $(shell $(GO) list ./... | grep -v vendor | grep -v "src\/internal" | grep -v "src\/hash") | tee /dev/stderr)" ]]; then \
-		exit 0; \
-	fi
+	@[ -x "$(STATICCHECK)" ] || $(GO) install honnef.co/go/tools/cmd/staticcheck@$(STATICCHECK_VERSION)
+	@$(STATICCHECK) $(shell $(GO) list ./... | grep -v vendor | grep -v "src\/internal" | grep -v "src\/hash")
 
 .PHONY: cover
 cover: ## Runs go test with coverage.

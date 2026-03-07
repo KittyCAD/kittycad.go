@@ -13,7 +13,7 @@ type Base64 struct {
 
 // MarshalJSON implements the json.Marshaler interface.
 func (u Base64) MarshalJSON() ([]byte, error) {
-	if u.Inner == nil || len(u.Inner) <= 0 {
+	if len(u.Inner) == 0 {
 		return []byte("null"), nil
 	}
 

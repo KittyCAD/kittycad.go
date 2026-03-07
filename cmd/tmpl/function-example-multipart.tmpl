@@ -5,17 +5,17 @@ func Example{{.Tag}}Service_{{.Name}}() {
         panic(err)
     }
 
-    buf := new(bytes.Buffer)
+    form := {{.PackageName}}.NewMultipartForm()
 
     {{if .Response}}
-        result, err := client.{{.Tag}}.{{.Name}}({{range .Args -}}{{.Example}},{{end -}} buf)
+        result, err := client.{{.Tag}}.{{.Name}}({{range .Args -}}{{.Example}},{{end -}} form)
         if err != nil {
             panic(err)
         }
 
         fmt.Printf("%#v", result)
     {{else}}
-    if err := client.{{.Tag}}.{{.Name}}({{range .Args -}}{{.Example}},{{end -}} buf); err != nil {
+    if err := client.{{.Tag}}.{{.Name}}({{range .Args -}}{{.Example}},{{end -}} form); err != nil {
         panic(err)
     }
     {{end}}

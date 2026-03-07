@@ -3,7 +3,6 @@
 package kittycad_test
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"net/url"
@@ -330,6 +329,22 @@ func ExampleHiddenService_AuthEmail() {
 
 }
 
+// AuthEmailMarketingConfirmCreate: Consume a confirmation token and finalize double opt-in.
+// Parameters
+//
+//   - `body`: Request payload for confirming a double-opt-in token.
+func ExampleHiddenService_AuthEmailMarketingConfirmCreate() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Hidden.AuthEmailMarketingConfirmCreate(kittycad.EmailMarketingConfirmTokenBody{Token: "some-string"}); err != nil {
+		panic(err)
+	}
+
+}
+
 // AuthEmailCallback: Listen for callbacks for email authentication for users.
 // Parameters
 //
@@ -432,9 +447,9 @@ func ExampleMetaService_CreateDebugUploads() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	result, err := client.Meta.CreateDebugUploads(buf)
+	result, err := client.Meta.CreateDebugUploads(form)
 	if err != nil {
 		panic(err)
 	}
@@ -455,9 +470,9 @@ func ExampleMetaService_CreateEvent() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	if err := client.Meta.CreateEvent(buf); err != nil {
+	if err := client.Meta.CreateEvent(form); err != nil {
 		panic(err)
 	}
 
@@ -510,9 +525,9 @@ func ExampleFileService_CreateConversionOptions() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	result, err := client.File.CreateConversionOptions(buf)
+	result, err := client.File.CreateConversionOptions(form)
 	if err != nil {
 		panic(err)
 	}
@@ -853,9 +868,9 @@ func ExampleMlService_CreateProprietaryToKcl() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	result, err := client.Ml.CreateProprietaryToKcl(kittycad.CodeOptionParse, buf)
+	result, err := client.Ml.CreateProprietaryToKcl(kittycad.CodeOptionParse, form)
 	if err != nil {
 		panic(err)
 	}
@@ -1009,9 +1024,9 @@ func ExampleMlService_CreateTextToCadMultiFileIteration() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	result, err := client.Ml.CreateTextToCadMultiFileIteration(buf)
+	result, err := client.Ml.CreateTextToCadMultiFileIteration(form)
 	if err != nil {
 		panic(err)
 	}
@@ -1426,6 +1441,22 @@ func ExampleOrgService_DeleteDataset() {
 
 }
 
+// DownloadDatasetSuccessfulKclBulk: Bulk-download KCL outputs for successful dataset conversions.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_DownloadDatasetSuccessfulKclBulk() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Org.DownloadDatasetSuccessfulKclBulk(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
 // ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
 // This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed. Use the optional `filter` query parameter to filter results (example: `?filter=status:success`).
 //
@@ -1581,9 +1612,9 @@ func ExampleOrgService_UploadDatasetFiles() {
 		panic(err)
 	}
 
-	buf := new(bytes.Buffer)
+	form := kittycad.NewMultipartForm()
 
-	result, err := client.Org.UploadDatasetFiles(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), buf)
+	result, err := client.Org.UploadDatasetFiles(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), form)
 	if err != nil {
 		panic(err)
 	}
@@ -2892,17 +2923,56 @@ func ExampleAPITokenService_DeleteForUser() {
 
 }
 
-// PatchCrm: Update properties in the CRM
-// Parameters
-//
-//   - `body`: The data for subscribing a user to the newsletter.
-func ExampleUserService_PatchCrm() {
+// EmailMarketingConsentList: Get email marketing consent state for the authenticated user.
+func ExampleUserService_EmailMarketingConsentList() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.User.PatchCrm(kittycad.CrmData{CadIndustry: "some-string", CadUserType: "some-string", NumberOfCadUsers: "some-string"}); err != nil {
+	result, err := client.User.EmailMarketingConsentList()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// EmailMarketingConsentDeclineCreate: Record explicit decline for email marketing consent.
+func ExampleUserService_EmailMarketingConsentDeclineCreate() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.EmailMarketingConsentDeclineCreate(); err != nil {
+		panic(err)
+	}
+
+}
+
+// EmailMarketingConsentRequestCreate: Request email marketing opt-in and send a confirmation email.
+func ExampleUserService_EmailMarketingConsentRequestCreate() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.EmailMarketingConsentRequestCreate(); err != nil {
+		panic(err)
+	}
+
+}
+
+// EmailMarketingConsentSeenCreate: Mark the email-marketing modal as seen/dismissed for the authenticated user.
+func ExampleUserService_EmailMarketingConsentSeenCreate() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.EmailMarketingConsentSeenCreate(); err != nil {
 		panic(err)
 	}
 
@@ -2941,24 +3011,6 @@ func ExampleUserService_FeaturesList() {
 	}
 
 	fmt.Printf("%#v", result)
-
-}
-
-// PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.
-// It gets attached to the user's account.
-//
-// Parameters
-//
-//   - `body`: The form for a public inquiry submission.
-func ExampleUserService_PutFormSelf() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	if err := client.User.PutFormSelf(kittycad.InquiryForm{CadPlatforms: []string{}, Company: "some-string", Email: "example@example.com", FirstName: "some-string", Industry: "some-string", InquiryType: "", JobTitle: "some-string", LastName: "some-string", Message: "some-string", NumCadUsers: "some-string", Phone: "some-string"}); err != nil {
-		panic(err)
-	}
 
 }
 
@@ -3729,35 +3781,69 @@ func ExampleUserService_UpdateSubscriptionFor() {
 
 }
 
-// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted
-// users and is not authenticated.
-//
+// PutPublicEmailMarketingConsentRequest: Requests public email marketing consent for an email address.
 // Parameters
 //
-//   - `body`: The form for a public inquiry submission.
-func ExampleUserService_PutPublicForm() {
+//   - `body`: The data for subscribing a user to the newsletter.
+func ExampleUserService_PutPublicEmailMarketingConsentRequest() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.User.PutPublicForm(kittycad.InquiryForm{CadPlatforms: []string{}, Company: "some-string", Email: "example@example.com", FirstName: "some-string", Industry: "some-string", InquiryType: "", JobTitle: "some-string", LastName: "some-string", Message: "some-string", NumCadUsers: "some-string", Phone: "some-string"}); err != nil {
+	if err := client.User.PutPublicEmailMarketingConsentRequest(kittycad.PublicEmailMarketingConsentRequest{Email: "example@example.com"}); err != nil {
 		panic(err)
 	}
 
 }
 
-// PutPublicSubscribe: Subscribes a user to the newsletter.
+// PutCadInfoForm: Stores authenticated CAD user info form data for the current user.
 // Parameters
 //
-//   - `body`: The data for subscribing a user to the newsletter.
-func ExampleUserService_PutPublicSubscribe() {
+//   - `body`: Request body for authenticated website CAD user info form submissions.
+func ExampleUserService_PutCadInfoForm() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.User.PutPublicSubscribe(kittycad.Subscribe{Email: "example@example.com"}); err != nil {
+	if err := client.User.PutCadInfoForm(kittycad.WebsiteCadUserInfoForm{CadIndustry: "", CadUserType: "", CompanySize: "", HowDidYouFindUs: "", HowDidYouFindUsOther: "some-string", NumberOfCadUsers: "some-string"}); err != nil {
+		panic(err)
+	}
+
+}
+
+// PutPublicSalesForm: Creates a new sales ticket in the internal help desk from the website sales form.
+// This endpoint accepts optional authentication.
+//
+// Parameters
+//
+//   - `body`: Request body for website sales form submissions.
+func ExampleUserService_PutPublicSalesForm() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.PutPublicSalesForm(kittycad.WebsiteSalesForm{CadPlatforms: []string{}, Company: "some-string", Email: "example@example.com", FirstName: "some-string", Industry: "some-string", InquiryType: "", JobTitle: "some-string", LastName: "some-string", Message: "some-string", NumCadUsers: "some-string", Phone: "some-string"}); err != nil {
+		panic(err)
+	}
+
+}
+
+// PutPublicSupportForm: Creates a new support ticket in the internal help desk from the website support form.
+// This endpoint accepts optional authentication.
+//
+// Parameters
+//
+//   - `body`: Request body for website support form submissions.
+func ExampleUserService_PutPublicSupportForm() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.PutPublicSupportForm(kittycad.WebsiteSupportForm{Company: "some-string", Email: "example@example.com", FirstName: "some-string", InquiryType: "", LastName: "some-string", Message: "some-string", Phone: "some-string"}); err != nil {
 		panic(err)
 	}
 

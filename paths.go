@@ -644,6 +644,47 @@ func (s *HiddenService) AuthEmail(body EmailAuthenticationForm) (*VerificationTo
 
 }
 
+// AuthEmailMarketingConfirmCreate: Consume a confirmation token and finalize double opt-in.
+// Parameters
+//
+//   - `body`: Request payload for confirming a double-opt-in token.
+func (s *HiddenService) AuthEmailMarketingConfirmCreate(body EmailMarketingConfirmTokenBody) error {
+	// Create the url.
+	path := "/auth/email-marketing/confirm"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // AuthEmailCallback: Listen for callbacks for email authentication for users.
 // Parameters
 //
@@ -865,19 +906,27 @@ func (s *MetaService) CommunitySso(sig string, sso string) error {
 // Parameters
 //
 //   - `body`
-func (s *MetaService) CreateDebugUploads(body *bytes.Buffer) (*[]URL, error) {
+func (s *MetaService) CreateDebugUploads(body *MultipartForm) (*[]URL, error) {
 	// Create the url.
 	path := "/debug/uploads"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -911,19 +960,27 @@ func (s *MetaService) CreateDebugUploads(body *bytes.Buffer) (*[]URL, error) {
 // Parameters
 //
 //   - `body`: Telemetry data we are collecting
-func (s *MetaService) CreateEvent(body *bytes.Buffer) error {
+func (s *MetaService) CreateEvent(body *MultipartForm) error {
 	// Create the url.
 	path := "/events"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -1018,19 +1075,27 @@ func (s *FileService) CreateCenterOfMass(outputUnit UnitLength, srcFormat FileIm
 // Parameters
 //
 //   - `body`: Describes the file to convert (src) and what it should be converted into (output).
-func (s *FileService) CreateConversionOptions(body *bytes.Buffer) (*FileConversion, error) {
+func (s *FileService) CreateConversionOptions(body *MultipartForm) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -1734,19 +1799,27 @@ func (s *MlService) ListConversationsForUser(limit int, pageToken string, sortBy
 //     ```json { "type": "string", "enum": [ "parse", "mock_execute", "execute" ] } ``` </details>
 //
 //   - `body`
-func (s *MlService) CreateProprietaryToKcl(codeOption CodeOption, body *bytes.Buffer) (*KclModel, error) {
+func (s *MlService) CreateProprietaryToKcl(codeOption CodeOption, body *MultipartForm) (*KclModel, error) {
 	// Create the url.
 	path := "/ml/convert/proprietary-to-kcl"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
@@ -2109,19 +2182,27 @@ func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*Text
 // Parameters
 //
 //   - `body`: Body for iterating on models from text prompts.
-func (s *MlService) CreateTextToCadMultiFileIteration(body *bytes.Buffer) (*TextToCadMultiFileIteration, error) {
+func (s *MlService) CreateTextToCadMultiFileIteration(body *MultipartForm) (*TextToCadMultiFileIteration, error) {
 	// Create the url.
 	path := "/ml/text-to-cad/multi-file/iteration"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -3122,6 +3203,45 @@ func (s *OrgService) DeleteDataset(id UUID) error {
 
 }
 
+// DownloadDatasetSuccessfulKclBulk: Bulk-download KCL outputs for successful dataset conversions.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) DownloadDatasetSuccessfulKclBulk(id UUID) error {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/bulk-download/kcl"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
 // This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed. Use the optional `filter` query parameter to filter results (example: `?filter=status:success`).
 //
@@ -3468,19 +3588,27 @@ func (s *OrgService) GetDatasetConversionStats(id UUID) (*OrgDatasetConversionSt
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `body`
-func (s *OrgService) UploadDatasetFiles(id UUID, body *bytes.Buffer) (*UploadOrgDatasetFilesResponse, error) {
+func (s *OrgService) UploadDatasetFiles(id UUID, body *MultipartForm) (*UploadOrgDatasetFilesResponse, error) {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/uploads"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
 	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body)
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add our headers.
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Set("Content-Type", body.ContentType())
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
@@ -6535,29 +6663,113 @@ func (s *APITokenService) DeleteForUser(token string) error {
 
 }
 
-// PatchCrm: Update properties in the CRM
-// Parameters
-//
-//   - `body`: The data for subscribing a user to the newsletter.
-func (s *UserService) PatchCrm(body CrmData) error {
+// EmailMarketingConsentList: Get email marketing consent state for the authenticated user.
+func (s *UserService) EmailMarketingConsentList() (*EmailMarketingConsentState, error) {
 	// Create the url.
-	path := "/user/crm"
+	path := "/user/email-marketing-consent"
 	targetURL := resolveRelative(s.client.server, path)
 
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(body); err != nil {
-		return fmt.Errorf("encoding json body request failed: %v", err)
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded EmailMarketingConsentState
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// EmailMarketingConsentDeclineCreate: Record explicit decline for email marketing consent.
+func (s *UserService) EmailMarketingConsentDeclineCreate() error {
+	// Create the url.
+	path := "/user/email-marketing-consent/decline"
+	targetURL := resolveRelative(s.client.server, path)
+
 	// Create the request.
-	req, err := http.NewRequest("PATCH", targetURL, b)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
 	}
 
-	// Add our headers.
-	req.Header.Add("Content-Type", "application/json")
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// EmailMarketingConsentRequestCreate: Request email marketing opt-in and send a confirmation email.
+func (s *UserService) EmailMarketingConsentRequestCreate() error {
+	// Create the url.
+	path := "/user/email-marketing-consent/request"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// EmailMarketingConsentSeenCreate: Mark the email-marketing modal as seen/dismissed for the authenticated user.
+func (s *UserService) EmailMarketingConsentSeenCreate() error {
+	// Create the url.
+	path := "/user/email-marketing-consent/seen"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -6653,49 +6865,6 @@ func (s *UserService) FeaturesList() (*UserFeatureList, error) {
 
 	// Return the response.
 	return &decoded, nil
-
-}
-
-// PutFormSelf: Create a new support/sales ticket from the website contact form. This endpoint is authenticated.
-// It gets attached to the user's account.
-//
-// Parameters
-//
-//   - `body`: The form for a public inquiry submission.
-func (s *UserService) PutFormSelf(body InquiryForm) error {
-	// Create the url.
-	path := "/user/form"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(body); err != nil {
-		return fmt.Errorf("encoding json body request failed: %v", err)
-	}
-
-	// Create the request.
-	req, err := http.NewRequest("PUT", targetURL, b)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add our headers.
-	req.Header.Add("Content-Type", "application/json")
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-
-	// Return.
-	return nil
 
 }
 
@@ -8449,15 +8618,13 @@ func (s *UserService) UpdateSubscriptionFor(id string, body ZooProductSubscripti
 
 }
 
-// PutPublicForm: Creates a new support/sales ticket from the website contact form. This endpoint is for untrusted
-// users and is not authenticated.
-//
+// PutPublicEmailMarketingConsentRequest: Requests public email marketing consent for an email address.
 // Parameters
 //
-//   - `body`: The form for a public inquiry submission.
-func (s *UserService) PutPublicForm(body InquiryForm) error {
+//   - `body`: The data for subscribing a user to the newsletter.
+func (s *UserService) PutPublicEmailMarketingConsentRequest(body PublicEmailMarketingConsentRequest) error {
 	// Create the url.
-	path := "/website/form"
+	path := "/website/email-marketing-consent/request"
 	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
@@ -8492,13 +8659,99 @@ func (s *UserService) PutPublicForm(body InquiryForm) error {
 
 }
 
-// PutPublicSubscribe: Subscribes a user to the newsletter.
+// PutCadInfoForm: Stores authenticated CAD user info form data for the current user.
 // Parameters
 //
-//   - `body`: The data for subscribing a user to the newsletter.
-func (s *UserService) PutPublicSubscribe(body Subscribe) error {
+//   - `body`: Request body for authenticated website CAD user info form submissions.
+func (s *UserService) PutCadInfoForm(body WebsiteCadUserInfoForm) error {
 	// Create the url.
-	path := "/website/subscribe"
+	path := "/website/forms/cad-user-info"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// PutPublicSalesForm: Creates a new sales ticket in the internal help desk from the website sales form.
+// This endpoint accepts optional authentication.
+//
+// Parameters
+//
+//   - `body`: Request body for website sales form submissions.
+func (s *UserService) PutPublicSalesForm(body WebsiteSalesForm) error {
+	// Create the url.
+	path := "/website/forms/sales"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// PutPublicSupportForm: Creates a new support ticket in the internal help desk from the website support form.
+// This endpoint accepts optional authentication.
+//
+// Parameters
+//
+//   - `body`: Request body for website support form submissions.
+func (s *UserService) PutPublicSupportForm(body WebsiteSupportForm) error {
+	// Create the url.
+	path := "/website/forms/support"
 	targetURL := resolveRelative(s.client.server, path)
 
 	// Encode the request body as json.
