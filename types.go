@@ -955,6 +955,14 @@ type BooleanUnion struct {
 	ExtraSolidIds []UUID `json:"extra_solid_ids" yaml:"extra_solid_ids" schema:"extra_solid_ids"`
 }
 
+// BoundingBox: The response from the 'BoundingBox'.
+type BoundingBox struct {
+	// Center: Center of the box.
+	Center Point3D `json:"center" yaml:"center" schema:"center,required"`
+	// Dimensions: Dimensions of the box along each axis.
+	Dimensions Point3D `json:"dimensions" yaml:"dimensions" schema:"dimensions,required"`
+}
+
 // CadDiscoverySource: Strict acquisition-source enum used by the website CAD user info form.
 type CadDiscoverySource string
 
@@ -1213,6 +1221,12 @@ type ClosePath struct {
 	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id,required"`
 }
 
+// ClosestEdge: The response from the 'ClosestEdge'.
+type ClosestEdge struct {
+	// EdgeID: The ID of the edge closest to the point given in the request. If there are no edges in the scene, returns None.
+	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id"`
+}
+
 // CodeLanguage: The language code is written in.
 // <details><summary>JSON schema</summary>
 //
@@ -1400,6 +1414,10 @@ type CreateOrgDataset struct {
 
 // CreateRegion: The response from the 'CreateRegion'. The region should have an ID taken from the ID of the 'CreateRegion' modeling command.
 type CreateRegion struct {
+}
+
+// CreateRegionFromQueryPoint: The response from the 'CreateRegionFromQueryPoint'. The region should have an ID taken from the ID of the 'CreateRegionFromQueryPoint' modeling command.
+type CreateRegionFromQueryPoint struct {
 }
 
 // CreateShortlinkRequest: Request to create a shortlink.
@@ -3917,12 +3935,16 @@ type ModelingCmdEntityGetPrimitiveIndex struct {
 
 // ModelingCmdEntityGetSketchPaths: Create a new non-manifold body by intersecting all the input bodies, cutting and splitting all the faces at the intersection boundaries.
 type ModelingCmdEntityGetSketchPaths struct {
-	// BodyIds: Which input bodies to intersect.  Inputs with non-solid body types are permitted
+	// BodyIds: Which target input bodies to intersect. Inputs with non-solid body types are permitted
 	BodyIds []UUID `json:"body_ids" yaml:"body_ids" schema:"body_ids,required"`
-	// SeparateBodies: If true, bodies will be separated into multiple objects at their intersection boundaries.
+	// KeepTools: If true, the provided tool bodies will not be modified
+	KeepTools bool `json:"keep_tools" yaml:"keep_tools" schema:"keep_tools"`
+	// SeparateBodies: If true, target bodies will be separated into multiple objects at their intersection boundaries.
 	SeparateBodies bool `json:"separate_bodies" yaml:"separate_bodies" schema:"separate_bodies"`
 	// Tolerance: The maximum acceptable surface gap between the intersected bodies. Must be positive (i.e. greater than zero).
 	Tolerance float64 `json:"tolerance" yaml:"tolerance" schema:"tolerance,required"`
+	// ToolIds: If provided, only these bodies will be used to intersect with the target bodies in body_ids, Otherwise, all bodies in body_ids will be intersected with themselves.
+	ToolIds []UUID `json:"tool_ids" yaml:"tool_ids" schema:"tool_ids"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3965,6 +3987,14 @@ type ModelingCmdEntityIds struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Unit: Which units the scene uses.
 	Unit UnitLength `json:"unit" yaml:"unit" schema:"unit,required"`
+}
+
+// ModelingCmdEntityLinearPatternTransform: The user clicked on a point in the window, returns the region the user clicked on, if any.
+type ModelingCmdEntityLinearPatternTransform struct {
+	// SelectedAtWindow: Where in the window was selected
+	SelectedAtWindow Point2D `json:"selected_at_window" yaml:"selected_at_window" schema:"selected_at_window,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // ModelingCmdExport: What kind of entities can be selected?
@@ -4181,6 +4211,14 @@ type ModelingCmdModelingCmdAngle struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// ModelingCmdModelingCmdAxis: Get the smallest box that could contain the given parts.
+type ModelingCmdModelingCmdAxis struct {
+	// EntityIds: IDs of the entities to be included in the box. If this is empty, then all entities are included (the entire scene).
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // ModelingCmdModelingCmdBodyType: Send object to front or back.
 type ModelingCmdModelingCmdBodyType struct {
 	// Front: Bring to front = true, send to back = false.
@@ -4209,18 +4247,14 @@ type ModelingCmdModelingCmdDistance struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdEntityID: Create a region bounded by the intersection of various paths. The region should have an ID taken from the ID of the 'CreateRegion' modeling command.
+// ModelingCmdModelingCmdEntityID: Offset a surface by a given distance.
 type ModelingCmdModelingCmdEntityID struct {
-	// CurveClockwise: By default, curve counterclockwise at intersections. If this is true, instead curve clockwise.
-	CurveClockwise bool `json:"curve_clockwise" yaml:"curve_clockwise" schema:"curve_clockwise"`
-	// IntersectionIndex: At which intersection between `segment` and `intersection_segment` should we stop following the `segment` and start following `intersection_segment`? Defaults to -1, which means the last intersection.
-	IntersectionIndex int `json:"intersection_index" yaml:"intersection_index" schema:"intersection_index"`
-	// IntersectionSegment: Second segment to follow to find the region. Intersects the first segment.
-	IntersectionSegment UUID `json:"intersection_segment" yaml:"intersection_segment" schema:"intersection_segment,required"`
-	// ObjectID: Which sketch object to create the region from.
-	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
-	// Segment: First segment to follow to find the region.
-	Segment UUID `json:"segment" yaml:"segment" schema:"segment,required"`
+	// Distance: The distance to offset the surface by.
+	Distance float64 `json:"distance" yaml:"distance" schema:"distance,required"`
+	// Flip: Flip the newly created face.
+	Flip bool `json:"flip" yaml:"flip" schema:"flip,required"`
+	// SurfaceID: The surface to offset.
+	SurfaceID UUID `json:"surface_id" yaml:"surface_id" schema:"surface_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -4407,6 +4441,16 @@ type ModelingCmdMovePathPen struct {
 	Tolerance float64 `json:"tolerance" yaml:"tolerance" schema:"tolerance,required"`
 	// TotalRotationAngle: Total rotation of the section
 	TotalRotationAngle Angle `json:"total_rotation_angle" yaml:"total_rotation_angle" schema:"total_rotation_angle,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdNumRepetitions: Returns the closest edge to this point.
+type ModelingCmdNumRepetitions struct {
+	// ClosestTo: Find the edge closest to this point. Assumed to be in absolute coordinates, relative to global (scene) origin.
+	ClosestTo Point3D `json:"closest_to" yaml:"closest_to" schema:"closest_to,required"`
+	// ObjectID: The body whose edges are being queried. If not given, will search all bodies in the scene.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -4735,10 +4779,20 @@ type ModelingCmdTrajectory struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdTransform: The user clicked on a point in the window, returns the region the user clicked on, if any.
+// ModelingCmdTransform: Create a region with a query point. The region should have an ID taken from the ID of the 'CreateRegionFromQueryPoint' modeling command.
 type ModelingCmdTransform struct {
-	// SelectedAtWindow: Where in the window was selected
-	SelectedAtWindow Point2D `json:"selected_at_window" yaml:"selected_at_window" schema:"selected_at_window,required"`
+	// ObjectID: Which sketch object to create the region from.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// QueryPoint: The query point (in the same coordinates as the sketch itself) if a possible sketch region contains this point, then that region will be created
+	QueryPoint Point2D `json:"query_point" yaml:"query_point" schema:"query_point,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ModelingCmdTransforms: Finds a suitable point inside the region for calling such that CreateRegionFromQueryPoint will generate an identical region.
+type ModelingCmdTransforms struct {
+	// RegionID: Which region to search within
+	RegionID UUID `json:"region_id" yaml:"region_id" schema:"region_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -4875,8 +4929,28 @@ type ObjectSetMaterialParamsPbr struct {
 type ObjectVisible struct {
 }
 
+// OffsetSurface: The response from the 'OffsetSurface'.
+type OffsetSurface struct {
+}
+
 // OkModelingCmdResponse: OkModelingCmdResponse: A successful response from a modeling command. This can be one of several types of responses, depending on the command.
 type OkModelingCmdResponse any
+
+// OkModelingCmdResponseCameraDragEnd is the type definition for a OkModelingCmdResponseCameraDragEnd.
+type OkModelingCmdResponseCameraDragEnd struct {
+	// Data: The response from the 'BoundingBox'.
+	Data BoundingBox `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseCameraDragMove is the type definition for a OkModelingCmdResponseCameraDragMove.
+type OkModelingCmdResponseCameraDragMove struct {
+	// Data: The response from 'RegionGetQueryPoint' modeling command.
+	Data RegionGetQueryPoint `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
 
 // OkModelingCmdResponseCameraDragStart is the type definition for a OkModelingCmdResponseCameraDragStart.
 type OkModelingCmdResponseCameraDragStart struct {
@@ -4922,6 +4996,14 @@ type OkModelingCmdResponseDefaultCameraCenterToScene struct {
 type OkModelingCmdResponseDefaultCameraCenterToSelection struct {
 	// Data: The gradient (dFdu, dFdv) + normal vector on a brep face
 	Data FaceGetGradient `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseDefaultCameraGetSettings is the type definition for a OkModelingCmdResponseDefaultCameraGetSettings.
+type OkModelingCmdResponseDefaultCameraGetSettings struct {
+	// Data: The response from the 'ClosestEdge'.
+	Data ClosestEdge `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5246,8 +5328,8 @@ type OkModelingCmdResponseObjectVisible struct {
 
 // OkModelingCmdResponseOkModelingCmdResponseData is the type definition for a OkModelingCmdResponseOkModelingCmdResponseData.
 type OkModelingCmdResponseOkModelingCmdResponseData struct {
-	// Data: The response from the 'SelectRegionFromPoint'. If there are multiple ways to construct this region, this chooses arbitrarily.
-	Data SelectRegionFromPoint `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'OffsetSurface'.
+	Data OffsetSurface `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6576,6 +6658,12 @@ type ReasoningMessageText struct {
 
 // ReconfigureStream: The response from the `ReconfigureStream` endpoint.
 type ReconfigureStream struct {
+}
+
+// RegionGetQueryPoint: The response from 'RegionGetQueryPoint' modeling command.
+type RegionGetQueryPoint struct {
+	// QueryPoint: A point that is inside of the queried region, in the same coordinate frame as the sketch itself
+	QueryPoint Point2D `json:"query_point" yaml:"query_point" schema:"query_point,required"`
 }
 
 // RelativeTo: What is the given geometry relative to?
