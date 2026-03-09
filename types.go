@@ -2103,8 +2103,6 @@ type ExtendedUser struct {
 	FirstName string `json:"first_name" yaml:"first_name" schema:"first_name"`
 	// Github: The user's GitHub handle.
 	Github string `json:"github" yaml:"github" schema:"github"`
-	// HubspotContactID: The user's Hubspot ID. This is mostly used for internal mapping.
-	HubspotContactID string `json:"hubspot_contact_id" yaml:"hubspot_contact_id" schema:"hubspot_contact_id"`
 	// ID: The unique identifier for the user.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Image: The image avatar for the user. This is a URL.
@@ -8464,8 +8462,6 @@ type UserAdminDetails struct {
 	BlockMessage string `json:"block_message" yaml:"block_message" schema:"block_message"`
 	// CadUserInfo: CAD user info collected from website onboarding/CRM form.
 	CadUserInfo UserCadInfoAdminDetails `json:"cad_user_info" yaml:"cad_user_info" schema:"cad_user_info"`
-	// HubspotContactUrl: Direct or search link to the HubSpot contact record.
-	HubspotContactUrl string `json:"hubspot_contact_url" yaml:"hubspot_contact_url" schema:"hubspot_contact_url"`
 	// PaymentMethods: Known payment methods on file.
 	PaymentMethods []PaymentMethod `json:"payment_methods" yaml:"payment_methods" schema:"payment_methods,required"`
 	// PaymentMethodsSummary: Summaries of the known payment methods.
