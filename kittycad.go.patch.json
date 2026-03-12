@@ -409,6 +409,14 @@
  },
  {
   "value": {
+   "example": "// VerifyOauthAccountLinking: Verify OAuth account linking and complete the authentication.\n// \n// This endpoint is called when a user clicks the verification link sent to their email after attempting to log in with OAuth when an existing account with the same email was found. This endpoint validates the token, links the OAuth account to the user, and creates a session.\n// \n// \n// Parameters\n// \n// \t- `callbackUrl`\n// \t- `token`\n// \n// VerifyOauthAccountLinking: Verify OAuth account linking and complete the authentication.\n// This endpoint is called when a user clicks the verification link sent to their email after attempting to log in with OAuth when an existing account with the same email was found. This endpoint validates the token, links the OAuth account to the user, and creates a session.\n//\n// Parameters\n//\n//   - `callbackUrl`\n//   - `token`\nfunc ExampleOauth2Service_VerifyOauthAccountLinking() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Oauth2.VerifyOauthAccountLinking(\"some-string\", \"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.VerifyOauthAccountLinking"
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1verify-account-linking/get/x-go"
+ },
+ {
+  "value": {
    "example": "// Delete: Delete an org.\n// \n// In order to delete an org, you must first delete all of its members, except yourself.\n// \n// You must also have no outstanding invoices or unpaid balances.\n// \n// This endpoint requires authentication by an org admin. It deletes the authenticated user's org.\n// \n// Delete: Delete an org.\n// In order to delete an org, you must first delete all of its members, except yourself.\n//\n// You must also have no outstanding invoices or unpaid balances.\n//\n// This endpoint requires authentication by an org admin. It deletes the authenticated user's org.\nfunc ExampleOrgService_Delete() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Org.Delete(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.Delete"
   },
