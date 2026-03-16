@@ -1185,6 +1185,25 @@ func ExampleOauth2Service_TokenRevoke() {
 
 }
 
+// VerifyOauthAccountLinking: Verify OAuth account linking and complete the authentication.
+// This endpoint is called when a user clicks the verification link sent to their email after attempting to log in with OAuth when an existing account with the same email was found. This endpoint validates the token, links the OAuth account to the user, and creates a session.
+//
+// Parameters
+//
+//   - `callbackUrl`
+//   - `token`
+func ExampleOauth2Service_VerifyOauthAccountLinking() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.VerifyOauthAccountLinking("some-string", "some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
 // Get: Get an org.
 // This endpoint requires authentication by an org admin. It gets the authenticated user's org.
 func ExampleOrgService_Get() {

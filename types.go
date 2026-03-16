@@ -164,6 +164,8 @@ const (
 	AccountProviderSaml AccountProvider = "saml"
 	// AccountProviderTencent: The Tencent QQ account provider.
 	AccountProviderTencent AccountProvider = "tencent"
+	// AccountProviderTestProvider: Test provider for integration tests (only available during testing).
+	AccountProviderTestProvider AccountProvider = "test_provider"
 )
 
 // AddHoleFromOffset: The response from the `AddHoleFromOffset` command.
@@ -3198,6 +3200,8 @@ type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
 	// ReasoningEffort: Change the default or mode reasoning effort.
 	ReasoningEffort MlReasoningEffort `json:"reasoning_effort" yaml:"reasoning_effort" schema:"reasoning_effort"`
+	// SketchSolve: To handle the transition period between sketch 1 and sketch_solve, set a flag for sketch_solve, True for sketch_solve, false for sketch 1. Defaults to false
+	SketchSolve bool `json:"sketch_solve" yaml:"sketch_solve" schema:"sketch_solve"`
 	// SourceRanges: The source ranges the user suggested to change. If empty, the content (prompt) will be used and is required.
 	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
 	// Type:

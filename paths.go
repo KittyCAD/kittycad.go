@@ -2605,6 +2605,49 @@ func (s *Oauth2Service) TokenRevoke(body TokenRevokeRequestForm) error {
 
 }
 
+// VerifyOauthAccountLinking: Verify OAuth account linking and complete the authentication.
+// This endpoint is called when a user clicks the verification link sent to their email after attempting to log in with OAuth when an existing account with the same email was found. This endpoint validates the token, links the OAuth account to the user, and creates a session.
+//
+// Parameters
+//
+//   - `callbackUrl`
+//   - `token`
+func (s *Oauth2Service) VerifyOauthAccountLinking(callbackUrl string, token string) error {
+	// Create the url.
+	path := "/oauth2/verify-account-linking"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"callback_url": callbackUrl,
+		"token":        token,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // Get: Get an org.
 // This endpoint requires authentication by an org admin. It gets the authenticated user's org.
 func (s *OrgService) Get() (*Org, error) {
