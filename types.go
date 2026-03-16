@@ -921,6 +921,8 @@ const (
 	BlockReasonMissingPaymentMethod BlockReason = "missing_payment_method"
 	// BlockReasonPaymentMethodFailed: The users payment method has failed.
 	BlockReasonPaymentMethodFailed BlockReason = "payment_method_failed"
+	// BlockReasonUpgradeDowngradeAbuse: The user repeatedly upgraded and downgraded to recycle free-plan credits.
+	BlockReasonUpgradeDowngradeAbuse BlockReason = "upgrade_downgrade_abuse"
 )
 
 // BodyType: Body type determining if the operation will create a manifold (solid) body or a non-manifold collection of surfaces.
