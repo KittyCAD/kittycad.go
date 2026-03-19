@@ -1761,6 +1761,115 @@ func ExampleOrgService_DeleteMember() {
 
 }
 
+// ListOrgApps: List org OAuth apps.
+// This endpoint requires authentication by an org member. It lists the organization's active public OAuth apps.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleOauth2Service_ListOrgApps() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.ListOrgApps(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateOrgApp: Create an org OAuth app.
+// This endpoint requires authentication by an org admin. It creates an active public device-flow app owned by the authenticated organization.
+//
+// Parameters
+//
+//   - `body`: Request body for creating a public device-flow app.
+func ExampleOauth2Service_CreateOrgApp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.CreateOrgApp(kittycad.CreateOauth2AppRequest{Name: "some-string"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetOrgApp: Get an org OAuth app.
+// This endpoint requires authentication by an org member. It returns the organization's active public OAuth app by client ID.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+func ExampleOauth2Service_GetOrgApp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.GetOrgApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateOrgApp: Update an org OAuth app.
+// This endpoint requires authentication by an org admin. It updates the name of the organization's active public OAuth app.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+//   - `body`: Request body for updating a public device-flow app.
+func ExampleOauth2Service_UpdateOrgApp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.UpdateOrgApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOauth2AppRequest{Name: "some-string"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteOrgApp: Delete an org OAuth app.
+// This endpoint requires authentication by an org admin. It deactivates the organization's active public OAuth app.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+func ExampleOauth2Service_DeleteOrgApp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.DeleteOrgApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
 // GetInformationForOrg: Get payment info about your org.
 // This includes billing address, phone, and name.
 //
@@ -3030,6 +3139,115 @@ func ExampleUserService_FeaturesList() {
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// ListUserApps: List personal OAuth apps.
+// This endpoint requires authentication by any Zoo user. It lists the authenticated user's active public OAuth apps.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleOauth2Service_ListUserApps() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.ListUserApps(123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateUserApp: Create a personal OAuth app.
+// This endpoint requires authentication by any Zoo user. It creates an active public device-flow app owned by the authenticated user.
+//
+// Parameters
+//
+//   - `body`: Request body for creating a public device-flow app.
+func ExampleOauth2Service_CreateUserApp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.CreateUserApp(kittycad.CreateOauth2AppRequest{Name: "some-string"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetUserApp: Get a personal OAuth app.
+// This endpoint requires authentication by any Zoo user. It returns the authenticated user's active public OAuth app by client ID.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+func ExampleOauth2Service_GetUserApp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.GetUserApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateUserApp: Update a personal OAuth app.
+// This endpoint requires authentication by any Zoo user. It updates the name of the authenticated user's active public OAuth app.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+//   - `body`: Request body for updating a public device-flow app.
+func ExampleOauth2Service_UpdateUserApp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.UpdateUserApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOauth2AppRequest{Name: "some-string"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteUserApp: Delete a personal OAuth app.
+// This endpoint requires authentication by any Zoo user. It deactivates the authenticated user's active public OAuth app.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+func ExampleOauth2Service_DeleteUserApp() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.DeleteUserApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
 
 }
 

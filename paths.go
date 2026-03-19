@@ -3958,6 +3958,267 @@ func (s *OrgService) DeleteMember(userId UUID) error {
 
 }
 
+// ListOrgApps: List org OAuth apps.
+// This endpoint requires authentication by an org member. It lists the organization's active public OAuth apps.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *Oauth2Service) ListOrgApps(limit int, pageToken string, sortBy CreatedAtSortMode) (*Oauth2AppResponseResultsPage, error) {
+	// Create the url.
+	path := "/org/oauth2/apps"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AppResponseResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateOrgApp: Create an org OAuth app.
+// This endpoint requires authentication by an org admin. It creates an active public device-flow app owned by the authenticated organization.
+//
+// Parameters
+//
+//   - `body`: Request body for creating a public device-flow app.
+func (s *Oauth2Service) CreateOrgApp(body CreateOauth2AppRequest) (*Oauth2AppResponse, error) {
+	// Create the url.
+	path := "/org/oauth2/apps"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AppResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetOrgApp: Get an org OAuth app.
+// This endpoint requires authentication by an org member. It returns the organization's active public OAuth app by client ID.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+func (s *Oauth2Service) GetOrgApp(clientId UUID) (*Oauth2AppResponse, error) {
+	// Create the url.
+	path := "/org/oauth2/apps/{{.client_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"client_id": clientId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AppResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateOrgApp: Update an org OAuth app.
+// This endpoint requires authentication by an org admin. It updates the name of the organization's active public OAuth app.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+//   - `body`: Request body for updating a public device-flow app.
+func (s *Oauth2Service) UpdateOrgApp(clientId UUID, body UpdateOauth2AppRequest) (*Oauth2AppResponse, error) {
+	// Create the url.
+	path := "/org/oauth2/apps/{{.client_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"client_id": clientId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AppResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteOrgApp: Delete an org OAuth app.
+// This endpoint requires authentication by an org admin. It deactivates the organization's active public OAuth app.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+func (s *Oauth2Service) DeleteOrgApp(clientId UUID) error {
+	// Create the url.
+	path := "/org/oauth2/apps/{{.client_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"client_id": clientId.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // GetInformationForOrg: Get payment info about your org.
 // This includes billing address, phone, and name.
 //
@@ -6272,7 +6533,7 @@ func (s *UnitService) GetVolumeConversion(inputUnit UnitVolume, outputUnit UnitV
 // Get the user information for the authenticated user.
 //
 // Alternatively, you can also use the `/users/me` endpoint.
-func (s *UserService) GetSelf() (*User, error) {
+func (s *UserService) GetSelf() (*UserResponse, error) {
 	// Create the url.
 	path := "/user"
 	targetURL := resolveRelative(s.client.server, path)
@@ -6299,7 +6560,7 @@ func (s *UserService) GetSelf() (*User, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded User
+	var decoded UserResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -6315,7 +6576,7 @@ func (s *UserService) GetSelf() (*User, error) {
 // Parameters
 //
 //   - `body`: The user-modifiable parts of a User.
-func (s *UserService) UpdateSelf(body UpdateUser) (*User, error) {
+func (s *UserService) UpdateSelf(body UpdateUser) (*UserResponse, error) {
 	// Create the url.
 	path := "/user"
 	targetURL := resolveRelative(s.client.server, path)
@@ -6351,7 +6612,7 @@ func (s *UserService) UpdateSelf(body UpdateUser) (*User, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded User
+	var decoded UserResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -6908,6 +7169,267 @@ func (s *UserService) FeaturesList() (*UserFeatureList, error) {
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// ListUserApps: List personal OAuth apps.
+// This endpoint requires authentication by any Zoo user. It lists the authenticated user's active public OAuth apps.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *Oauth2Service) ListUserApps(limit int, pageToken string, sortBy CreatedAtSortMode) (*Oauth2AppResponseResultsPage, error) {
+	// Create the url.
+	path := "/user/oauth2/apps"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AppResponseResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateUserApp: Create a personal OAuth app.
+// This endpoint requires authentication by any Zoo user. It creates an active public device-flow app owned by the authenticated user.
+//
+// Parameters
+//
+//   - `body`: Request body for creating a public device-flow app.
+func (s *Oauth2Service) CreateUserApp(body CreateOauth2AppRequest) (*Oauth2AppResponse, error) {
+	// Create the url.
+	path := "/user/oauth2/apps"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AppResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetUserApp: Get a personal OAuth app.
+// This endpoint requires authentication by any Zoo user. It returns the authenticated user's active public OAuth app by client ID.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+func (s *Oauth2Service) GetUserApp(clientId UUID) (*Oauth2AppResponse, error) {
+	// Create the url.
+	path := "/user/oauth2/apps/{{.client_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"client_id": clientId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AppResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateUserApp: Update a personal OAuth app.
+// This endpoint requires authentication by any Zoo user. It updates the name of the authenticated user's active public OAuth app.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+//   - `body`: Request body for updating a public device-flow app.
+func (s *Oauth2Service) UpdateUserApp(clientId UUID, body UpdateOauth2AppRequest) (*Oauth2AppResponse, error) {
+	// Create the url.
+	path := "/user/oauth2/apps/{{.client_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"client_id": clientId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AppResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteUserApp: Delete a personal OAuth app.
+// This endpoint requires authentication by any Zoo user. It deactivates the authenticated user's active public OAuth app.
+//
+// Parameters
+//
+//   - `clientId`: A UUID usually v4 or v7
+func (s *Oauth2Service) DeleteUserApp(clientId UUID) error {
+	// Create the url.
+	path := "/user/oauth2/apps/{{.client_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"client_id": clientId.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }
 
@@ -8162,7 +8684,7 @@ func (s *MlService) CreateTextToCadPartFeedback(id UUID, feedback MlFeedback) er
 //   - `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
 //     Currently, we only support scanning in ascending order.
-func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*UserResultsPage, error) {
+func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*UserResponseResultsPage, error) {
 	// Create the url.
 	path := "/users"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8198,7 +8720,7 @@ func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded UserResultsPage
+	var decoded UserResponseResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -8326,7 +8848,7 @@ func (s *UserService) GetExtended(id string) (*ExtendedUser, error) {
 // Parameters
 //
 //   - `id`
-func (s *UserService) Get(id string) (*User, error) {
+func (s *UserService) Get(id string) (*UserResponse, error) {
 	// Create the url.
 	path := "/users/{{.id}}"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8360,7 +8882,7 @@ func (s *UserService) Get(id string) (*User, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded User
+	var decoded UserResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
