@@ -625,6 +625,46 @@
  },
  {
   "value": {
+   "example": "// ListOrgApps: List org OAuth apps.\n// \n// This endpoint requires authentication by an org member. It lists the organization's active public OAuth apps.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListOrgApps: List org OAuth apps.\n// This endpoint requires authentication by an org member. It lists the organization's active public OAuth apps.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleOauth2Service_ListOrgApps() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.ListOrgApps(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.ListOrgApps"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1oauth2~1apps/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateOrgApp: Create an org OAuth app.\n// \n// This endpoint requires authentication by an org admin. It creates an active public device-flow app owned by the authenticated organization.\n// \n// \n// Parameters\n// \n// \t- `body`: Request body for creating a public device-flow app.\n// \n// CreateOrgApp: Create an org OAuth app.\n// This endpoint requires authentication by an org admin. It creates an active public device-flow app owned by the authenticated organization.\n//\n// Parameters\n//\n//   - `body`: Request body for creating a public device-flow app.\nfunc ExampleOauth2Service_CreateOrgApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.CreateOrgApp(kittycad.CreateOauth2AppRequest{Name: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.CreateOrgApp"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1oauth2~1apps/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// DeleteOrgApp: Delete an org OAuth app.\n// \n// This endpoint requires authentication by an org admin. It deactivates the organization's active public OAuth app.\n// \n// \n// Parameters\n// \n// \t- `clientId`: A UUID usually v4 or v7\n// \n// DeleteOrgApp: Delete an org OAuth app.\n// This endpoint requires authentication by an org admin. It deactivates the organization's active public OAuth app.\n//\n// Parameters\n//\n//   - `clientId`: A UUID usually v4 or v7\nfunc ExampleOauth2Service_DeleteOrgApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Oauth2.DeleteOrgApp(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.DeleteOrgApp"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1oauth2~1apps~1{client_id}/delete/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetOrgApp: Get an org OAuth app.\n// \n// This endpoint requires authentication by an org member. It returns the organization's active public OAuth app by client ID.\n// \n// \n// Parameters\n// \n// \t- `clientId`: A UUID usually v4 or v7\n// \n// GetOrgApp: Get an org OAuth app.\n// This endpoint requires authentication by an org member. It returns the organization's active public OAuth app by client ID.\n//\n// Parameters\n//\n//   - `clientId`: A UUID usually v4 or v7\nfunc ExampleOauth2Service_GetOrgApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.GetOrgApp(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.GetOrgApp"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1oauth2~1apps~1{client_id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// UpdateOrgApp: Update an org OAuth app.\n// \n// This endpoint requires authentication by an org admin. It updates the name of the organization's active public OAuth app.\n// \n// \n// Parameters\n// \n// \t- `clientId`: A UUID usually v4 or v7\n// \t- `body`: Request body for updating a public device-flow app.\n// \n// UpdateOrgApp: Update an org OAuth app.\n// This endpoint requires authentication by an org admin. It updates the name of the organization's active public OAuth app.\n//\n// Parameters\n//\n//   - `clientId`: A UUID usually v4 or v7\n//   - `body`: Request body for updating a public device-flow app.\nfunc ExampleOauth2Service_UpdateOrgApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.UpdateOrgApp(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdateOauth2AppRequest{Name: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.UpdateOrgApp"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1oauth2~1apps~1{client_id}/put/x-go"
+ },
+ {
+  "value": {
    "example": "// DeleteInformationForOrg: Delete payment info for your org.\n// \n// This includes billing address, phone, and name.\n// \n// This endpoint requires authentication by an org admin. It deletes the payment information for the authenticated user's org.\n// \n// DeleteInformationForOrg: Delete payment info for your org.\n// This includes billing address, phone, and name.\n//\n// This endpoint requires authentication by an org admin. It deletes the payment information for the authenticated user's org.\nfunc ExamplePaymentService_DeleteInformationForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Payment.DeleteInformationForOrg(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.DeleteInformationForOrg"
   },
@@ -1118,6 +1158,46 @@
   },
   "op": "add",
   "path": "/paths/~1user~1features/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListUserApps: List personal OAuth apps.\n// \n// This endpoint requires authentication by any Zoo user. It lists the authenticated user's active public OAuth apps.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListUserApps: List personal OAuth apps.\n// This endpoint requires authentication by any Zoo user. It lists the authenticated user's active public OAuth apps.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleOauth2Service_ListUserApps() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.ListUserApps(123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.ListUserApps"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1oauth2~1apps/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateUserApp: Create a personal OAuth app.\n// \n// This endpoint requires authentication by any Zoo user. It creates an active public device-flow app owned by the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: Request body for creating a public device-flow app.\n// \n// CreateUserApp: Create a personal OAuth app.\n// This endpoint requires authentication by any Zoo user. It creates an active public device-flow app owned by the authenticated user.\n//\n// Parameters\n//\n//   - `body`: Request body for creating a public device-flow app.\nfunc ExampleOauth2Service_CreateUserApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.CreateUserApp(kittycad.CreateOauth2AppRequest{Name: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.CreateUserApp"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1oauth2~1apps/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// DeleteUserApp: Delete a personal OAuth app.\n// \n// This endpoint requires authentication by any Zoo user. It deactivates the authenticated user's active public OAuth app.\n// \n// \n// Parameters\n// \n// \t- `clientId`: A UUID usually v4 or v7\n// \n// DeleteUserApp: Delete a personal OAuth app.\n// This endpoint requires authentication by any Zoo user. It deactivates the authenticated user's active public OAuth app.\n//\n// Parameters\n//\n//   - `clientId`: A UUID usually v4 or v7\nfunc ExampleOauth2Service_DeleteUserApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Oauth2.DeleteUserApp(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.DeleteUserApp"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1oauth2~1apps~1{client_id}/delete/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetUserApp: Get a personal OAuth app.\n// \n// This endpoint requires authentication by any Zoo user. It returns the authenticated user's active public OAuth app by client ID.\n// \n// \n// Parameters\n// \n// \t- `clientId`: A UUID usually v4 or v7\n// \n// GetUserApp: Get a personal OAuth app.\n// This endpoint requires authentication by any Zoo user. It returns the authenticated user's active public OAuth app by client ID.\n//\n// Parameters\n//\n//   - `clientId`: A UUID usually v4 or v7\nfunc ExampleOauth2Service_GetUserApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.GetUserApp(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.GetUserApp"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1oauth2~1apps~1{client_id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// UpdateUserApp: Update a personal OAuth app.\n// \n// This endpoint requires authentication by any Zoo user. It updates the name of the authenticated user's active public OAuth app.\n// \n// \n// Parameters\n// \n// \t- `clientId`: A UUID usually v4 or v7\n// \t- `body`: Request body for updating a public device-flow app.\n// \n// UpdateUserApp: Update a personal OAuth app.\n// This endpoint requires authentication by any Zoo user. It updates the name of the authenticated user's active public OAuth app.\n//\n// Parameters\n//\n//   - `clientId`: A UUID usually v4 or v7\n//   - `body`: Request body for updating a public device-flow app.\nfunc ExampleOauth2Service_UpdateUserApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.UpdateUserApp(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdateOauth2AppRequest{Name: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.UpdateUserApp"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1oauth2~1apps~1{client_id}/put/x-go"
  },
  {
   "value": {
