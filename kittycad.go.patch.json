@@ -569,6 +569,14 @@
  },
  {
   "value": {
+   "example": "// SearchDatasetSemantic: Run semantic search across chunked conversion outputs for a dataset.\n// \n// This embeds the query text with the org-dataset embedding model and returns top chunk matches ranked by cosine similarity.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `q`\n// \n// SearchDatasetSemantic: Run semantic search across chunked conversion outputs for a dataset.\n// This embeds the query text with the org-dataset embedding model and returns top chunk matches ranked by cosine similarity.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `limit`\n//   - `q`\nfunc ExampleOrgService_SearchDatasetSemantic() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.SearchDatasetSemantic(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.SearchDatasetSemantic"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1datasets~1{id}~1search~1semantic/get/x-go"
+ },
+ {
+  "value": {
    "example": "// GetDatasetConversionStats: Return aggregate conversion stats for a dataset owned by the caller's org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// GetDatasetConversionStats: Return aggregate conversion stats for a dataset owned by the caller's org.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_GetDatasetConversionStats() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetDatasetConversionStats(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.GetDatasetConversionStats"
   },

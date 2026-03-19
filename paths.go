@@ -3576,6 +3576,60 @@ func (s *OrgService) SearchDatasetConversions(id UUID, limit int, pageToken stri
 
 }
 
+// SearchDatasetSemantic: Run semantic search across chunked conversion outputs for a dataset.
+// This embeds the query text with the org-dataset embedding model and returns top chunk matches ranked by cosine similarity.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `limit`
+//   - `q`
+func (s *OrgService) SearchDatasetSemantic(id UUID, limit int, q string) (*[]OrgDatasetSemanticSearchMatch, error) {
+	// Create the url.
+	path := "/org/datasets/{{.id}}/search/semantic"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":    id.String(),
+		"limit": strconv.Itoa(limit),
+		"q":     q,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []OrgDatasetSemanticSearchMatch
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // GetDatasetConversionStats: Return aggregate conversion stats for a dataset owned by the caller's org.
 // Parameters
 //
