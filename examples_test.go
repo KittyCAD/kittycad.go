@@ -1599,6 +1599,29 @@ func ExampleOrgService_SearchDatasetConversions() {
 
 }
 
+// SearchDatasetSemantic: Run semantic search across chunked conversion outputs for a dataset.
+// This embeds the query text with the org-dataset embedding model and returns top chunk matches ranked by cosine similarity.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `limit`
+//   - `q`
+func ExampleOrgService_SearchDatasetSemantic() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.SearchDatasetSemantic(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // GetDatasetConversionStats: Return aggregate conversion stats for a dataset owned by the caller's org.
 // Parameters
 //

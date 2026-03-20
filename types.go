@@ -5987,6 +5987,20 @@ type OrgDatasetResultsPage struct {
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
+// OrgDatasetSemanticSearchMatch: Semantic-search match returned for an org dataset chunk.
+type OrgDatasetSemanticSearchMatch struct {
+	// ChunkIndex: Zero-based chunk ordinal in the conversion output.
+	ChunkIndex int `json:"chunk_index" yaml:"chunk_index" schema:"chunk_index,required"`
+	// Content: Chunk text used for matching.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// ConversionID: Matching conversion id.
+	ConversionID UUID `json:"conversion_id" yaml:"conversion_id" schema:"conversion_id,required"`
+	// Similarity: Cosine-similarity score in roughly [-1, 1].
+	Similarity float64 `json:"similarity" yaml:"similarity" schema:"similarity,required"`
+	// SourceFilePath: Source path for the conversion.
+	SourceFilePath string `json:"source_file_path" yaml:"source_file_path" schema:"source_file_path,required"`
+}
+
 // OrgDatasetSnapshotImage: Detailed response that bundles conversion metadata with the converted file contents.
 type OrgDatasetSnapshotImage struct {
 	// DataBase64: Base64-encoded image bytes.
