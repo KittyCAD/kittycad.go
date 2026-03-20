@@ -889,6 +889,14 @@
  },
  {
   "value": {
+   "example": "// ListAppsForAnyOrg: List OAuth 2.0 apps owned by an organization.\n// \n// This endpoint requires Zoo admin authentication. It returns the target organization's active OAuth apps for admin dashboard inspection.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListAppsForAnyOrg: List OAuth 2.0 apps owned by an organization.\n// This endpoint requires Zoo admin authentication. It returns the target organization's active OAuth apps for admin dashboard inspection.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleOauth2Service_ListAppsForAnyOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.ListAppsForAnyOrg(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.ListAppsForAnyOrg"
+  },
+  "op": "add",
+  "path": "/paths/~1orgs~1{id}~1oauth2~1apps/get/x-go"
+ },
+ {
+  "value": {
    "example": "// GetBalanceForAnyOrg: Get balance for an org.\n// \n// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified org.\n// \n// \n// Parameters\n// \n// \t- `includeTotalDue`\n// \t- `id`: A UUID usually v4 or v7\n// \n// GetBalanceForAnyOrg: Get balance for an org.\n// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified org.\n//\n// Parameters\n//\n//   - `includeTotalDue`\n//   - `id`: A UUID usually v4 or v7\nfunc ExamplePaymentService_GetBalanceForAnyOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetBalanceForAnyOrg(true, kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetBalanceForAnyOrg"
   },
@@ -1470,6 +1478,14 @@
   },
   "op": "add",
   "path": "/paths/~1users~1{id}~1api-calls/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListAppsForAnyUser: List OAuth 2.0 apps owned by a user.\n// \n// This endpoint requires Zoo admin authentication. It returns the target user's active OAuth apps so the admin dashboard can inspect them without impersonating the user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListAppsForAnyUser: List OAuth 2.0 apps owned by a user.\n// This endpoint requires Zoo admin authentication. It returns the target user's active OAuth apps so the admin dashboard can inspect them without impersonating the user.\n//\n// Parameters\n//\n//   - `id`\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleOauth2Service_ListAppsForAnyUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.ListAppsForAnyUser(\"some-string\", 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.ListAppsForAnyUser"
+  },
+  "op": "add",
+  "path": "/paths/~1users~1{id}~1oauth2~1apps/get/x-go"
  },
  {
   "value": {

@@ -5518,6 +5518,67 @@ func (s *OrgService) AdminDetailsList(id UUID) (*OrgAdminDetails, error) {
 
 }
 
+// ListAppsForAnyOrg: List OAuth 2.0 apps owned by an organization.
+// This endpoint requires Zoo admin authentication. It returns the target organization's active OAuth apps for admin dashboard inspection.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *Oauth2Service) ListAppsForAnyOrg(id UUID, limit int, pageToken string, sortBy CreatedAtSortMode) (*Oauth2AppResponseResultsPage, error) {
+	// Create the url.
+	path := "/orgs/{{.id}}/oauth2/apps"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":         id.String(),
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AppResponseResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // GetBalanceForAnyOrg: Get balance for an org.
 // This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified org.
 //
@@ -9054,6 +9115,67 @@ func (s *APICallService) ListForUser(id string, limit int, pageToken string, sor
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded APICallWithPriceResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListAppsForAnyUser: List OAuth 2.0 apps owned by a user.
+// This endpoint requires Zoo admin authentication. It returns the target user's active OAuth apps so the admin dashboard can inspect them without impersonating the user.
+//
+// Parameters
+//
+//   - `id`
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *Oauth2Service) ListAppsForAnyUser(id string, limit int, pageToken string, sortBy CreatedAtSortMode) (*Oauth2AppResponseResultsPage, error) {
+	// Create the url.
+	path := "/users/{{.id}}/oauth2/apps"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":         id,
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AppResponseResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

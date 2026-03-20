@@ -2794,6 +2794,8 @@ type Invoice struct {
 	AmountDue float64 `json:"amount_due" yaml:"amount_due" schema:"amount_due"`
 	// AmountPaid: The amount, in USD, that was paid.
 	AmountPaid float64 `json:"amount_paid" yaml:"amount_paid" schema:"amount_paid"`
+	// AmountRefunded: Total amount refunded across all captured charges linked to this invoice.
+	AmountRefunded float64 `json:"amount_refunded" yaml:"amount_refunded" schema:"amount_refunded"`
 	// AmountRemaining: The amount remaining, in USD, that is due.
 	AmountRemaining float64 `json:"amount_remaining" yaml:"amount_remaining" schema:"amount_remaining"`
 	// AttemptCount: Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
@@ -2840,6 +2842,8 @@ type Invoice struct {
 	Pdf URL `json:"pdf" yaml:"pdf" schema:"pdf"`
 	// ReceiptNumber: This is the transaction number that appears on email receipts sent for this invoice.
 	ReceiptNumber string `json:"receipt_number" yaml:"receipt_number" schema:"receipt_number"`
+	// RefundStatus: Refund summary for the invoice's payments, when any refunds have posted.
+	RefundStatus InvoiceRefundStatus `json:"refund_status" yaml:"refund_status" schema:"refund_status"`
 	// StatementDescriptor: Extra information about an invoice for the customer's credit card statement.
 	StatementDescriptor string `json:"statement_descriptor" yaml:"statement_descriptor" schema:"statement_descriptor"`
 	// Status: The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
@@ -2875,6 +2879,16 @@ type InvoiceLineItem struct {
 	// Metadata: Set of key-value pairs.
 	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
 }
+
+// InvoiceRefundStatus: Summary of the refund state for an invoice's captured payments.
+type InvoiceRefundStatus string
+
+const (
+	// InvoiceRefundStatusPartiallyRefunded: Some, but not all, captured funds tied to the invoice were refunded.
+	InvoiceRefundStatusPartiallyRefunded InvoiceRefundStatus = "partially_refunded"
+	// InvoiceRefundStatusRefunded: All captured funds tied to the invoice were refunded.
+	InvoiceRefundStatusRefunded InvoiceRefundStatus = "refunded"
+)
 
 // InvoiceStatus: An enum representing the possible values of an `Invoice`'s `status` field.
 type InvoiceStatus string

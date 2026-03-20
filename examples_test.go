@@ -2435,6 +2435,35 @@ func ExampleOrgService_AdminDetailsList() {
 
 }
 
+// ListAppsForAnyOrg: List OAuth 2.0 apps owned by an organization.
+// This endpoint requires Zoo admin authentication. It returns the target organization's active OAuth apps for admin dashboard inspection.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleOauth2Service_ListAppsForAnyOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.ListAppsForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // GetBalanceForAnyOrg: Get balance for an org.
 // This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified org.
 //
@@ -3966,6 +3995,35 @@ func ExampleAPICallService_ListForUser() {
 	}
 
 	result, err := client.APICall.ListForUser("some-string", 123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListAppsForAnyUser: List OAuth 2.0 apps owned by a user.
+// This endpoint requires Zoo admin authentication. It returns the target user's active OAuth apps so the admin dashboard can inspect them without impersonating the user.
+//
+// Parameters
+//
+//   - `id`
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleOauth2Service_ListAppsForAnyUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.ListAppsForAnyUser("some-string", 123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}
