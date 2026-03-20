@@ -3216,6 +3216,12 @@ type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// MlCopilotClientMessagePing: The client-to-server Ping to ensure the copilot protocol stays alive.
+type MlCopilotClientMessagePing struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // MlCopilotFile: A file that can be transferred between the client and server.
 type MlCopilotFile struct {
 	// Data: The file contents as binary data.
@@ -3289,6 +3295,12 @@ type MlCopilotServerMessageFiles struct {
 type MlCopilotServerMessageInfo struct {
 	// Info:
 	Info Info `json:"info" yaml:"info" schema:"info,required"`
+}
+
+// MlCopilotServerMessagePong: Pong response to a Ping message.
+type MlCopilotServerMessagePong struct {
+	// Pong:
+	Pong Pong `json:"pong" yaml:"pong" schema:"pong,required"`
 }
 
 // MlCopilotServerMessageProjectUpdated: Notification that the KCL project has been updated.
