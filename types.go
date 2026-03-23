@@ -3381,6 +3381,8 @@ const (
 	MlCopilotSystemCommandNew MlCopilotSystemCommand = "new"
 	// MlCopilotSystemCommandBye: Disconnect the client, which can be used to end the session.
 	MlCopilotSystemCommandBye MlCopilotSystemCommand = "bye"
+	// MlCopilotSystemCommandContinue: Continue a previously-started turn after the client reconnects.
+	MlCopilotSystemCommandContinue MlCopilotSystemCommand = "continue"
 	// MlCopilotSystemCommandInterrupt: Interrupt the current prompt that is being processed.
 	MlCopilotSystemCommandInterrupt MlCopilotSystemCommand = "interrupt"
 	// MlCopilotSystemCommandCancel: Cancel the current prompt that is being processed.
