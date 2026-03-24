@@ -3188,24 +3188,8 @@ const (
 // MlCopilotClientMessage: MlCopilotClientMessage: The types of messages that can be sent by the client to the server.
 type MlCopilotClientMessage any
 
-// MlCopilotClientMessageAdditionalFiles: The system message, which can be used to set the context or instructions for the AI.
-type MlCopilotClientMessageAdditionalFiles struct {
-	// Command: The content of the system message.
-	Command MlCopilotSystemCommand `json:"command" yaml:"command" schema:"command,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// MlCopilotClientMessageHeaders: Authentication header request.
-type MlCopilotClientMessageHeaders struct {
-	// Headers: The authentication header.
-	Headers map[string]string `json:"headers" yaml:"headers" schema:"headers,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// MlCopilotClientMessageMlCopilotClientMessageHeaders: The user message, which contains the content of the user's input.
-type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
+// MlCopilotClientMessageCurrentFiles: The user message, which contains the content of the user's input.
+type MlCopilotClientMessageCurrentFiles struct {
 	// AdditionalFiles: The user can send additional files like images or PDFs to provide more context.
 	AdditionalFiles []MlCopilotFile `json:"additional_files" yaml:"additional_files" schema:"additional_files"`
 	// Content: The content of the user's message.
@@ -3230,8 +3214,34 @@ type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// MlCopilotClientMessageHeaders: Authentication header request.
+type MlCopilotClientMessageHeaders struct {
+	// Headers: The authentication header.
+	Headers map[string]string `json:"headers" yaml:"headers" schema:"headers,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotClientMessageMlCopilotClientMessageHeaders: Updates the active project context without creating a new prompt.
+type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
+	// CurrentFiles: The current files in the project, if any. This can be used to provide context for the AI. This should be sent in binary format if the files are not text files, like an imported binary file.
+	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files"`
+	// ProjectName: The project name, if any.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // MlCopilotClientMessagePing: The client-to-server Ping to ensure the copilot protocol stays alive.
 type MlCopilotClientMessagePing struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotClientMessageProjectName: The system message, which can be used to set the context or instructions for the AI.
+type MlCopilotClientMessageProjectName struct {
+	// Command: The content of the system message.
+	Command MlCopilotSystemCommand `json:"command" yaml:"command" schema:"command,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6019,7 +6029,7 @@ type OrgDatasetResultsPage struct {
 type OrgDatasetSemanticSearchMatch struct {
 	// ChunkIndex: Zero-based chunk ordinal in the conversion output.
 	ChunkIndex int `json:"chunk_index" yaml:"chunk_index" schema:"chunk_index,required"`
-	// Content: Chunk text used for matching.
+	// Content: Full converted output text for the matched conversion, when available.
 	Content string `json:"content" yaml:"content" schema:"content,required"`
 	// ConversionID: Matching conversion id.
 	ConversionID UUID `json:"conversion_id" yaml:"conversion_id" schema:"conversion_id,required"`
