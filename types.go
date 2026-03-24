@@ -5903,6 +5903,12 @@ type OrgDatasetFileConversionDetails struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// ImporterVersion: Tracks which version processed this file when available.
 	ImporterVersion string `json:"importer_version" yaml:"importer_version" schema:"importer_version"`
+	// ManualKclOverride: Plain-text contents of the admin-provided manual KCL override, when available.
+	ManualKclOverride string `json:"manual_kcl_override" yaml:"manual_kcl_override" schema:"manual_kcl_override"`
+	// ManualKclOverrideActive: Indicates whether a persisted manual KCL override will be used instead of regenerating KCL automatically.
+	ManualKclOverrideActive bool `json:"manual_kcl_override_active" yaml:"manual_kcl_override_active" schema:"manual_kcl_override_active,required"`
+	// ManualKclOverrideUpdatedAt: Timestamp when the manual KCL override was last updated.
+	ManualKclOverrideUpdatedAt Time `json:"manual_kcl_override_updated_at" yaml:"manual_kcl_override_updated_at" schema:"manual_kcl_override_updated_at"`
 	// Metadata: Additional per-conversion metadata as string key-value pairs.
 	Metadata any `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// OriginalSnapshotImages: Snapshot images for the original source model.
@@ -5941,19 +5947,21 @@ const (
 	OrgDatasetFileConversionPhaseSnapshotOriginal OrgDatasetFileConversionPhase = "snapshot_original"
 	// OrgDatasetFileConversionPhaseUserProvidedMetadata: Phase index `3`: discovering optional user-provided metadata files (`.json`, `.yaml`, `.yml`, `.toml`, `.txt`) stored next to the source CAD file.
 	OrgDatasetFileConversionPhaseUserProvidedMetadata OrgDatasetFileConversionPhase = "user_provided_metadata"
-	// OrgDatasetFileConversionPhaseConvertRawKcl: Phase index `4`: converting the source model into raw KCL.
+	// OrgDatasetFileConversionPhaseManualKclOverride: Phase index `4`: loading a persisted manual KCL override instead of regenerating KCL automatically.
+	OrgDatasetFileConversionPhaseManualKclOverride OrgDatasetFileConversionPhase = "manual_kcl_override"
+	// OrgDatasetFileConversionPhaseConvertRawKcl: Phase index `5`: converting the source model into raw KCL.
 	OrgDatasetFileConversionPhaseConvertRawKcl OrgDatasetFileConversionPhase = "convert_raw_kcl"
-	// OrgDatasetFileConversionPhaseZooGeneratedRawKclMetadata: Phase index `5`: generating raw KCL metadata.
+	// OrgDatasetFileConversionPhaseZooGeneratedRawKclMetadata: Phase index `6`: generating raw KCL metadata.
 	OrgDatasetFileConversionPhaseZooGeneratedRawKclMetadata OrgDatasetFileConversionPhase = "zoo_generated_raw_kcl_metadata"
-	// OrgDatasetFileConversionPhaseSnapshotRawKcl: Phase index `6`: creating a snapshot of the raw KCL result.
+	// OrgDatasetFileConversionPhaseSnapshotRawKcl: Phase index `7`: creating a snapshot of the raw KCL result.
 	OrgDatasetFileConversionPhaseSnapshotRawKcl OrgDatasetFileConversionPhase = "snapshot_raw_kcl"
-	// OrgDatasetFileConversionPhaseSalon: Phase index `7`: running the salon/refactor step that produces polished KCL.
+	// OrgDatasetFileConversionPhaseSalon: Phase index `8`: running the salon/refactor step that produces polished KCL.
 	OrgDatasetFileConversionPhaseSalon OrgDatasetFileConversionPhase = "salon"
-	// OrgDatasetFileConversionPhaseZooGeneratedSalonKclMetadata: Phase index `8`: generating salon KCL metadata.
+	// OrgDatasetFileConversionPhaseZooGeneratedSalonKclMetadata: Phase index `9`: generating salon KCL metadata.
 	OrgDatasetFileConversionPhaseZooGeneratedSalonKclMetadata OrgDatasetFileConversionPhase = "zoo_generated_salon_kcl_metadata"
-	// OrgDatasetFileConversionPhaseSnapshotSalonKcl: Phase index `9`: creating a snapshot of the salon/refactored KCL.
+	// OrgDatasetFileConversionPhaseSnapshotSalonKcl: Phase index `10`: creating a snapshot of the salon/refactored KCL.
 	OrgDatasetFileConversionPhaseSnapshotSalonKcl OrgDatasetFileConversionPhase = "snapshot_salon_kcl"
-	// OrgDatasetFileConversionPhaseCompleted: Phase index `10`: conversion finished successfully.
+	// OrgDatasetFileConversionPhaseCompleted: Phase index `11`: conversion finished successfully.
 	OrgDatasetFileConversionPhaseCompleted OrgDatasetFileConversionPhase = "completed"
 )
 
@@ -5995,6 +6003,10 @@ type OrgDatasetFileConversionSummary struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// ImporterVersion: Tracks which version processed this file when available.
 	ImporterVersion string `json:"importer_version" yaml:"importer_version" schema:"importer_version"`
+	// ManualKclOverrideActive: Indicates whether a persisted manual KCL override will be used instead of regenerating KCL automatically.
+	ManualKclOverrideActive bool `json:"manual_kcl_override_active" yaml:"manual_kcl_override_active" schema:"manual_kcl_override_active,required"`
+	// ManualKclOverrideUpdatedAt: Timestamp when the manual KCL override was last updated.
+	ManualKclOverrideUpdatedAt Time `json:"manual_kcl_override_updated_at" yaml:"manual_kcl_override_updated_at" schema:"manual_kcl_override_updated_at"`
 	// Metadata: Additional per-conversion metadata as string key-value pairs.
 	Metadata any `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Phase: Current step in the conversion pipeline.
