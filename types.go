@@ -2996,6 +2996,46 @@ type KclModel struct {
 	Code string `json:"code" yaml:"code" schema:"code,required"`
 }
 
+// KclProjectFileRole: Logical role of a file stored under a KCL project.
+type KclProjectFileRole string
+
+const (
+	// KclProjectFileRoleProjectToml: The root `project.toml` manifest.
+	KclProjectFileRoleProjectToml KclProjectFileRole = "project_toml"
+	// KclProjectFileRoleProjectFile: A project source file such as `.kcl`.
+	KclProjectFileRoleProjectFile KclProjectFileRole = "project_file"
+	// KclProjectFileRolePreviewImage: A preview image generated or uploaded for the gallery.
+	KclProjectFileRolePreviewImage KclProjectFileRole = "preview_image"
+)
+
+// KclProjectPreviewStatus: Preview generation status for a KCL project.
+type KclProjectPreviewStatus string
+
+const (
+	// KclProjectPreviewStatusPending: A preview has not been generated yet.
+	KclProjectPreviewStatusPending KclProjectPreviewStatus = "pending"
+	// KclProjectPreviewStatusReady: The preview is available for display.
+	KclProjectPreviewStatusReady KclProjectPreviewStatus = "ready"
+	// KclProjectPreviewStatusFailed: Preview generation failed and needs attention.
+	KclProjectPreviewStatusFailed KclProjectPreviewStatus = "failed"
+)
+
+// KclProjectPublicationStatus: Publication workflow state for a KCL project.
+type KclProjectPublicationStatus string
+
+const (
+	// KclProjectPublicationStatusDraft: The project is not yet submitted for review.
+	KclProjectPublicationStatusDraft KclProjectPublicationStatus = "draft"
+	// KclProjectPublicationStatusPendingReview: The project is awaiting moderation review.
+	KclProjectPublicationStatusPendingReview KclProjectPublicationStatus = "pending_review"
+	// KclProjectPublicationStatusPublished: The project is publicly visible in the gallery.
+	KclProjectPublicationStatusPublished KclProjectPublicationStatus = "published"
+	// KclProjectPublicationStatusRejected: The project was reviewed and rejected.
+	KclProjectPublicationStatusRejected KclProjectPublicationStatus = "rejected"
+	// KclProjectPublicationStatusDeleted: The project was removed from public display.
+	KclProjectPublicationStatusDeleted KclProjectPublicationStatus = "deleted"
+)
+
 // Loft: The response from the `Loft` command.
 type Loft struct {
 	// SolidID: The UUID of the newly created solid loft.
@@ -6691,16 +6731,118 @@ type PrivacySettings struct {
 	CanTrainOnData bool `json:"can_train_on_data" yaml:"can_train_on_data" schema:"can_train_on_data,required"`
 }
 
+// ProjectCategoryResponse: Active category metadata available for project submission flows.
+type ProjectCategoryResponse struct {
+	// Description: Optional helper text shown to users choosing a category.
+	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// DisplayName: Human-readable category name.
+	DisplayName string `json:"display_name" yaml:"display_name" schema:"display_name,required"`
+	// ID: Unique category identifier.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Slug: Stable URL-safe category slug.
+	Slug string `json:"slug" yaml:"slug" schema:"slug,required"`
+	// SortOrder: Sort order used when presenting categories in clients.
+	SortOrder int `json:"sort_order" yaml:"sort_order" schema:"sort_order,required"`
+}
+
 // ProjectEntityToPlane: The response from the `ProjectEntityToPlane` command.
 type ProjectEntityToPlane struct {
 	// ProjectedPoints: Projected points.
 	ProjectedPoints []Point3D `json:"projected_points" yaml:"projected_points" schema:"projected_points,required"`
 }
 
+// ProjectFileResponse: Owner-visible metadata for one stored project file.
+type ProjectFileResponse struct {
+	// ByteSize: File size in bytes.
+	ByteSize int `json:"byte_size" yaml:"byte_size" schema:"byte_size,required"`
+	// ContentType: Stored MIME type.
+	ContentType string `json:"content_type" yaml:"content_type" schema:"content_type,required"`
+	// CreatedAt: File creation timestamp.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// FileRole: Logical role within the project.
+	FileRole KclProjectFileRole `json:"file_role" yaml:"file_role" schema:"file_role,required"`
+	// ID: Unique file identifier.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// RelativePath: Relative path as seen inside the project.
+	RelativePath string `json:"relative_path" yaml:"relative_path" schema:"relative_path,required"`
+	// Sha256: Hex-encoded SHA-256 of the stored contents, when known.
+	Sha256 string `json:"sha256" yaml:"sha256" schema:"sha256"`
+	// SortOrder: Stable ordering hint.
+	SortOrder int `json:"sort_order" yaml:"sort_order" schema:"sort_order,required"`
+	// UpdatedAt: File last update timestamp.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
 // ProjectPointsToPlane: The response from the `ProjectPointsToPlane` command.
 type ProjectPointsToPlane struct {
 	// ProjectedPoints: Projected points.
 	ProjectedPoints []Point3D `json:"projected_points" yaml:"projected_points" schema:"projected_points,required"`
+}
+
+// ProjectResponse: Owner-visible project detail payload.
+type ProjectResponse struct {
+	// CategoryIds: Selected category identifiers associated with the project.
+	CategoryIds []UUID `json:"category_ids" yaml:"category_ids" schema:"category_ids,required"`
+	// CreatedAt: When the project row was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Description: User-facing project description.
+	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// EntrypointPath: Relative path to the entrypoint KCL file.
+	EntrypointPath string `json:"entrypoint_path" yaml:"entrypoint_path" schema:"entrypoint_path,required"`
+	// Files: Project files currently stored for the owner-visible draft.
+	Files []ProjectFileResponse `json:"files" yaml:"files" schema:"files,required"`
+	// ID: Unique project identifier.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// PreviewStatus: Current preview generation state.
+	PreviewStatus KclProjectPreviewStatus `json:"preview_status" yaml:"preview_status" schema:"preview_status,required"`
+	// PrimaryPreviewHeight: Height of the primary preview image in pixels.
+	PrimaryPreviewHeight int `json:"primary_preview_height" yaml:"primary_preview_height" schema:"primary_preview_height"`
+	// PrimaryPreviewPath: Relative path to the primary preview image, when one exists.
+	PrimaryPreviewPath string `json:"primary_preview_path" yaml:"primary_preview_path" schema:"primary_preview_path"`
+	// PrimaryPreviewVersion: Renderer or asset version tag for the primary preview image.
+	PrimaryPreviewVersion string `json:"primary_preview_version" yaml:"primary_preview_version" schema:"primary_preview_version"`
+	// PrimaryPreviewWidth: Width of the primary preview image in pixels.
+	PrimaryPreviewWidth int `json:"primary_preview_width" yaml:"primary_preview_width" schema:"primary_preview_width"`
+	// ProjectTomlPath: Relative path to the project's manifest file.
+	ProjectTomlPath string `json:"project_toml_path" yaml:"project_toml_path" schema:"project_toml_path,required"`
+	// PublicationStatus: Current publication workflow state.
+	PublicationStatus KclProjectPublicationStatus `json:"publication_status" yaml:"publication_status" schema:"publication_status,required"`
+	// Title: User-facing project title.
+	Title string `json:"title" yaml:"title" schema:"title,required"`
+	// UpdatedAt: When the project row was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// ProjectSummaryResponse: Owner-visible project summary payload.
+type ProjectSummaryResponse struct {
+	// CategoryIds: Selected category identifiers associated with the project.
+	CategoryIds []UUID `json:"category_ids" yaml:"category_ids" schema:"category_ids,required"`
+	// CreatedAt: When the project row was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Description: User-facing project description.
+	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// EntrypointPath: Relative path to the entrypoint KCL file.
+	EntrypointPath string `json:"entrypoint_path" yaml:"entrypoint_path" schema:"entrypoint_path,required"`
+	// ID: Unique project identifier.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// PreviewStatus: Current preview generation state.
+	PreviewStatus KclProjectPreviewStatus `json:"preview_status" yaml:"preview_status" schema:"preview_status,required"`
+	// PrimaryPreviewHeight: Height of the primary preview image in pixels.
+	PrimaryPreviewHeight int `json:"primary_preview_height" yaml:"primary_preview_height" schema:"primary_preview_height"`
+	// PrimaryPreviewPath: Relative path to the primary preview image, when one exists.
+	PrimaryPreviewPath string `json:"primary_preview_path" yaml:"primary_preview_path" schema:"primary_preview_path"`
+	// PrimaryPreviewVersion: Renderer or asset version tag for the primary preview image.
+	PrimaryPreviewVersion string `json:"primary_preview_version" yaml:"primary_preview_version" schema:"primary_preview_version"`
+	// PrimaryPreviewWidth: Width of the primary preview image in pixels.
+	PrimaryPreviewWidth int `json:"primary_preview_width" yaml:"primary_preview_width" schema:"primary_preview_width"`
+	// ProjectTomlPath: Relative path to the project's manifest file.
+	ProjectTomlPath string `json:"project_toml_path" yaml:"project_toml_path" schema:"project_toml_path,required"`
+	// PublicationStatus: Current publication workflow state.
+	PublicationStatus KclProjectPublicationStatus `json:"publication_status" yaml:"publication_status" schema:"publication_status,required"`
+	// Title: User-facing project title.
+	Title string `json:"title" yaml:"title" schema:"title,required"`
+	// UpdatedAt: When the project row was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
 // ProjectUpdated is the type definition for a ProjectUpdated.

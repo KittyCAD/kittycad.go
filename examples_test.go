@@ -2541,6 +2541,22 @@ func ExampleMetaService_GetPricingSubscriptions() {
 
 }
 
+// ListProjectCategories: List the active categories available for project submissions.
+func ExampleUserService_ListProjectCategories() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.ListProjectCategories()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateCoupon: Create a new store coupon.
 // This endpoint requires authentication by a Zoo employee. It creates a new store coupon.
 //
@@ -3611,6 +3627,84 @@ func ExampleUserService_UpdatePrivacySettings() {
 	}
 
 	result, err := client.User.UpdatePrivacySettings(kittycad.PrivacySettings{CanTrainOnData: true})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListProjects: List the authenticated user's projects.
+func ExampleUserService_ListProjects() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.ListProjects()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateProject: Create a draft project for the authenticated user.
+// Parameters
+//
+//   - `body`
+func ExampleUserService_CreateProject() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	form := kittycad.NewMultipartForm()
+
+	result, err := client.User.CreateProject(form)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetProject: Get one of the authenticated user's projects.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleUserService_GetProject() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.GetProject(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateProject: Replace one of the authenticated user's draft projects.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`
+func ExampleUserService_UpdateProject() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	form := kittycad.NewMultipartForm()
+
+	result, err := client.User.UpdateProject(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), form)
 	if err != nil {
 		panic(err)
 	}

@@ -929,6 +929,14 @@
  },
  {
   "value": {
+   "example": "// ListProjectCategories: List the active categories available for project submissions.\n// \n// ListProjectCategories: List the active categories available for project submissions.\nfunc ExampleUserService_ListProjectCategories() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.ListProjectCategories()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.ListProjectCategories"
+  },
+  "op": "add",
+  "path": "/paths/~1projects~1categories/get/x-go"
+ },
+ {
+  "value": {
    "example": "// CreateCoupon: Create a new store coupon.\n// \n// This endpoint requires authentication by a Zoo employee. It creates a new store coupon.\n// \n// \n// Parameters\n// \n// \t- `body`: The parameters for a new store coupon.\n// \n// CreateCoupon: Create a new store coupon.\n// This endpoint requires authentication by a Zoo employee. It creates a new store coupon.\n//\n// Parameters\n//\n//   - `body`: The parameters for a new store coupon.\nfunc ExampleStoreService_CreateCoupon() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Store.CreateCoupon(kittycad.StoreCouponParams{PercentOff: 123})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#StoreService.CreateCoupon"
   },
@@ -1350,6 +1358,38 @@
   },
   "op": "add",
   "path": "/paths/~1user~1privacy/put/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListProjects: List the authenticated user's projects.\n// \n// ListProjects: List the authenticated user's projects.\nfunc ExampleUserService_ListProjects() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.ListProjects()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.ListProjects"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1projects/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateProject: Create a draft project for the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// CreateProject: Create a draft project for the authenticated user.\n// Parameters\n//\n//   - `body`\nfunc ExampleUserService_CreateProject() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tform := kittycad.NewMultipartForm()\n\n\tresult, err := client.User.CreateProject(form)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.CreateProject"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1projects/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetProject: Get one of the authenticated user's projects.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// GetProject: Get one of the authenticated user's projects.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleUserService_GetProject() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetProject(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetProject"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1projects~1{id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// UpdateProject: Replace one of the authenticated user's draft projects.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`\n// \n// UpdateProject: Replace one of the authenticated user's draft projects.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`\nfunc ExampleUserService_UpdateProject() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tform := kittycad.NewMultipartForm()\n\n\tresult, err := client.User.UpdateProject(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), form)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.UpdateProject"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1projects~1{id}/put/x-go"
  },
  {
   "value": {
