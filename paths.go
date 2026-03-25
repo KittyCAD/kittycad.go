@@ -900,60 +900,6 @@ func (s *MetaService) CommunitySso(sig string, sso string) error {
 
 }
 
-// CreateDebugUploads: Uploads files to public blob storage for debugging purposes.
-// Do NOT send files here that you don't want to be public.
-//
-// Parameters
-//
-//   - `body`
-func (s *MetaService) CreateDebugUploads(body *MultipartForm) (*[]URL, error) {
-	// Create the url.
-	path := "/debug/uploads"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Finalize the multipart body before sending it.
-	if body == nil {
-		return nil, errors.New("multipart body is nil")
-	}
-	if err := body.Close(); err != nil {
-		return nil, fmt.Errorf("closing multipart body failed: %v", err)
-	}
-
-	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body.buffer)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add our headers.
-	req.Header.Set("Content-Type", body.ContentType())
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded []URL
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // CreateEvent: Creates an internal telemetry event.
 // We collect anonymous telemetry data for improving our product.
 //

@@ -435,29 +435,6 @@ func ExampleMetaService_CommunitySso() {
 
 }
 
-// CreateDebugUploads: Uploads files to public blob storage for debugging purposes.
-// Do NOT send files here that you don't want to be public.
-//
-// Parameters
-//
-//   - `body`
-func ExampleMetaService_CreateDebugUploads() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	form := kittycad.NewMultipartForm()
-
-	result, err := client.Meta.CreateDebugUploads(form)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // CreateEvent: Creates an internal telemetry event.
 // We collect anonymous telemetry data for improving our product.
 //
