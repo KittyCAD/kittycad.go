@@ -8684,6 +8684,8 @@ type UserCadInfoAdminDetails struct {
 type UserFeature string
 
 const (
+	// UserFeatureAquarium represents the UserFeature `"aquarium"`.
+	UserFeatureAquarium UserFeature = "aquarium"
 	// UserFeatureProprietaryToKclConversionBeta represents the UserFeature `"proprietary_to_kcl_conversion_beta"`.
 	UserFeatureProprietaryToKclConversionBeta UserFeature = "proprietary_to_kcl_conversion_beta"
 	// UserFeatureNewSketchMode represents the UserFeature `"new_sketch_mode"`.
