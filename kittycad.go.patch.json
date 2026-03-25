@@ -161,14 +161,6 @@
  },
  {
   "value": {
-   "example": "// CreateDebugUploads: Uploads files to public blob storage for debugging purposes.\n// \n// Do NOT send files here that you don't want to be public.\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// CreateDebugUploads: Uploads files to public blob storage for debugging purposes.\n// Do NOT send files here that you don't want to be public.\n//\n// Parameters\n//\n//   - `body`\nfunc ExampleMetaService_CreateDebugUploads() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tform := kittycad.NewMultipartForm()\n\n\tresult, err := client.Meta.CreateDebugUploads(form)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.CreateDebugUploads"
-  },
-  "op": "add",
-  "path": "/paths/~1debug~1uploads/post/x-go"
- },
- {
-  "value": {
    "example": "// CreateEvent: Creates an internal telemetry event.\n// \n// We collect anonymous telemetry data for improving our product.\n// \n// \n// Parameters\n// \n// \t- `body`: Telemetry data we are collecting\n// \n// CreateEvent: Creates an internal telemetry event.\n// We collect anonymous telemetry data for improving our product.\n//\n// Parameters\n//\n//   - `body`: Telemetry data we are collecting\nfunc ExampleMetaService_CreateEvent() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tform := kittycad.NewMultipartForm()\n\n\tif err := client.Meta.CreateEvent(form); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.CreateEvent"
   },
