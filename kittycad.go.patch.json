@@ -1385,7 +1385,7 @@
  },
  {
   "value": {
-   "example": "// UpdateProject: Replace one of the authenticated user's draft projects.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`\n// \n// UpdateProject: Replace one of the authenticated user's draft projects.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`\nfunc ExampleUserService_UpdateProject() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tform := kittycad.NewMultipartForm()\n\n\tresult, err := client.User.UpdateProject(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), form)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// UpdateProject: Replace one of the authenticated user's projects.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`\n// \n// UpdateProject: Replace one of the authenticated user's projects.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`\nfunc ExampleUserService_UpdateProject() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tform := kittycad.NewMultipartForm()\n\n\tresult, err := client.User.UpdateProject(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), form)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.UpdateProject"
   },
   "op": "add",
