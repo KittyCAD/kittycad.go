@@ -2149,6 +2149,8 @@ type ExtendedUser struct {
 	StripeID string `json:"stripe_id" yaml:"stripe_id" schema:"stripe_id"`
 	// UpdatedAt: The date and time the user was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// Username: Public username/handle for community-facing features.
+	Username string `json:"username" yaml:"username" schema:"username"`
 }
 
 // ExtendedUserResultsPage: A single page of results
@@ -3024,7 +3026,9 @@ const (
 type KclProjectPublicationStatus string
 
 const (
-	// KclProjectPublicationStatusDraft: The project is not yet submitted for review.
+	// KclProjectPublicationStatusPrivate: The project is owner-visible only and not intended for publication.
+	KclProjectPublicationStatusPrivate KclProjectPublicationStatus = "private"
+	// KclProjectPublicationStatusDraft: The project is being prepared for publication but is not yet submitted.
 	KclProjectPublicationStatusDraft KclProjectPublicationStatus = "draft"
 	// KclProjectPublicationStatusPendingReview: The project is awaiting moderation review.
 	KclProjectPublicationStatusPendingReview KclProjectPublicationStatus = "pending_review"
@@ -8926,6 +8930,8 @@ type UserResponse struct {
 	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 	// UpdatedAt: The date and time the user was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// Username: Public username/handle for community-facing features.
+	Username string `json:"username" yaml:"username" schema:"username"`
 }
 
 // UserResponseResultsPage: A single page of results

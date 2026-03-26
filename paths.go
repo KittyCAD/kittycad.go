@@ -8448,7 +8448,7 @@ func (s *UserService) GetProject(id UUID) (*ProjectResponse, error) {
 
 }
 
-// UpdateProject: Replace one of the authenticated user's draft projects.
+// UpdateProject: Replace one of the authenticated user's projects.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
