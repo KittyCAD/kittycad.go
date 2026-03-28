@@ -895,6 +895,160 @@ type BatchResponseResponse struct {
 	Response any `json:"response" yaml:"response" schema:"response,required"`
 }
 
+// BillingCadence: How often a contract is expected to bill or renew operationally.
+type BillingCadence string
+
+const (
+	// BillingCadenceAnnual: The contract is managed on an annual cycle.
+	BillingCadenceAnnual BillingCadence = "annual"
+	// BillingCadenceQuarterly: The contract is managed on a quarterly cycle.
+	BillingCadenceQuarterly BillingCadence = "quarterly"
+	// BillingCadenceMonthly: The contract is managed on a monthly cycle.
+	BillingCadenceMonthly BillingCadence = "monthly"
+	// BillingCadenceManual: The contract does not follow a fixed automated cadence.
+	BillingCadenceManual BillingCadence = "manual"
+)
+
+// BillingCommitmentScope: How commitment funds are shared across contract items.
+type BillingCommitmentScope string
+
+const (
+	// BillingCommitmentScopePooled: One shared commitment pool may fund multiple contract items.
+	BillingCommitmentScopePooled BillingCommitmentScope = "pooled"
+	// BillingCommitmentScopePerItem: Each contract item effectively manages its own commitment budget.
+	BillingCommitmentScopePerItem BillingCommitmentScope = "per_item"
+)
+
+// BillingContractItemInput: Serialized line-item payload for a contract definition.
+type BillingContractItemInput struct {
+	// Active: Whether the item should participate in billing decisions immediately.
+	Active bool `json:"active" yaml:"active" schema:"active"`
+	// BillingUnitGranularity: Optional normalization rule used before rating usage.
+	BillingUnitGranularity BillingUnitGranularity `json:"billing_unit_granularity" yaml:"billing_unit_granularity" schema:"billing_unit_granularity"`
+	// Code: Canonical item code so later metering can find the right price row.
+	Code BillingItemCode `json:"code" yaml:"code" schema:"code,required"`
+	// DisplayName: Human-readable name shown in finance tooling.
+	DisplayName string `json:"display_name" yaml:"display_name" schema:"display_name,required"`
+	// FixedFeeAmount: Fixed fee charged for the item when the kind is `fixed_fee`.
+	FixedFeeAmount float64 `json:"fixed_fee_amount" yaml:"fixed_fee_amount" schema:"fixed_fee_amount"`
+	// IsCommitmentEligible: Whether usage from this item may burn down contract commitment.
+	IsCommitmentEligible bool `json:"is_commitment_eligible" yaml:"is_commitment_eligible" schema:"is_commitment_eligible"`
+	// Kind: Pricing model for this item.
+	Kind BillingItemKind `json:"kind" yaml:"kind" schema:"kind,required"`
+	// RateTiers: Pricing tiers for usage-rated items.
+	RateTiers []BillingRateTierInput `json:"rate_tiers" yaml:"rate_tiers" schema:"rate_tiers"`
+	// Unit: Base measurement unit for pricing and usage.
+	Unit BillingUnit `json:"unit" yaml:"unit" schema:"unit,required"`
+}
+
+// BillingContractItemView: Serialized line item returned from a stored contract.
+type BillingContractItemView struct {
+	// Active: Whether the item is active.
+	Active bool `json:"active" yaml:"active" schema:"active,required"`
+	// BillingUnitGranularity: Optional normalization rule for usage.
+	BillingUnitGranularity BillingUnitGranularity `json:"billing_unit_granularity" yaml:"billing_unit_granularity" schema:"billing_unit_granularity"`
+	// Code: Canonical item code.
+	Code BillingItemCode `json:"code" yaml:"code" schema:"code,required"`
+	// DisplayName: Human-readable item name.
+	DisplayName string `json:"display_name" yaml:"display_name" schema:"display_name,required"`
+	// FixedFeeAmount: Fixed fee charged for the item when applicable.
+	FixedFeeAmount float64 `json:"fixed_fee_amount" yaml:"fixed_fee_amount" schema:"fixed_fee_amount"`
+	// ID: Database identifier for the contract item row.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// IsCommitmentEligible: Whether this item can consume commitment.
+	IsCommitmentEligible bool `json:"is_commitment_eligible" yaml:"is_commitment_eligible" schema:"is_commitment_eligible,required"`
+	// Kind: Pricing model for the item.
+	Kind BillingItemKind `json:"kind" yaml:"kind" schema:"kind,required"`
+	// RateTiers: Usage tiers for the item.
+	RateTiers []BillingRateTierView `json:"rate_tiers" yaml:"rate_tiers" schema:"rate_tiers,required"`
+	// Unit: Measurement unit for the item.
+	Unit BillingUnit `json:"unit" yaml:"unit" schema:"unit,required"`
+}
+
+// BillingContractStatus: Lifecycle state for a billing contract.
+type BillingContractStatus string
+
+const (
+	// BillingContractStatusDraft: Contract terms are still being assembled and should not drive billing yet.
+	BillingContractStatusDraft BillingContractStatus = "draft"
+	// BillingContractStatusScheduled: Contract is committed for a future start date and should not drive billing yet.
+	BillingContractStatusScheduled BillingContractStatus = "scheduled"
+	// BillingContractStatusActive: Contract is in force and may be used for rating and funding decisions.
+	BillingContractStatusActive BillingContractStatus = "active"
+	// BillingContractStatusClosed: Contract finished its intended term and is no longer accruing new periods.
+	BillingContractStatusClosed BillingContractStatus = "closed"
+	// BillingContractStatusCanceled: Contract was intentionally terminated before completing its intended term.
+	BillingContractStatusCanceled BillingContractStatus = "canceled"
+)
+
+// BillingContractUpsert: Complete contract payload used to create or replace an org's contract.
+type BillingContractUpsert struct {
+	// BillingCadence: Operational cadence used for finance workflows.
+	BillingCadence BillingCadence `json:"billing_cadence" yaml:"billing_cadence" schema:"billing_cadence,required"`
+	// CommitmentScope: Whether commitment is shared or item-scoped.
+	CommitmentScope BillingCommitmentScope `json:"commitment_scope" yaml:"commitment_scope" schema:"commitment_scope,required"`
+	// Currency: Contract currency shared by every money field in this definition.
+	Currency string `json:"currency" yaml:"currency" schema:"currency,required"`
+	// DiscountDescription: Free-form finance note for discounts or negotiated pricing.
+	DiscountDescription string `json:"discount_description" yaml:"discount_description" schema:"discount_description"`
+	// EffectiveAt: Timestamp when the contract starts to apply.
+	EffectiveAt Time `json:"effective_at" yaml:"effective_at" schema:"effective_at,required"`
+	// ExternalCustomerID: Provider-owned customer reference, when one already exists.
+	ExternalCustomerID string `json:"external_customer_id" yaml:"external_customer_id" schema:"external_customer_id"`
+	// Items: Billable items attached to the contract.
+	Items []BillingContractItemInput `json:"items" yaml:"items" schema:"items,required"`
+	// Name: Human-readable contract label.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
+	// Notes: Internal notes about the contract.
+	Notes string `json:"notes" yaml:"notes" schema:"notes"`
+	// Periods: Period schedule for the contract term.
+	Periods []BillingPeriodInput `json:"periods" yaml:"periods" schema:"periods,required"`
+	// Provider: Downstream provider responsible for collecting the invoice.
+	Provider BillingProvider `json:"provider" yaml:"provider" schema:"provider,required"`
+	// RolloverPolicy: What should happen to unused commitment when a period ends.
+	RolloverPolicy BillingRolloverPolicy `json:"rollover_policy" yaml:"rollover_policy" schema:"rollover_policy,required"`
+	// Status: Lifecycle state for the new contract.
+	Status BillingContractStatus `json:"status" yaml:"status" schema:"status,required"`
+	// TermEndAt: Timestamp when the contract term ends.
+	TermEndAt Time `json:"term_end_at" yaml:"term_end_at" schema:"term_end_at,required"`
+}
+
+// BillingContractView: Serialized contract snapshot returned from the database.
+type BillingContractView struct {
+	// AccountID: Billing account identifier that owns the contract.
+	AccountID UUID `json:"account_id" yaml:"account_id" schema:"account_id,required"`
+	// BillingCadence: Operational cadence for finance workflows.
+	BillingCadence BillingCadence `json:"billing_cadence" yaml:"billing_cadence" schema:"billing_cadence,required"`
+	// CommitmentScope: Whether commitment is shared or item-scoped.
+	CommitmentScope BillingCommitmentScope `json:"commitment_scope" yaml:"commitment_scope" schema:"commitment_scope,required"`
+	// ContractID: Billing contract identifier.
+	ContractID UUID `json:"contract_id" yaml:"contract_id" schema:"contract_id,required"`
+	// Currency: Currency shared by every money field in the contract.
+	Currency string `json:"currency" yaml:"currency" schema:"currency,required"`
+	// DiscountDescription: Discount note associated with the contract.
+	DiscountDescription string `json:"discount_description" yaml:"discount_description" schema:"discount_description"`
+	// EffectiveAt: Timestamp when the contract started applying.
+	EffectiveAt Time `json:"effective_at" yaml:"effective_at" schema:"effective_at,required"`
+	// ExternalCustomerID: Provider-owned customer reference, when one exists.
+	ExternalCustomerID string `json:"external_customer_id" yaml:"external_customer_id" schema:"external_customer_id"`
+	// Items: Billable items attached to the contract.
+	Items []BillingContractItemView `json:"items" yaml:"items" schema:"items,required"`
+	// Name: Human-readable contract label.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
+	// Notes: Internal notes for the contract.
+	Notes string `json:"notes" yaml:"notes" schema:"notes"`
+	// Periods: Period schedule for the contract.
+	Periods []BillingPeriodView `json:"periods" yaml:"periods" schema:"periods,required"`
+	// Provider: Downstream invoice provider.
+	Provider BillingProvider `json:"provider" yaml:"provider" schema:"provider,required"`
+	// RolloverPolicy: What happens to unused commitment when a period ends.
+	RolloverPolicy BillingRolloverPolicy `json:"rollover_policy" yaml:"rollover_policy" schema:"rollover_policy,required"`
+	// Status: Lifecycle state for the contract.
+	Status BillingContractStatus `json:"status" yaml:"status" schema:"status,required"`
+	// TermEndAt: Timestamp when the contract term ends.
+	TermEndAt Time `json:"term_end_at" yaml:"term_end_at" schema:"term_end_at,required"`
+}
+
 // BillingInfo: The billing information for payments.
 type BillingInfo struct {
 	// Address: The address of the customer.
@@ -904,6 +1058,150 @@ type BillingInfo struct {
 	// Phone: The phone for the customer.
 	Phone string `json:"phone" yaml:"phone" schema:"phone"`
 }
+
+// BillingItemCode: Canonical product or service code for a contract item.
+type BillingItemCode string
+
+const (
+	// BillingItemCodeEnterpriseSupport: Fixed or recurring enterprise support entitlement.
+	BillingItemCodeEnterpriseSupport BillingItemCode = "enterprise_support"
+	// BillingItemCodeFde: Full deployment environment or similar managed environment charge.
+	BillingItemCodeFde BillingItemCode = "fde"
+	// BillingItemCodeGovcloudManagement: GovCloud-specific management or hosting charge.
+	BillingItemCodeGovcloudManagement BillingItemCode = "govcloud_management"
+	// BillingItemCodeFileIngestionConversion: Billing for the first successful conversion of a file version.
+	BillingItemCodeFileIngestionConversion BillingItemCode = "file_ingestion_conversion"
+	// BillingItemCodeLicensedAPICredits: Contract-rated API usage credits.
+	BillingItemCodeLicensedAPICredits BillingItemCode = "licensed_api_credits"
+)
+
+// BillingItemKind: Pricing model used by a contract item.
+type BillingItemKind string
+
+const (
+	// BillingItemKindFixedFee: A flat amount that does not vary with measured usage.
+	BillingItemKindFixedFee BillingItemKind = "fixed_fee"
+	// BillingItemKindUsageTiered: Usage is rated by one or more explicit pricing tiers.
+	BillingItemKindUsageTiered BillingItemKind = "usage_tiered"
+	// BillingItemKindUsageCommitmentBucket: Usage burns down a commitment bucket before any overage path.
+	BillingItemKindUsageCommitmentBucket BillingItemKind = "usage_commitment_bucket"
+)
+
+// BillingPeriodInput: Serialized billing period payload for a contract definition.
+type BillingPeriodInput struct {
+	// CommitmentAmount: New commitment funded for this period.
+	CommitmentAmount float64 `json:"commitment_amount" yaml:"commitment_amount" schema:"commitment_amount,required"`
+	// PeriodEndAt: Exclusive period end timestamp.
+	PeriodEndAt Time `json:"period_end_at" yaml:"period_end_at" schema:"period_end_at,required"`
+	// PeriodIndex: Sequence index for the period inside the contract.
+	PeriodIndex int `json:"period_index" yaml:"period_index" schema:"period_index,required"`
+	// PeriodStartAt: Inclusive period start timestamp.
+	PeriodStartAt Time `json:"period_start_at" yaml:"period_start_at" schema:"period_start_at,required"`
+	// RolloverInAmount: Commitment carried in from an earlier period.
+	RolloverInAmount float64 `json:"rollover_in_amount" yaml:"rollover_in_amount" schema:"rollover_in_amount"`
+	// RolloverOutAmount: Commitment intentionally rolled out to a later period.
+	RolloverOutAmount float64 `json:"rollover_out_amount" yaml:"rollover_out_amount" schema:"rollover_out_amount"`
+	// Status: Operational status for the period.
+	Status BillingPeriodStatus `json:"status" yaml:"status" schema:"status"`
+}
+
+// BillingPeriodStatus: Operational status for a contract billing period.
+type BillingPeriodStatus string
+
+const (
+	// BillingPeriodStatusOpen: Period is active and may still accrue usage or adjustments.
+	BillingPeriodStatusOpen BillingPeriodStatus = "open"
+	// BillingPeriodStatusClosed: Period is finalized and should be treated as read-only for billing purposes.
+	BillingPeriodStatusClosed BillingPeriodStatus = "closed"
+)
+
+// BillingPeriodView: Serialized billing period returned from a stored contract.
+type BillingPeriodView struct {
+	// CommitmentAmount: New commitment funded for this period.
+	CommitmentAmount float64 `json:"commitment_amount" yaml:"commitment_amount" schema:"commitment_amount,required"`
+	// ID: Database identifier for the period row.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// PeriodEndAt: Exclusive period end timestamp.
+	PeriodEndAt Time `json:"period_end_at" yaml:"period_end_at" schema:"period_end_at,required"`
+	// PeriodIndex: Sequence index for the period inside the contract.
+	PeriodIndex int `json:"period_index" yaml:"period_index" schema:"period_index,required"`
+	// PeriodStartAt: Inclusive period start timestamp.
+	PeriodStartAt Time `json:"period_start_at" yaml:"period_start_at" schema:"period_start_at,required"`
+	// RolloverInAmount: Commitment carried in from a previous period.
+	RolloverInAmount float64 `json:"rollover_in_amount" yaml:"rollover_in_amount" schema:"rollover_in_amount,required"`
+	// RolloverOutAmount: Commitment intentionally rolled out to a later period.
+	RolloverOutAmount float64 `json:"rollover_out_amount" yaml:"rollover_out_amount" schema:"rollover_out_amount,required"`
+	// Status: Operational status for the period.
+	Status BillingPeriodStatus `json:"status" yaml:"status" schema:"status,required"`
+}
+
+// BillingProvider: Billing provider that owns downstream invoice or statement delivery.
+type BillingProvider string
+
+const (
+	// BillingProviderStripe: Charges are ultimately collected through Stripe.
+	BillingProviderStripe BillingProvider = "stripe"
+	// BillingProviderManualInvoice: Charges are collected outside Stripe, usually by finance or contract workflow.
+	BillingProviderManualInvoice BillingProvider = "manual_invoice"
+)
+
+// BillingRateTierInput: Serialized rate tier payload for a usage-rated contract item.
+type BillingRateTierInput struct {
+	// TierEndExclusive: Exclusive upper bound for the tier, or `None` when the tier is open-ended.
+	TierEndExclusive int `json:"tier_end_exclusive" yaml:"tier_end_exclusive" schema:"tier_end_exclusive"`
+	// TierStartInclusive: First billable quantity in this tier.
+	TierStartInclusive int `json:"tier_start_inclusive" yaml:"tier_start_inclusive" schema:"tier_start_inclusive,required"`
+	// UnitPrice: Price to charge for each unit that lands in this tier.
+	UnitPrice float64 `json:"unit_price" yaml:"unit_price" schema:"unit_price,required"`
+}
+
+// BillingRateTierView: Serialized rate tier returned from a stored contract.
+type BillingRateTierView struct {
+	// ID: Database identifier for the tier row.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// TierEndExclusive: Exclusive upper bound for the tier, or `None` when the tier is open-ended.
+	TierEndExclusive int `json:"tier_end_exclusive" yaml:"tier_end_exclusive" schema:"tier_end_exclusive"`
+	// TierStartInclusive: First billable quantity in this tier.
+	TierStartInclusive int `json:"tier_start_inclusive" yaml:"tier_start_inclusive" schema:"tier_start_inclusive,required"`
+	// UnitPrice: Price charged for each unit in the tier.
+	UnitPrice float64 `json:"unit_price" yaml:"unit_price" schema:"unit_price,required"`
+}
+
+// BillingRolloverPolicy: What happens to unused commitment when a contract period closes.
+type BillingRolloverPolicy string
+
+const (
+	// BillingRolloverPolicyNone: Unused commitment expires at the end of the period.
+	BillingRolloverPolicyNone BillingRolloverPolicy = "none"
+	// BillingRolloverPolicyYear1ToYear2Once: Unused year-one commitment may roll once into year two, but not beyond.
+	BillingRolloverPolicyYear1ToYear2Once BillingRolloverPolicy = "year1_to_year2_once"
+)
+
+// BillingUnit: Base unit that measured usage or pricing is expressed in.
+type BillingUnit string
+
+const (
+	// BillingUnitFile: Quantity is counted in files.
+	BillingUnitFile BillingUnit = "file"
+	// BillingUnitMinute: Quantity is counted in whole or rounded minutes.
+	BillingUnitMinute BillingUnit = "minute"
+	// BillingUnitSecond: Quantity is counted in seconds.
+	BillingUnitSecond BillingUnit = "second"
+	// BillingUnitYear: Quantity is counted in years.
+	BillingUnitYear BillingUnit = "year"
+	// BillingUnitPeriod: Quantity is counted once per billing period.
+	BillingUnitPeriod BillingUnit = "period"
+)
+
+// BillingUnitGranularity: Optional finer-grained measurement rule for a billed unit.
+type BillingUnitGranularity string
+
+const (
+	// BillingUnitGranularityMinute: Usage should be normalized or rounded at the minute level.
+	BillingUnitGranularityMinute BillingUnitGranularity = "minute"
+	// BillingUnitGranularitySecond: Usage should be normalized or rounded at the second level.
+	BillingUnitGranularitySecond BillingUnitGranularity = "second"
+)
 
 // BlendType: What kind of blend to do
 type BlendType string
@@ -2814,7 +3112,7 @@ type Invoice struct {
 	CollectionMethod string `json:"collection_method" yaml:"collection_method" schema:"collection_method"`
 	// CreatedAt: Time at which the object was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html).
 	Currency string `json:"currency" yaml:"currency" schema:"currency"`
 	// CustomerEmail: The email address for the customer. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated.
 	CustomerEmail string `json:"customer_email" yaml:"customer_email" schema:"customer_email"`
@@ -2870,7 +3168,7 @@ type Invoice struct {
 type InvoiceLineItem struct {
 	// Amount: The amount, in USD.
 	Amount float64 `json:"amount" yaml:"amount" schema:"amount"`
-	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+	// Currency: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html).
 	Currency string `json:"currency" yaml:"currency" schema:"currency"`
 	// Description: The description.
 	Description string `json:"description" yaml:"description" schema:"description"`
@@ -3626,6 +3924,8 @@ const (
 type ModelingAppSubscriptionTier struct {
 	// AnnualDiscount: Annual discount. The percentage off the monthly price if the user pays annually.
 	AnnualDiscount float64 `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
+	// BillingMode: Indicates how billing collection is routed for this plan.
+	BillingMode SubscriptionBillingMode `json:"billing_mode" yaml:"billing_mode" schema:"billing_mode"`
 	// Description: A description of the tier.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
 	// DisplayName: The display name of the tier.
@@ -7540,6 +7840,16 @@ const (
 	SubscriptionActionTypeSetupIntent SubscriptionActionType = "setup_intent"
 )
 
+// SubscriptionBillingMode: How a subscription plan is billed operationally.
+type SubscriptionBillingMode string
+
+const (
+	// SubscriptionBillingModeStandard: Standard self-serve billing through the normal subscription flow.
+	SubscriptionBillingModeStandard SubscriptionBillingMode = "standard"
+	// SubscriptionBillingModeContract: Contract-managed billing controlled outside the standard subscription flow.
+	SubscriptionBillingModeContract SubscriptionBillingMode = "contract"
+)
+
 // SubscriptionPlanBillingModel: Billing model for a modeling-app plan price.
 type SubscriptionPlanBillingModel string
 
@@ -9118,6 +9428,8 @@ const (
 type ZooProductSubscription struct {
 	// AnnualDiscount: Annual discount. The percentage off the monthly price if the user pays annually.
 	AnnualDiscount float64 `json:"annual_discount" yaml:"annual_discount" schema:"annual_discount"`
+	// BillingMode: Indicates how billing collection is routed for this plan.
+	BillingMode SubscriptionBillingMode `json:"billing_mode" yaml:"billing_mode" schema:"billing_mode"`
 	// Description: A description of the tier.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
 	// DisplayName: The display name of the tier.

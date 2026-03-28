@@ -2412,6 +2412,49 @@ func ExampleOrgService_AdminDetailsList() {
 
 }
 
+// GetBillingContractForAny: Get the billing contract for an organization.
+// This endpoint requires Zoo admin authentication. It returns the active contract for the organization, or the latest draft when no active contract exists.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleOrgService_GetBillingContractForAny() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.GetBillingContractForAny(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpsertBillingContractForAny: Create or replace the billing contract for an organization.
+// This endpoint requires Zoo admin authentication. It upserts the contract definition used for admin-managed enterprise billing.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Complete contract payload used to create or replace an org's contract.
+func ExampleOrgService_UpsertBillingContractForAny() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.UpsertBillingContractForAny(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.BillingContractUpsert{BillingCadence: "", CommitmentScope: "", Currency: "some-string", DiscountDescription: "some-string", EffectiveAt: kittycad.TimeNow(), ExternalCustomerID: "some-string", Items: []kittycad.BillingContractItemInput{}, Name: "some-string", Notes: "some-string", Periods: []kittycad.BillingPeriodInput{}, Provider: "", RolloverPolicy: "", Status: "", TermEndAt: kittycad.TimeNow()})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // ListAppsForAnyOrg: List OAuth 2.0 apps owned by an organization.
 // This endpoint requires Zoo admin authentication. It returns the target organization's active OAuth apps for admin dashboard inspection.
 //

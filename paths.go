@@ -5464,6 +5464,116 @@ func (s *OrgService) AdminDetailsList(id UUID) (*OrgAdminDetails, error) {
 
 }
 
+// GetBillingContractForAny: Get the billing contract for an organization.
+// This endpoint requires Zoo admin authentication. It returns the active contract for the organization, or the latest draft when no active contract exists.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *OrgService) GetBillingContractForAny(id UUID) (*BillingContractView, error) {
+	// Create the url.
+	path := "/orgs/{{.id}}/billing/contract"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded BillingContractView
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpsertBillingContractForAny: Create or replace the billing contract for an organization.
+// This endpoint requires Zoo admin authentication. It upserts the contract definition used for admin-managed enterprise billing.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Complete contract payload used to create or replace an org's contract.
+func (s *OrgService) UpsertBillingContractForAny(id UUID, body BillingContractUpsert) (*BillingContractView, error) {
+	// Create the url.
+	path := "/orgs/{{.id}}/billing/contract"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded BillingContractView
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // ListAppsForAnyOrg: List OAuth 2.0 apps owned by an organization.
 // This endpoint requires Zoo admin authentication. It returns the target organization's active OAuth apps for admin dashboard inspection.
 //
