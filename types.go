@@ -1451,6 +1451,30 @@ type Chamfer struct {
 	Swap bool `json:"swap" yaml:"swap" schema:"swap,required"`
 }
 
+// ClientErrorReport: Structured client-side error report sent by authenticated clients.
+type ClientErrorReport struct {
+	// Client: Stable identifier for the client application reporting the error.
+	Client string `json:"client" yaml:"client" schema:"client,required"`
+	// Code: Optional application-defined error code or fingerprint.
+	Code string `json:"code" yaml:"code" schema:"code"`
+	// ErrorName: Optional JavaScript/runtime error name.
+	ErrorName string `json:"error_name" yaml:"error_name" schema:"error_name"`
+	// Message: Human-readable error message.
+	Message string `json:"message" yaml:"message" schema:"message,required"`
+	// Release: Client release/version string.
+	Release string `json:"release" yaml:"release" schema:"release,required"`
+	// Route: Optional route/path where the error occurred.
+	Route string `json:"route" yaml:"route" schema:"route"`
+	// Stack: Optional stack trace or equivalent debug context.
+	Stack string `json:"stack" yaml:"stack" schema:"stack"`
+}
+
+// ClientErrorReportAccepted: Response acknowledging that the error report was accepted for logging.
+type ClientErrorReportAccepted struct {
+	// Accepted: Whether the report was accepted.
+	Accepted bool `json:"accepted" yaml:"accepted" schema:"accepted,required"`
+}
+
 // ClientMetrics: ClientMetrics contains information regarding the state of the peer.
 type ClientMetrics struct {
 	// RtcFrameHeight: The height of the inbound video stream in pixels.

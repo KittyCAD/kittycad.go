@@ -1145,6 +1145,14 @@
  },
  {
   "value": {
+   "example": "// ReportClientError: Report a client-originated error.\n// \n// This endpoint requires authentication by any Zoo user. It accepts a structured client error payload and writes it to the server logs for triage.\n// \n// \n// Parameters\n// \n// \t- `body`: Structured client-side error report sent by authenticated clients.\n// \n// ReportClientError: Report a client-originated error.\n// This endpoint requires authentication by any Zoo user. It accepts a structured client error payload and writes it to the server logs for triage.\n//\n// Parameters\n//\n//   - `body`: Structured client-side error report sent by authenticated clients.\nfunc ExampleUserService_ReportClientError() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.ReportClientError(kittycad.ClientErrorReport{Client: \"some-string\", Code: \"some-string\", ErrorName: \"some-string\", Message: \"some-string\", Release: \"some-string\", Route: \"some-string\", Stack: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.ReportClientError"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1client-errors/post/x-go"
+ },
+ {
+  "value": {
    "example": "// EmailMarketingConsentList: Get email marketing consent state for the authenticated user.\n// \n// EmailMarketingConsentList: Get email marketing consent state for the authenticated user.\nfunc ExampleUserService_EmailMarketingConsentList() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.EmailMarketingConsentList()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.EmailMarketingConsentList"
   },
