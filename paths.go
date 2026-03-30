@@ -7176,6 +7176,58 @@ func (s *APITokenService) DeleteForUser(token string) error {
 
 }
 
+// ReportClientError: Report a client-originated error.
+// This endpoint requires authentication by any Zoo user. It accepts a structured client error payload and writes it to the server logs for triage.
+//
+// Parameters
+//
+//   - `body`: Structured client-side error report sent by authenticated clients.
+func (s *UserService) ReportClientError(body ClientErrorReport) (*ClientErrorReportAccepted, error) {
+	// Create the url.
+	path := "/user/client-errors"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ClientErrorReportAccepted
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // EmailMarketingConsentList: Get email marketing consent state for the authenticated user.
 func (s *UserService) EmailMarketingConsentList() (*EmailMarketingConsentState, error) {
 	// Create the url.

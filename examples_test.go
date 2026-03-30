@@ -3139,6 +3139,27 @@ func ExampleAPITokenService_DeleteForUser() {
 
 }
 
+// ReportClientError: Report a client-originated error.
+// This endpoint requires authentication by any Zoo user. It accepts a structured client error payload and writes it to the server logs for triage.
+//
+// Parameters
+//
+//   - `body`: Structured client-side error report sent by authenticated clients.
+func ExampleUserService_ReportClientError() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.ReportClientError(kittycad.ClientErrorReport{Client: "some-string", Code: "some-string", ErrorName: "some-string", Message: "some-string", Release: "some-string", Route: "some-string", Stack: "some-string"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // EmailMarketingConsentList: Get email marketing consent state for the authenticated user.
 func ExampleUserService_EmailMarketingConsentList() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
