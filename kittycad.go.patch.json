@@ -1417,6 +1417,14 @@
  },
  {
   "value": {
+   "example": "// DownloadProject: Download one of the authenticated user's projects as a tar archive.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// DownloadProject: Download one of the authenticated user's projects as a tar archive.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleUserService_DownloadProject() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.User.DownloadProject(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.DownloadProject"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1projects~1{id}~1download/get/x-go"
+ },
+ {
+  "value": {
    "example": "// GetSessionFor: Get a session for your user.\n// \n// This endpoint requires authentication by any Zoo user. It returns details of the requested API token for the user.\n// \n// \n// Parameters\n// \n// \t- `token`: An auth token. A uuid with a prefix of ses-\n// \n// GetSessionFor: Get a session for your user.\n// This endpoint requires authentication by any Zoo user. It returns details of the requested API token for the user.\n//\n// Parameters\n//\n//   - `token`: An auth token. A uuid with a prefix of ses-\nfunc ExampleUserService_GetSessionFor() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetSessionFor(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetSessionFor"
   },

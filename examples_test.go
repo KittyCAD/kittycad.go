@@ -3777,6 +3777,22 @@ func ExampleUserService_UpdateProject() {
 
 }
 
+// DownloadProject: Download one of the authenticated user's projects as a tar archive.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleUserService_DownloadProject() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.DownloadProject(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
 // GetSessionFor: Get a session for your user.
 // This endpoint requires authentication by any Zoo user. It returns details of the requested API token for the user.
 //

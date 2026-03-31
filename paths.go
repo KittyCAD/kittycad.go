@@ -8670,6 +8670,45 @@ func (s *UserService) UpdateProject(id UUID, body *MultipartForm) (*ProjectRespo
 
 }
 
+// DownloadProject: Download one of the authenticated user's projects as a tar archive.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *UserService) DownloadProject(id UUID) error {
+	// Create the url.
+	path := "/user/projects/{{.id}}/download"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // GetSessionFor: Get a session for your user.
 // This endpoint requires authentication by any Zoo user. It returns details of the requested API token for the user.
 //
