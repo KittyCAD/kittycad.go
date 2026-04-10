@@ -16924,7 +16924,7 @@
     "/projects/categories": {
       "get": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "List the active categories available for project submissions.",
         "operationId": "list_project_categories",
@@ -16933,7 +16933,6 @@
             "description": "successful operation",
             "headers": {
               "Access-Control-Allow-Credentials": {
-                "description": "Access-Control-Allow-Credentials header.",
                 "style": "simple",
                 "schema": {
                   "nullable": true,
@@ -16941,7 +16940,6 @@
                 }
               },
               "Access-Control-Allow-Headers": {
-                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
                 "style": "simple",
                 "schema": {
                   "nullable": true,
@@ -16949,7 +16947,6 @@
                 }
               },
               "Access-Control-Allow-Methods": {
-                "description": "Access-Control-Allow-Methods header.",
                 "style": "simple",
                 "schema": {
                   "nullable": true,
@@ -16957,15 +16954,20 @@
                 }
               },
               "Access-Control-Allow-Origin": {
-                "description": "Access-Control-Allow-Origin header.",
                 "style": "simple",
                 "schema": {
                   "nullable": true,
                   "type": "string"
                 }
               },
+              "Cache-Control": {
+                "style": "simple",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              },
               "Content-Location": {
-                "description": "The Content-Location header for responses that are not the final destination. This is used to indicate where the resource can be found, when it is finished.",
                 "style": "simple",
                 "schema": {
                   "nullable": true,
@@ -16973,7 +16975,6 @@
                 }
               },
               "Location": {
-                "description": "The location header for redirects and letting users know if there is a websocket they can listen to for status updates on their operation.",
                 "style": "simple",
                 "schema": {
                   "nullable": true,
@@ -16981,7 +16982,6 @@
                 }
               },
               "Set-Cookie": {
-                "description": "Set-Cookie header.",
                 "style": "simple",
                 "schema": {
                   "nullable": true,
@@ -16989,7 +16989,6 @@
                 }
               },
               "X-Api-Call-Id": {
-                "description": "ID for this request. We return it so that users can report this to us and help us debug their problems.",
                 "style": "simple",
                 "required": true,
                 "schema": {
@@ -17106,7 +17105,7 @@
     "/projects/public": {
       "get": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "List publicly visible community projects for the website/gallery.",
         "operationId": "list_public_projects",
@@ -17287,7 +17286,7 @@
     "/projects/public/{id}/thumbnail": {
       "get": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Fetch the public thumbnail for a published project.",
         "operationId": "get_public_project_thumbnail",
@@ -17317,7 +17316,7 @@
     "/projects/public/{id}/vote": {
       "post": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Add the authenticated user's upvote to a published community project.",
         "operationId": "create_public_project_vote",
@@ -17419,7 +17418,7 @@
       },
       "delete": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Remove the authenticated user's upvote from a published community project.",
         "operationId": "delete_public_project_vote",
@@ -17620,7 +17619,7 @@
       "get": {
         "tags": [
           "hidden",
-          "users"
+          "projects"
         ],
         "summary": "Download a project using a share link.",
         "operationId": "download_shared_project",
@@ -24957,10 +24956,10 @@
     "/user/projects": {
       "get": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "List the authenticated user's projects.",
-        "operationId": "list_user_projects",
+        "operationId": "list_projects",
         "responses": {
           "200": {
             "description": "successful operation",
@@ -25052,10 +25051,10 @@
       },
       "post": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Create a draft project for the authenticated user.",
-        "operationId": "create_user_project",
+        "operationId": "create_project",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -25158,7 +25157,7 @@
         ],
         "summary": "OPTIONS endpoint.",
         "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
-        "operationId": "options_user_projects",
+        "operationId": "options_projects",
         "responses": {
           "204": {
             "description": "resource updated",
@@ -25241,10 +25240,10 @@
     "/user/projects/{id}": {
       "get": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Get one of the authenticated user's projects.",
-        "operationId": "get_user_project",
+        "operationId": "get_project",
         "parameters": [
           {
             "in": "path",
@@ -25343,10 +25342,10 @@
       },
       "put": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Replace one of the authenticated user's projects.",
-        "operationId": "update_user_project",
+        "operationId": "update_project",
         "parameters": [
           {
             "in": "path",
@@ -25456,10 +25455,10 @@
       },
       "delete": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Delete one of the authenticated user's projects.",
-        "operationId": "delete_user_project",
+        "operationId": "delete_project",
         "parameters": [
           {
             "in": "path",
@@ -25555,7 +25554,7 @@
         ],
         "summary": "OPTIONS endpoint.",
         "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
-        "operationId": "options_user_project",
+        "operationId": "options_project",
         "parameters": [
           {
             "in": "path",
@@ -25649,10 +25648,10 @@
     "/user/projects/{id}/download": {
       "get": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Download one of the authenticated user's projects as a tar archive.",
-        "operationId": "download_user_project",
+        "operationId": "download_project",
         "parameters": [
           {
             "in": "path",
@@ -25679,10 +25678,10 @@
     "/user/projects/{id}/publish": {
       "post": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Submit one of the authenticated user's projects for public review.",
-        "operationId": "publish_user_project",
+        "operationId": "publish_project",
         "parameters": [
           {
             "in": "path",
@@ -25785,7 +25784,7 @@
         ],
         "summary": "OPTIONS endpoint.",
         "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
-        "operationId": "options_publish_user_project",
+        "operationId": "options_publish_project",
         "parameters": [
           {
             "in": "path",
@@ -25879,10 +25878,10 @@
     "/user/projects/{id}/share-links": {
       "get": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "List share links for one of the authenticated user's projects.",
-        "operationId": "list_user_project_share_links",
+        "operationId": "list_project_share_links",
         "parameters": [
           {
             "in": "path",
@@ -25985,10 +25984,10 @@
       },
       "post": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Create a share link for one of the authenticated user's projects.",
-        "operationId": "create_user_project_share_link",
+        "operationId": "create_project_share_link",
         "parameters": [
           {
             "in": "path",
@@ -26101,7 +26100,7 @@
         ],
         "summary": "OPTIONS endpoint.",
         "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
-        "operationId": "options_user_project_share_links",
+        "operationId": "options_project_share_links",
         "parameters": [
           {
             "in": "path",
@@ -26195,10 +26194,10 @@
     "/user/projects/{id}/share-links/{key}": {
       "delete": {
         "tags": [
-          "users"
+          "projects"
         ],
         "summary": "Delete one share link for one of the authenticated user's projects.",
-        "operationId": "delete_user_project_share_link",
+        "operationId": "delete_project_share_link",
         "parameters": [
           {
             "in": "path",
@@ -26303,7 +26302,7 @@
         ],
         "summary": "OPTIONS endpoint.",
         "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
-        "operationId": "options_delete_user_project_share_link",
+        "operationId": "options_delete_project_share_link",
         "parameters": [
           {
             "in": "path",
@@ -29178,6 +29177,414 @@
         "responses": {
           "204": {
             "description": "resource updated",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Content-Location": {
+                "description": "The Content-Location header for responses that are not the final destination. This is used to indicate where the resource can be found, when it is finished.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "description": "The location header for redirects and letting users know if there is a websocket they can listen to for status updates on their operation.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Set-Cookie": {
+                "description": "Set-Cookie header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "X-Api-Call-Id": {
+                "description": "ID for this request. We return it so that users can report this to us and help us debug their problems.",
+                "style": "simple",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/website/email-marketing-lists/{slug}/subscribe": {
+      "put": {
+        "tags": [
+          "users",
+          "hidden"
+        ],
+        "summary": "Publicly subscribe an email address to a mailing list by slug.",
+        "operationId": "put_public_mailing_list_subscribe",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "description": "Stable public list slug.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicMailingListMembershipRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "successful operation, no content",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Content-Location": {
+                "description": "The Content-Location header for responses that are not the final destination. This is used to indicate where the resource can be found, when it is finished.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "description": "The location header for redirects and letting users know if there is a websocket they can listen to for status updates on their operation.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Set-Cookie": {
+                "description": "Set-Cookie header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "X-Api-Call-Id": {
+                "description": "ID for this request. We return it so that users can report this to us and help us debug their problems.",
+                "style": "simple",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "options": {
+        "tags": [
+          "hidden"
+        ],
+        "summary": "OPTIONS endpoint.",
+        "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
+        "operationId": "options_put_public_mailing_list_subscribe",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "description": "Stable public list slug.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation, no content",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Content-Location": {
+                "description": "The Content-Location header for responses that are not the final destination. This is used to indicate where the resource can be found, when it is finished.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "description": "The location header for redirects and letting users know if there is a websocket they can listen to for status updates on their operation.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Set-Cookie": {
+                "description": "Set-Cookie header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "X-Api-Call-Id": {
+                "description": "ID for this request. We return it so that users can report this to us and help us debug their problems.",
+                "style": "simple",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/website/email-marketing-lists/{slug}/unsubscribe": {
+      "put": {
+        "tags": [
+          "users",
+          "hidden"
+        ],
+        "summary": "Publicly remove an email address from a mailing list by slug.",
+        "operationId": "put_public_mailing_list_unsubscribe",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "description": "Stable public list slug.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicMailingListMembershipRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "successful operation, no content",
+            "headers": {
+              "Access-Control-Allow-Credentials": {
+                "description": "Access-Control-Allow-Credentials header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Access-Control-Allow-Headers header. This is a comma-separated list of headers.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Access-Control-Allow-Methods header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "Access-Control-Allow-Origin header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Content-Location": {
+                "description": "The Content-Location header for responses that are not the final destination. This is used to indicate where the resource can be found, when it is finished.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "description": "The location header for redirects and letting users know if there is a websocket they can listen to for status updates on their operation.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "Set-Cookie": {
+                "description": "Set-Cookie header.",
+                "style": "simple",
+                "schema": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "X-Api-Call-Id": {
+                "description": "ID for this request. We return it so that users can report this to us and help us debug their problems.",
+                "style": "simple",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "options": {
+        "tags": [
+          "hidden"
+        ],
+        "summary": "OPTIONS endpoint.",
+        "description": "This is necessary for some preflight requests, specifically POST, PUT, and DELETE.",
+        "operationId": "options_put_public_mailing_list_unsubscribe",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "description": "Stable public list slug.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation, no content",
             "headers": {
               "Access-Control-Allow-Credentials": {
                 "description": "Access-Control-Allow-Credentials header.",
@@ -51542,6 +51949,20 @@
           "email"
         ]
       },
+      "PublicMailingListMembershipRequest": {
+        "description": "Request body for public mailing-list membership changes.",
+        "type": "object",
+        "properties": {
+          "email": {
+            "description": "Email address to add or remove.",
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
       "PublicProjectOwnerResponse": {
         "description": "Public creator metadata for community project listings.",
         "type": "object",
@@ -56961,7 +57382,7 @@
         "enum": [
           "aquarium",
           "proprietary_to_kcl_conversion_beta",
-          "new_sketch_mode"
+          "classic_sketch_mode"
         ]
       },
       "UserFeatureEntry": {
@@ -58097,6 +58518,13 @@
       "description": "Operations around payments and billing.",
       "externalDocs": {
         "url": "https://zoo.dev/docs/api/payments"
+      }
+    },
+    {
+      "name": "projects",
+      "description": "Operations for user-owned projects, public project discovery, publishing, voting, and share links.",
+      "externalDocs": {
+        "url": "https://zoo.dev/docs/api/projects"
       }
     },
     {
