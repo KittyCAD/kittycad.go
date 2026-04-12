@@ -1,8 +1,6 @@
 module github.com/kittycad/kittycad.go
 
-go 1.23.0
-
-toolchain go1.23.2
+go 1.24
 
 require (
 	github.com/getkin/kin-openapi v0.133.0
@@ -10,8 +8,8 @@ require (
 	github.com/gorilla/schema v1.4.1
 	github.com/gorilla/websocket v1.5.3
 	github.com/iancoleman/strcase v0.3.0
-	github.com/sirupsen/logrus v1.9.3
-	github.com/wI2L/jsondiff v0.7.0
+	github.com/sirupsen/logrus v1.9.4
+	github.com/wI2L/jsondiff v0.7.1
 )
 
 require (
