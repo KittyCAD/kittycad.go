@@ -44,6 +44,8 @@ type Client struct {
 	Org *OrgService
 	// Payment: Operations around payments and billing.
 	Payment *PaymentService
+	// Project: Operations for user-owned projects, public project discovery, publishing, voting, and share links.
+	Project *ProjectService
 	// ServiceAccount: Service accounts allow organizations to call the API. Organization admins can create, delete, and list the service accounts for their org. Service accounts are scoped to an organization not individual users, these are better to use for automations than individual API tokens, since they won't stop working when an individual leaves the company.
 	ServiceAccount *ServiceAccountService
 	// Shortlink: Shortlinks are a way to create a short URL that redirects to a longer URL. This is useful for sharing links that are long and unwieldy.
@@ -97,6 +99,9 @@ type OrgService service
 
 // PaymentService: Operations around payments and billing.
 type PaymentService service
+
+// ProjectService: Operations for user-owned projects, public project discovery, publishing, voting, and share links.
+type ProjectService service
 
 // ServiceAccountService: Service accounts allow organizations to call the API. Organization admins can create, delete, and list the service accounts for their org. Service accounts are scoped to an organization not individual users, these are better to use for automations than individual API tokens, since they won't stop working when an individual leaves the company.
 type ServiceAccountService service

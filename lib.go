@@ -69,6 +69,7 @@ func NewClient(token, userAgent string) (*Client, error) {
 	client.Oauth2 = &Oauth2Service{client: client}
 	client.Org = &OrgService{client: client}
 	client.Payment = &PaymentService{client: client}
+	client.Project = &ProjectService{client: client}
 	client.ServiceAccount = &ServiceAccountService{client: client}
 	client.Shortlink = &ShortlinkService{client: client}
 	client.Store = &StoreService{client: client}
