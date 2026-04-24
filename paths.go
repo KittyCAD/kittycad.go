@@ -149,114 +149,6 @@ func (s *MlService) CreateTextToCad(outputFormat FileExportFormat, kcl bool, bod
 
 }
 
-// GetMetrics: Get API call metrics.
-// This endpoint requires authentication by a Zoo employee. The API calls are grouped by the parameter passed.
-//
-// Parameters
-//
-//   - `groupBy`: The field of an API call to group by.
-func (s *APICallService) GetMetrics(groupBy APICallQueryGroupBy) (*[]APICallQueryGroup, error) {
-	// Create the url.
-	path := "/api-call-metrics"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"group_by": string(groupBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded []APICallQueryGroup
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
-// List: List API calls.
-// This endpoint requires authentication by a Zoo employee. The API calls are returned in order of creation, with the most recently created API calls first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *APICallService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*APICallWithPriceResultsPage, error) {
-	// Create the url.
-	path := "/api-calls"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded APICallWithPriceResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // Get: Get details of an API call.
 // This endpoint requires authentication by any Zoo user. It returns details of the requested API call for the user.
 //
@@ -433,69 +325,6 @@ func (s *AppService) GithubWebhook(body []byte) error {
 
 	// Return.
 	return nil
-
-}
-
-// ListAsyncOperations: List async operations.
-// For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
-//
-// This endpoint requires authentication by a Zoo employee.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-//
-//   - `status`: The status of an async API call.
-func (s *APICallService) ListAsyncOperations(limit int, pageToken string, sortBy CreatedAtSortMode, status APICallStatus) (*AsyncAPICallResultsPage, error) {
-	// Create the url.
-	path := "/async/operations"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-		"status":     string(status),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded AsyncAPICallResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
 
 }
 
@@ -689,9 +518,9 @@ func (s *HiddenService) AuthEmailMarketingConfirmCreate(body EmailMarketingConfi
 // Parameters
 //
 //   - `callbackUrl`
-//   - `email`
 //   - `token`
-func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token string) error {
+//   - `email`
+func (s *HiddenService) AuthEmailCallback(callbackUrl URL, token string, email string) error {
 	// Create the url.
 	path := "/auth/email/callback"
 	targetURL := resolveRelative(s.client.server, path)
@@ -705,8 +534,8 @@ func (s *HiddenService) AuthEmailCallback(callbackUrl URL, email string, token s
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
 		"callback_url": callbackUrl.String(),
-		"email":        email,
 		"token":        token,
+		"email":        email,
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -862,9 +691,9 @@ func (s *HiddenService) PostAuthSaml(providerId UUID, body []byte) error {
 // CommunitySso: Authorize an inbound auth request from our Community page.
 // Parameters
 //
-//   - `sig`
 //   - `sso`
-func (s *MetaService) CommunitySso(sig string, sso string) error {
+//   - `sig`
+func (s *MetaService) CommunitySso(sso string, sig string) error {
 	// Create the url.
 	path := "/community/sso"
 	targetURL := resolveRelative(s.client.server, path)
@@ -877,56 +706,11 @@ func (s *MetaService) CommunitySso(sig string, sso string) error {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"sig": sig,
 		"sso": sso,
+		"sig": sig,
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-
-	// Return.
-	return nil
-
-}
-
-// CreateEvent: Creates an internal telemetry event.
-// We collect anonymous telemetry data for improving our product.
-//
-// Parameters
-//
-//   - `body`: Telemetry data we are collecting
-func (s *MetaService) CreateEvent(body *MultipartForm) error {
-	// Create the url.
-	path := "/events"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Finalize the multipart body before sending it.
-	if body == nil {
-		return errors.New("multipart body is nil")
-	}
-	if err := body.Close(); err != nil {
-		return fmt.Errorf("closing multipart body failed: %v", err)
-	}
-
-	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body.buffer)
-	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add our headers.
-	req.Header.Set("Content-Type", body.ContentType())
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
@@ -958,10 +742,10 @@ func (s *MetaService) CreateEvent(body *MultipartForm) error {
 //
 // Parameters
 //
-//   - `outputUnit`: The valid types of length units.
 //   - `srcFormat`: The valid types of source file formats.
+//   - `outputUnit`: The valid types of length units.
 //   - `body`
-func (s *FileService) CreateCenterOfMass(outputUnit UnitLength, srcFormat FileImportFormat, body []byte) (*FileCenterOfMass, error) {
+func (s *FileService) CreateCenterOfMass(srcFormat FileImportFormat, outputUnit UnitLength, body []byte) (*FileCenterOfMass, error) {
 	// Create the url.
 	path := "/file/center-of-mass"
 	targetURL := resolveRelative(s.client.server, path)
@@ -979,8 +763,8 @@ func (s *FileService) CreateCenterOfMass(outputUnit UnitLength, srcFormat FileIm
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"output_unit": string(outputUnit),
 		"src_format":  string(srcFormat),
+		"output_unit": string(outputUnit),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1080,10 +864,10 @@ func (s *FileService) CreateConversionOptions(body *MultipartForm) (*FileConvers
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of output file formats.
 //   - `srcFormat`: The valid types of source file formats.
+//   - `outputFormat`: The valid types of output file formats.
 //   - `body`
-func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat FileImportFormat, body []byte) (*FileConversion, error) {
+func (s *FileService) CreateConversion(srcFormat FileImportFormat, outputFormat FileExportFormat, body []byte) (*FileConversion, error) {
 	// Create the url.
 	path := "/file/conversion/{{.src_format}}/{{.output_format}}"
 	targetURL := resolveRelative(s.client.server, path)
@@ -1101,8 +885,8 @@ func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat 
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"output_format": string(outputFormat),
 		"src_format":    string(srcFormat),
+		"output_format": string(outputFormat),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1146,12 +930,12 @@ func (s *FileService) CreateConversion(outputFormat FileExportFormat, srcFormat 
 //
 // Parameters
 //
+//   - `srcFormat`: The valid types of source file formats.
 //   - `materialMass`
 //   - `materialMassUnit`: The valid types of mass units.
 //   - `outputUnit`: The valid types for density units.
-//   - `srcFormat`: The valid types of source file formats.
 //   - `body`
-func (s *FileService) CreateDensity(materialMass float64, materialMassUnit UnitMas, outputUnit UnitDensity, srcFormat FileImportFormat, body []byte) (*FileDensity, error) {
+func (s *FileService) CreateDensity(srcFormat FileImportFormat, materialMass float64, materialMassUnit UnitMas, outputUnit UnitDensity, body []byte) (*FileDensity, error) {
 	// Create the url.
 	path := "/file/density"
 	targetURL := resolveRelative(s.client.server, path)
@@ -1169,10 +953,10 @@ func (s *FileService) CreateDensity(materialMass float64, materialMassUnit UnitM
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
+		"src_format":         string(srcFormat),
 		"material_mass":      fmt.Sprintf("%f", materialMass),
 		"material_mass_unit": string(materialMassUnit),
 		"output_unit":        string(outputUnit),
-		"src_format":         string(srcFormat),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1278,12 +1062,12 @@ func (s *ExecutorService) CreateFileExecution(lang CodeLanguage, output string, 
 //
 // Parameters
 //
+//   - `srcFormat`: The valid types of source file formats.
 //   - `materialDensity`
 //   - `materialDensityUnit`: The valid types for density units.
 //   - `outputUnit`: The valid types of mass units.
-//   - `srcFormat`: The valid types of source file formats.
 //   - `body`
-func (s *FileService) CreateMass(materialDensity float64, materialDensityUnit UnitDensity, outputUnit UnitMas, srcFormat FileImportFormat, body []byte) (*FileMass, error) {
+func (s *FileService) CreateMass(srcFormat FileImportFormat, materialDensity float64, materialDensityUnit UnitDensity, outputUnit UnitMas, body []byte) (*FileMass, error) {
 	// Create the url.
 	path := "/file/mass"
 	targetURL := resolveRelative(s.client.server, path)
@@ -1301,10 +1085,10 @@ func (s *FileService) CreateMass(materialDensity float64, materialDensityUnit Un
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
+		"src_format":            string(srcFormat),
 		"material_density":      fmt.Sprintf("%f", materialDensity),
 		"material_density_unit": string(materialDensityUnit),
 		"output_unit":           string(outputUnit),
-		"src_format":            string(srcFormat),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1348,10 +1132,10 @@ func (s *FileService) CreateMass(materialDensity float64, materialDensityUnit Un
 //
 // Parameters
 //
-//   - `outputUnit`: The valid types of area units.
 //   - `srcFormat`: The valid types of source file formats.
+//   - `outputUnit`: The valid types of area units.
 //   - `body`
-func (s *FileService) CreateSurfaceArea(outputUnit UnitArea, srcFormat FileImportFormat, body []byte) (*FileSurfaceArea, error) {
+func (s *FileService) CreateSurfaceArea(srcFormat FileImportFormat, outputUnit UnitArea, body []byte) (*FileSurfaceArea, error) {
 	// Create the url.
 	path := "/file/surface-area"
 	targetURL := resolveRelative(s.client.server, path)
@@ -1369,8 +1153,8 @@ func (s *FileService) CreateSurfaceArea(outputUnit UnitArea, srcFormat FileImpor
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"output_unit": string(outputUnit),
 		"src_format":  string(srcFormat),
+		"output_unit": string(outputUnit),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1414,10 +1198,10 @@ func (s *FileService) CreateSurfaceArea(outputUnit UnitArea, srcFormat FileImpor
 //
 // Parameters
 //
-//   - `outputUnit`: The valid types of volume units.
 //   - `srcFormat`: The valid types of source file formats.
+//   - `outputUnit`: The valid types of volume units.
 //   - `body`
-func (s *FileService) CreateVolume(outputUnit UnitVolume, srcFormat FileImportFormat, body []byte) (*FileVolume, error) {
+func (s *FileService) CreateVolume(srcFormat FileImportFormat, outputUnit UnitVolume, body []byte) (*FileVolume, error) {
 	// Create the url.
 	path := "/file/volume"
 	targetURL := resolveRelative(s.client.server, path)
@@ -1435,8 +1219,8 @@ func (s *FileService) CreateVolume(outputUnit UnitVolume, srcFormat FileImportFo
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"output_unit": string(outputUnit),
 		"src_format":  string(srcFormat),
+		"output_unit": string(outputUnit),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -1546,118 +1330,6 @@ func (s *HiddenService) Logout() error {
 
 	// Return.
 	return nil
-
-}
-
-// ListPrompts: List all ML prompts.
-// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
-//
-// This endpoint requires authentication by a Zoo employee.
-//
-// The ML prompts are returned in order of creation, with the most recently created ML prompts first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *MlService) ListPrompts(limit int, pageToken string, sortBy CreatedAtSortMode) (*MlPromptResponseResultsPage, error) {
-	// Create the url.
-	path := "/ml-prompts"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded MlPromptResponseResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
-// GetPrompt: Get a ML prompt.
-// This endpoint requires authentication by a Zoo employee.
-//
-// Parameters
-//
-//   - `id`
-func (s *MlService) GetPrompt(id UUID) (*MlPromptResponse, error) {
-	// Create the url.
-	path := "/ml-prompts/{{.id}}"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id.String(),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded MlPromptResponse
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
 
 }
 
@@ -2176,6 +1848,57 @@ func (s *MlService) CreateTextToCadMultiFileIteration(body *MultipartForm) (*Tex
 
 }
 
+// Authorize: Start an OAuth 2.0 authorization code flow with PKCE.
+// Parameters
+//
+//   - `responseType`: The OAuth 2.0 authorization response type.
+//   - `clientId`
+//   - `redirectUri`
+//   - `state`
+//   - `scope`: OAuth 2.0 scopes encoded as a space-delimited string.
+//   - `codeChallenge`
+//   - `codeChallengeMethod`: The PKCE code challenge method.
+func (s *Oauth2Service) Authorize(responseType Oauth2AuthorizationResponseType, clientId UUID, redirectUri URL, state string, scope string, codeChallenge string, codeChallengeMethod Oauth2CodeChallengeMethod) error {
+	// Create the url.
+	path := "/oauth2/authorize"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"response_type":         string(responseType),
+		"client_id":             clientId.String(),
+		"redirect_uri":          redirectUri.String(),
+		"state":                 state,
+		"scope":                 scope,
+		"code_challenge":        codeChallenge,
+		"code_challenge_method": string(codeChallengeMethod),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // DeviceAuthRequest: Start an OAuth 2.0 Device Authorization Grant.
 // This endpoint is designed to be accessed from an *unauthenticated* API client. It generates and records a `device_code` and `user_code` which must be verified and confirmed prior to a token being granted.
 //
@@ -2316,9 +2039,9 @@ func (s *Oauth2Service) DeviceAccessToken(body DeviceAccessTokenRequestForm) err
 //
 // Parameters
 //
-//   - `appName`
 //   - `userCode`
-func (s *Oauth2Service) DeviceAuthVerify(appName string, userCode string) error {
+//   - `appName`
+func (s *Oauth2Service) DeviceAuthVerify(userCode string, appName string) error {
 	// Create the url.
 	path := "/oauth2/device/verify"
 	targetURL := resolveRelative(s.client.server, path)
@@ -2331,8 +2054,8 @@ func (s *Oauth2Service) DeviceAuthVerify(appName string, userCode string) error 
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"app_name":  appName,
 		"user_code": userCode,
+		"app_name":  appName,
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -2359,10 +2082,10 @@ func (s *Oauth2Service) DeviceAuthVerify(appName string, userCode string) error 
 //
 //   - `provider`: An account provider.
 //   - `code`
-//   - `idToken`
 //   - `state`
+//   - `idToken`
 //   - `user`
-func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, idToken string, state string, user string) error {
+func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, state string, idToken string, user string) error {
 	// Create the url.
 	path := "/oauth2/provider/{{.provider}}/callback"
 	targetURL := resolveRelative(s.client.server, path)
@@ -2377,8 +2100,8 @@ func (s *Oauth2Service) ProviderCallback(provider AccountProvider, code string, 
 	if err := expandURL(req.URL, map[string]string{
 		"provider": string(provider),
 		"code":     code,
-		"id_token": idToken,
 		"state":    state,
+		"id_token": idToken,
 		"user":     user,
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
@@ -2505,6 +2228,50 @@ func (s *Oauth2Service) ProviderConsent(provider AccountProvider, callbackUrl st
 
 }
 
+// Token: Exchange an authorization code or refresh token for an OAuth 2.0 access token.
+// Parameters
+//
+//   - `body`: Form body for `/oauth2/token`.
+func (s *Oauth2Service) Token(body Oauth2TokenRequestForm) error {
+	// Create the url.
+	path := "/oauth2/token"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as a form.
+	form := url.Values{}
+	encoder := schema.NewEncoder()
+	err := encoder.Encode(body, form)
+	if err != nil {
+		return fmt.Errorf("encoding form body request failed: %v", err)
+	}
+	b := strings.NewReader(form.Encode())
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // TokenRevoke: Revoke an OAuth2 token.
 // This endpoint is designed to be accessed from an *unauthenticated* API client.
 //
@@ -2556,9 +2323,9 @@ func (s *Oauth2Service) TokenRevoke(body TokenRevokeRequestForm) error {
 //
 // Parameters
 //
-//   - `callbackUrl`
 //   - `token`
-func (s *Oauth2Service) VerifyOauthAccountLinking(callbackUrl string, token string) error {
+//   - `callbackUrl`
+func (s *Oauth2Service) VerifyOauthAccountLinking(token string, callbackUrl string) error {
 	// Create the url.
 	path := "/oauth2/verify-account-linking"
 	targetURL := resolveRelative(s.client.server, path)
@@ -2571,8 +2338,8 @@ func (s *Oauth2Service) VerifyOauthAccountLinking(callbackUrl string, token stri
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"callback_url": callbackUrl,
 		"token":        token,
+		"callback_url": callbackUrl,
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -2886,9 +2653,9 @@ func (s *APICallService) GetForOrg(id UUID) (*APICallWithPrice, error) {
 // DatasetS3Policies: Return the IAM policies customers should apply when onboarding an S3 dataset.
 // Parameters
 //
-//   - `roleArn`
 //   - `uri`
-func (s *OrgService) DatasetS3Policies(roleArn string, uri string) (*DatasetS3Policies, error) {
+//   - `roleArn`
+func (s *OrgService) DatasetS3Policies(uri string, roleArn string) (*DatasetS3Policies, error) {
 	// Create the url.
 	path := "/org/dataset/s3/policies"
 	targetURL := resolveRelative(s.client.server, path)
@@ -2901,8 +2668,8 @@ func (s *OrgService) DatasetS3Policies(roleArn string, uri string) (*DatasetS3Po
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"role_arn": roleArn,
 		"uri":      uri,
+		"role_arn": roleArn,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -3237,11 +3004,11 @@ func (s *OrgService) DownloadDatasetSuccessfulKclBulk(id UUID) error {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-//   - `filter`
 //   - `limit`
 //   - `pageToken`
 //   - `sortBy`: Supported sort modes for org dataset conversions.
-func (s *OrgService) ListDatasetConversions(id UUID, filter string, limit int, pageToken string, sortBy ConversionSortMode) (*OrgDatasetFileConversionSummaryResultsPage, error) {
+//   - `filter`
+func (s *OrgService) ListDatasetConversions(id UUID, limit int, pageToken string, sortBy ConversionSortMode, filter string) (*OrgDatasetFileConversionSummaryResultsPage, error) {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/conversions"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3255,10 +3022,10 @@ func (s *OrgService) ListDatasetConversions(id UUID, filter string, limit int, p
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
 		"id":         id.String(),
-		"filter":     filter,
 		"limit":      strconv.Itoa(limit),
 		"page_token": pageToken,
 		"sort_by":    string(sortBy),
+		"filter":     filter,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -3294,9 +3061,9 @@ func (s *OrgService) ListDatasetConversions(id UUID, filter string, limit int, p
 //
 // Parameters
 //
-//   - `conversionId`: A UUID usually v4 or v7
 //   - `id`: A UUID usually v4 or v7
-func (s *OrgService) GetDatasetConversion(conversionId UUID, id UUID) (*OrgDatasetFileConversionDetails, error) {
+//   - `conversionId`: A UUID usually v4 or v7
+func (s *OrgService) GetDatasetConversion(id UUID, conversionId UUID) (*OrgDatasetFileConversionDetails, error) {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/conversions/{{.conversion_id}}"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3309,8 +3076,8 @@ func (s *OrgService) GetDatasetConversion(conversionId UUID, id UUID) (*OrgDatas
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"conversion_id": conversionId.String(),
 		"id":            id.String(),
+		"conversion_id": conversionId.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -3344,9 +3111,9 @@ func (s *OrgService) GetDatasetConversion(conversionId UUID, id UUID) (*OrgDatas
 // DownloadDatasetConversionOriginal: Download the original source file for a specific dataset conversion.
 // Parameters
 //
-//   - `conversionId`: A UUID usually v4 or v7
 //   - `id`: A UUID usually v4 or v7
-func (s *OrgService) DownloadDatasetConversionOriginal(conversionId UUID, id UUID) error {
+//   - `conversionId`: A UUID usually v4 or v7
+func (s *OrgService) DownloadDatasetConversionOriginal(id UUID, conversionId UUID) error {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/conversions/{{.conversion_id}}/original"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3359,8 +3126,8 @@ func (s *OrgService) DownloadDatasetConversionOriginal(conversionId UUID, id UUI
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"conversion_id": conversionId.String(),
 		"id":            id.String(),
+		"conversion_id": conversionId.String(),
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -3385,9 +3152,9 @@ func (s *OrgService) DownloadDatasetConversionOriginal(conversionId UUID, id UUI
 // RetriggerDatasetConversion: Retrigger a specific dataset conversion for the caller's org.
 // Parameters
 //
-//   - `conversionId`: A UUID usually v4 or v7
 //   - `id`: A UUID usually v4 or v7
-func (s *OrgService) RetriggerDatasetConversion(conversionId UUID, id UUID) error {
+//   - `conversionId`: A UUID usually v4 or v7
+func (s *OrgService) RetriggerDatasetConversion(id UUID, conversionId UUID) error {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/conversions/{{.conversion_id}}/retrigger"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3400,8 +3167,8 @@ func (s *OrgService) RetriggerDatasetConversion(conversionId UUID, id UUID) erro
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"conversion_id": conversionId.String(),
 		"id":            id.String(),
+		"conversion_id": conversionId.String(),
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -3528,9 +3295,9 @@ func (s *OrgService) SearchDatasetConversions(id UUID, limit int, pageToken stri
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-//   - `limit`
 //   - `q`
-func (s *OrgService) SearchDatasetSemantic(id UUID, limit int, q string) (*[]OrgDatasetSemanticSearchMatch, error) {
+//   - `limit`
+func (s *OrgService) SearchDatasetSemantic(id UUID, q string, limit int) (*[]OrgDatasetSemanticSearchMatch, error) {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/search/semantic"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3544,8 +3311,8 @@ func (s *OrgService) SearchDatasetSemantic(id UUID, limit int, q string) (*[]Org
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
 		"id":    id.String(),
-		"limit": strconv.Itoa(limit),
 		"q":     q,
+		"limit": strconv.Itoa(limit),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -4017,11 +3784,11 @@ func (s *Oauth2Service) ListOrgApps(limit int, pageToken string, sortBy CreatedA
 }
 
 // CreateOrgApp: Create an org OAuth app.
-// This endpoint requires authentication by an org admin. It creates an active public device-flow app owned by the authenticated organization.
+// This endpoint requires authentication by an org admin. It creates an active public OAuth app owned by the authenticated organization.
 //
 // Parameters
 //
-//   - `body`: Request body for creating a public device-flow app.
+//   - `body`: Request body for creating a public OAuth app.
 func (s *Oauth2Service) CreateOrgApp(body CreateOauth2AppRequest) (*Oauth2AppResponse, error) {
 	// Create the url.
 	path := "/org/oauth2/apps"
@@ -4119,12 +3886,12 @@ func (s *Oauth2Service) GetOrgApp(clientId UUID) (*Oauth2AppResponse, error) {
 }
 
 // UpdateOrgApp: Update an org OAuth app.
-// This endpoint requires authentication by an org admin. It updates the name of the organization's active public OAuth app.
+// This endpoint requires authentication by an org admin. It updates the configuration of the organization's active public OAuth app.
 //
 // Parameters
 //
 //   - `clientId`: A UUID usually v4 or v7
-//   - `body`: Request body for updating a public device-flow app.
+//   - `body`: Request body for updating a public OAuth app.
 func (s *Oauth2Service) UpdateOrgApp(clientId UUID, body UpdateOauth2AppRequest) (*Oauth2AppResponse, error) {
 	// Create the url.
 	path := "/org/oauth2/apps/{{.client_id}}"
@@ -4491,7 +4258,12 @@ func (s *PaymentService) CreateIntentForOrg() (*PaymentIntent, error) {
 
 // ListInvoicesForOrg: List invoices for your org.
 // This endpoint requires authentication by an org admin. It lists invoices for the authenticated user's org.
-func (s *PaymentService) ListInvoicesForOrg() (*[]Invoice, error) {
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func (s *PaymentService) ListInvoicesForOrg(limit int, pageToken string) (*InvoiceResultsPage, error) {
 	// Create the url.
 	path := "/org/payment/invoices"
 	targetURL := resolveRelative(s.client.server, path)
@@ -4500,6 +4272,14 @@ func (s *PaymentService) ListInvoicesForOrg() (*[]Invoice, error) {
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -4518,13 +4298,54 @@ func (s *PaymentService) ListInvoicesForOrg() (*[]Invoice, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded []Invoice
+	var decoded InvoiceResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// RedirectMethodPortalLinkForOrg: Redirect to a fresh Stripe-hosted payment-method update link for your org.
+// If the request is not authenticated, this redirects to website login with a callback back to this endpoint. If authenticated as an org admin, it creates a fresh hosted Stripe portal session and redirects the browser to it.
+//
+// Parameters
+//
+//   - `returnUrl`
+func (s *PaymentService) RedirectMethodPortalLinkForOrg(returnUrl URL) error {
+	// Create the url.
+	path := "/org/payment/method-portal-link"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"return_url": returnUrl.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }
 
@@ -5306,114 +5127,6 @@ func (s *OrgService) GetShortlinks(limit int, pageToken string, sortBy CreatedAt
 
 }
 
-// List: List orgs.
-// This endpoint requires authentication by a Zoo employee. The orgs are returned in order of creation, with the most recently created orgs first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *OrgService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*OrgResultsPage, error) {
-	// Create the url.
-	path := "/orgs"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded OrgResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
-// GetAny: Get an org.
-// This endpoint requires authentication by a Zoo employee. It gets the information for the specified org.
-//
-// Parameters
-//
-//   - `id`: A UUID usually v4 or v7
-func (s *OrgService) GetAny(id UUID) (*Org, error) {
-	// Create the url.
-	path := "/orgs/{{.id}}"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"id": id.String(),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded Org
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // AdminDetailsList: Get admin-only details for an organization.
 // Zoo admins can retrieve extended information about any organization, while non-admins receive a 404 to avoid leaking existence.
 //
@@ -5886,8 +5599,8 @@ func (s *MetaService) GetPricingSubscriptions() (*map[string][]ZooProductSubscri
 
 }
 
-// ListProjectCategories: List the active categories available for project submissions.
-func (s *UserService) ListProjectCategories() (*[]ProjectCategoryResponse, error) {
+// ListCategories: List the active categories available for project submissions.
+func (s *ProjectService) ListCategories() (*[]ProjectCategoryResponse, error) {
 	// Create the url.
 	path := "/projects/categories"
 	targetURL := resolveRelative(s.client.server, path)
@@ -5921,6 +5634,309 @@ func (s *UserService) ListProjectCategories() (*[]ProjectCategoryResponse, error
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// ListPublic: List publicly visible community projects for the website/gallery.
+func (s *ProjectService) ListPublic() (*[]PublicProjectResponse, error) {
+	// Create the url.
+	path := "/projects/public"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []PublicProjectResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetPublic: Get one publicly visible community project.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ProjectService) GetPublic(id UUID) (*PublicProjectResponse, error) {
+	// Create the url.
+	path := "/projects/public/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded PublicProjectResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DownloadPublic: Download a published public project as a tar archive.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `format`: Archive formats supported by project download endpoints.
+func (s *ProjectService) DownloadPublic(id UUID, format ProjectArchiveFormat) error {
+	// Create the url.
+	path := "/projects/public/{{.id}}/download"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":     id.String(),
+		"format": string(format),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// GetPublicThumbnail: Fetch the public thumbnail for a published project.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ProjectService) GetPublicThumbnail(id UUID) error {
+	// Create the url.
+	path := "/projects/public/{{.id}}/thumbnail"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// CreatePublicVote: Add the authenticated user's upvote to a published community project.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ProjectService) CreatePublicVote(id UUID) (*PublicProjectVoteResponse, error) {
+	// Create the url.
+	path := "/projects/public/{{.id}}/vote"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded PublicProjectVoteResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeletePublicVote: Remove the authenticated user's upvote from a published community project.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ProjectService) DeletePublicVote(id UUID) (*PublicProjectVoteResponse, error) {
+	// Create the url.
+	path := "/projects/public/{{.id}}/vote"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded PublicProjectVoteResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DownloadSharedProject: Download a project using a share link.
+// Parameters
+//
+//   - `key`
+//   - `format`: Archive formats supported by project download endpoints.
+func (s *HiddenService) DownloadSharedProject(key string, format ProjectArchiveFormat) error {
+	// Create the url.
+	path := "/projects/shared/{{.key}}/download"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"key":    key,
+		"format": string(format),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }
 
@@ -7176,6 +7192,44 @@ func (s *APITokenService) DeleteForUser(token string) error {
 
 }
 
+// GetCadInfoForm: Gets authenticated CAD user info form data for the current user.
+func (s *UserService) GetCadInfoForm() (*WebsiteCadUserInfoForm, error) {
+	// Create the url.
+	path := "/user/cad-user-info"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded WebsiteCadUserInfoForm
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // ReportClientError: Report a client-originated error.
 // This endpoint requires authentication by any Zoo user. It accepts a structured client error payload and writes it to the server logs for triage.
 //
@@ -7492,11 +7546,11 @@ func (s *Oauth2Service) ListUserApps(limit int, pageToken string, sortBy Created
 }
 
 // CreateUserApp: Create a personal OAuth app.
-// This endpoint requires authentication by any Zoo user. It creates an active public device-flow app owned by the authenticated user.
+// This endpoint requires authentication by any Zoo user. It creates an active public OAuth app owned by the authenticated user.
 //
 // Parameters
 //
-//   - `body`: Request body for creating a public device-flow app.
+//   - `body`: Request body for creating a public OAuth app.
 func (s *Oauth2Service) CreateUserApp(body CreateOauth2AppRequest) (*Oauth2AppResponse, error) {
 	// Create the url.
 	path := "/user/oauth2/apps"
@@ -7594,12 +7648,12 @@ func (s *Oauth2Service) GetUserApp(clientId UUID) (*Oauth2AppResponse, error) {
 }
 
 // UpdateUserApp: Update a personal OAuth app.
-// This endpoint requires authentication by any Zoo user. It updates the name of the authenticated user's active public OAuth app.
+// This endpoint requires authentication by any Zoo user. It updates the configuration of the authenticated user's active public OAuth app.
 //
 // Parameters
 //
 //   - `clientId`: A UUID usually v4 or v7
-//   - `body`: Request body for updating a public device-flow app.
+//   - `body`: Request body for updating a public OAuth app.
 func (s *Oauth2Service) UpdateUserApp(clientId UUID, body UpdateOauth2AppRequest) (*Oauth2AppResponse, error) {
 	// Create the url.
 	path := "/user/oauth2/apps/{{.client_id}}"
@@ -8048,7 +8102,12 @@ func (s *PaymentService) CreateIntentForUser() (*PaymentIntent, error) {
 
 // ListInvoicesForUser: List invoices for your user.
 // This endpoint requires authentication by any Zoo user. It lists invoices for the authenticated user.
-func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func (s *PaymentService) ListInvoicesForUser(limit int, pageToken string) (*InvoiceResultsPage, error) {
 	// Create the url.
 	path := "/user/payment/invoices"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8057,6 +8116,14 @@ func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -8075,13 +8142,54 @@ func (s *PaymentService) ListInvoicesForUser() (*[]Invoice, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded []Invoice
+	var decoded InvoiceResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// RedirectMethodPortalLinkForUser: Redirect to a fresh Stripe-hosted payment-method update link for your user.
+// If the request is not authenticated, this redirects to website login with a callback back to this endpoint. If authenticated, it creates a fresh hosted Stripe portal session and redirects the browser to it.
+//
+// Parameters
+//
+//   - `returnUrl`
+func (s *PaymentService) RedirectMethodPortalLinkForUser(returnUrl URL) error {
+	// Create the url.
+	path := "/user/payment/method-portal-link"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"return_url": returnUrl.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }
 
@@ -8472,8 +8580,8 @@ func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySetti
 
 }
 
-// ListProjects: List the authenticated user's projects.
-func (s *UserService) ListProjects() (*[]ProjectSummaryResponse, error) {
+// List: List the authenticated user's projects.
+func (s *ProjectService) List() (*[]ProjectSummaryResponse, error) {
 	// Create the url.
 	path := "/user/projects"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8510,11 +8618,11 @@ func (s *UserService) ListProjects() (*[]ProjectSummaryResponse, error) {
 
 }
 
-// CreateProject: Create a draft project for the authenticated user.
+// Create: Create a draft project for the authenticated user.
 // Parameters
 //
 //   - `body`
-func (s *UserService) CreateProject(body *MultipartForm) (*ProjectResponse, error) {
+func (s *ProjectService) Create(body *MultipartForm) (*ProjectResponse, error) {
 	// Create the url.
 	path := "/user/projects"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8562,11 +8670,11 @@ func (s *UserService) CreateProject(body *MultipartForm) (*ProjectResponse, erro
 
 }
 
-// GetProject: Get one of the authenticated user's projects.
+// Get: Get one of the authenticated user's projects.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-func (s *UserService) GetProject(id UUID) (*ProjectResponse, error) {
+func (s *ProjectService) Get(id UUID) (*ProjectResponse, error) {
 	// Create the url.
 	path := "/user/projects/{{.id}}"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8610,12 +8718,12 @@ func (s *UserService) GetProject(id UUID) (*ProjectResponse, error) {
 
 }
 
-// UpdateProject: Replace one of the authenticated user's projects.
+// Update: Replace one of the authenticated user's projects.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `body`
-func (s *UserService) UpdateProject(id UUID, body *MultipartForm) (*ProjectResponse, error) {
+func (s *ProjectService) Update(id UUID, body *MultipartForm) (*ProjectResponse, error) {
 	// Create the url.
 	path := "/user/projects/{{.id}}"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8670,13 +8778,288 @@ func (s *UserService) UpdateProject(id UUID, body *MultipartForm) (*ProjectRespo
 
 }
 
-// DownloadProject: Download one of the authenticated user's projects as a tar archive.
+// Delete: Delete one of the authenticated user's projects.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-func (s *UserService) DownloadProject(id UUID) error {
+func (s *ProjectService) Delete(id UUID) error {
+	// Create the url.
+	path := "/user/projects/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// Download: Download one of the authenticated user's projects as a tar archive.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `format`: Archive formats supported by project download endpoints.
+func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat) error {
 	// Create the url.
 	path := "/user/projects/{{.id}}/download"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":     id.String(),
+		"format": string(format),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// Publish: Submit one of the authenticated user's projects for public review.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ProjectService) Publish(id UUID) (*ProjectResponse, error) {
+	// Create the url.
+	path := "/user/projects/{{.id}}/publish"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ProjectResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListShareLinks: List share links for one of the authenticated user's projects.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ProjectService) ListShareLinks(id UUID) (*[]ProjectShareLinkResponse, error) {
+	// Create the url.
+	path := "/user/projects/{{.id}}/share-links"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []ProjectShareLinkResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateShareLink: Create a share link for one of the authenticated user's projects.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Request payload for creating a new project share link.
+func (s *ProjectService) CreateShareLink(id UUID, body CreateProjectShareLinkRequest) (*ProjectShareLinkResponse, error) {
+	// Create the url.
+	path := "/user/projects/{{.id}}/share-links"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ProjectShareLinkResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteShareLink: Delete one share link for one of the authenticated user's projects.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `key`
+func (s *ProjectService) DeleteShareLink(id UUID, key string) error {
+	// Create the url.
+	path := "/user/projects/{{.id}}/share-links/{{.key}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":  id.String(),
+		"key": key,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// GetThumbnail: Fetch the authenticated owner's current project thumbnail.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ProjectService) GetThumbnail(id UUID) error {
+	// Create the url.
+	path := "/user/projects/{{.id}}/thumbnail"
 	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -9021,12 +9404,12 @@ func (s *UserService) DeleteShortlink(key string) error {
 //
 //     Currently, we only support scanning in ascending order.
 //
-//   - `conversationId`: A UUID usually v4 or v7
-//
 //   - `noModels`
 //
 //   - `noParts`
-func (s *MlService) ListTextToCadPartsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, conversationId UUID, noModels bool, noParts bool) (*TextToCadResponseResultsPage, error) {
+//
+//   - `conversationId`: A UUID usually v4 or v7
+func (s *MlService) ListTextToCadPartsForUser(limit int, pageToken string, sortBy CreatedAtSortMode, noModels bool, noParts bool, conversationId UUID) (*TextToCadResponseResultsPage, error) {
 	// Create the url.
 	path := "/user/text-to-cad"
 	targetURL := resolveRelative(s.client.server, path)
@@ -9042,9 +9425,9 @@ func (s *MlService) ListTextToCadPartsForUser(limit int, pageToken string, sortB
 		"limit":           strconv.Itoa(limit),
 		"page_token":      pageToken,
 		"sort_by":         string(sortBy),
-		"conversation_id": conversationId.String(),
 		"no_models":       strconv.FormatBool(noModels),
 		"no_parts":        strconv.FormatBool(noParts),
+		"conversation_id": conversationId.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -9167,122 +9550,6 @@ func (s *MlService) CreateTextToCadPartFeedback(id UUID, feedback MlFeedback) er
 
 	// Return.
 	return nil
-
-}
-
-// List: List users.
-// This endpoint requires authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *UserService) List(limit int, pageToken string, sortBy CreatedAtSortMode) (*UserResponseResultsPage, error) {
-	// Create the url.
-	path := "/users"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded UserResponseResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
-// ListExtended: List users with extended information.
-// This endpoint requires authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func (s *UserService) ListExtended(limit int, pageToken string, sortBy CreatedAtSortMode) (*ExtendedUserResultsPage, error) {
-	// Create the url.
-	path := "/users-extended"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded ExtendedUserResultsPage
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
 
 }
 
@@ -9783,6 +10050,104 @@ func (s *UserService) PutPublicEmailMarketingConsentRequest(body PublicEmailMark
 
 }
 
+// PutPublicMailingListSubscribe: Publicly subscribe an email address to a mailing list by slug.
+// Parameters
+//
+//   - `slug`
+//   - `body`: Request body for public mailing-list membership changes.
+func (s *UserService) PutPublicMailingListSubscribe(slug string, body PublicMailingListMembershipRequest) error {
+	// Create the url.
+	path := "/website/email-marketing-lists/{{.slug}}/subscribe"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"slug": slug,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// PutPublicMailingListUnsubscribe: Publicly remove an email address from a mailing list by slug.
+// Parameters
+//
+//   - `slug`
+//   - `body`: Request body for public mailing-list membership changes.
+func (s *UserService) PutPublicMailingListUnsubscribe(slug string, body PublicMailingListMembershipRequest) error {
+	// Create the url.
+	path := "/website/email-marketing-lists/{{.slug}}/unsubscribe"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"slug": slug,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // PutCadInfoForm: Stores authenticated CAD user info form data for the current user.
 // Parameters
 //
@@ -9933,11 +10298,11 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 //
 // Parameters
 //
-//   - `conversationId`
 //   - `replay`
+//   - `conversationId`
 //   - `pr`
 //   - `body`: The types of messages that can be sent by the client to the server.
-func (s *MlService) CopilotWs(conversationId UUID, replay bool, pr int, body any) (*websocket.Conn, error) {
+func (s *MlService) CopilotWs(replay bool, conversationId UUID, pr int, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/ml/copilot"
 	targetURL := resolveRelative(s.client.server, path)
@@ -9979,20 +10344,20 @@ func (s *MlService) ReasoningWs(id UUID, body any) (*websocket.Conn, error) {
 //
 // Parameters
 //
-//   - `apicallId`
-//   - `fps`
-//   - `orderIndependentTransparency`
-//   - `pool`
-//   - `postEffect`: Post effect type
-//   - `replay`
-//   - `showGrid`
-//   - `unlockedFramerate`
-//   - `videoResHeight`
 //   - `videoResWidth`
+//   - `videoResHeight`
+//   - `fps`
+//   - `unlockedFramerate`
+//   - `postEffect`: Post effect type
 //   - `webrtc`
+//   - `pool`
+//   - `showGrid`
+//   - `replay`
+//   - `apicallId`
+//   - `orderIndependentTransparency`
 //   - `pr`
 //   - `body`: The websocket messages the server receives.
-func (s *ModelingService) CommandsWs(apicallId string, fps int, orderIndependentTransparency bool, pool string, postEffect PostEffectType, replay string, showGrid bool, unlockedFramerate bool, videoResHeight int, videoResWidth int, webrtc bool, pr int, body any) (*websocket.Conn, error) {
+func (s *ModelingService) CommandsWs(videoResWidth int, videoResHeight int, fps int, unlockedFramerate bool, postEffect PostEffectType, webrtc bool, pool string, showGrid bool, replay string, apicallId string, orderIndependentTransparency bool, pr int, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
 	targetURL := resolveRelative(s.client.server, path)

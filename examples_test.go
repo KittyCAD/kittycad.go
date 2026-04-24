@@ -105,54 +105,6 @@ func ExampleMlService_CreateTextToCad() {
 
 }
 
-// GetMetrics: Get API call metrics.
-// This endpoint requires authentication by a Zoo employee. The API calls are grouped by the parameter passed.
-//
-// Parameters
-//
-//   - `groupBy`: The field of an API call to group by.
-func ExampleAPICallService_GetMetrics() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.APICall.GetMetrics("")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// List: List API calls.
-// This endpoint requires authentication by a Zoo employee. The API calls are returned in order of creation, with the most recently created API calls first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func ExampleAPICallService_List() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.APICall.List(123, "some-string", "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // Get: Get details of an API call.
 // This endpoint requires authentication by any Zoo user. It returns details of the requested API call for the user.
 //
@@ -232,37 +184,6 @@ func ExampleAppService_GithubWebhook() {
 	if err := client.App.GithubWebhook([]byte("some-binary")); err != nil {
 		panic(err)
 	}
-
-}
-
-// ListAsyncOperations: List async operations.
-// For async file conversion operations, this endpoint does not return the contents of converted files (`output`). To get the contents use the `/async/operations/{id}` endpoint.
-//
-// This endpoint requires authentication by a Zoo employee.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-//
-//   - `status`: The status of an async API call.
-func ExampleAPICallService_ListAsyncOperations() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.APICall.ListAsyncOperations(123, "some-string", "", "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
 
 }
 
@@ -349,15 +270,15 @@ func ExampleHiddenService_AuthEmailMarketingConfirmCreate() {
 // Parameters
 //
 //   - `callbackUrl`
-//   - `email`
 //   - `token`
+//   - `email`
 func ExampleHiddenService_AuthEmailCallback() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.Hidden.AuthEmailCallback(kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, "example@example.com", "some-string"); err != nil {
+	if err := client.Hidden.AuthEmailCallback(kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, "some-string", "example@example.com"); err != nil {
 		panic(err)
 	}
 
@@ -421,8 +342,8 @@ func ExampleHiddenService_PostAuthSaml() {
 // CommunitySso: Authorize an inbound auth request from our Community page.
 // Parameters
 //
-//   - `sig`
 //   - `sso`
+//   - `sig`
 func ExampleMetaService_CommunitySso() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -430,26 +351,6 @@ func ExampleMetaService_CommunitySso() {
 	}
 
 	if err := client.Meta.CommunitySso("some-string", "some-string"); err != nil {
-		panic(err)
-	}
-
-}
-
-// CreateEvent: Creates an internal telemetry event.
-// We collect anonymous telemetry data for improving our product.
-//
-// Parameters
-//
-//   - `body`: Telemetry data we are collecting
-func ExampleMetaService_CreateEvent() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	form := kittycad.NewMultipartForm()
-
-	if err := client.Meta.CreateEvent(form); err != nil {
 		panic(err)
 	}
 
@@ -468,8 +369,8 @@ func ExampleMetaService_CreateEvent() {
 //
 // Parameters
 //
-//   - `outputUnit`: The valid types of length units.
 //   - `srcFormat`: The valid types of source file formats.
+//   - `outputUnit`: The valid types of length units.
 //   - `body`
 func ExampleFileService_CreateCenterOfMass() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -524,8 +425,8 @@ func ExampleFileService_CreateConversionOptions() {
 //
 // Parameters
 //
-//   - `outputFormat`: The valid types of output file formats.
 //   - `srcFormat`: The valid types of source file formats.
+//   - `outputFormat`: The valid types of output file formats.
 //   - `body`
 func ExampleFileService_CreateConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -555,10 +456,10 @@ func ExampleFileService_CreateConversion() {
 //
 // Parameters
 //
+//   - `srcFormat`: The valid types of source file formats.
 //   - `materialMass`
 //   - `materialMassUnit`: The valid types of mass units.
 //   - `outputUnit`: The valid types for density units.
-//   - `srcFormat`: The valid types of source file formats.
 //   - `body`
 func ExampleFileService_CreateDensity() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -566,7 +467,7 @@ func ExampleFileService_CreateDensity() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateDensity(123.45, "", "", "", []byte("some-binary"))
+	result, err := client.File.CreateDensity("", 123.45, "", "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -615,10 +516,10 @@ func ExampleExecutorService_CreateFileExecution() {
 //
 // Parameters
 //
+//   - `srcFormat`: The valid types of source file formats.
 //   - `materialDensity`
 //   - `materialDensityUnit`: The valid types for density units.
 //   - `outputUnit`: The valid types of mass units.
-//   - `srcFormat`: The valid types of source file formats.
 //   - `body`
 func ExampleFileService_CreateMass() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -626,7 +527,7 @@ func ExampleFileService_CreateMass() {
 		panic(err)
 	}
 
-	result, err := client.File.CreateMass(123.45, "", "", "", []byte("some-binary"))
+	result, err := client.File.CreateMass("", 123.45, "", "", []byte("some-binary"))
 	if err != nil {
 		panic(err)
 	}
@@ -648,8 +549,8 @@ func ExampleFileService_CreateMass() {
 //
 // Parameters
 //
-//   - `outputUnit`: The valid types of area units.
 //   - `srcFormat`: The valid types of source file formats.
+//   - `outputUnit`: The valid types of area units.
 //   - `body`
 func ExampleFileService_CreateSurfaceArea() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -679,8 +580,8 @@ func ExampleFileService_CreateSurfaceArea() {
 //
 // Parameters
 //
-//   - `outputUnit`: The valid types of volume units.
 //   - `srcFormat`: The valid types of source file formats.
+//   - `outputUnit`: The valid types of volume units.
 //   - `body`
 func ExampleFileService_CreateVolume() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -731,58 +632,6 @@ func ExampleHiddenService_Logout() {
 	if err := client.Hidden.Logout(); err != nil {
 		panic(err)
 	}
-
-}
-
-// ListPrompts: List all ML prompts.
-// For text-to-cad prompts, this will always return the STEP file contents as well as the format the user originally requested.
-//
-// This endpoint requires authentication by a Zoo employee.
-//
-// The ML prompts are returned in order of creation, with the most recently created ML prompts first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func ExampleMlService_ListPrompts() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Ml.ListPrompts(123, "some-string", "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// GetPrompt: Get a ML prompt.
-// This endpoint requires authentication by a Zoo employee.
-//
-// Parameters
-//
-//   - `id`
-func ExampleMlService_GetPrompt() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Ml.GetPrompt(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
 
 }
 
@@ -1012,6 +861,28 @@ func ExampleMlService_CreateTextToCadMultiFileIteration() {
 
 }
 
+// Authorize: Start an OAuth 2.0 authorization code flow with PKCE.
+// Parameters
+//
+//   - `responseType`: The OAuth 2.0 authorization response type.
+//   - `clientId`
+//   - `redirectUri`
+//   - `state`
+//   - `scope`: OAuth 2.0 scopes encoded as a space-delimited string.
+//   - `codeChallenge`
+//   - `codeChallengeMethod`: The PKCE code challenge method.
+func ExampleOauth2Service_Authorize() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.Authorize("", kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, "some-string", "some-string", "some-string", ""); err != nil {
+		panic(err)
+	}
+
+}
+
 // DeviceAuthRequest: Start an OAuth 2.0 Device Authorization Grant.
 // This endpoint is designed to be accessed from an *unauthenticated* API client. It generates and records a `device_code` and `user_code` which must be verified and confirmed prior to a token being granted.
 //
@@ -1071,8 +942,8 @@ func ExampleOauth2Service_DeviceAccessToken() {
 //
 // Parameters
 //
-//   - `appName`
 //   - `userCode`
+//   - `appName`
 func ExampleOauth2Service_DeviceAuthVerify() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1090,8 +961,8 @@ func ExampleOauth2Service_DeviceAuthVerify() {
 //
 //   - `provider`: An account provider.
 //   - `code`
-//   - `idToken`
 //   - `state`
+//   - `idToken`
 //   - `user`
 func ExampleOauth2Service_ProviderCallback() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -1144,6 +1015,22 @@ func ExampleOauth2Service_ProviderConsent() {
 
 }
 
+// Token: Exchange an authorization code or refresh token for an OAuth 2.0 access token.
+// Parameters
+//
+//   - `body`: Form body for `/oauth2/token`.
+func ExampleOauth2Service_Token() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Oauth2.Token(kittycad.Oauth2TokenRequestForm{ClientID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), Code: "some-string", CodeVerifier: "some-string", GrantType: "", RedirectUri: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, RefreshToken: "some-string"}); err != nil {
+		panic(err)
+	}
+
+}
+
 // TokenRevoke: Revoke an OAuth2 token.
 // This endpoint is designed to be accessed from an *unauthenticated* API client.
 //
@@ -1167,8 +1054,8 @@ func ExampleOauth2Service_TokenRevoke() {
 //
 // Parameters
 //
-//   - `callbackUrl`
 //   - `token`
+//   - `callbackUrl`
 func ExampleOauth2Service_VerifyOauthAccountLinking() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1313,8 +1200,8 @@ func ExampleAPICallService_GetForOrg() {
 // DatasetS3Policies: Return the IAM policies customers should apply when onboarding an S3 dataset.
 // Parameters
 //
-//   - `roleArn`
 //   - `uri`
+//   - `roleArn`
 func ExampleOrgService_DatasetS3Policies() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1459,17 +1346,17 @@ func ExampleOrgService_DownloadDatasetSuccessfulKclBulk() {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-//   - `filter`
 //   - `limit`
 //   - `pageToken`
 //   - `sortBy`: Supported sort modes for org dataset conversions.
+//   - `filter`
 func ExampleOrgService_ListDatasetConversions() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Org.ListDatasetConversions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "some-string", 123, "some-string", "")
+	result, err := client.Org.ListDatasetConversions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "", "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -1483,8 +1370,8 @@ func ExampleOrgService_ListDatasetConversions() {
 //
 // Parameters
 //
-//   - `conversionId`: A UUID usually v4 or v7
 //   - `id`: A UUID usually v4 or v7
+//   - `conversionId`: A UUID usually v4 or v7
 func ExampleOrgService_GetDatasetConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1503,8 +1390,8 @@ func ExampleOrgService_GetDatasetConversion() {
 // DownloadDatasetConversionOriginal: Download the original source file for a specific dataset conversion.
 // Parameters
 //
-//   - `conversionId`: A UUID usually v4 or v7
 //   - `id`: A UUID usually v4 or v7
+//   - `conversionId`: A UUID usually v4 or v7
 func ExampleOrgService_DownloadDatasetConversionOriginal() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1520,8 +1407,8 @@ func ExampleOrgService_DownloadDatasetConversionOriginal() {
 // RetriggerDatasetConversion: Retrigger a specific dataset conversion for the caller's org.
 // Parameters
 //
-//   - `conversionId`: A UUID usually v4 or v7
 //   - `id`: A UUID usually v4 or v7
+//   - `conversionId`: A UUID usually v4 or v7
 func ExampleOrgService_RetriggerDatasetConversion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -1582,15 +1469,15 @@ func ExampleOrgService_SearchDatasetConversions() {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-//   - `limit`
 //   - `q`
+//   - `limit`
 func ExampleOrgService_SearchDatasetSemantic() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Org.SearchDatasetSemantic(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string")
+	result, err := client.Org.SearchDatasetSemantic(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "some-string", 123)
 	if err != nil {
 		panic(err)
 	}
@@ -1789,18 +1676,18 @@ func ExampleOauth2Service_ListOrgApps() {
 }
 
 // CreateOrgApp: Create an org OAuth app.
-// This endpoint requires authentication by an org admin. It creates an active public device-flow app owned by the authenticated organization.
+// This endpoint requires authentication by an org admin. It creates an active public OAuth app owned by the authenticated organization.
 //
 // Parameters
 //
-//   - `body`: Request body for creating a public device-flow app.
+//   - `body`: Request body for creating a public OAuth app.
 func ExampleOauth2Service_CreateOrgApp() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Oauth2.CreateOrgApp(kittycad.CreateOauth2AppRequest{Name: "some-string"})
+	result, err := client.Oauth2.CreateOrgApp(kittycad.CreateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: "some-string", RedirectUris: []kittycad.URL{}})
 	if err != nil {
 		panic(err)
 	}
@@ -1831,19 +1718,19 @@ func ExampleOauth2Service_GetOrgApp() {
 }
 
 // UpdateOrgApp: Update an org OAuth app.
-// This endpoint requires authentication by an org admin. It updates the name of the organization's active public OAuth app.
+// This endpoint requires authentication by an org admin. It updates the configuration of the organization's active public OAuth app.
 //
 // Parameters
 //
 //   - `clientId`: A UUID usually v4 or v7
-//   - `body`: Request body for updating a public device-flow app.
+//   - `body`: Request body for updating a public OAuth app.
 func ExampleOauth2Service_UpdateOrgApp() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Oauth2.UpdateOrgApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOauth2AppRequest{Name: "some-string"})
+	result, err := client.Oauth2.UpdateOrgApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: "some-string", RedirectUris: []kittycad.URL{}})
 	if err != nil {
 		panic(err)
 	}
@@ -1991,18 +1878,41 @@ func ExamplePaymentService_CreateIntentForOrg() {
 
 // ListInvoicesForOrg: List invoices for your org.
 // This endpoint requires authentication by an org admin. It lists invoices for the authenticated user's org.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExamplePaymentService_ListInvoicesForOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Payment.ListInvoicesForOrg()
+	result, err := client.Payment.ListInvoicesForOrg(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// RedirectMethodPortalLinkForOrg: Redirect to a fresh Stripe-hosted payment-method update link for your org.
+// If the request is not authenticated, this redirects to website login with a callback back to this endpoint. If authenticated as an org admin, it creates a fresh hosted Stripe portal session and redirects the browser to it.
+//
+// Parameters
+//
+//   - `returnUrl`
+func ExamplePaymentService_RedirectMethodPortalLinkForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Payment.RedirectMethodPortalLinkForOrg(kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -2343,54 +2253,6 @@ func ExampleOrgService_GetShortlinks() {
 
 }
 
-// List: List orgs.
-// This endpoint requires authentication by a Zoo employee. The orgs are returned in order of creation, with the most recently created orgs first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func ExampleOrgService_List() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Org.List(123, "some-string", "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// GetAny: Get an org.
-// This endpoint requires authentication by a Zoo employee. It gets the information for the specified org.
-//
-// Parameters
-//
-//   - `id`: A UUID usually v4 or v7
-func ExampleOrgService_GetAny() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Org.GetAny(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // AdminDetailsList: Get admin-only details for an organization.
 // Zoo admins can retrieve extended information about any organization, while non-admins receive a 404 to avoid leaking existence.
 //
@@ -2584,19 +2446,142 @@ func ExampleMetaService_GetPricingSubscriptions() {
 
 }
 
-// ListProjectCategories: List the active categories available for project submissions.
-func ExampleUserService_ListProjectCategories() {
+// ListCategories: List the active categories available for project submissions.
+func ExampleProjectService_ListCategories() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.User.ListProjectCategories()
+	result, err := client.Project.ListCategories()
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// ListPublic: List publicly visible community projects for the website/gallery.
+func ExampleProjectService_ListPublic() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.ListPublic()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetPublic: Get one publicly visible community project.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleProjectService_GetPublic() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.GetPublic(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DownloadPublic: Download a published public project as a tar archive.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `format`: Archive formats supported by project download endpoints.
+func ExampleProjectService_DownloadPublic() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Project.DownloadPublic(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ""); err != nil {
+		panic(err)
+	}
+
+}
+
+// GetPublicThumbnail: Fetch the public thumbnail for a published project.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleProjectService_GetPublicThumbnail() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Project.GetPublicThumbnail(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
+// CreatePublicVote: Add the authenticated user's upvote to a published community project.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleProjectService_CreatePublicVote() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.CreatePublicVote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeletePublicVote: Remove the authenticated user's upvote from a published community project.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleProjectService_DeletePublicVote() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.DeletePublicVote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DownloadSharedProject: Download a project using a share link.
+// Parameters
+//
+//   - `key`
+//   - `format`: Archive formats supported by project download endpoints.
+func ExampleHiddenService_DownloadSharedProject() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Hidden.DownloadSharedProject("some-string", ""); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -2973,7 +2958,7 @@ func ExampleUserService_UpdateSelf() {
 		panic(err)
 	}
 
-	result, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: "some-string", Discord: "some-string", FirstName: "some-string", Github: "some-string", Image: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, IsOnboarded: true, LastName: "some-string", Phone: "+1-555-555-555"})
+	result, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: "some-string", Discord: "some-string", FirstName: "some-string", Github: "some-string", Image: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, IsOnboarded: true, LastName: "some-string", Phone: "+1-555-555-555", Username: "some-string"})
 	if err != nil {
 		panic(err)
 	}
@@ -3139,6 +3124,22 @@ func ExampleAPITokenService_DeleteForUser() {
 
 }
 
+// GetCadInfoForm: Gets authenticated CAD user info form data for the current user.
+func ExampleUserService_GetCadInfoForm() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.User.GetCadInfoForm()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // ReportClientError: Report a client-originated error.
 // This endpoint requires authentication by any Zoo user. It accepts a structured client error payload and writes it to the server logs for triage.
 //
@@ -3279,18 +3280,18 @@ func ExampleOauth2Service_ListUserApps() {
 }
 
 // CreateUserApp: Create a personal OAuth app.
-// This endpoint requires authentication by any Zoo user. It creates an active public device-flow app owned by the authenticated user.
+// This endpoint requires authentication by any Zoo user. It creates an active public OAuth app owned by the authenticated user.
 //
 // Parameters
 //
-//   - `body`: Request body for creating a public device-flow app.
+//   - `body`: Request body for creating a public OAuth app.
 func ExampleOauth2Service_CreateUserApp() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Oauth2.CreateUserApp(kittycad.CreateOauth2AppRequest{Name: "some-string"})
+	result, err := client.Oauth2.CreateUserApp(kittycad.CreateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: "some-string", RedirectUris: []kittycad.URL{}})
 	if err != nil {
 		panic(err)
 	}
@@ -3321,19 +3322,19 @@ func ExampleOauth2Service_GetUserApp() {
 }
 
 // UpdateUserApp: Update a personal OAuth app.
-// This endpoint requires authentication by any Zoo user. It updates the name of the authenticated user's active public OAuth app.
+// This endpoint requires authentication by any Zoo user. It updates the configuration of the authenticated user's active public OAuth app.
 //
 // Parameters
 //
 //   - `clientId`: A UUID usually v4 or v7
-//   - `body`: Request body for updating a public device-flow app.
+//   - `body`: Request body for updating a public OAuth app.
 func ExampleOauth2Service_UpdateUserApp() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Oauth2.UpdateUserApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOauth2AppRequest{Name: "some-string"})
+	result, err := client.Oauth2.UpdateUserApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: "some-string", RedirectUris: []kittycad.URL{}})
 	if err != nil {
 		panic(err)
 	}
@@ -3519,18 +3520,41 @@ func ExamplePaymentService_CreateIntentForUser() {
 
 // ListInvoicesForUser: List invoices for your user.
 // This endpoint requires authentication by any Zoo user. It lists invoices for the authenticated user.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExamplePaymentService_ListInvoicesForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Payment.ListInvoicesForUser()
+	result, err := client.Payment.ListInvoicesForUser(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// RedirectMethodPortalLinkForUser: Redirect to a fresh Stripe-hosted payment-method update link for your user.
+// If the request is not authenticated, this redirects to website login with a callback back to this endpoint. If authenticated, it creates a fresh hosted Stripe portal session and redirects the browser to it.
+//
+// Parameters
+//
+//   - `returnUrl`
+func ExamplePaymentService_RedirectMethodPortalLinkForUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Payment.RedirectMethodPortalLinkForUser(kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -3699,14 +3723,14 @@ func ExampleUserService_UpdatePrivacySettings() {
 
 }
 
-// ListProjects: List the authenticated user's projects.
-func ExampleUserService_ListProjects() {
+// List: List the authenticated user's projects.
+func ExampleProjectService_List() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.User.ListProjects()
+	result, err := client.Project.List()
 	if err != nil {
 		panic(err)
 	}
@@ -3715,11 +3739,11 @@ func ExampleUserService_ListProjects() {
 
 }
 
-// CreateProject: Create a draft project for the authenticated user.
+// Create: Create a draft project for the authenticated user.
 // Parameters
 //
 //   - `body`
-func ExampleUserService_CreateProject() {
+func ExampleProjectService_Create() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
@@ -3727,7 +3751,7 @@ func ExampleUserService_CreateProject() {
 
 	form := kittycad.NewMultipartForm()
 
-	result, err := client.User.CreateProject(form)
+	result, err := client.Project.Create(form)
 	if err != nil {
 		panic(err)
 	}
@@ -3736,17 +3760,17 @@ func ExampleUserService_CreateProject() {
 
 }
 
-// GetProject: Get one of the authenticated user's projects.
+// Get: Get one of the authenticated user's projects.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-func ExampleUserService_GetProject() {
+func ExampleProjectService_Get() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.User.GetProject(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.Project.Get(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -3755,12 +3779,12 @@ func ExampleUserService_GetProject() {
 
 }
 
-// UpdateProject: Replace one of the authenticated user's projects.
+// Update: Replace one of the authenticated user's projects.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `body`
-func ExampleUserService_UpdateProject() {
+func ExampleProjectService_Update() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
@@ -3768,7 +3792,7 @@ func ExampleUserService_UpdateProject() {
 
 	form := kittycad.NewMultipartForm()
 
-	result, err := client.User.UpdateProject(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), form)
+	result, err := client.Project.Update(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), form)
 	if err != nil {
 		panic(err)
 	}
@@ -3777,17 +3801,125 @@ func ExampleUserService_UpdateProject() {
 
 }
 
-// DownloadProject: Download one of the authenticated user's projects as a tar archive.
+// Delete: Delete one of the authenticated user's projects.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
-func ExampleUserService_DownloadProject() {
+func ExampleProjectService_Delete() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.User.DownloadProject(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+	if err := client.Project.Delete(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
+// Download: Download one of the authenticated user's projects as a tar archive.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `format`: Archive formats supported by project download endpoints.
+func ExampleProjectService_Download() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Project.Download(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ""); err != nil {
+		panic(err)
+	}
+
+}
+
+// Publish: Submit one of the authenticated user's projects for public review.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleProjectService_Publish() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.Publish(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListShareLinks: List share links for one of the authenticated user's projects.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleProjectService_ListShareLinks() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.ListShareLinks(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateShareLink: Create a share link for one of the authenticated user's projects.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Request payload for creating a new project share link.
+func ExampleProjectService_CreateShareLink() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.CreateShareLink(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.CreateProjectShareLinkRequest{AccessMode: ""})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteShareLink: Delete one share link for one of the authenticated user's projects.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `key`
+func ExampleProjectService_DeleteShareLink() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Project.DeleteShareLink(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// GetThumbnail: Fetch the authenticated owner's current project thumbnail.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleProjectService_GetThumbnail() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Project.GetThumbnail(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
 		panic(err)
 	}
 
@@ -3936,18 +4068,18 @@ func ExampleUserService_DeleteShortlink() {
 //
 //     Currently, we only support scanning in ascending order.
 //
-//   - `conversationId`: A UUID usually v4 or v7
-//
 //   - `noModels`
 //
 //   - `noParts`
+//
+//   - `conversationId`: A UUID usually v4 or v7
 func ExampleMlService_ListTextToCadPartsForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Ml.ListTextToCadPartsForUser(123, "some-string", "", kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, true)
+	result, err := client.Ml.ListTextToCadPartsForUser(123, "some-string", "", true, true, kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -3995,60 +4127,6 @@ func ExampleMlService_CreateTextToCadPartFeedback() {
 	if err := client.Ml.CreateTextToCadPartFeedback(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ""); err != nil {
 		panic(err)
 	}
-
-}
-
-// List: List users.
-// This endpoint requires authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func ExampleUserService_List() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.User.List(123, "some-string", "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// ListExtended: List users with extended information.
-// This endpoint requires authentication by a Zoo employee. The users are returned in order of creation, with the most recently created users first.
-//
-// Parameters
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func ExampleUserService_ListExtended() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.User.ListExtended(123, "some-string", "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
 
 }
 
@@ -4266,6 +4344,40 @@ func ExampleUserService_PutPublicEmailMarketingConsentRequest() {
 
 }
 
+// PutPublicMailingListSubscribe: Publicly subscribe an email address to a mailing list by slug.
+// Parameters
+//
+//   - `slug`
+//   - `body`: Request body for public mailing-list membership changes.
+func ExampleUserService_PutPublicMailingListSubscribe() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.PutPublicMailingListSubscribe("some-string", kittycad.PublicMailingListMembershipRequest{Email: "example@example.com"}); err != nil {
+		panic(err)
+	}
+
+}
+
+// PutPublicMailingListUnsubscribe: Publicly remove an email address from a mailing list by slug.
+// Parameters
+//
+//   - `slug`
+//   - `body`: Request body for public mailing-list membership changes.
+func ExampleUserService_PutPublicMailingListUnsubscribe() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.PutPublicMailingListUnsubscribe("some-string", kittycad.PublicMailingListMembershipRequest{Email: "example@example.com"}); err != nil {
+		panic(err)
+	}
+
+}
+
 // PutCadInfoForm: Stores authenticated CAD user info form data for the current user.
 // Parameters
 //
@@ -4276,7 +4388,7 @@ func ExampleUserService_PutCadInfoForm() {
 		panic(err)
 	}
 
-	if err := client.User.PutCadInfoForm(kittycad.WebsiteCadUserInfoForm{CadIndustry: "", CadUserType: "", CompanySize: "", HowDidYouFindUs: "", HowDidYouFindUsOther: "some-string", NumberOfCadUsers: "some-string"}); err != nil {
+	if err := client.User.PutCadInfoForm(kittycad.WebsiteCadUserInfoForm{CadExperienceLevel: "", CadIndustry: "", CadUserType: "", CompanySize: "", DesignWorkflow: "", HasUsedZooDesignStudioOrAPIBefore: true, HowDidYouFindUs: "", HowDidYouFindUsOther: "some-string", LocationCity: "some-string", LocationCountry: "some-string", LocationState: "some-string", NumberOfCadUsers: "some-string", WhatAreYouBuilding: "some-string"}); err != nil {
 		panic(err)
 	}
 
@@ -4389,8 +4501,8 @@ func ExampleExecutorService_CreateTerm() {
 //
 // Parameters
 //
-//   - `conversationId`
 //   - `replay`
+//   - `conversationId`
 //   - `pr`
 //   - `body`: The types of messages that can be sent by the client to the server.
 func ExampleMlService_CopilotWs() {
@@ -4400,7 +4512,7 @@ func ExampleMlService_CopilotWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Ml.CopilotWs(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, 123, "")
+	ws, err := client.Ml.CopilotWs(true, kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "")
 	if err != nil {
 		panic(err)
 	}
@@ -4531,17 +4643,17 @@ func ExampleMlService_ReasoningWs() {
 //
 // Parameters
 //
-//   - `apicallId`
-//   - `fps`
-//   - `orderIndependentTransparency`
-//   - `pool`
-//   - `postEffect`: Post effect type
-//   - `replay`
-//   - `showGrid`
-//   - `unlockedFramerate`
-//   - `videoResHeight`
 //   - `videoResWidth`
+//   - `videoResHeight`
+//   - `fps`
+//   - `unlockedFramerate`
+//   - `postEffect`: Post effect type
 //   - `webrtc`
+//   - `pool`
+//   - `showGrid`
+//   - `replay`
+//   - `apicallId`
+//   - `orderIndependentTransparency`
 //   - `pr`
 //   - `body`: The websocket messages the server receives.
 func ExampleModelingService_CommandsWs() {
@@ -4551,7 +4663,7 @@ func ExampleModelingService_CommandsWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Modeling.CommandsWs("some-string", 123, true, "some-string", kittycad.PostEffectTypePhosphor, "some-string", true, true, 123, 123, true, 123, "")
+	ws, err := client.Modeling.CommandsWs(123, 123, 123, true, kittycad.PostEffectTypePhosphor, true, "some-string", true, "some-string", "some-string", true, 123, "")
 	if err != nil {
 		panic(err)
 	}

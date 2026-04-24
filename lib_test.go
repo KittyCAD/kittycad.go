@@ -61,7 +61,7 @@ func getTestFileConversionBody(t *testing.T) []byte {
 func createTestFileConversion(t *testing.T, client *Client) *FileConversion {
 	t.Helper()
 
-	fc, err := client.File.CreateConversion(FileExportFormatObj, FileImportFormatStl, getTestFileConversionBody(t))
+	fc, err := client.File.CreateConversion(FileImportFormatStl, FileExportFormatObj, getTestFileConversionBody(t))
 	if err != nil {
 		t.Fatalf("getting the file conversion failed: %v", err)
 	}

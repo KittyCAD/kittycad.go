@@ -737,7 +737,14 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 	} else if schemaTypeIncludes(schema, "array") {
 		reference := getReferenceSchema(schema.Items, spec)
 		if reference != "" {
-			return fmt.Sprintf("[]kittycad.%s{}", reference), nil
+			// Check if we need to add the package prefix
+			prefixedReference := reference
+			if !isTypeToString(reference) {
+				prefixedReference = fmt.Sprintf("kittycad.%s", reference)
+			} else {
+				prefixedReference = fmt.Sprintf("%s.%s", data.PackageName, reference)
+			}
+			return fmt.Sprintf("[]%s{}", prefixedReference), nil
 		}
 
 		// Get the type name.
@@ -747,7 +754,14 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 		}
 
 		if schema.Items.Ref != "" {
-			t := fmt.Sprintf("[]kittycad.%s{}", typeName)
+			// Check if we need to add the package prefix
+			prefixedTypeName := typeName
+			if !isTypeToString(typeName) {
+				prefixedTypeName = fmt.Sprintf("kittycad.%s", typeName)
+			} else {
+				prefixedTypeName = fmt.Sprintf("%s.%s", data.PackageName, typeName)
+			}
+			t := fmt.Sprintf("[]%s{}", prefixedTypeName)
 			if required {
 				return t, nil
 			}
@@ -756,7 +770,9 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 
 		// Check if we need to add the package prefix
 		prefixedTypeName := typeName
-		if !isTypeToString(typeName) && typeName != "string" && typeName != "int" && typeName != "float64" && typeName != "bool" && !strings.HasPrefix(typeName, "[]") && !strings.HasPrefix(typeName, "map[") {
+		if isTypeToString(typeName) {
+			prefixedTypeName = fmt.Sprintf("%s.%s", data.PackageName, typeName)
+		} else if typeName != "string" && typeName != "int" && typeName != "float64" && typeName != "bool" && !strings.HasPrefix(typeName, "[]") && !strings.HasPrefix(typeName, "map[") {
 			prefixedTypeName = fmt.Sprintf("kittycad.%s", typeName)
 		}
 
