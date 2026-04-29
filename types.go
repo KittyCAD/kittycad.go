@@ -6219,10 +6219,14 @@ type OrgDatasetFileConversionDetails struct {
 	Phase OrgDatasetFileConversionPhase `json:"phase" yaml:"phase" schema:"phase,required"`
 	// RawKclOutput: Plain-text contents of the raw KCL artifact, when available.
 	RawKclOutput string `json:"raw_kcl_output" yaml:"raw_kcl_output" schema:"raw_kcl_output"`
+	// RawKclSimilarityScore: Score from `0.0` to `1.0` that quantifies how closely the raw KCL model matches the original model.
+	RawKclSimilarityScore float64 `json:"raw_kcl_similarity_score" yaml:"raw_kcl_similarity_score" schema:"raw_kcl_similarity_score"`
 	// RawKclSnapshotImages: Snapshot images for the raw KCL model.
 	RawKclSnapshotImages []OrgDatasetSnapshotImage `json:"raw_kcl_snapshot_images" yaml:"raw_kcl_snapshot_images" schema:"raw_kcl_snapshot_images,required"`
 	// SalonKclOutput: Plain-text contents of the salon/refactored KCL artifact, when available.
 	SalonKclOutput string `json:"salon_kcl_output" yaml:"salon_kcl_output" schema:"salon_kcl_output"`
+	// SalonKclSimilarityScore: Score from `0.0` to `1.0` that quantifies how closely the salon KCL model matches the raw KCL model.
+	SalonKclSimilarityScore float64 `json:"salon_kcl_similarity_score" yaml:"salon_kcl_similarity_score" schema:"salon_kcl_similarity_score"`
 	// SalonKclSnapshotImages: Snapshot images for the salon/refactored KCL model.
 	SalonKclSnapshotImages []OrgDatasetSnapshotImage `json:"salon_kcl_snapshot_images" yaml:"salon_kcl_snapshot_images" schema:"salon_kcl_snapshot_images,required"`
 	// StartedAt: The date and time the conversion started.
@@ -6279,6 +6283,8 @@ const (
 	OrgDatasetFileConversionStatusSuccess OrgDatasetFileConversionStatus = "success"
 	// OrgDatasetFileConversionStatusErrorUser: Conversion failed due to user providing a broken file, such as it being empty.
 	OrgDatasetFileConversionStatusErrorUser OrgDatasetFileConversionStatus = "error_user"
+	// OrgDatasetFileConversionStatusErrorGeometryMismatch: Conversion produced a raw KCL result whose geometry diverged from the source model beyond the accepted threshold.
+	OrgDatasetFileConversionStatusErrorGeometryMismatch OrgDatasetFileConversionStatus = "error_geometry_mismatch"
 	// OrgDatasetFileConversionStatusErrorUnsupported: Conversion failed because we didn't know how to handle the file. The conversion should be retried with a new converter version.
 	OrgDatasetFileConversionStatusErrorUnsupported OrgDatasetFileConversionStatus = "error_unsupported"
 	// OrgDatasetFileConversionStatusErrorInternal: Conversion failed with some other unrecoverable error. The conversion should be retried with a new converter version.
@@ -6311,6 +6317,10 @@ type OrgDatasetFileConversionSummary struct {
 	Metadata any `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Phase: Current step in the conversion pipeline.
 	Phase OrgDatasetFileConversionPhase `json:"phase" yaml:"phase" schema:"phase,required"`
+	// RawKclSimilarityScore: Score from `0.0` to `1.0` that quantifies how closely the raw KCL model matches the original model.
+	RawKclSimilarityScore float64 `json:"raw_kcl_similarity_score" yaml:"raw_kcl_similarity_score" schema:"raw_kcl_similarity_score"`
+	// SalonKclSimilarityScore: Score from `0.0` to `1.0` that quantifies how closely the salon KCL model matches the raw KCL model.
+	SalonKclSimilarityScore float64 `json:"salon_kcl_similarity_score" yaml:"salon_kcl_similarity_score" schema:"salon_kcl_similarity_score"`
 	// StartedAt: The date and time the conversion started.
 	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
 	// Status: Conversion status.
@@ -9214,8 +9224,6 @@ const (
 	UserFeatureAquarium UserFeature = "aquarium"
 	// UserFeatureProprietaryToKclConversionBeta represents the UserFeature `"proprietary_to_kcl_conversion_beta"`.
 	UserFeatureProprietaryToKclConversionBeta UserFeature = "proprietary_to_kcl_conversion_beta"
-	// UserFeatureClassicSketchMode represents the UserFeature `"classic_sketch_mode"`.
-	UserFeatureClassicSketchMode UserFeature = "classic_sketch_mode"
 	// UserFeatureWebAppFileBrowser represents the UserFeature `"web_app_file_browser"`.
 	UserFeatureWebAppFileBrowser UserFeature = "web_app_file_browser"
 )
