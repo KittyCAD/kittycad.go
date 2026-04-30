@@ -7403,6 +7403,8 @@ type SamlIdentityProvider struct {
 	// OrgID: The organization ID the SAML identity provider belongs to.
 	OrgID UUID `json:"org_id" yaml:"org_id" schema:"org_id,required"`
 	// PrivateKey: The private key for the SAML identity provider. This is the PEM corresponding to the X509 pair.
+	//
+	// Never serialized in API responses: the SP signing key is a secret used internally to sign AuthnRequests, and would otherwise leak to admin GETs, audit logs, support tooling, and browser history. Input is accepted via the dedicated `SamlIdentityProviderCreate` body type, not by deserializing this struct.
 	PrivateKey Base64 `json:"private_key" yaml:"private_key" schema:"private_key"`
 	// PublicCert: The public certificate for the SAML identity provider. This is the PEM corresponding to the X509 pair.
 	PublicCert Base64 `json:"public_cert" yaml:"public_cert" schema:"public_cert"`
