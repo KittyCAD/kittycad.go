@@ -861,6 +861,63 @@ func ExampleMlService_CreateTextToCadMultiFileIteration() {
 
 }
 
+// GetAuthorizationRequest: Get a pending OAuth 2.0 authorization request for the consent page.
+// Parameters
+//
+//   - `requestId`: A UUID usually v4 or v7
+func ExampleOauth2Service_GetAuthorizationRequest() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.GetAuthorizationRequest(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ApproveAuthorizationRequest: Approve a pending OAuth 2.0 authorization request.
+// Parameters
+//
+//   - `requestId`: A UUID usually v4 or v7
+func ExampleOauth2Service_ApproveAuthorizationRequest() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.ApproveAuthorizationRequest(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DenyAuthorizationRequest: Deny a pending OAuth 2.0 authorization request.
+// Parameters
+//
+//   - `requestId`: A UUID usually v4 or v7
+func ExampleOauth2Service_DenyAuthorizationRequest() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Oauth2.DenyAuthorizationRequest(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // Authorize: Start an OAuth 2.0 authorization code flow with PKCE.
 // Parameters
 //
@@ -1687,7 +1744,7 @@ func ExampleOauth2Service_CreateOrgApp() {
 		panic(err)
 	}
 
-	result, err := client.Oauth2.CreateOrgApp(kittycad.CreateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: "some-string", RedirectUris: []kittycad.URL{}})
+	result, err := client.Oauth2.CreateOrgApp(kittycad.CreateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Mode: "", Name: "some-string", RedirectUris: []kittycad.URL{}})
 	if err != nil {
 		panic(err)
 	}
@@ -1730,7 +1787,7 @@ func ExampleOauth2Service_UpdateOrgApp() {
 		panic(err)
 	}
 
-	result, err := client.Oauth2.UpdateOrgApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: "some-string", RedirectUris: []kittycad.URL{}})
+	result, err := client.Oauth2.UpdateOrgApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Mode: "", Name: "some-string", RedirectUris: []kittycad.URL{}})
 	if err != nil {
 		panic(err)
 	}
@@ -3291,7 +3348,7 @@ func ExampleOauth2Service_CreateUserApp() {
 		panic(err)
 	}
 
-	result, err := client.Oauth2.CreateUserApp(kittycad.CreateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: "some-string", RedirectUris: []kittycad.URL{}})
+	result, err := client.Oauth2.CreateUserApp(kittycad.CreateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Mode: "", Name: "some-string", RedirectUris: []kittycad.URL{}})
 	if err != nil {
 		panic(err)
 	}
@@ -3334,7 +3391,7 @@ func ExampleOauth2Service_UpdateUserApp() {
 		panic(err)
 	}
 
-	result, err := client.Oauth2.UpdateUserApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: "some-string", RedirectUris: []kittycad.URL{}})
+	result, err := client.Oauth2.UpdateUserApp(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Mode: "", Name: "some-string", RedirectUris: []kittycad.URL{}})
 	if err != nil {
 		panic(err)
 	}

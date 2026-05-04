@@ -289,6 +289,30 @@
  },
  {
   "value": {
+   "example": "// GetAuthorizationRequest: Get a pending OAuth 2.0 authorization request for the consent page.\n// \n// \n// Parameters\n// \n// \t- `requestId`: A UUID usually v4 or v7\n// \n// GetAuthorizationRequest: Get a pending OAuth 2.0 authorization request for the consent page.\n// Parameters\n//\n//   - `requestId`: A UUID usually v4 or v7\nfunc ExampleOauth2Service_GetAuthorizationRequest() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.GetAuthorizationRequest(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.GetAuthorizationRequest"
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1authorization-requests~1{request_id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// ApproveAuthorizationRequest: Approve a pending OAuth 2.0 authorization request.\n// \n// \n// Parameters\n// \n// \t- `requestId`: A UUID usually v4 or v7\n// \n// ApproveAuthorizationRequest: Approve a pending OAuth 2.0 authorization request.\n// Parameters\n//\n//   - `requestId`: A UUID usually v4 or v7\nfunc ExampleOauth2Service_ApproveAuthorizationRequest() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.ApproveAuthorizationRequest(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.ApproveAuthorizationRequest"
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1authorization-requests~1{request_id}~1approve/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// DenyAuthorizationRequest: Deny a pending OAuth 2.0 authorization request.\n// \n// \n// Parameters\n// \n// \t- `requestId`: A UUID usually v4 or v7\n// \n// DenyAuthorizationRequest: Deny a pending OAuth 2.0 authorization request.\n// Parameters\n//\n//   - `requestId`: A UUID usually v4 or v7\nfunc ExampleOauth2Service_DenyAuthorizationRequest() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.DenyAuthorizationRequest(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.DenyAuthorizationRequest"
+  },
+  "op": "add",
+  "path": "/paths/~1oauth2~1authorization-requests~1{request_id}~1deny/post/x-go"
+ },
+ {
+  "value": {
    "example": "// Authorize: Start an OAuth 2.0 authorization code flow with PKCE.\n// \n// \n// Parameters\n// \n// \t- `responseType`: The OAuth 2.0 authorization response type.\n// \t- `clientId`\n// \t- `redirectUri`\n// \t- `state`\n// \t- `scope`: OAuth 2.0 scopes encoded as a space-delimited string.\n// \t- `codeChallenge`\n// \t- `codeChallengeMethod`: The PKCE code challenge method.\n// \n// Authorize: Start an OAuth 2.0 authorization code flow with PKCE.\n// Parameters\n//\n//   - `responseType`: The OAuth 2.0 authorization response type.\n//   - `clientId`\n//   - `redirectUri`\n//   - `state`\n//   - `scope`: OAuth 2.0 scopes encoded as a space-delimited string.\n//   - `codeChallenge`\n//   - `codeChallengeMethod`: The PKCE code challenge method.\nfunc ExampleOauth2Service_Authorize() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Oauth2.Authorize(\"\", kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.URL{\u0026url.URL{Scheme: \"https\", Host: \"example.com\"}}, \"some-string\", \"some-string\", \"some-string\", \"\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.Authorize"
   },
@@ -601,7 +625,7 @@
  },
  {
   "value": {
-   "example": "// CreateOrgApp: Create an org OAuth app.\n// \n// This endpoint requires authentication by an org admin. It creates an active public OAuth app owned by the authenticated organization.\n// \n// \n// Parameters\n// \n// \t- `body`: Request body for creating a public OAuth app.\n// \n// CreateOrgApp: Create an org OAuth app.\n// This endpoint requires authentication by an org admin. It creates an active public OAuth app owned by the authenticated organization.\n//\n// Parameters\n//\n//   - `body`: Request body for creating a public OAuth app.\nfunc ExampleOauth2Service_CreateOrgApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.CreateOrgApp(kittycad.CreateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: \"some-string\", RedirectUris: []kittycad.URL{}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateOrgApp: Create an org OAuth app.\n// \n// This endpoint requires authentication by an org admin. It creates an active public OAuth app owned by the authenticated organization.\n// \n// \n// Parameters\n// \n// \t- `body`: Request body for creating a public OAuth app.\n// \n// CreateOrgApp: Create an org OAuth app.\n// This endpoint requires authentication by an org admin. It creates an active public OAuth app owned by the authenticated organization.\n//\n// Parameters\n//\n//   - `body`: Request body for creating a public OAuth app.\nfunc ExampleOauth2Service_CreateOrgApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.CreateOrgApp(kittycad.CreateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Mode: \"\", Name: \"some-string\", RedirectUris: []kittycad.URL{}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.CreateOrgApp"
   },
   "op": "add",
@@ -625,7 +649,7 @@
  },
  {
   "value": {
-   "example": "// UpdateOrgApp: Update an org OAuth app.\n// \n// This endpoint requires authentication by an org admin. It updates the configuration of the organization's active public OAuth app.\n// \n// \n// Parameters\n// \n// \t- `clientId`: A UUID usually v4 or v7\n// \t- `body`: Request body for updating a public OAuth app.\n// \n// UpdateOrgApp: Update an org OAuth app.\n// This endpoint requires authentication by an org admin. It updates the configuration of the organization's active public OAuth app.\n//\n// Parameters\n//\n//   - `clientId`: A UUID usually v4 or v7\n//   - `body`: Request body for updating a public OAuth app.\nfunc ExampleOauth2Service_UpdateOrgApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.UpdateOrgApp(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: \"some-string\", RedirectUris: []kittycad.URL{}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// UpdateOrgApp: Update an org OAuth app.\n// \n// This endpoint requires authentication by an org admin. It updates the configuration of the organization's active public OAuth app.\n// \n// \n// Parameters\n// \n// \t- `clientId`: A UUID usually v4 or v7\n// \t- `body`: Request body for updating a public OAuth app.\n// \n// UpdateOrgApp: Update an org OAuth app.\n// This endpoint requires authentication by an org admin. It updates the configuration of the organization's active public OAuth app.\n//\n// Parameters\n//\n//   - `clientId`: A UUID usually v4 or v7\n//   - `body`: Request body for updating a public OAuth app.\nfunc ExampleOauth2Service_UpdateOrgApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.UpdateOrgApp(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Mode: \"\", Name: \"some-string\", RedirectUris: []kittycad.URL{}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.UpdateOrgApp"
   },
   "op": "add",
@@ -1233,7 +1257,7 @@
  },
  {
   "value": {
-   "example": "// CreateUserApp: Create a personal OAuth app.\n// \n// This endpoint requires authentication by any Zoo user. It creates an active public OAuth app owned by the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: Request body for creating a public OAuth app.\n// \n// CreateUserApp: Create a personal OAuth app.\n// This endpoint requires authentication by any Zoo user. It creates an active public OAuth app owned by the authenticated user.\n//\n// Parameters\n//\n//   - `body`: Request body for creating a public OAuth app.\nfunc ExampleOauth2Service_CreateUserApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.CreateUserApp(kittycad.CreateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: \"some-string\", RedirectUris: []kittycad.URL{}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// CreateUserApp: Create a personal OAuth app.\n// \n// This endpoint requires authentication by any Zoo user. It creates an active public OAuth app owned by the authenticated user.\n// \n// \n// Parameters\n// \n// \t- `body`: Request body for creating a public OAuth app.\n// \n// CreateUserApp: Create a personal OAuth app.\n// This endpoint requires authentication by any Zoo user. It creates an active public OAuth app owned by the authenticated user.\n//\n// Parameters\n//\n//   - `body`: Request body for creating a public OAuth app.\nfunc ExampleOauth2Service_CreateUserApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.CreateUserApp(kittycad.CreateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Mode: \"\", Name: \"some-string\", RedirectUris: []kittycad.URL{}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.CreateUserApp"
   },
   "op": "add",
@@ -1257,7 +1281,7 @@
  },
  {
   "value": {
-   "example": "// UpdateUserApp: Update a personal OAuth app.\n// \n// This endpoint requires authentication by any Zoo user. It updates the configuration of the authenticated user's active public OAuth app.\n// \n// \n// Parameters\n// \n// \t- `clientId`: A UUID usually v4 or v7\n// \t- `body`: Request body for updating a public OAuth app.\n// \n// UpdateUserApp: Update a personal OAuth app.\n// This endpoint requires authentication by any Zoo user. It updates the configuration of the authenticated user's active public OAuth app.\n//\n// Parameters\n//\n//   - `clientId`: A UUID usually v4 or v7\n//   - `body`: Request body for updating a public OAuth app.\nfunc ExampleOauth2Service_UpdateUserApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.UpdateUserApp(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Name: \"some-string\", RedirectUris: []kittycad.URL{}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// UpdateUserApp: Update a personal OAuth app.\n// \n// This endpoint requires authentication by any Zoo user. It updates the configuration of the authenticated user's active public OAuth app.\n// \n// \n// Parameters\n// \n// \t- `clientId`: A UUID usually v4 or v7\n// \t- `body`: Request body for updating a public OAuth app.\n// \n// UpdateUserApp: Update a personal OAuth app.\n// This endpoint requires authentication by any Zoo user. It updates the configuration of the authenticated user's active public OAuth app.\n//\n// Parameters\n//\n//   - `clientId`: A UUID usually v4 or v7\n//   - `body`: Request body for updating a public OAuth app.\nfunc ExampleOauth2Service_UpdateUserApp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.UpdateUserApp(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdateOauth2AppRequest{GrantTypes: []kittycad.Oauth2AppGrantType{}, Mode: \"\", Name: \"some-string\", RedirectUris: []kittycad.URL{}})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.UpdateUserApp"
   },
   "op": "add",

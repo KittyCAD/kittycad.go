@@ -1848,6 +1848,150 @@ func (s *MlService) CreateTextToCadMultiFileIteration(body *MultipartForm) (*Tex
 
 }
 
+// GetAuthorizationRequest: Get a pending OAuth 2.0 authorization request for the consent page.
+// Parameters
+//
+//   - `requestId`: A UUID usually v4 or v7
+func (s *Oauth2Service) GetAuthorizationRequest(requestId UUID) (*Oauth2AuthorizationRequestResponse, error) {
+	// Create the url.
+	path := "/oauth2/authorization-requests/{{.request_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"request_id": requestId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AuthorizationRequestResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ApproveAuthorizationRequest: Approve a pending OAuth 2.0 authorization request.
+// Parameters
+//
+//   - `requestId`: A UUID usually v4 or v7
+func (s *Oauth2Service) ApproveAuthorizationRequest(requestId UUID) (*Oauth2AuthorizationDecisionResponse, error) {
+	// Create the url.
+	path := "/oauth2/authorization-requests/{{.request_id}}/approve"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"request_id": requestId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AuthorizationDecisionResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DenyAuthorizationRequest: Deny a pending OAuth 2.0 authorization request.
+// Parameters
+//
+//   - `requestId`: A UUID usually v4 or v7
+func (s *Oauth2Service) DenyAuthorizationRequest(requestId UUID) (*Oauth2AuthorizationDecisionResponse, error) {
+	// Create the url.
+	path := "/oauth2/authorization-requests/{{.request_id}}/deny"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"request_id": requestId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded Oauth2AuthorizationDecisionResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // Authorize: Start an OAuth 2.0 authorization code flow with PKCE.
 // Parameters
 //
