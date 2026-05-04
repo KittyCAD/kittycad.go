@@ -1698,6 +1698,8 @@ type CreateCustomModel struct {
 type CreateOauth2AppRequest struct {
 	// GrantTypes: The OAuth grant types this app can use.
 	GrantTypes []Oauth2AppGrantType `json:"grant_types" yaml:"grant_types" schema:"grant_types"`
+	// Mode: The deployment mode for this app.
+	Mode Oauth2AppMode `json:"mode" yaml:"mode" schema:"mode"`
 	// Name: The display name of the app.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
 	// RedirectUris: The redirect URIs registered for this app.
@@ -5233,6 +5235,16 @@ const (
 	Oauth2AppGrantTypeClientCredentials Oauth2AppGrantType = "client_credentials"
 )
 
+// Oauth2AppMode: The deployment mode for an OAuth 2.0 app.
+type Oauth2AppMode string
+
+const (
+	// Oauth2AppModeDevelopment: Development mode permits HTTPS redirect URIs and local HTTP redirect URIs. Only the app owner, or an org admin for organization apps, can authorize development apps.
+	Oauth2AppModeDevelopment Oauth2AppMode = "development"
+	// Oauth2AppModeProduction: Production mode only permits secure non-local redirect URIs.
+	Oauth2AppModeProduction Oauth2AppMode = "production"
+)
+
 // Oauth2AppResponse: API response for a managed OAuth app.
 type Oauth2AppResponse struct {
 	// ClientID: The OAuth 2.0 client identifier.
@@ -5247,6 +5259,8 @@ type Oauth2AppResponse struct {
 	GrantTypes []Oauth2AppGrantType `json:"grant_types" yaml:"grant_types" schema:"grant_types,required"`
 	// IsActive: Whether this app is active.
 	IsActive bool `json:"is_active" yaml:"is_active" schema:"is_active,required"`
+	// Mode: The deployment mode for this app.
+	Mode Oauth2AppMode `json:"mode" yaml:"mode" schema:"mode,required"`
 	// Name: The display name of the app.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
 	// RedirectUris: The registered redirect URIs for this app.
@@ -5261,6 +5275,28 @@ type Oauth2AppResponseResultsPage struct {
 	Items []Oauth2AppResponse `json:"items" yaml:"items" schema:"items,required"`
 	// NextPage: token used to fetch the next page of results (if any)
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// Oauth2AuthorizationDecisionResponse: Result of approving or denying an OAuth authorization request.
+type Oauth2AuthorizationDecisionResponse struct {
+	// RedirectUrl: The URL the user agent should navigate to after the decision.
+	RedirectUrl string `json:"redirect_url" yaml:"redirect_url" schema:"redirect_url,required"`
+}
+
+// Oauth2AuthorizationRequestResponse: Details rendered by the OAuth consent page.
+type Oauth2AuthorizationRequestResponse struct {
+	// AppName: The OAuth app display name.
+	AppName string `json:"app_name" yaml:"app_name" schema:"app_name,required"`
+	// ExpiresAt: When this authorization request expires.
+	ExpiresAt Time `json:"expires_at" yaml:"expires_at" schema:"expires_at,required"`
+	// OwnerName: The OAuth app owner display name, if available.
+	OwnerName string `json:"owner_name" yaml:"owner_name" schema:"owner_name"`
+	// RedirectUri: The redirect URI that will receive the authorization result.
+	RedirectUri URL `json:"redirect_uri" yaml:"redirect_uri" schema:"redirect_uri,required"`
+	// RequestID: The pending authorization request ID.
+	RequestID UUID `json:"request_id" yaml:"request_id" schema:"request_id,required"`
+	// Scopes: The scopes requested by the app.
+	Scopes []Oauth2Scope `json:"scopes" yaml:"scopes" schema:"scopes,required"`
 }
 
 // Oauth2AuthorizationResponseType: The OAuth 2.0 authorization response type.
@@ -5299,6 +5335,16 @@ type Oauth2GrantType string
 const (
 	// Oauth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode: An OAuth 2.0 Device Authorization Grant.
 	Oauth2GrantTypeUrnietfparamsoauthgrantTypedeviceCode Oauth2GrantType = "urn:ietf:params:oauth:grant-type:device_code"
+)
+
+// Oauth2Scope: Supported OAuth 2.0 scopes.
+type Oauth2Scope string
+
+const (
+	// Oauth2ScopeModeling: Grants access to modeling APIs.
+	Oauth2ScopeModeling Oauth2Scope = "modeling"
+	// Oauth2ScopeAdminwrite: Grants write access to admin APIs.
+	Oauth2ScopeAdminwrite Oauth2Scope = "admin:write"
 )
 
 // Oauth2TokenGrantType: The OAuth 2.0 token endpoint grant types supported by the general token endpoint.
@@ -9088,6 +9134,8 @@ type UpdateMemberToOrgBody struct {
 type UpdateOauth2AppRequest struct {
 	// GrantTypes: The OAuth grant types this app can use.
 	GrantTypes []Oauth2AppGrantType `json:"grant_types" yaml:"grant_types" schema:"grant_types"`
+	// Mode: The deployment mode for this app.
+	Mode Oauth2AppMode `json:"mode" yaml:"mode" schema:"mode"`
 	// Name: The new display name of the app.
 	Name string `json:"name" yaml:"name" schema:"name"`
 	// RedirectUris: The redirect URIs registered for this app.
