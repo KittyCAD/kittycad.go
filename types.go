@@ -9272,6 +9272,8 @@ type UserFeature string
 const (
 	// UserFeatureAquarium represents the UserFeature `"aquarium"`.
 	UserFeatureAquarium UserFeature = "aquarium"
+	// UserFeatureBodiesPane represents the UserFeature `"bodies_pane"`.
+	UserFeatureBodiesPane UserFeature = "bodies_pane"
 	// UserFeatureProprietaryToKclConversionBeta represents the UserFeature `"proprietary_to_kcl_conversion_beta"`.
 	UserFeatureProprietaryToKclConversionBeta UserFeature = "proprietary_to_kcl_conversion_beta"
 	// UserFeatureWebAppFileBrowser represents the UserFeature `"web_app_file_browser"`.
