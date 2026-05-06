@@ -130,14 +130,14 @@ const (
 	AccountProviderDiscord AccountProvider = "discord"
 	// AccountProviderGoogle: The Google account provider.
 	AccountProviderGoogle AccountProvider = "google"
+	// AccountProviderZooCorp: The ZooCorp account provider (aka https://auth.corp.zoo.dev).
+	AccountProviderZooCorp AccountProvider = "zoo_corp"
 	// AccountProviderGithub: The GitHub account provider.
 	AccountProviderGithub AccountProvider = "github"
 	// AccountProviderMicrosoft: The Microsoft account provider.
 	AccountProviderMicrosoft AccountProvider = "microsoft"
 	// AccountProviderSaml: The SAML account provider.
 	AccountProviderSaml AccountProvider = "saml"
-	// AccountProviderTencent: The Tencent QQ account provider.
-	AccountProviderTencent AccountProvider = "tencent"
 	// AccountProviderTestProvider: Test provider for integration tests (only available during testing).
 	AccountProviderTestProvider AccountProvider = "test_provider"
 )
