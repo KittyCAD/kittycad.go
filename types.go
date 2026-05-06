@@ -3721,6 +3721,12 @@ type MlCopilotClientMessageHeaders struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// MlCopilotClientMessageListModes: Request available mode metadata for the copilot session.
+type MlCopilotClientMessageListModes struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // MlCopilotClientMessageMlCopilotClientMessageHeaders: Updates the active project context without creating a new prompt.
 type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
 	// CurrentFiles: The current files in the project, if any. This can be used to provide context for the AI. This should be sent in binary format if the files are not text files, like an imported binary file.
@@ -3768,6 +3774,18 @@ const (
 	// MlCopilotModeThoughtful: Use a model and effort that results in thoughtful responses.
 	MlCopilotModeThoughtful MlCopilotMode = "thoughtful"
 )
+
+// MlCopilotModeOption: A client-facing ML copilot mode option.
+type MlCopilotModeOption struct {
+	// Description: Human-readable display description.
+	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// Icon: Client icon identifier.
+	Icon string `json:"icon" yaml:"icon" schema:"icon,required"`
+	// ID: Stable mode identifier to send in user messages.
+	ID string `json:"id" yaml:"id" schema:"id,required"`
+	// Label: Human-readable display label.
+	Label string `json:"label" yaml:"label" schema:"label,required"`
+}
 
 // MlCopilotServerMessage: MlCopilotServerMessage: The types of messages that can be sent by the server to the client.
 type MlCopilotServerMessage any
@@ -3818,6 +3836,12 @@ type MlCopilotServerMessageFiles struct {
 type MlCopilotServerMessageInfo struct {
 	// Info:
 	Info Info `json:"info" yaml:"info" schema:"info,required"`
+}
+
+// MlCopilotServerMessageModesResponse: Available mode metadata for clients.
+type MlCopilotServerMessageModesResponse struct {
+	// ModesResponse:
+	ModesResponse ModesResponse `json:"modes_response" yaml:"modes_response" schema:"modes_response,required"`
 }
 
 // MlCopilotServerMessagePong: Pong response to a Ping message.
@@ -5422,6 +5446,14 @@ type ModelingCmdZnear struct {
 type ModelingSessionData struct {
 	// APICallID: ID of the API call this modeling session is using. Useful for tracing and debugging.
 	APICallID string `json:"api_call_id" yaml:"api_call_id" schema:"api_call_id,required"`
+}
+
+// ModesResponse is the type definition for a ModesResponse.
+type ModesResponse struct {
+	// DefaultMode: Default mode identifier used when no mode is requested.
+	DefaultMode string `json:"default_mode" yaml:"default_mode" schema:"default_mode,required"`
+	// Modes: Available modes in configuration order.
+	Modes []MlCopilotModeOption `json:"modes" yaml:"modes" schema:"modes,required"`
 }
 
 // MouseClick: The response from the `MouseClick` command.
