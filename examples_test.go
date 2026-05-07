@@ -3638,14 +3638,13 @@ func ExamplePaymentService_ListMethodsForUser() {
 // Parameters
 //
 //   - `id`
-//   - `force`
 func ExamplePaymentService_DeleteMethodForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := client.Payment.DeleteMethodForUser("some-string", true); err != nil {
+	if err := client.Payment.DeleteMethodForUser("some-string"); err != nil {
 		panic(err)
 	}
 

@@ -8382,8 +8382,7 @@ func (s *PaymentService) ListMethodsForUser() (*[]PaymentMethod, error) {
 // Parameters
 //
 //   - `id`
-//   - `force`
-func (s *PaymentService) DeleteMethodForUser(id string, force bool) error {
+func (s *PaymentService) DeleteMethodForUser(id string) error {
 	// Create the url.
 	path := "/user/payment/methods/{{.id}}"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8396,8 +8395,7 @@ func (s *PaymentService) DeleteMethodForUser(id string, force bool) error {
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id":    id,
-		"force": strconv.FormatBool(force),
+		"id": id,
 	}); err != nil {
 		return fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
