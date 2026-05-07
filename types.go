@@ -9400,6 +9400,8 @@ type UnitTorqueConversion struct {
 type UnitVolume string
 
 const (
+	// UnitVolumeMm3: Cubic millimeters (mm³)
+	UnitVolumeMm3 UnitVolume = "mm3"
 	// UnitVolumeCm3: Cubic centimeters (cc or cm³) <https://en.wikipedia.org/wiki/Cubic_centimeter>
 	UnitVolumeCm3 UnitVolume = "cm3"
 	// UnitVolumeFt3: Cubic feet (ft³) <https://en.wikipedia.org/wiki/Cubic_foot>
