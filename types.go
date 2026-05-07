@@ -9614,6 +9614,8 @@ const (
 	UserFeatureBodiesPane UserFeature = "bodies_pane"
 	// UserFeatureProprietaryToKclConversionBeta represents the UserFeature `"proprietary_to_kcl_conversion_beta"`.
 	UserFeatureProprietaryToKclConversionBeta UserFeature = "proprietary_to_kcl_conversion_beta"
+	// UserFeatureSketchExperimentalFeatures represents the UserFeature `"sketch_experimental_features"`.
+	UserFeatureSketchExperimentalFeatures UserFeature = "sketch_experimental_features"
 	// UserFeatureWebAppFileBrowser represents the UserFeature `"web_app_file_browser"`.
 	UserFeatureWebAppFileBrowser UserFeature = "web_app_file_browser"
 )
