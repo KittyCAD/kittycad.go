@@ -9612,6 +9612,8 @@ const (
 	UserFeatureAquarium UserFeature = "aquarium"
 	// UserFeatureBodiesPane represents the UserFeature `"bodies_pane"`.
 	UserFeatureBodiesPane UserFeature = "bodies_pane"
+	// UserFeatureEnableZ0006Lint represents the UserFeature `"enable_z0006_lint"`.
+	UserFeatureEnableZ0006Lint UserFeature = "enable_z0006_lint"
 	// UserFeatureProprietaryToKclConversionBeta represents the UserFeature `"proprietary_to_kcl_conversion_beta"`.
 	UserFeatureProprietaryToKclConversionBeta UserFeature = "proprietary_to_kcl_conversion_beta"
 	// UserFeatureSketchExperimentalFeatures represents the UserFeature `"sketch_experimental_features"`.
