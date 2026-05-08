@@ -1716,6 +1716,8 @@ type CreateOauth2AppRequest struct {
 
 // CreateOrgDataset: Payload for creating an org dataset.
 type CreateOrgDataset struct {
+	// Description: Optional human-readable notes about the dataset.
+	Description string `json:"description" yaml:"description" schema:"description"`
 	// Name: The dataset's display name.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
 	// Source: Details for accessing the dataset.
@@ -6486,6 +6488,8 @@ type OrgDataset struct {
 	AccessRoleArn string `json:"access_role_arn" yaml:"access_role_arn" schema:"access_role_arn,required"`
 	// CreatedAt: The date and time the dataset was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Description: User-provided description for humans reviewing the dataset.
+	Description string `json:"description" yaml:"description" schema:"description"`
 	// ID: The unique identifier for the dataset.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// LastSyncError: Last recorded sync error message, if dataset access failed.
@@ -9484,6 +9488,8 @@ type UpdateOauth2AppRequest struct {
 
 // UpdateOrgDataset: Payload for updating an org dataset.
 type UpdateOrgDataset struct {
+	// Description: Optional description override. Null clears the description.
+	Description string `json:"description" yaml:"description" schema:"description"`
 	// Name: Optional new display name.
 	Name string `json:"name" yaml:"name" schema:"name"`
 	// Source: Optional storage connection overrides.
