@@ -737,6 +737,12 @@ type AsyncAPICallOutputSrcFormatOptions struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
+// AttachmentsLoaded is the type definition for a AttachmentsLoaded.
+type AttachmentsLoaded struct {
+	// RequestID: Optional backend-provided identifier to correlate request/response pairs.
+	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id"`
+}
+
 // AuthAPIKeyResponse: The response from the `/auth/api-key` endpoint.
 type AuthAPIKeyResponse struct {
 	// SessionToken: The session token
@@ -3745,6 +3751,22 @@ type MlCopilotClientMessagePing struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// MlCopilotClientMessageProjectContext: Attachments returned by API in response to a backend `RequestAttachments` message.
+type MlCopilotClientMessageProjectContext struct {
+	// Error: Error encountered while loading attachments, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// Files: Loaded attachment files. Empty when no matching attachments were found.
+	Files []MlCopilotFile `json:"files" yaml:"files" schema:"files"`
+	// PromptID: Prompt the attachments were loaded from.
+	PromptID UUID `json:"prompt_id" yaml:"prompt_id" schema:"prompt_id"`
+	// RequestID: Optional backend-provided identifier to correlate request/response pairs.
+	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id"`
+	// Seq: Specific client message sequence, when requested.
+	Seq int `json:"seq" yaml:"seq" schema:"seq"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // MlCopilotClientMessageProjectName: The system message, which can be used to set the context or instructions for the AI.
 type MlCopilotClientMessageProjectName struct {
 	// Command: The content of the system message.
@@ -3791,6 +3813,12 @@ type MlCopilotModeOption struct {
 
 // MlCopilotServerMessage: MlCopilotServerMessage: The types of messages that can be sent by the server to the client.
 type MlCopilotServerMessage any
+
+// MlCopilotServerMessageAttachmentsLoaded: Notification that API finished loading all attachments for the conversation.
+type MlCopilotServerMessageAttachmentsLoaded struct {
+	// AttachmentsLoaded:
+	AttachmentsLoaded AttachmentsLoaded `json:"attachments_loaded" yaml:"attachments_loaded" schema:"attachments_loaded,required"`
+}
 
 // MlCopilotServerMessageBackendShutdown: Notification that the backend is shutting down.
 type MlCopilotServerMessageBackendShutdown struct {
@@ -3871,6 +3899,13 @@ type MlCopilotServerMessageReasoning struct {
 type MlCopilotServerMessageReplay struct {
 	// Replay:
 	Replay Replay `json:"replay" yaml:"replay" schema:"replay,required"`
+}
+
+// MlCopilotServerMessageRequestAttachments: Backend-only request for API to reload client attachments from storage.
+// API handles this message internally and responds upstream with `MlCopilotClientMessage::AttachmentResponse`; it is not forwarded to the browser.
+type MlCopilotServerMessageRequestAttachments struct {
+	// RequestAttachments:
+	RequestAttachments RequestAttachments `json:"request_attachments" yaml:"request_attachments" schema:"request_attachments,required"`
 }
 
 // MlCopilotServerMessageSessionData: Session metadata sent by the server right after authentication.
@@ -7676,6 +7711,22 @@ type RemoveSceneObjects struct {
 type Replay struct {
 	// Messages: Canonical bytes (usually JSON) for each message, ordered by prompt creation time, then message sequence number.
 	Messages [][]int `json:"messages" yaml:"messages" schema:"messages,required"`
+}
+
+// RequestAttachments is the type definition for a RequestAttachments.
+type RequestAttachments struct {
+	// ConversationID: Conversation to search for attachments. Used when prompt_id is not known.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id"`
+	// Names: Attachment names to load. Empty means load all attachments from the selected message(s).
+	Names []string `json:"names" yaml:"names" schema:"names"`
+	// OnlyMetadata: If true, return attachment metadata without loading file contents.
+	OnlyMetadata bool `json:"only_metadata" yaml:"only_metadata" schema:"only_metadata"`
+	// PromptID: Prompt to load attachments from. Defaults to the active/resumed prompt.
+	PromptID UUID `json:"prompt_id" yaml:"prompt_id" schema:"prompt_id"`
+	// RequestID: Optional backend-provided identifier to correlate request/response pairs.
+	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id"`
+	// Seq: Specific client message sequence to inspect. Defaults to recent client messages.
+	Seq int `json:"seq" yaml:"seq" schema:"seq"`
 }
 
 // ResponseError: Error information from a response.
