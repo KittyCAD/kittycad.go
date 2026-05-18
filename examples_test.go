@@ -1311,7 +1311,7 @@ func ExampleOrgService_CreateDataset() {
 		panic(err)
 	}
 
-	result, err := client.Org.CreateDataset(kittycad.CreateOrgDataset{Description: "some-string", Name: "some-string", Source: kittycad.OrgDatasetSource{AccessRoleArn: "some-string", Provider: "", Uri: "some-string"}})
+	result, err := client.Org.CreateDataset(kittycad.CreateOrgDataset{Description: "some-string", Name: "some-string", RequireRawKclSimilarityScoreForSuccess: true, Source: kittycad.OrgDatasetSource{AccessRoleArn: "some-string", Provider: "", Uri: "some-string"}})
 	if err != nil {
 		panic(err)
 	}
@@ -1352,7 +1352,7 @@ func ExampleOrgService_UpdateDataset() {
 		panic(err)
 	}
 
-	result, err := client.Org.UpdateDataset(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOrgDataset{Description: "some-string", Name: "some-string", Source: kittycad.UpdateOrgDatasetSource{AccessRoleArn: "some-string", Provider: "", Uri: "some-string"}})
+	result, err := client.Org.UpdateDataset(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateOrgDataset{Description: "some-string", Name: "some-string", RequireRawKclSimilarityScoreForSuccess: true, Source: kittycad.UpdateOrgDatasetSource{AccessRoleArn: "some-string", Provider: "", Uri: "some-string"}})
 	if err != nil {
 		panic(err)
 	}
