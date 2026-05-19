@@ -1726,6 +1726,8 @@ type CreateOrgDataset struct {
 	Description string `json:"description" yaml:"description" schema:"description"`
 	// Name: The dataset's display name.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
+	// RequireRawKclSimilarityScoreForSuccess: Whether a low raw-KCL similarity score should block conversion success.
+	RequireRawKclSimilarityScoreForSuccess bool `json:"require_raw_kcl_similarity_score_for_success" yaml:"require_raw_kcl_similarity_score_for_success" schema:"require_raw_kcl_similarity_score_for_success"`
 	// Source: Details for accessing the dataset.
 	Source OrgDatasetSource `json:"source" yaml:"source" schema:"source,required"`
 }
@@ -6505,6 +6507,8 @@ type OrgAdminDetails struct {
 	Block BlockReason `json:"block" yaml:"block" schema:"block"`
 	// BlockMessage: Human-friendly block reason message.
 	BlockMessage string `json:"block_message" yaml:"block_message" schema:"block_message"`
+	// MaxEngineSessionsPerUserOverride: Optional org-wide per-user override for concurrent engine sessions.
+	MaxEngineSessionsPerUserOverride int `json:"max_engine_sessions_per_user_override" yaml:"max_engine_sessions_per_user_override" schema:"max_engine_sessions_per_user_override"`
 	// NeverBlock: Whether this organization is permanently exempt from blocking.
 	NeverBlock bool `json:"never_block" yaml:"never_block" schema:"never_block,required"`
 	// PaymentMethods: Known payment methods on file.
@@ -6535,6 +6539,8 @@ type OrgDataset struct {
 	Name string `json:"name" yaml:"name" schema:"name,required"`
 	// OrgID: The ID of the org owning the dataset.
 	OrgID UUID `json:"org_id" yaml:"org_id" schema:"org_id,required"`
+	// RequireRawKclSimilarityScoreForSuccess: Whether a low raw-KCL similarity score should block conversion success for this dataset.
+	RequireRawKclSimilarityScoreForSuccess bool `json:"require_raw_kcl_similarity_score_for_success" yaml:"require_raw_kcl_similarity_score_for_success" schema:"require_raw_kcl_similarity_score_for_success,required"`
 	// SourceUri: Fully-qualified URI to the dataset location (e.g. s3://bucket/prefix).
 	SourceUri string `json:"source_uri" yaml:"source_uri" schema:"source_uri,required"`
 	// Status: Lifecycle status for this dataset.
@@ -9543,6 +9549,8 @@ type UpdateOrgDataset struct {
 	Description string `json:"description" yaml:"description" schema:"description"`
 	// Name: Optional new display name.
 	Name string `json:"name" yaml:"name" schema:"name"`
+	// RequireRawKclSimilarityScoreForSuccess: Optional override for whether a low raw-KCL similarity score should block conversion success.
+	RequireRawKclSimilarityScoreForSuccess bool `json:"require_raw_kcl_similarity_score_for_success" yaml:"require_raw_kcl_similarity_score_for_success" schema:"require_raw_kcl_similarity_score_for_success"`
 	// Source: Optional storage connection overrides.
 	Source UpdateOrgDatasetSource `json:"source" yaml:"source" schema:"source"`
 }
@@ -9673,6 +9681,10 @@ const (
 	UserFeatureBodiesPane UserFeature = "bodies_pane"
 	// UserFeatureEnableZ0006Lint represents the UserFeature `"enable_z0006_lint"`.
 	UserFeatureEnableZ0006Lint UserFeature = "enable_z0006_lint"
+	// UserFeatureModelingDialogs represents the UserFeature `"modeling_dialogs"`.
+	UserFeatureModelingDialogs UserFeature = "modeling_dialogs"
+	// UserFeaturePlugins represents the UserFeature `"plugins"`.
+	UserFeaturePlugins UserFeature = "plugins"
 	// UserFeatureProprietaryToKclConversionBeta represents the UserFeature `"proprietary_to_kcl_conversion_beta"`.
 	UserFeatureProprietaryToKclConversionBeta UserFeature = "proprietary_to_kcl_conversion_beta"
 	// UserFeatureSketchExperimentalFeatures represents the UserFeature `"sketch_experimental_features"`.
