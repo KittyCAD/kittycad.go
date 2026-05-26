@@ -3799,6 +3799,8 @@ const (
 	MlCopilotModeFast MlCopilotMode = "fast"
 	// MlCopilotModeThoughtful: Use a model and effort that results in thoughtful responses.
 	MlCopilotModeThoughtful MlCopilotMode = "thoughtful"
+	// MlCopilotModeAuto: Let the system automatically choose the model and reasoning effort.
+	MlCopilotModeAuto MlCopilotMode = "auto"
 )
 
 // MlCopilotModeOption: A client-facing ML copilot mode option.
