@@ -7488,6 +7488,8 @@ type ProjectResponse struct {
 	Publication ProjectPublicationInfoResponse `json:"publication" yaml:"publication" schema:"publication,required"`
 	// PublicationStatus: Current publication workflow state.
 	PublicationStatus KclProjectPublicationStatus `json:"publication_status" yaml:"publication_status" schema:"publication_status,required"`
+	// Revision: Opaque revision token for optimistic project mutations.
+	Revision string `json:"revision" yaml:"revision" schema:"revision,required"`
 	// Title: User-facing project title.
 	Title string `json:"title" yaml:"title" schema:"title,required"`
 	// UpdatedAt: When the project row was last updated.
@@ -7530,6 +7532,8 @@ type ProjectSummaryResponse struct {
 	Publication ProjectPublicationInfoResponse `json:"publication" yaml:"publication" schema:"publication,required"`
 	// PublicationStatus: Current publication workflow state.
 	PublicationStatus KclProjectPublicationStatus `json:"publication_status" yaml:"publication_status" schema:"publication_status,required"`
+	// Revision: Opaque revision token for optimistic project mutations.
+	Revision string `json:"revision" yaml:"revision" schema:"revision,required"`
 	// Title: User-facing project title.
 	Title string `json:"title" yaml:"title" schema:"title,required"`
 	// UpdatedAt: When the project row was last updated.
