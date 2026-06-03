@@ -2310,27 +2310,6 @@ func ExampleOrgService_GetShortlinks() {
 
 }
 
-// AdminDetailsList: Get admin-only details for an organization.
-// Zoo admins can retrieve extended information about any organization, while non-admins receive a 404 to avoid leaking existence.
-//
-// Parameters
-//
-//   - `id`: A UUID usually v4 or v7
-func ExampleOrgService_AdminDetailsList() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Org.AdminDetailsList(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // GetBillingContractForAny: Get the billing contract for an organization.
 // This endpoint requires Zoo admin authentication. It returns the active contract for the organization, or the latest draft when no active contract exists.
 //

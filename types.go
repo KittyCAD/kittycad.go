@@ -104,7 +104,7 @@ type APIToken struct {
 	IsValid bool `json:"is_valid" yaml:"is_valid" schema:"is_valid,required"`
 	// Label: An optional label for the API token.
 	Label string `json:"label" yaml:"label" schema:"label"`
-	// Token: The API token itself.
+	// Token: The API token itself. Note: This is partially obfuscated when serialized to JSON responses, as API tokens are too sensitive to return in full. Only the last 4 characters are shown to allow users to identify their tokens.
 	Token string `json:"token" yaml:"token" schema:"token,required"`
 	// UpdatedAt: The date and time the API token was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
@@ -118,6 +118,25 @@ type APITokenResultsPage struct {
 	Items []APIToken `json:"items" yaml:"items" schema:"items,required"`
 	// NextPage: token used to fetch the next page of results (if any)
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// APITokenWithFullToken: An API token with the full, unobfuscated token value.
+// This is used specifically for the creation endpoint response, where the user needs to see the full token exactly once. All other endpoints return the obfuscated version via the `ApiToken` struct.
+type APITokenWithFullToken struct {
+	// CreatedAt: The date and time the API token was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// ID: The unique identifier for the API token.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// IsValid: If the token is valid.
+	IsValid bool `json:"is_valid" yaml:"is_valid" schema:"is_valid,required"`
+	// Label: An optional label for the API token.
+	Label string `json:"label" yaml:"label" schema:"label"`
+	// Token: The API token itself - unobfuscated.
+	Token string `json:"token" yaml:"token" schema:"token,required"`
+	// UpdatedAt: The date and time the API token was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The ID of the user that owns the API token.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
 // AccountProvider: An account provider.
@@ -6551,54 +6570,6 @@ type Org struct {
 	StripeID string `json:"stripe_id" yaml:"stripe_id" schema:"stripe_id"`
 	// UpdatedAt: The date and time the org was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-}
-
-// OrgAddress: An address for an organization.
-type OrgAddress struct {
-	// City: The city component.
-	City string `json:"city" yaml:"city" schema:"city"`
-	// Country: The country component. This is a two-letter ISO country code.
-	Country string `json:"country" yaml:"country" schema:"country,required"`
-	// CreatedAt: The time and date the address was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// ID: The unique identifier of the address.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// OrgID: The org ID that this address belongs to.
-	OrgID UUID `json:"org_id" yaml:"org_id" schema:"org_id,required"`
-	// State: The state component.
-	State string `json:"state" yaml:"state" schema:"state"`
-	// Street1: The first street component.
-	Street1 string `json:"street1" yaml:"street1" schema:"street1"`
-	// Street2: The second street component.
-	Street2 string `json:"street2" yaml:"street2" schema:"street2"`
-	// UpdatedAt: The time and date the address was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// Zip: The zip component.
-	Zip string `json:"zip" yaml:"zip" schema:"zip"`
-}
-
-// OrgAdminDetails: Extra admin-only details for an organization.
-type OrgAdminDetails struct {
-	// Address: Latest billing address stored for the organization.
-	Address OrgAddress `json:"address" yaml:"address" schema:"address"`
-	// AddressSummary: Readable billing address summary.
-	AddressSummary string `json:"address_summary" yaml:"address_summary" schema:"address_summary"`
-	// Block: Block reason when the org is blocked.
-	Block BlockReason `json:"block" yaml:"block" schema:"block"`
-	// BlockMessage: Human-friendly block reason message.
-	BlockMessage string `json:"block_message" yaml:"block_message" schema:"block_message"`
-	// MaxEngineSessionsPerUserOverride: Optional org-wide per-user override for concurrent engine sessions.
-	MaxEngineSessionsPerUserOverride int `json:"max_engine_sessions_per_user_override" yaml:"max_engine_sessions_per_user_override" schema:"max_engine_sessions_per_user_override"`
-	// NeverBlock: Whether this organization is permanently exempt from blocking.
-	NeverBlock bool `json:"never_block" yaml:"never_block" schema:"never_block,required"`
-	// PaymentMethods: Known payment methods on file.
-	PaymentMethods []PaymentMethod `json:"payment_methods" yaml:"payment_methods" schema:"payment_methods,required"`
-	// PaymentMethodsSummary: Summaries of the known payment methods.
-	PaymentMethodsSummary []string `json:"payment_methods_summary" yaml:"payment_methods_summary" schema:"payment_methods_summary,required"`
-	// StripeCustomerID: Stripe customer identifier if one exists.
-	StripeCustomerID string `json:"stripe_customer_id" yaml:"stripe_customer_id" schema:"stripe_customer_id"`
-	// StripeDashboardUrl: Direct link to the Stripe customer dashboard.
-	StripeDashboardUrl string `json:"stripe_dashboard_url" yaml:"stripe_dashboard_url" schema:"stripe_dashboard_url"`
 }
 
 // OrgDataset: Dataset owned by an organization, reusable across multiple features.
