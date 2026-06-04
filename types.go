@@ -4107,6 +4107,8 @@ type MlToolResultOutputs struct {
 	StatusCode int `json:"status_code" yaml:"status_code" schema:"status_code,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// ZookeeperEditPatch: Optional reversible delta for undoing/redoing a Zookeeper project edit locally. The `outputs` map remains the resulting project state.
+	ZookeeperEditPatch ZookeeperEditPatch `json:"zookeeper_edit_patch" yaml:"zookeeper_edit_patch" schema:"zookeeper_edit_patch"`
 }
 
 // MlToolResultProjectName: Mechanical knowledge base response.
@@ -10121,6 +10123,47 @@ const (
 	// ZooToolTextToCad: The Text-to-CAD UI.
 	ZooToolTextToCad ZooTool = "text_to_cad"
 )
+
+// ZookeeperEditPatch: Local replay data for a single successful Zookeeper project edit.
+type ZookeeperEditPatch struct {
+	// ChangedFiles: Project files changed by this Zookeeper edit.
+	ChangedFiles []ZookeeperEditPatchFile `json:"changed_files" yaml:"changed_files" schema:"changed_files"`
+	// RunID: Stable id for the Zookeeper run that produced this edit.
+	RunID string `json:"run_id" yaml:"run_id" schema:"run_id,required"`
+}
+
+// ZookeeperEditPatchFile: ZookeeperEditPatchFile: Replay data for one project file changed by a Zookeeper edit.
+type ZookeeperEditPatchFile any
+
+// ZookeeperEditPatchFileContents: The file was created by Zookeeper.
+type ZookeeperEditPatchFileContents struct {
+	// Contents: File contents created by Zookeeper.
+	Contents string `json:"contents" yaml:"contents" schema:"contents,required"`
+	// Path: Project-relative path to the changed file.
+	Path string `json:"path" yaml:"path" schema:"path,required"`
+	// Status:
+	Status string `json:"status" yaml:"status" schema:"status,required"`
+}
+
+// ZookeeperEditPatchFileCreated: The file was deleted by Zookeeper.
+type ZookeeperEditPatchFileCreated struct {
+	// Path: Project-relative path to the changed file.
+	Path string `json:"path" yaml:"path" schema:"path,required"`
+	// PreviousContents: File contents before Zookeeper deleted the file.
+	PreviousContents string `json:"previous_contents" yaml:"previous_contents" schema:"previous_contents,required"`
+	// Status:
+	Status string `json:"status" yaml:"status" schema:"status,required"`
+}
+
+// ZookeeperEditPatchFilePath: The file was modified by Zookeeper.
+type ZookeeperEditPatchFilePath struct {
+	// Diff: Machine-applicable unified diff from the previous contents to the new contents.
+	Diff string `json:"diff" yaml:"diff" schema:"diff,required"`
+	// Path: Project-relative path to the changed file.
+	Path string `json:"path" yaml:"path" schema:"path,required"`
+	// Status:
+	Status string `json:"status" yaml:"status" schema:"status,required"`
+}
 
 // ZoomToFit: The response from the `ZoomToFit` command.
 type ZoomToFit struct {
