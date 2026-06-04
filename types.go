@@ -2135,6 +2135,18 @@ type Edge struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 }
 
+// EdgeCutVersion: Edge cut algorithm version.
+type EdgeCutVersion string
+
+const (
+	// EdgeCutVersionV0: Let the engine choose whichever version it wants.
+	EdgeCutVersionV0 EdgeCutVersion = "v0"
+	// EdgeCutVersionV1: The original fillet algorithm Zoo 1.0 shipped with. Limitations: doesn't support rolling ball fillets, has several bugs that will not be fixed.
+	EdgeCutVersionV1 EdgeCutVersion = "v1"
+	// EdgeCutVersionV2: Adds support for rolling ball fillets. Fixes bugs from V1. Still experimental.
+	EdgeCutVersionV2 EdgeCutVersion = "v2"
+)
+
 // EdgeInfo: A list of faces for a specific edge.
 type EdgeInfo struct {
 	// EdgeID: The UUID of the id.
@@ -4474,6 +4486,8 @@ type ModelingCmdEdgeReference struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UseLegacy: If true, use the legacy CSG algorithm.
 	UseLegacy bool `json:"use_legacy" yaml:"use_legacy" schema:"use_legacy"`
+	// Version: Which version of the edge cut algorithm to use.
+	Version EdgeCutVersion `json:"version" yaml:"version" schema:"version"`
 }
 
 // ModelingCmdEngineUtilEvaluatePath: Move the path's "pen". If you're in sketch mode, these coordinates are in the local coordinate system, not the world's coordinate system. For example, say you're sketching on the plane {x: (1,0,0), y: (0,1,0), origin: (0, 0, 50)}. In other words, the plane 50 units above the default XY plane. Then, moving the pen to (1, 1, 0) with this command uses local coordinates. So, it would move the pen to (1, 1, 50) in global coordinates.
@@ -4970,6 +4984,8 @@ type ModelingCmdModelingCmdOpposite struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UseLegacy: If true, use the legacy CSG algorithm.
 	UseLegacy bool `json:"use_legacy" yaml:"use_legacy" schema:"use_legacy"`
+	// Version: Which version of the edge cut algorithm to use.
+	Version EdgeCutVersion `json:"version" yaml:"version" schema:"version"`
 }
 
 // ModelingCmdModelingCmdPath: Command for revolving a solid 2d.
@@ -5020,6 +5036,8 @@ type ModelingCmdModelingCmdTarget struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// UseLegacy: If true, use the legacy CSG algorithm.
 	UseLegacy bool `json:"use_legacy" yaml:"use_legacy" schema:"use_legacy"`
+	// Version: Which version of the edge cut algorithm to use.
+	Version EdgeCutVersion `json:"version" yaml:"version" schema:"version"`
 }
 
 // ModelingCmdModelingCmdTolerance: Fade entity in or out.
