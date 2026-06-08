@@ -5175,9 +5175,11 @@ func (s *ServiceAccountService) GetForOrg(token string) (*ServiceAccount, error)
 //
 // This endpoint does not actually delete the service account from the database. It merely marks the token as invalid. We still want to keep the service account in the database for historical purposes.
 //
+// The token path parameter can be either the full service account token (prefixed with `svc-`) or the token's unique ID (a UUID).
+//
 // Parameters
 //
-//   - `token`: An auth token. A uuid with a prefix of svc-
+//   - `token`
 func (s *ServiceAccountService) DeleteForOrg(token string) error {
 	// Create the url.
 	path := "/org/service-accounts/{{.token}}"
@@ -7248,9 +7250,11 @@ func (s *APITokenService) GetForUser(token string) (*APIToken, error) {
 //
 // This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.
 //
+// The token path parameter can be either the full API token (prefixed with `api-`) or the token's unique ID (a UUID).
+//
 // Parameters
 //
-//   - `token`: An auth token. A uuid with a prefix of api-
+//   - `token`
 func (s *APITokenService) DeleteForUser(token string) error {
 	// Create the url.
 	path := "/user/api-tokens/{{.token}}"

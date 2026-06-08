@@ -2268,9 +2268,11 @@ func ExampleServiceAccountService_GetForOrg() {
 //
 // This endpoint does not actually delete the service account from the database. It merely marks the token as invalid. We still want to keep the service account in the database for historical purposes.
 //
+// The token path parameter can be either the full service account token (prefixed with `svc-`) or the token's unique ID (a UUID).
+//
 // Parameters
 //
-//   - `token`: An auth token. A uuid with a prefix of svc-
+//   - `token`
 func ExampleServiceAccountService_DeleteForOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -3145,9 +3147,11 @@ func ExampleAPITokenService_GetForUser() {
 //
 // This endpoint does not actually delete the API token from the database. It merely marks the token as invalid. We still want to keep the token in the database for historical purposes.
 //
+// The token path parameter can be either the full API token (prefixed with `api-`) or the token's unique ID (a UUID).
+//
 // Parameters
 //
-//   - `token`: An auth token. A uuid with a prefix of api-
+//   - `token`
 func ExampleAPITokenService_DeleteForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
