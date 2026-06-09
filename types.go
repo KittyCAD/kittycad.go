@@ -3899,6 +3899,8 @@ const (
 type MlCopilotModeOption struct {
 	// Description: Human-readable display description.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// Disabled: Whether this mode is unavailable for the user's current plan.
+	Disabled bool `json:"disabled" yaml:"disabled" schema:"disabled"`
 	// Icon: Client icon identifier.
 	Icon string `json:"icon" yaml:"icon" schema:"icon,required"`
 	// ID: Stable mode identifier to send in user messages.
