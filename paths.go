@@ -149,6 +149,45 @@ func (s *MlService) CreateTextToCad(outputFormat FileExportFormat, kcl bool, bod
 
 }
 
+// GetAnnouncements: List all active announcements.
+// No authentication is required.
+func (s *MetaService) GetAnnouncements() (*AnnouncementList, error) {
+	// Create the url.
+	path := "/announcements"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AnnouncementList
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // Get: Get details of an API call.
 // This endpoint requires authentication by any Zoo user. It returns details of the requested API call for the user.
 //

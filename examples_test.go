@@ -105,6 +105,23 @@ func ExampleMlService_CreateTextToCad() {
 
 }
 
+// GetAnnouncements: List all active announcements.
+// No authentication is required.
+func ExampleMetaService_GetAnnouncements() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Meta.GetAnnouncements()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // Get: Get details of an API call.
 // This endpoint requires authentication by any Zoo user. It returns details of the requested API call for the user.
 //
