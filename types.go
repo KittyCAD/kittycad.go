@@ -243,8 +243,10 @@ type AnnotationBasicDimension struct {
 	FontPointSize int `json:"font_point_size" yaml:"font_point_size" schema:"font_point_size,required"`
 	// FontScale: The scale of the font label in 3D space
 	FontScale float64 `json:"font_scale" yaml:"font_scale" schema:"font_scale,required"`
+	// FromEdgeReference: Edge reference to use to measure the dimension from If both `from_entity_id` and `from_edge_reference` are provided, `from_edge_reference` takes precedence.
+	FromEdgeReference EdgeSpecifier `json:"from_edge_reference" yaml:"from_edge_reference" schema:"from_edge_reference"`
 	// FromEntityID: Entity to measure the dimension from
-	FromEntityID UUID `json:"from_entity_id" yaml:"from_entity_id" schema:"from_entity_id,required"`
+	FromEntityID UUID `json:"from_entity_id" yaml:"from_entity_id" schema:"from_entity_id"`
 	// FromEntityPos: Normalized position within the entity to position the dimension from
 	FromEntityPos Point2D `json:"from_entity_pos" yaml:"from_entity_pos" schema:"from_entity_pos,required"`
 	// Offset: 2D Position offset of the annotation within the plane.
@@ -253,8 +255,10 @@ type AnnotationBasicDimension struct {
 	PlaneID UUID `json:"plane_id" yaml:"plane_id" schema:"plane_id,required"`
 	// Precision: Number of decimal places to use when displaying tolerance and dimension values
 	Precision int `json:"precision" yaml:"precision" schema:"precision,required"`
+	// ToEdgeReference: Edge reference to use to measure the dimension from If both `to_entity_id` and `to_edge_reference` are provided, `to_edge_reference` takes precedence.
+	ToEdgeReference EdgeSpecifier `json:"to_edge_reference" yaml:"to_edge_reference" schema:"to_edge_reference"`
 	// ToEntityID: Entity to measure the dimension to
-	ToEntityID UUID `json:"to_entity_id" yaml:"to_entity_id" schema:"to_entity_id,required"`
+	ToEntityID UUID `json:"to_entity_id" yaml:"to_entity_id" schema:"to_entity_id"`
 	// ToEntityPos: Normalized position within the entity to position the dimension to
 	ToEntityPos Point2D `json:"to_entity_pos" yaml:"to_entity_pos" schema:"to_entity_pos,required"`
 }
@@ -267,8 +271,10 @@ type AnnotationFeatureControl struct {
 	DefinedDatum string `json:"defined_datum" yaml:"defined_datum" schema:"defined_datum"`
 	// Dimension: Basic dimensions
 	Dimension AnnotationMbdBasicDimension `json:"dimension" yaml:"dimension" schema:"dimension"`
+	// EdgeReference: Edge reference to use to place the annotation leader from If both `entity_id` and `edge_reference` are provided, `edge_reference` takes precedence.
+	EdgeReference EdgeSpecifier `json:"edge_reference" yaml:"edge_reference" schema:"edge_reference"`
 	// EntityID: Entity to place the annotation leader from
-	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
+	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id"`
 	// EntityPos: Normalized position within the entity to position the annotation leader from
 	EntityPos Point2D `json:"entity_pos" yaml:"entity_pos" schema:"entity_pos,required"`
 	// FontPointSize: The point size of the fonts used to generate the annotation label.  Very large values can negatively affect performance.
@@ -293,8 +299,10 @@ type AnnotationFeatureControl struct {
 
 // AnnotationFeatureTag: Parameters for defining an MBD Feature Tag Annotation state
 type AnnotationFeatureTag struct {
+	// EdgeReference: Edge reference to use to place the annotation leader from If both `entity_id` and `edge_reference` are provided, `edge_reference` takes precedence.
+	EdgeReference EdgeSpecifier `json:"edge_reference" yaml:"edge_reference" schema:"edge_reference"`
 	// EntityID: Entity to place the annotation leader from
-	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id,required"`
+	EntityID UUID `json:"entity_id" yaml:"entity_id" schema:"entity_id"`
 	// EntityPos: Normalized position within the entity to position the annotation leader from
 	EntityPos Point2D `json:"entity_pos" yaml:"entity_pos" schema:"entity_pos,required"`
 	// FontPointSize: The point size of the fonts used to generate the annotation label.  Very large values can negatively affect performance.
@@ -9813,8 +9821,6 @@ type UserCadInfoAdminDetails struct {
 type UserFeature string
 
 const (
-	// UserFeatureAquarium represents the UserFeature `"aquarium"`.
-	UserFeatureAquarium UserFeature = "aquarium"
 	// UserFeatureBodiesPane represents the UserFeature `"bodies_pane"`.
 	UserFeatureBodiesPane UserFeature = "bodies_pane"
 	// UserFeatureEnableZ0006Lint represents the UserFeature `"enable_z0006_lint"`.
