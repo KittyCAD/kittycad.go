@@ -4593,12 +4593,16 @@ type ModelingCmdEngineUtilEvaluatePath struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityClone: Finds a suitable point inside the region for calling such that CreateRegionFromQueryPoint will generate an identical region.
+// ModelingCmdEntityClone: Create a region with a query point. The region should have an ID taken from the ID of the 'CreateRegionFromQueryPoint' modeling command.
 type ModelingCmdEntityClone struct {
-	// RegionID: Which region to search within
-	RegionID UUID `json:"region_id" yaml:"region_id" schema:"region_id,required"`
+	// ObjectID: Which sketch object to create the region from.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// QueryPoint: The query point (in the same coordinates as the sketch itself) if a possible sketch region contains this point, then that region will be created
+	QueryPoint Point2D `json:"query_point" yaml:"query_point" schema:"query_point,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Version: Which version of the Region endpoint to call.
+	Version RegionVersion `json:"version" yaml:"version" schema:"version"`
 }
 
 // ModelingCmdEntityDeleteChildren: Create a new solid from combining other smaller solids. In other words, every part of the input solids will be included in the output solid.
@@ -4733,12 +4737,14 @@ type ModelingCmdEntityIds struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityLinearPatternTransform: Returns the closest edge to this point.
+// ModelingCmdEntityLinearPatternTransform: Offset a surface by a given distance.
 type ModelingCmdEntityLinearPatternTransform struct {
-	// ClosestTo: Find the edge closest to this point. Assumed to be in absolute coordinates, relative to global (scene) origin.
-	ClosestTo Point3D `json:"closest_to" yaml:"closest_to" schema:"closest_to,required"`
-	// ObjectID: The body whose edges are being queried. If not given, will search all bodies in the scene.
-	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id"`
+	// Distance: The distance to offset the surface by.
+	Distance float64 `json:"distance" yaml:"distance" schema:"distance,required"`
+	// Flip: Flip the newly created face.
+	Flip bool `json:"flip" yaml:"flip" schema:"flip,required"`
+	// SurfaceID: The surface to offset.
+	SurfaceID UUID `json:"surface_id" yaml:"surface_id" schema:"surface_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -4953,6 +4959,16 @@ type ModelingCmdModelingCmdAngle struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// ModelingCmdModelingCmdAxis: Returns the closest edge to this point.
+type ModelingCmdModelingCmdAxis struct {
+	// ClosestTo: Find the edge closest to this point. Assumed to be in absolute coordinates, relative to global (scene) origin.
+	ClosestTo Point3D `json:"closest_to" yaml:"closest_to" schema:"closest_to,required"`
+	// ObjectID: The body whose edges are being queried. If not given, will search all bodies in the scene.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // ModelingCmdModelingCmdBodyType: Fade entity in or out.
 type ModelingCmdModelingCmdBodyType struct {
 	// DurationSeconds: How many seconds the animation should take.
@@ -4991,10 +5007,10 @@ type ModelingCmdModelingCmdEdgeID struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdEntityID: The user clicked on a point in the window, returns the region the user clicked on, if any.
+// ModelingCmdModelingCmdEntityID: Finds a suitable point inside the region for calling such that CreateRegionFromQueryPoint will generate an identical region.
 type ModelingCmdModelingCmdEntityID struct {
-	// SelectedAtWindow: Where in the window was selected
-	SelectedAtWindow Point2D `json:"selected_at_window" yaml:"selected_at_window" schema:"selected_at_window,required"`
+	// RegionID: Which region to search within
+	RegionID UUID `json:"region_id" yaml:"region_id" schema:"region_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5521,24 +5537,20 @@ type ModelingCmdTrajectory struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdTransform: Get the smallest box that could contain the given parts.
+// ModelingCmdTransform: The user clicked on a point in the window, returns the region the user clicked on, if any.
 type ModelingCmdTransform struct {
-	// EntityIds: IDs of the entities to be included in the box. If this is empty, then all entities are included (the entire scene).
-	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
-	// OutputUnit: The output unit for the box's dimensions. Defaults to millimeters.
-	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit"`
+	// SelectedAtWindow: Where in the window was selected
+	SelectedAtWindow Point2D `json:"selected_at_window" yaml:"selected_at_window" schema:"selected_at_window,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdTransforms: Offset a surface by a given distance.
+// ModelingCmdTransforms: Get the smallest box that could contain the given parts.
 type ModelingCmdTransforms struct {
-	// Distance: The distance to offset the surface by.
-	Distance float64 `json:"distance" yaml:"distance" schema:"distance,required"`
-	// Flip: Flip the newly created face.
-	Flip bool `json:"flip" yaml:"flip" schema:"flip,required"`
-	// SurfaceID: The surface to offset.
-	SurfaceID UUID `json:"surface_id" yaml:"surface_id" schema:"surface_id,required"`
+	// EntityIds: IDs of the entities to be included in the box. If this is empty, then all entities are included (the entire scene).
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// OutputUnit: The output unit for the box's dimensions. Defaults to millimeters.
+	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5878,8 +5890,8 @@ type OkModelingCmdResponse any
 
 // OkModelingCmdResponseCameraDragMove is the type definition for a OkModelingCmdResponseCameraDragMove.
 type OkModelingCmdResponseCameraDragMove struct {
-	// Data: The response from the 'ClosestEdge'.
-	Data ClosestEdge `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'OffsetSurface'.
+	Data OffsetSurface `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5894,8 +5906,8 @@ type OkModelingCmdResponseCameraDragStart struct {
 
 // OkModelingCmdResponseClosePath is the type definition for a OkModelingCmdResponseClosePath.
 type OkModelingCmdResponseClosePath struct {
-	// Data: The response from the 'BoundingBox'.
-	Data BoundingBox `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'SelectRegionFromPoint'. If there are multiple ways to construct this region, this chooses arbitrarily.
+	Data SelectRegionFromPoint `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6180,8 +6192,8 @@ type OkModelingCmdResponseHighlightSetEntity struct {
 
 // OkModelingCmdResponseLoft is the type definition for a OkModelingCmdResponseLoft.
 type OkModelingCmdResponseLoft struct {
-	// Data: The response from 'RegionGetQueryPoint' modeling command.
-	Data RegionGetQueryPoint `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'CreateRegionFromQueryPoint'. The region should have an ID taken from the ID of the 'CreateRegionFromQueryPoint' modeling command.
+	Data CreateRegionFromQueryPoint `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6260,8 +6272,8 @@ type OkModelingCmdResponseObjectVisible struct {
 
 // OkModelingCmdResponseOkModelingCmdResponseData is the type definition for a OkModelingCmdResponseOkModelingCmdResponseData.
 type OkModelingCmdResponseOkModelingCmdResponseData struct {
-	// Data: The response from the 'OffsetSurface'.
-	Data OffsetSurface `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'ClosestEdge'.
+	Data ClosestEdge `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6978,6 +6990,18 @@ const (
 	// OrgRoleServiceAccount: A service account role.
 	OrgRoleServiceAccount OrgRole = "service_account"
 )
+
+// OrgSkillResponse: Public skill context available to the caller's organization.
+type OrgSkillResponse struct {
+	// Description: Short description injected into Zookeeper's initial prompt.
+	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// ID: Stable skill identifier.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Markdown: Full markdown context loaded when the skill is activated.
+	Markdown string `json:"markdown" yaml:"markdown" schema:"markdown,required"`
+	// Name: Human-readable activation name.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
+}
 
 // OrientToFace: The response from the `OrientToFace` command.
 type OrientToFace struct {
@@ -7833,6 +7857,20 @@ type ReconfigureStream struct {
 type RegionGetQueryPoint struct {
 	// QueryPoint: A point that is inside of the queried region, in the same coordinate frame as the sketch itself
 	QueryPoint Point2D `json:"query_point" yaml:"query_point" schema:"query_point,required"`
+}
+
+// RegionGetResolvableIntersectionInfo: The response from the 'RegionGetResolvableIntersectionInfo'.
+type RegionGetResolvableIntersectionInfo struct {
+	// CurveClockwise: True if the region lies within the clockwise interior of the two intersections (inside a "right" turn from the segment to the intersection segment)
+	CurveClockwise bool `json:"curve_clockwise" yaml:"curve_clockwise" schema:"curve_clockwise,required"`
+	// IntersectionCount: The total number of intersections between the two curves.
+	IntersectionCount int `json:"intersection_count" yaml:"intersection_count" schema:"intersection_count,required"`
+	// IntersectionIndex: Disambiguator providing the index of the intersection.  Can be non-zero if the two curves intersect multiple times
+	IntersectionIndex int `json:"intersection_index" yaml:"intersection_index" schema:"intersection_index,required"`
+	// IntersectionSegment: The UUID of the curve that intersects the walking curve that also borders the queried region
+	IntersectionSegment UUID `json:"intersection_segment" yaml:"intersection_segment" schema:"intersection_segment,required"`
+	// Segment: The UUID of the walking curve that borders the queried region
+	Segment UUID `json:"segment" yaml:"segment" schema:"segment,required"`
 }
 
 // RegionVersion: Region-creation algorithm version.
