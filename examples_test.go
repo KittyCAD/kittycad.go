@@ -2329,6 +2329,22 @@ func ExampleOrgService_GetShortlinks() {
 
 }
 
+// ListSkills: List every skill that belongs to the caller's organization.
+func ExampleOrgService_ListSkills() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Org.ListSkills()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // GetBillingContractForAny: Get the billing contract for an organization.
 // This endpoint requires Zoo admin authentication. It returns the active contract for the organization, or the latest draft when no active contract exists.
 //
