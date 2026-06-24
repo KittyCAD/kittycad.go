@@ -4025,7 +4025,7 @@ type MlCopilotServerMessageReasoning struct {
 }
 
 // MlCopilotServerMessageReplay: Replay containing raw bytes for previously-saved messages for a conversation. Includes server messages and client `User` messages.
-// Invariants: - Includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Also includes client `User` messages. - The following are NEVER included: `SessionData`, `ConversationId`, `Delta`, or `BackendShutdown`. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
+// Invariants: - Includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Also includes client `User` messages. - The following are NEVER included: `SessionData`, `ConversationId`, `Delta`, `BackendShutdown`, or `ZookeeperAutoRouterMetadata`. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
 //
 // Wire format: - Each element is canonical serialized bytes (typically JSON) for either a `MlCopilotServerMessage` or a `MlCopilotClientMessage::User`. - When delivered as an initial replay over the websocket (upon `?replay=true&conversation_id=<uuid>`), the server sends a single WebSocket Binary frame containing a MsgPack-encoded document of this enum: `Replay { messages }`.
 type MlCopilotServerMessageReplay struct {
@@ -4051,6 +4051,13 @@ type MlCopilotServerMessageSessionData struct {
 type MlCopilotServerMessageToolOutput struct {
 	// ToolOutput:
 	ToolOutput ToolOutput `json:"tool_output" yaml:"tool_output" schema:"tool_output,required"`
+}
+
+// MlCopilotServerMessageZookeeperAutoRouterMetadata: Backend-only Zookeeper Auto-router metadata.
+// API persists this on the active prompt and does not forward it to clients or replay it as a chat message.
+type MlCopilotServerMessageZookeeperAutoRouterMetadata struct {
+	// ZookeeperAutoRouterMetadata: Zookeeper Auto-router decision metadata persisted on a copilot prompt.
+	ZookeeperAutoRouterMetadata ZookeeperAutoRouterMetadata `json:"zookeeper_auto_router_metadata" yaml:"zookeeper_auto_router_metadata" schema:"zookeeper_auto_router_metadata,required"`
 }
 
 // MlCopilotSupportedModel: AI models that we support using with the system. In theory any model with reasoning capabilities can work.
@@ -10230,6 +10237,18 @@ const (
 	// ZooToolTextToCad: The Text-to-CAD UI.
 	ZooToolTextToCad ZooTool = "text_to_cad"
 )
+
+// ZookeeperAutoRouterMetadata: Zookeeper Auto-router decision metadata persisted on a copilot prompt.
+type ZookeeperAutoRouterMetadata struct {
+	// Bucket: Auto-router classifier bucket, e.g. "simple", "moderate", or "complex".
+	Bucket string `json:"bucket" yaml:"bucket" schema:"bucket,required"`
+	// PromptTemplate: Prompt template/config label used by the router.
+	PromptTemplate string `json:"prompt_template" yaml:"prompt_template" schema:"prompt_template"`
+	// Reasons: Human-readable route reasons.
+	Reasons []string `json:"reasons" yaml:"reasons" schema:"reasons"`
+	// Stage: Selection stage, e.g. "classifier" or "replay".
+	Stage string `json:"stage" yaml:"stage" schema:"stage"`
+}
 
 // ZookeeperEditPatch: Local replay data for a single successful Zookeeper project edit.
 type ZookeeperEditPatch struct {
