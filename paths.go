@@ -84,6 +84,8 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 }
 
 // CreateTextToCad: Generate a CAD model from text.
+// Prefer the ML copilot websocket (`/ws/ml/copilot`) for new integrations. This REST endpoint is kept for existing Text-to-CAD clients, but it is no longer the recommended way to generate CAD models from a prompt.
+//
 // Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated parts. Any other formats you request here will also be returned when you list your generated parts.
 //
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
@@ -1768,13 +1770,15 @@ func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*Kc
 }
 
 // CreateTextToCadIteration: Iterate on a CAD model with a prompt.
+// Prefer the ML copilot websocket (`/ws/ml/copilot`) for new prompt-to-edit integrations. This REST endpoint is kept for existing clients, but it is no longer the recommended way to edit KCL or CAD models from a prompt.
+//
 // Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
 //
 // You always get the whole code back, even if you only changed a small part of it.
 //
 // This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
 //
-// This endpoint will soon be deprecated in favor of the `/ml/text-to-cad/multi-file/iteration` endpoint. In that the endpoint path will remain but it will have the same behavior as `ml/text-to-cad/multi-file/iteration`.
+// This endpoint is deprecated in favor of `/ws/ml/copilot`.
 //
 // Parameters
 //
@@ -1826,6 +1830,8 @@ func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*Text
 }
 
 // CreateTextToCadMultiFileIteration: Iterate on a multi-file CAD model with a prompt.
+// Prefer the ML copilot websocket (`/ws/ml/copilot`) for new prompt-to-edit integrations. This REST endpoint is kept for existing multi-file iteration clients, but it is no longer the recommended way to edit KCL or CAD models from a prompt.
+//
 // This endpoint can iterate on multi-file projects.
 //
 // Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
