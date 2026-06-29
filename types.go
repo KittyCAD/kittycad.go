@@ -9876,6 +9876,8 @@ const (
 	UserFeaturePlugins UserFeature = "plugins"
 	// UserFeatureProprietaryToKclConversionBeta represents the UserFeature `"proprietary_to_kcl_conversion_beta"`.
 	UserFeatureProprietaryToKclConversionBeta UserFeature = "proprietary_to_kcl_conversion_beta"
+	// UserFeatureSegmentsBasedRegions represents the UserFeature `"segments_based_regions"`.
+	UserFeatureSegmentsBasedRegions UserFeature = "segments_based_regions"
 	// UserFeatureSketchExperimentalFeatures represents the UserFeature `"sketch_experimental_features"`.
 	UserFeatureSketchExperimentalFeatures UserFeature = "sketch_experimental_features"
 	// UserFeatureWebAppFileBrowser represents the UserFeature `"web_app_file_browser"`.
