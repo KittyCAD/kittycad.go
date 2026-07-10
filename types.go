@@ -2810,6 +2810,64 @@ const (
 	FbxStorageBinary FbxStorage = "binary"
 )
 
+// Feature: Feature-like switches determined by environment, rules, and overrides.
+type Feature string
+
+const (
+	// FeatureBodiesPane: Enables the bodies pane in Zoo Design Studio.
+	FeatureBodiesPane Feature = "bodies_pane"
+	// FeatureAuthRestrictedToEmployees: When enabled, auth is restricted to only employees.
+	FeatureAuthRestrictedToEmployees Feature = "auth_restricted_to_employees"
+	// FeatureBigQueryTelemetry: Enables emitting telemetry to BigQuery, otherwise received telemetry is just dropped.
+	FeatureBigQueryTelemetry Feature = "big_query_telemetry"
+	// FeatureBilling: Stripe related features are enabled.
+	FeatureBilling Feature = "billing"
+	// FeatureDisallowSelfSignup: Disable signup through email or OAuth.
+	FeatureDisallowSelfSignup Feature = "disallow_self_signup"
+	// FeatureEmailWithSES: Email sending is handled by AWS SES.
+	FeatureEmailWithSES Feature = "email_with_s_e_s"
+	// FeatureEnableZ0006Lint: Enables the Z0006 lint, for converting to new face api syntax in Zoo Design Studio.
+	FeatureEnableZ0006Lint Feature = "enable_z0006_lint"
+	// FeatureKclNewLexerParser: New KCL lexer and parser.
+	FeatureKclNewLexerParser Feature = "kcl_new_lexer_parser"
+	// FeatureRedirectToGovcloud: Immediately redirect to our Govcloud environment (zoogov.dev).
+	FeatureRedirectToGovcloud Feature = "redirect_to_govcloud"
+	// FeatureRequireSamlAuth: Requires SAML auth and orgs for all users.
+	FeatureRequireSamlAuth Feature = "require_saml_auth"
+	// FeatureLocalDev: Only to be used only for local development. Allows bypassing certain features or makes local dev easier.
+	FeatureLocalDev Feature = "local_dev"
+	// FeatureNewsletter: Enables customers to subscribe to our newsletter.
+	FeatureNewsletter Feature = "newsletter"
+	// FeaturePrefixEmailSubject: Prefix email subjects with the environment so we can better identify the source.
+	FeaturePrefixEmailSubject Feature = "prefix_email_subject"
+	// FeatureEnterpriseCockroach: Enterprise-only CockroachDB features (like `REGIONAL BY ROW`) are enabled in this environment.
+	FeatureEnterpriseCockroach Feature = "enterprise_cockroach"
+	// FeatureSameSiteNoneCookies: Always use cookies with same-site=none.
+	FeatureSameSiteNoneCookies Feature = "same_site_none_cookies"
+	// FeatureValidateTaxInfo: Notify us via slack if we're missing tax info for a customer.
+	FeatureValidateTaxInfo Feature = "validate_tax_info"
+	// FeatureModelingDialogs: Enables modeling dialogs in Zoo Design Studio.
+	FeatureModelingDialogs Feature = "modeling_dialogs"
+	// FeaturePlugins: Enables plugins in Zoo Design Studio.
+	FeaturePlugins Feature = "plugins"
+	// FeatureProprietaryToKclConversionBeta: Grants access to the beta proprietary-to-KCL conversion endpoint.
+	FeatureProprietaryToKclConversionBeta Feature = "proprietary_to_kcl_conversion_beta"
+	// FeatureSegmentsBasedRegions: Enables the topological segments-based region API for point-and-click in Zoo Design Studio.
+	FeatureSegmentsBasedRegions Feature = "segments_based_regions"
+	// FeatureSketchExperimentalFeatures: Enables sketch solve experimental features in Zoo Design Studio.
+	FeatureSketchExperimentalFeatures Feature = "sketch_experimental_features"
+	// FeatureWebAppFileBrowser: Enables the public-facing web app file browser feature.
+	FeatureWebAppFileBrowser Feature = "web_app_file_browser"
+	// FeatureZookeeperProMode: Enables private Zookeeper Pro mode access in ML Copilot.
+	FeatureZookeeperProMode Feature = "zookeeper_pro_mode"
+	// FeatureUnsafeAllowAPIKeyAuth: Allow creating a session via an existing API key
+	FeatureUnsafeAllowAPIKeyAuth Feature = "unsafe_allow_api_key_auth"
+	// FeatureUnsafeAllowLocalhostShortlinks: Allow shortlinks to have a domain of localhost.
+	FeatureUnsafeAllowLocalhostShortlinks Feature = "unsafe_allow_localhost_shortlinks"
+	// FeatureZooCorpAuth: Enable ZooCorp OAuth2. This adds https://auth.corp.zoo.dev as an OAuth2 provider.
+	FeatureZooCorpAuth Feature = "zoo_corp_auth"
+)
+
 // FileCenterOfMass: A file center of mass result.
 type FileCenterOfMass struct {
 	// CenterOfMass: The resulting center of mass.
@@ -3927,6 +3985,8 @@ const (
 	MlCopilotModeThoughtful MlCopilotMode = "thoughtful"
 	// MlCopilotModeAuto: Let the system automatically choose the model and reasoning effort.
 	MlCopilotModeAuto MlCopilotMode = "auto"
+	// MlCopilotModeZookeeperPro: Use the private Zoo Pro model for internal Zookeeper workflows.
+	MlCopilotModeZookeeperPro MlCopilotMode = "zookeeper_pro"
 )
 
 // MlCopilotModeOption: A client-facing ML copilot mode option.
@@ -5840,6 +5900,8 @@ const (
 type Oauth2Scope string
 
 const (
+	// Oauth2ScopeUserread: Grants read access to the authenticated user's profile.
+	Oauth2ScopeUserread Oauth2Scope = "user:read"
 	// Oauth2ScopeModeling: Grants access to modeling APIs.
 	Oauth2ScopeModeling Oauth2Scope = "modeling"
 	// Oauth2ScopeAdminwrite: Grants write access to admin APIs.
@@ -7788,6 +7850,16 @@ type RawFile struct {
 // ReasoningMessage: ReasoningMessage: A message containing reasoning information.
 type ReasoningMessage any
 
+// ReasoningMessageCode: A project file that is being updated by the AI. This does not contain KCL code.
+type ReasoningMessageCode struct {
+	// Content: The content of the file.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// FileName: The file name.
+	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // ReasoningMessageContent: Plain text reasoning.
 type ReasoningMessageContent struct {
 	// Content: The content of the reasoning.
@@ -7796,10 +7868,28 @@ type ReasoningMessageContent struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// ReasoningMessageDesignPlan: A project file that is being created by the AI. This does not contain KCL code.
+type ReasoningMessageDesignPlan struct {
+	// Content: The content of the file.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// FileName: The file name.
+	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // ReasoningMessageFeatureTreeOutline: A KCL file that is being updated by the AI. This might contain invalid KCL code.
 type ReasoningMessageFeatureTreeOutline struct {
 	// Content: The content of the file.
 	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// FileName: The file name.
+	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ReasoningMessageGeneratedKclCode: A project file that is being deleted by the AI.
+type ReasoningMessageGeneratedKclCode struct {
 	// FileName: The file name.
 	FileName string `json:"file_name" yaml:"file_name" schema:"file_name,required"`
 	// Type:
@@ -9862,32 +9952,10 @@ type UserCadInfoAdminDetails struct {
 	WhatAreYouBuilding string `json:"what_are_you_building" yaml:"what_are_you_building" schema:"what_are_you_building"`
 }
 
-// UserFeature is the type definition for a UserFeature.
-type UserFeature string
-
-const (
-	// UserFeatureBodiesPane represents the UserFeature `"bodies_pane"`.
-	UserFeatureBodiesPane UserFeature = "bodies_pane"
-	// UserFeatureEnableZ0006Lint represents the UserFeature `"enable_z0006_lint"`.
-	UserFeatureEnableZ0006Lint UserFeature = "enable_z0006_lint"
-	// UserFeatureModelingDialogs represents the UserFeature `"modeling_dialogs"`.
-	UserFeatureModelingDialogs UserFeature = "modeling_dialogs"
-	// UserFeaturePlugins represents the UserFeature `"plugins"`.
-	UserFeaturePlugins UserFeature = "plugins"
-	// UserFeatureProprietaryToKclConversionBeta represents the UserFeature `"proprietary_to_kcl_conversion_beta"`.
-	UserFeatureProprietaryToKclConversionBeta UserFeature = "proprietary_to_kcl_conversion_beta"
-	// UserFeatureSegmentsBasedRegions represents the UserFeature `"segments_based_regions"`.
-	UserFeatureSegmentsBasedRegions UserFeature = "segments_based_regions"
-	// UserFeatureSketchExperimentalFeatures represents the UserFeature `"sketch_experimental_features"`.
-	UserFeatureSketchExperimentalFeatures UserFeature = "sketch_experimental_features"
-	// UserFeatureWebAppFileBrowser represents the UserFeature `"web_app_file_browser"`.
-	UserFeatureWebAppFileBrowser UserFeature = "web_app_file_browser"
-)
-
 // UserFeatureEntry: Enabled features surfaced to end users.
 type UserFeatureEntry struct {
 	// ID: Stable identifier for the feature flag (snake_case).
-	ID UserFeature `json:"id" yaml:"id" schema:"id,required"`
+	ID Feature `json:"id" yaml:"id" schema:"id,required"`
 }
 
 // UserFeatureList: User features response payload.
@@ -10204,6 +10272,28 @@ type ZooProductSubscription struct {
 	ZooToolsIncluded []ZooTool `json:"zoo_tools_included" yaml:"zoo_tools_included" schema:"zoo_tools_included"`
 }
 
+// ZooProductSubscriptionDowngradeReason: Customer-selected reason for downgrading an individual subscription.
+type ZooProductSubscriptionDowngradeReason string
+
+const (
+	// ZooProductSubscriptionDowngradeReasonCostTooHigh: The subscription price is too expensive for the customer.
+	ZooProductSubscriptionDowngradeReasonCostTooHigh ZooProductSubscriptionDowngradeReason = "cost_too_high"
+	// ZooProductSubscriptionDowngradeReasonErrorsOrBugs: The customer encountered product errors or bugs.
+	ZooProductSubscriptionDowngradeReasonErrorsOrBugs ZooProductSubscriptionDowngradeReason = "errors_or_bugs"
+	// ZooProductSubscriptionDowngradeReasonMissingFeatures: The product is missing features the customer needs.
+	ZooProductSubscriptionDowngradeReasonMissingFeatures ZooProductSubscriptionDowngradeReason = "missing_features"
+	// ZooProductSubscriptionDowngradeReasonAnotherAiProductBetter: The customer prefers another AI product.
+	ZooProductSubscriptionDowngradeReasonAnotherAiProductBetter ZooProductSubscriptionDowngradeReason = "another_ai_product_better"
+	// ZooProductSubscriptionDowngradeReasonZookeeperResultsLowQuality: The customer is unhappy with Zookeeper output quality.
+	ZooProductSubscriptionDowngradeReasonZookeeperResultsLowQuality ZooProductSubscriptionDowngradeReason = "zookeeper_results_low_quality"
+	// ZooProductSubscriptionDowngradeReasonReasoningTimeRunsOut: The customer runs out of reasoning time too quickly.
+	ZooProductSubscriptionDowngradeReasonReasoningTimeRunsOut ZooProductSubscriptionDowngradeReason = "reasoning_time_runs_out"
+	// ZooProductSubscriptionDowngradeReasonProductTooSlow: The product feels too slow for the customer.
+	ZooProductSubscriptionDowngradeReasonProductTooSlow ZooProductSubscriptionDowngradeReason = "product_too_slow"
+	// ZooProductSubscriptionDowngradeReasonOther: The customer selected another reason.
+	ZooProductSubscriptionDowngradeReasonOther ZooProductSubscriptionDowngradeReason = "other"
+)
+
 // ZooProductSubscriptions: A struct of Zoo product subscriptions.
 type ZooProductSubscriptions struct {
 	// ActionClientSecret: Client secret to complete SCA/3DS for the current subscription change, when applicable.
@@ -10224,6 +10314,10 @@ type ZooProductSubscriptionsOrgRequest struct {
 
 // ZooProductSubscriptionsUserRequest: A struct of Zoo product subscriptions a user can request.
 type ZooProductSubscriptionsUserRequest struct {
+	// DowngradeReason: Customer-selected reason for downgrading back to the free tier.
+	DowngradeReason ZooProductSubscriptionDowngradeReason `json:"downgrade_reason" yaml:"downgrade_reason" schema:"downgrade_reason"`
+	// DowngradeReasonText: Optional customer-provided context for the downgrade reason.
+	DowngradeReasonText string `json:"downgrade_reason_text" yaml:"downgrade_reason_text" schema:"downgrade_reason_text"`
 	// ModelingApp: Slug of the modeling app subscription tier requested.
 	ModelingApp string `json:"modeling_app" yaml:"modeling_app" schema:"modeling_app,required"`
 	// PayAnnually: If the customer chooses to pay annually or monthly, we can add that here. The annual discount will apply if there is a discount for the subscription.
