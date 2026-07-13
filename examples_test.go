@@ -3719,7 +3719,7 @@ func ExamplePaymentService_CreateUserSubscription() {
 		panic(err)
 	}
 
-	result, err := client.Payment.CreateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "some-string", PayAnnually: true})
+	result, err := client.Payment.CreateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{DowngradeReason: "", DowngradeReasonText: "some-string", ModelingApp: "some-string", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -3740,7 +3740,7 @@ func ExamplePaymentService_UpdateUserSubscription() {
 		panic(err)
 	}
 
-	result, err := client.Payment.UpdateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "some-string", PayAnnually: true})
+	result, err := client.Payment.UpdateUserSubscription(kittycad.ZooProductSubscriptionsUserRequest{DowngradeReason: "", DowngradeReasonText: "some-string", ModelingApp: "some-string", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -4397,7 +4397,7 @@ func ExampleUserService_UpdateSubscriptionFor() {
 		panic(err)
 	}
 
-	result, err := client.User.UpdateSubscriptionFor("some-string", kittycad.ZooProductSubscriptionsUserRequest{ModelingApp: "some-string", PayAnnually: true})
+	result, err := client.User.UpdateSubscriptionFor("some-string", kittycad.ZooProductSubscriptionsUserRequest{DowngradeReason: "", DowngradeReasonText: "some-string", ModelingApp: "some-string", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
