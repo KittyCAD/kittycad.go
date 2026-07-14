@@ -3035,7 +3035,7 @@ func ExampleUserService_UpdateSelf() {
 		panic(err)
 	}
 
-	result, err := client.User.UpdateSelf(kittycad.UpdateUser{Company: "some-string", Discord: "some-string", FirstName: "some-string", Github: "some-string", Image: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, IsOnboarded: true, LastName: "some-string", Phone: "+1-555-555-555", Username: "some-string"})
+	result, err := client.User.UpdateSelf(kittycad.UpdateUser{AllowPayAsYouGo: true, Company: "some-string", Discord: "some-string", FirstName: "some-string", Github: "some-string", Image: kittycad.URL{&url.URL{Scheme: "https", Host: "example.com"}}, IsOnboarded: true, LastName: "some-string", Phone: "+1-555-555-555", Username: "some-string"})
 	if err != nil {
 		panic(err)
 	}
