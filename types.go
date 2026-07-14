@@ -2623,6 +2623,8 @@ type ExtendPath struct {
 // ExtendedUser: Extended user information.
 // This is mostly used for internal purposes. It returns a mapping of the user's information, including that of our third party services we use for users: Stripe
 type ExtendedUser struct {
+	// AllowPayAsYouGo: Whether the user has opted into pay-as-you-go charges after using their included credits.
+	AllowPayAsYouGo bool `json:"allow_pay_as_you_go" yaml:"allow_pay_as_you_go" schema:"allow_pay_as_you_go"`
 	// Block: If the user should be blocked and the reason why.
 	Block BlockReason `json:"block" yaml:"block" schema:"block"`
 	// CanTrainOnData: If we can train on the user's data. If the user is a member of an organization, the organization's setting will override this.
@@ -9864,6 +9866,8 @@ type UpdateShortlinkRequest struct {
 
 // UpdateUser: The user-modifiable parts of a User.
 type UpdateUser struct {
+	// AllowPayAsYouGo: Whether the user has opted into pay-as-you-go charges after using their included credits.
+	AllowPayAsYouGo bool `json:"allow_pay_as_you_go" yaml:"allow_pay_as_you_go" schema:"allow_pay_as_you_go"`
 	// Company: The user's company.
 	Company string `json:"company" yaml:"company" schema:"company"`
 	// Discord: The user's Discord handle.
@@ -10006,6 +10010,8 @@ const (
 
 // UserResponse: Public user payload returned by the API.
 type UserResponse struct {
+	// AllowPayAsYouGo: Whether the user has opted into pay-as-you-go charges after using their included credits.
+	AllowPayAsYouGo bool `json:"allow_pay_as_you_go" yaml:"allow_pay_as_you_go" schema:"allow_pay_as_you_go"`
 	// Block: If the user should be blocked and the reason why.
 	Block BlockReason `json:"block" yaml:"block" schema:"block"`
 	// BlockMessage: Human-friendly block reason message.
