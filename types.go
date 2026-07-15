@@ -1190,6 +1190,8 @@ const (
 	BlockReasonPaymentMethodFailed BlockReason = "payment_method_failed"
 	// BlockReasonUpgradeDowngradeAbuse: The user repeatedly upgraded and downgraded to recycle free-plan credits.
 	BlockReasonUpgradeDowngradeAbuse BlockReason = "upgrade_downgrade_abuse"
+	// BlockReasonAdmin: An explicit admin block that can only be removed by admin intervention.
+	BlockReasonAdmin BlockReason = "admin"
 )
 
 // BodiesCreated: List of bodies that were created by an operation.
