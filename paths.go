@@ -7629,6 +7629,68 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 
 }
 
+// CreateUserJob: Submit a part for manufacturing. Requires a signed-in Zoo account.
+// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   free-form intake data (material, quantity, finish, notes, …). It is stored   verbatim, so fields can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.
+//
+// The submitter's identity (email, name, user id) comes from the authenticated account, not the form.
+//
+// Example `body` part: ```json { "fields": { "material": "aluminum-6061", "quantity": 10, "finish": "anodized", "notes": "deburr all edges" } } ```
+//
+// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \   -H "Authorization: Bearer $ZOO_API_TOKEN" \   -F 'body={"fields":{"material":"aluminum-6061","quantity":10}};type=application/json' \   -F 'file=@bracket.step' ```
+//
+// Returns `201` with the created job (`FactoryJobResponse`).
+//
+// Parameters
+//
+//   - `body`
+func (s *FactoryService) CreateUserJob(body *MultipartForm) (*FactoryJobResponse, error) {
+	// Create the url.
+	path := "/user/factory/jobs"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Set("Content-Type", body.ContentType())
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryJobResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // FeaturesList: List user-visible feature flags enabled for the authenticated user.
 // Returns only features that are marked as safe for exposure to clients and currently resolved to `true` for the requesting user (including org overrides).
 func (s *UserService) FeaturesList() (*UserFeatureList, error) {

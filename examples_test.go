@@ -3314,6 +3314,37 @@ func ExampleUserService_GetSelfExtended() {
 
 }
 
+// CreateUserJob: Submit a part for manufacturing. Requires a signed-in Zoo account.
+// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   free-form intake data (material, quantity, finish, notes, …). It is stored   verbatim, so fields can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.
+//
+// The submitter's identity (email, name, user id) comes from the authenticated account, not the form.
+//
+// Example `body` part: ```json { "fields": { "material": "aluminum-6061", "quantity": 10, "finish": "anodized", "notes": "deburr all edges" } } ```
+//
+// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \   -H "Authorization: Bearer $ZOO_API_TOKEN" \   -F 'body={"fields":{"material":"aluminum-6061","quantity":10}};type=application/json' \   -F 'file=@bracket.step' ```
+//
+// Returns `201` with the created job (`FactoryJobResponse`).
+//
+// Parameters
+//
+//   - `body`
+func ExampleFactoryService_CreateUserJob() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	form := kittycad.NewMultipartForm()
+
+	result, err := client.Factory.CreateUserJob(form)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // FeaturesList: List user-visible feature flags enabled for the authenticated user.
 // Returns only features that are marked as safe for exposure to clients and currently resolved to `true` for the requesting user (including org overrides).
 func ExampleUserService_FeaturesList() {

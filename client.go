@@ -28,6 +28,8 @@ type Client struct {
 	Constant *ConstantService
 	// Executor: Endpoints that allow for code execution or creation of code execution environments.
 	Executor *ExecutorService
+	// Factory: Operations for submitting and managing Factory manufacturing jobs.
+	Factory *FactoryService
 	// File: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 	File *FileService
 	// Hidden: Hidden API endpoints that should not show up in the docs.
@@ -75,6 +77,9 @@ type ConstantService service
 
 // ExecutorService: Endpoints that allow for code execution or creation of code execution environments.
 type ExecutorService service
+
+// FactoryService: Operations for submitting and managing Factory manufacturing jobs.
+type FactoryService service
 
 // FileService: CAD file operations. Create, get, and list CAD file conversions. More endpoints will be added here in the future as we build out transforms, etc on CAD models.
 type FileService service
