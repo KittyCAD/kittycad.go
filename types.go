@@ -2828,8 +2828,6 @@ const (
 type Feature string
 
 const (
-	// FeatureBodiesPane: Enables the bodies pane in Zoo Design Studio.
-	FeatureBodiesPane Feature = "bodies_pane"
 	// FeatureAuthRestrictedToEmployees: When enabled, auth is restricted to only employees.
 	FeatureAuthRestrictedToEmployees Feature = "auth_restricted_to_employees"
 	// FeatureBigQueryTelemetry: Enables emitting telemetry to BigQuery, otherwise received telemetry is just dropped.
@@ -2842,6 +2840,8 @@ const (
 	FeatureEmailWithSES Feature = "email_with_s_e_s"
 	// FeatureEnableZ0006Lint: Enables the Z0006 lint, for converting to new face api syntax in Zoo Design Studio.
 	FeatureEnableZ0006Lint Feature = "enable_z0006_lint"
+	// FeatureFactoryPortal: Enables the Factory portal.
+	FeatureFactoryPortal Feature = "factory_portal"
 	// FeatureKclNewLexerParser: New KCL lexer and parser.
 	FeatureKclNewLexerParser Feature = "kcl_new_lexer_parser"
 	// FeatureRedirectToGovcloud: Immediately redirect to our Govcloud environment (zoogov.dev).
@@ -2870,7 +2870,7 @@ const (
 	FeatureSegmentsBasedRegions Feature = "segments_based_regions"
 	// FeatureSketchExperimentalFeatures: Enables sketch solve experimental features in Zoo Design Studio.
 	FeatureSketchExperimentalFeatures Feature = "sketch_experimental_features"
-	// FeatureWebAppFileBrowser: Enables the public-facing web app file browser feature.
+	// FeatureWebAppFileBrowser: Enables cloud storage for web and desktop. Yes desktop too, the name is old and will go away soon.
 	FeatureWebAppFileBrowser Feature = "web_app_file_browser"
 	// FeatureZookeeperProMode: Enables private Zookeeper Pro mode access in ML Copilot.
 	FeatureZookeeperProMode Feature = "zookeeper_pro_mode"
@@ -4099,7 +4099,7 @@ type MlCopilotServerMessageReasoning struct {
 }
 
 // MlCopilotServerMessageReplay: Replay containing raw bytes for previously-saved messages for a conversation. Includes server messages and client `User` messages.
-// Invariants: - Includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Also includes client `User` messages. - The following are NEVER included: `SessionData`, `ConversationId`, `Delta`, `BackendShutdown`, or `ZookeeperAutoRouterMetadata`. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
+// Invariants: - Includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Also includes client `User` messages. - The following are NEVER included: `SessionData`, `ConversationId`, `Delta`, `BackendShutdown`, or `ZookeeperAutoRouterMetadata`. - `ZookeeperRecoveryToolOutput` is included only in replay sent to the text-to-CAD backend and is filtered from client replay. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
 //
 // Wire format: - Each element is canonical serialized bytes (typically JSON) for either a `MlCopilotServerMessage` or a `MlCopilotClientMessage::User`. - When delivered as an initial replay over the websocket (upon `?replay=true&conversation_id=<uuid>`), the server sends a single WebSocket Binary frame containing a MsgPack-encoded document of this enum: `Replay { messages }`.
 type MlCopilotServerMessageReplay struct {
@@ -4132,6 +4132,13 @@ type MlCopilotServerMessageToolOutput struct {
 type MlCopilotServerMessageZookeeperAutoRouterMetadata struct {
 	// ZookeeperAutoRouterMetadata: Zookeeper Auto-router decision metadata persisted on a copilot prompt.
 	ZookeeperAutoRouterMetadata ZookeeperAutoRouterMetadata `json:"zookeeper_auto_router_metadata" yaml:"zookeeper_auto_router_metadata" schema:"zookeeper_auto_router_metadata,required"`
+}
+
+// MlCopilotServerMessageZookeeperRecoveryToolOutput: Backend-only completed tool result used for portable Zookeeper recovery.
+// API persists this message and includes it only in replay sent to the text-to-CAD backend. It is never forwarded to browser clients.
+type MlCopilotServerMessageZookeeperRecoveryToolOutput struct {
+	// ZookeeperRecoveryToolOutput:
+	ZookeeperRecoveryToolOutput ZookeeperRecoveryToolOutput `json:"zookeeper_recovery_tool_output" yaml:"zookeeper_recovery_tool_output" schema:"zookeeper_recovery_tool_output,required"`
 }
 
 // MlCopilotSupportedModel: AI models that we support using with the system. In theory any model with reasoning capabilities can work.
@@ -4285,9 +4292,9 @@ type ModelingAppSubscriptionTier struct {
 	Features []SubscriptionTierFeature `json:"features" yaml:"features" schema:"features"`
 	// MlCustomModels: Indicates whether the plan enables custom ML models.
 	MlCustomModels bool `json:"ml_custom_models" yaml:"ml_custom_models" schema:"ml_custom_models"`
-	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month. This is equivalent to the monetary value divided by the price of an API credit.
+	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. Credit replenishment remains calendar-month based while anniversary billing is rolled out. This is equivalent to the monetary value divided by the price of an API credit.
 	MonthlyPayAsYouGoAPICredits int `json:"monthly_pay_as_you_go_api_credits" yaml:"monthly_pay_as_you_go_api_credits" schema:"monthly_pay_as_you_go_api_credits"`
-	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month.
+	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. Credit replenishment remains calendar-month based while anniversary billing is rolled out.
 	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value"`
 	// Name: The name of the tier.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
@@ -6902,6 +6909,10 @@ const (
 	OrgDatasetFileConversionStatusErrorUser OrgDatasetFileConversionStatus = "error_user"
 	// OrgDatasetFileConversionStatusErrorGeometryMismatch: Conversion produced a raw KCL result whose geometry diverged from the source model beyond the accepted threshold.
 	OrgDatasetFileConversionStatusErrorGeometryMismatch OrgDatasetFileConversionStatus = "error_geometry_mismatch"
+	// OrgDatasetFileConversionStatusErrorExecution: Conversion failed because generated KCL failed to execute.
+	OrgDatasetFileConversionStatusErrorExecution OrgDatasetFileConversionStatus = "error_execution"
+	// OrgDatasetFileConversionStatusErrorConnection: Conversion failed because a required conversion service connection or dependency was unavailable.
+	OrgDatasetFileConversionStatusErrorConnection OrgDatasetFileConversionStatus = "error_connection"
 	// OrgDatasetFileConversionStatusErrorUnsupported: Conversion failed because we didn't know how to handle the file. The conversion should be retried with a new converter version.
 	OrgDatasetFileConversionStatusErrorUnsupported OrgDatasetFileConversionStatus = "error_unsupported"
 	// OrgDatasetFileConversionStatusErrorInternal: Conversion failed with some other unrecoverable error. The conversion should be retried with a new converter version.
@@ -10270,9 +10281,9 @@ type ZooProductSubscription struct {
 	Features []SubscriptionTierFeature `json:"features" yaml:"features" schema:"features"`
 	// MlCustomModels: Indicates whether the plan enables custom ML models.
 	MlCustomModels bool `json:"ml_custom_models" yaml:"ml_custom_models" schema:"ml_custom_models"`
-	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month. This is equivalent to the monetary value divided by the price of an API credit.
+	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. Credit replenishment remains calendar-month based while anniversary billing is rolled out. This is equivalent to the monetary value divided by the price of an API credit.
 	MonthlyPayAsYouGoAPICredits int `json:"monthly_pay_as_you_go_api_credits" yaml:"monthly_pay_as_you_go_api_credits" schema:"monthly_pay_as_you_go_api_credits"`
-	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. This re-ups on the 1st of each month.
+	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. Credit replenishment remains calendar-month based while anniversary billing is rolled out.
 	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value"`
 	// Name: The name of the tier.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
@@ -10405,6 +10416,18 @@ type ZookeeperEditPatchFilePath struct {
 	Path string `json:"path" yaml:"path" schema:"path,required"`
 	// Status:
 	Status string `json:"status" yaml:"status" schema:"status,required"`
+}
+
+// ZookeeperRecoveryToolOutput is the type definition for a ZookeeperRecoveryToolOutput.
+type ZookeeperRecoveryToolOutput struct {
+	// CallID: Application-level tool call identifier.
+	CallID string `json:"call_id" yaml:"call_id" schema:"call_id,required"`
+	// Output: Bounded readable output derived from the completed tool result.
+	Output string `json:"output" yaml:"output" schema:"output,required"`
+	// ProjectUpdated: Whether the tool changed the current project.
+	ProjectUpdated bool `json:"project_updated" yaml:"project_updated" schema:"project_updated"`
+	// ToolName: Name of the completed tool.
+	ToolName string `json:"tool_name" yaml:"tool_name" schema:"tool_name,required"`
 }
 
 // ZoomToFit: The response from the `ZoomToFit` command.
