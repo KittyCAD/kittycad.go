@@ -2839,6 +2839,142 @@ func (s *APICallService) GetForOrg(id UUID) (*APICallWithPrice, error) {
 
 }
 
+// GetOrgUsageCollectionThreshold: Get the authenticated organization's aggregate-usage collection threshold.
+func (s *PaymentService) GetOrgUsageCollectionThreshold() (*AggregateUsageCollectionThresholdView, error) {
+	// Create the url.
+	path := "/org/billing/usage-collection-threshold"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AggregateUsageCollectionThresholdView
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// SetOrgUsageCollectionThreshold: Set the authenticated organization's aggregate-usage collection threshold.
+// Parameters
+//
+//   - `body`: An explicit collection-threshold value to configure for an account.
+func (s *PaymentService) SetOrgUsageCollectionThreshold(body AggregateUsageCollectionThresholdSet) (*AggregateUsageCollectionThresholdView, error) {
+	// Create the url.
+	path := "/org/billing/usage-collection-threshold"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AggregateUsageCollectionThresholdView
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ResetOrgUsageCollectionThreshold: Restore the default for the authenticated organization's aggregate-usage collection threshold.
+// Parameters
+//
+//   - `expectedVersion`
+func (s *PaymentService) ResetOrgUsageCollectionThreshold(expectedVersion int) (*AggregateUsageCollectionThresholdView, error) {
+	// Create the url.
+	path := "/org/billing/usage-collection-threshold"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"expected_version": strconv.Itoa(expectedVersion),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AggregateUsageCollectionThresholdView
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // DatasetS3Policies: Return the IAM policies customers should apply when onboarding an S3 dataset.
 // Parameters
 //
@@ -7373,6 +7509,143 @@ func (s *APITokenService) DeleteForUser(token string) error {
 
 }
 
+// GetUserUsageCollectionThreshold: Get your personal aggregate-usage collection threshold.
+// The effective threshold is the amount of accrued, unfunded usage that causes an early invoice before the normal billing-period close.
+func (s *PaymentService) GetUserUsageCollectionThreshold() (*AggregateUsageCollectionThresholdView, error) {
+	// Create the url.
+	path := "/user/billing/usage-collection-threshold"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AggregateUsageCollectionThresholdView
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// SetUserUsageCollectionThreshold: Set your personal aggregate-usage collection threshold.
+// Parameters
+//
+//   - `body`: An explicit collection-threshold value to configure for an account.
+func (s *PaymentService) SetUserUsageCollectionThreshold(body AggregateUsageCollectionThresholdSet) (*AggregateUsageCollectionThresholdView, error) {
+	// Create the url.
+	path := "/user/billing/usage-collection-threshold"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AggregateUsageCollectionThresholdView
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ResetUserUsageCollectionThreshold: Restore the default for your personal aggregate-usage collection threshold.
+// Parameters
+//
+//   - `expectedVersion`
+func (s *PaymentService) ResetUserUsageCollectionThreshold(expectedVersion int) (*AggregateUsageCollectionThresholdView, error) {
+	// Create the url.
+	path := "/user/billing/usage-collection-threshold"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"expected_version": strconv.Itoa(expectedVersion),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AggregateUsageCollectionThresholdView
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // GetCadInfoForm: Gets authenticated CAD user info form data for the current user.
 func (s *UserService) GetCadInfoForm() (*WebsiteCadUserInfoForm, error) {
 	// Create the url.
@@ -7629,18 +7902,55 @@ func (s *UserService) GetSelfExtended() (*ExtendedUser, error) {
 
 }
 
+// GetUserFinishes: List finishes currently available for customer Factory submissions.
+// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.
+func (s *FactoryService) GetUserFinishes() (*[]FactoryCustomerCatalogOption, error) {
+	// Create the url.
+	path := "/user/factory/finishes"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []FactoryCustomerCatalogOption
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateUserJob: Submit a part for manufacturing. Requires a signed-in Zoo account.
-// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   free-form intake data (material, finish, quantity, notes, …). It is stored   verbatim, so fields can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.
+// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   intake data (material, finish, quantity, notes, …). Material and finish   are required customer-visible catalog names; all other fields are stored   verbatim so they can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.
 //
 // The submitter's identity (email, name, user id) comes from the authenticated account, not the form.
 //
-// `fields` is free-form and the server does not validate it, but the Factory operator dashboard renders `material` and `finish` as dropdowns with a known set of values. Send these exact strings so a submission maps onto a first-class option instead of showing up as a one-off custom entry: - `finish`: `"As machined"`, `"Bead blast"`, `"Anodized"`, or   `"Other (see notes)"` — describe the real finish in `notes` when choosing   `"Other (see notes)"`. - `material`: `"Aluminum 6061"`, or `"Other (see notes)"` (real material in   `notes`). - `quantity`: a positive integer.
+// Fetch `GET /user/factory/materials` and `GET /user/factory/finishes`, then send the returned exact `material` and `finish` names. The server rejects missing, non-string, unknown, deleted, and internal-only choices with these stable field-specific `error_code` values: - `factory_material_input_missing` - `factory_material_input_invalid_type` - `factory_material_not_found` - `factory_material_not_customer_visible` - `factory_finish_input_missing` - `factory_finish_input_invalid_type` - `factory_finish_not_found` - `factory_finish_not_customer_visible` - `quantity`: a positive integer.
 //
-// Any other value is still accepted and stored verbatim; it just appears in the dashboard as a custom entry rather than a recognized option.
+// Example `body` part: ```json { "fields": { "material": "6061 Aluminum", "finish": "Anodized", "quantity": 10, "notes": "deburr all edges" } } ```
 //
-// Example `body` part: ```json { "fields": { "material": "Aluminum 6061", "finish": "Anodized", "quantity": 10, "notes": "deburr all edges" } } ```
-//
-// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \   -H "Authorization: Bearer $ZOO_API_TOKEN" \   -F 'body={"fields":{"material":"Aluminum 6061","finish":"Anodized","quantity":10}};type=application/json' \   -F 'file=@bracket.step' ```
+// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \   -H "Authorization: Bearer $ZOO_API_TOKEN" \   -F 'body={"fields":{"material":"6061 Aluminum","finish":"Anodized","quantity":10}};type=application/json' \   -F 'file=@bracket.step' ```
 //
 // Returns `201` with the created job (`FactoryJobResponse`).
 //
@@ -7686,6 +7996,45 @@ func (s *FactoryService) CreateUserJob(body *MultipartForm) (*FactoryJobResponse
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded FactoryJobResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetUserMaterials: List materials currently available for customer Factory submissions.
+// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.
+func (s *FactoryService) GetUserMaterials() (*[]FactoryCustomerCatalogOption, error) {
+	// Create the url.
+	path := "/user/factory/materials"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []FactoryCustomerCatalogOption
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

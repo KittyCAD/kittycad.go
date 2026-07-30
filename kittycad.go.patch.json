@@ -457,6 +457,30 @@
  },
  {
   "value": {
+   "example": "// ResetOrgUsageCollectionThreshold: Restore the default for the authenticated organization's aggregate-usage collection threshold.\n// \n// \n// Parameters\n// \n// \t- `expectedVersion`\n// \n// ResetOrgUsageCollectionThreshold: Restore the default for the authenticated organization's aggregate-usage collection threshold.\n// Parameters\n//\n//   - `expectedVersion`\nfunc ExamplePaymentService_ResetOrgUsageCollectionThreshold() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ResetOrgUsageCollectionThreshold(123)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ResetOrgUsageCollectionThreshold"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1billing~1usage-collection-threshold/delete/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetOrgUsageCollectionThreshold: Get the authenticated organization's aggregate-usage collection threshold.\n// \n// GetOrgUsageCollectionThreshold: Get the authenticated organization's aggregate-usage collection threshold.\nfunc ExamplePaymentService_GetOrgUsageCollectionThreshold() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetOrgUsageCollectionThreshold()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetOrgUsageCollectionThreshold"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1billing~1usage-collection-threshold/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// SetOrgUsageCollectionThreshold: Set the authenticated organization's aggregate-usage collection threshold.\n// \n// \n// Parameters\n// \n// \t- `body`: An explicit collection-threshold value to configure for an account.\n// \n// SetOrgUsageCollectionThreshold: Set the authenticated organization's aggregate-usage collection threshold.\n// Parameters\n//\n//   - `body`: An explicit collection-threshold value to configure for an account.\nfunc ExamplePaymentService_SetOrgUsageCollectionThreshold() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.SetOrgUsageCollectionThreshold(kittycad.AggregateUsageCollectionThresholdSet{Amount: 123.45, ExpectedVersion: 123})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.SetOrgUsageCollectionThreshold"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1billing~1usage-collection-threshold/put/x-go"
+ },
+ {
+  "value": {
    "example": "// DatasetS3Policies: Return the IAM policies customers should apply when onboarding an S3 dataset.\n// \n// \n// Parameters\n// \n// \t- `uri`\n// \t- `roleArn`\n// \n// DatasetS3Policies: Return the IAM policies customers should apply when onboarding an S3 dataset.\n// Parameters\n//\n//   - `uri`\n//   - `roleArn`\nfunc ExampleOrgService_DatasetS3Policies() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.DatasetS3Policies(\"some-string\", \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.DatasetS3Policies"
   },
@@ -1193,6 +1217,30 @@
  },
  {
   "value": {
+   "example": "// ResetUserUsageCollectionThreshold: Restore the default for your personal aggregate-usage collection threshold.\n// \n// \n// Parameters\n// \n// \t- `expectedVersion`\n// \n// ResetUserUsageCollectionThreshold: Restore the default for your personal aggregate-usage collection threshold.\n// Parameters\n//\n//   - `expectedVersion`\nfunc ExamplePaymentService_ResetUserUsageCollectionThreshold() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ResetUserUsageCollectionThreshold(123)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ResetUserUsageCollectionThreshold"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1billing~1usage-collection-threshold/delete/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetUserUsageCollectionThreshold: Get your personal aggregate-usage collection threshold.\n// \n// The effective threshold is the amount of accrued, unfunded usage that causes an early invoice before the normal billing-period close.\n// \n// GetUserUsageCollectionThreshold: Get your personal aggregate-usage collection threshold.\n// The effective threshold is the amount of accrued, unfunded usage that causes an early invoice before the normal billing-period close.\nfunc ExamplePaymentService_GetUserUsageCollectionThreshold() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetUserUsageCollectionThreshold()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetUserUsageCollectionThreshold"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1billing~1usage-collection-threshold/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// SetUserUsageCollectionThreshold: Set your personal aggregate-usage collection threshold.\n// \n// \n// Parameters\n// \n// \t- `body`: An explicit collection-threshold value to configure for an account.\n// \n// SetUserUsageCollectionThreshold: Set your personal aggregate-usage collection threshold.\n// Parameters\n//\n//   - `body`: An explicit collection-threshold value to configure for an account.\nfunc ExamplePaymentService_SetUserUsageCollectionThreshold() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.SetUserUsageCollectionThreshold(kittycad.AggregateUsageCollectionThresholdSet{Amount: 123.45, ExpectedVersion: 123})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.SetUserUsageCollectionThreshold"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1billing~1usage-collection-threshold/put/x-go"
+ },
+ {
+  "value": {
    "example": "// GetCadInfoForm: Gets authenticated CAD user info form data for the current user.\n// \n// GetCadInfoForm: Gets authenticated CAD user info form data for the current user.\nfunc ExampleUserService_GetCadInfoForm() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.GetCadInfoForm()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.GetCadInfoForm"
   },
@@ -1249,11 +1297,27 @@
  },
  {
   "value": {
-   "example": "// CreateUserJob: Submit a part for manufacturing. Requires a signed-in Zoo account.\n// \n// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   free-form intake data (material, finish, quantity, notes, …). It is stored   verbatim, so fields can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.\n// \n// The submitter's identity (email, name, user id) comes from the authenticated account, not the form.\n// \n// `fields` is free-form and the server does not validate it, but the Factory operator dashboard renders `material` and `finish` as dropdowns with a known set of values. Send these exact strings so a submission maps onto a first-class option instead of showing up as a one-off custom entry: - `finish`: `\"As machined\"`, `\"Bead blast\"`, `\"Anodized\"`, or   `\"Other (see notes)\"` — describe the real finish in `notes` when choosing   `\"Other (see notes)\"`. - `material`: `\"Aluminum 6061\"`, or `\"Other (see notes)\"` (real material in   `notes`). - `quantity`: a positive integer.\n// \n// Any other value is still accepted and stored verbatim; it just appears in the dashboard as a custom entry rather than a recognized option.\n// \n// Example `body` part: ```json { \"fields\": { \"material\": \"Aluminum 6061\", \"finish\": \"Anodized\", \"quantity\": 10, \"notes\": \"deburr all edges\" } } ```\n// \n// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \\   -H \"Authorization: Bearer $ZOO_API_TOKEN\" \\   -F 'body={\"fields\":{\"material\":\"Aluminum 6061\",\"finish\":\"Anodized\",\"quantity\":10}};type=application/json' \\   -F 'file=@bracket.step' ```\n// \n// Returns `201` with the created job (`FactoryJobResponse`).\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// CreateUserJob: Submit a part for manufacturing. Requires a signed-in Zoo account.\n// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   free-form intake data (material, finish, quantity, notes, …). It is stored   verbatim, so fields can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.\n//\n// The submitter's identity (email, name, user id) comes from the authenticated account, not the form.\n//\n// `fields` is free-form and the server does not validate it, but the Factory operator dashboard renders `material` and `finish` as dropdowns with a known set of values. Send these exact strings so a submission maps onto a first-class option instead of showing up as a one-off custom entry: - `finish`: `\"As machined\"`, `\"Bead blast\"`, `\"Anodized\"`, or   `\"Other (see notes)\"` — describe the real finish in `notes` when choosing   `\"Other (see notes)\"`. - `material`: `\"Aluminum 6061\"`, or `\"Other (see notes)\"` (real material in   `notes`). - `quantity`: a positive integer.\n//\n// Any other value is still accepted and stored verbatim; it just appears in the dashboard as a custom entry rather than a recognized option.\n//\n// Example `body` part: ```json { \"fields\": { \"material\": \"Aluminum 6061\", \"finish\": \"Anodized\", \"quantity\": 10, \"notes\": \"deburr all edges\" } } ```\n//\n// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \\   -H \"Authorization: Bearer $ZOO_API_TOKEN\" \\   -F 'body={\"fields\":{\"material\":\"Aluminum 6061\",\"finish\":\"Anodized\",\"quantity\":10}};type=application/json' \\   -F 'file=@bracket.step' ```\n//\n// Returns `201` with the created job (`FactoryJobResponse`).\n//\n// Parameters\n//\n//   - `body`\nfunc ExampleFactoryService_CreateUserJob() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tform := kittycad.NewMultipartForm()\n\n\tresult, err := client.Factory.CreateUserJob(form)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetUserFinishes: List finishes currently available for customer Factory submissions.\n// \n// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\n// \n// GetUserFinishes: List finishes currently available for customer Factory submissions.\n// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\nfunc ExampleFactoryService_GetUserFinishes() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.GetUserFinishes()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.GetUserFinishes"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1factory~1finishes/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateUserJob: Submit a part for manufacturing. Requires a signed-in Zoo account.\n// \n// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   intake data (material, finish, quantity, notes, …). Material and finish   are required customer-visible catalog names; all other fields are stored   verbatim so they can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.\n// \n// The submitter's identity (email, name, user id) comes from the authenticated account, not the form.\n// \n// Fetch `GET /user/factory/materials` and `GET /user/factory/finishes`, then send the returned exact `material` and `finish` names. The server rejects missing, non-string, unknown, deleted, and internal-only choices with these stable field-specific `error_code` values: - `factory_material_input_missing` - `factory_material_input_invalid_type` - `factory_material_not_found` - `factory_material_not_customer_visible` - `factory_finish_input_missing` - `factory_finish_input_invalid_type` - `factory_finish_not_found` - `factory_finish_not_customer_visible` - `quantity`: a positive integer.\n// \n// Example `body` part: ```json { \"fields\": { \"material\": \"6061 Aluminum\", \"finish\": \"Anodized\", \"quantity\": 10, \"notes\": \"deburr all edges\" } } ```\n// \n// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \\   -H \"Authorization: Bearer $ZOO_API_TOKEN\" \\   -F 'body={\"fields\":{\"material\":\"6061 Aluminum\",\"finish\":\"Anodized\",\"quantity\":10}};type=application/json' \\   -F 'file=@bracket.step' ```\n// \n// Returns `201` with the created job (`FactoryJobResponse`).\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// CreateUserJob: Submit a part for manufacturing. Requires a signed-in Zoo account.\n// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   intake data (material, finish, quantity, notes, …). Material and finish   are required customer-visible catalog names; all other fields are stored   verbatim so they can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.\n//\n// The submitter's identity (email, name, user id) comes from the authenticated account, not the form.\n//\n// Fetch `GET /user/factory/materials` and `GET /user/factory/finishes`, then send the returned exact `material` and `finish` names. The server rejects missing, non-string, unknown, deleted, and internal-only choices with these stable field-specific `error_code` values: - `factory_material_input_missing` - `factory_material_input_invalid_type` - `factory_material_not_found` - `factory_material_not_customer_visible` - `factory_finish_input_missing` - `factory_finish_input_invalid_type` - `factory_finish_not_found` - `factory_finish_not_customer_visible` - `quantity`: a positive integer.\n//\n// Example `body` part: ```json { \"fields\": { \"material\": \"6061 Aluminum\", \"finish\": \"Anodized\", \"quantity\": 10, \"notes\": \"deburr all edges\" } } ```\n//\n// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \\   -H \"Authorization: Bearer $ZOO_API_TOKEN\" \\   -F 'body={\"fields\":{\"material\":\"6061 Aluminum\",\"finish\":\"Anodized\",\"quantity\":10}};type=application/json' \\   -F 'file=@bracket.step' ```\n//\n// Returns `201` with the created job (`FactoryJobResponse`).\n//\n// Parameters\n//\n//   - `body`\nfunc ExampleFactoryService_CreateUserJob() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tform := kittycad.NewMultipartForm()\n\n\tresult, err := client.Factory.CreateUserJob(form)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.CreateUserJob"
   },
   "op": "add",
   "path": "/paths/~1user~1factory~1jobs/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetUserMaterials: List materials currently available for customer Factory submissions.\n// \n// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\n// \n// GetUserMaterials: List materials currently available for customer Factory submissions.\n// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\nfunc ExampleFactoryService_GetUserMaterials() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.GetUserMaterials()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.GetUserMaterials"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1factory~1materials/get/x-go"
  },
  {
   "value": {
