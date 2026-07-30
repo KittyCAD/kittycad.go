@@ -1277,6 +1277,60 @@ func ExampleAPICallService_GetForOrg() {
 
 }
 
+// GetOrgUsageCollectionThreshold: Get the authenticated organization's aggregate-usage collection threshold.
+func ExamplePaymentService_GetOrgUsageCollectionThreshold() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.GetOrgUsageCollectionThreshold()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// SetOrgUsageCollectionThreshold: Set the authenticated organization's aggregate-usage collection threshold.
+// Parameters
+//
+//   - `body`: An explicit collection-threshold value to configure for an account.
+func ExamplePaymentService_SetOrgUsageCollectionThreshold() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.SetOrgUsageCollectionThreshold(kittycad.AggregateUsageCollectionThresholdSet{Amount: 123.45, ExpectedVersion: 123})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ResetOrgUsageCollectionThreshold: Restore the default for the authenticated organization's aggregate-usage collection threshold.
+// Parameters
+//
+//   - `expectedVersion`
+func ExamplePaymentService_ResetOrgUsageCollectionThreshold() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.ResetOrgUsageCollectionThreshold(123)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // DatasetS3Policies: Return the IAM policies customers should apply when onboarding an S3 dataset.
 // Parameters
 //
@@ -3203,6 +3257,61 @@ func ExampleAPITokenService_DeleteForUser() {
 
 }
 
+// GetUserUsageCollectionThreshold: Get your personal aggregate-usage collection threshold.
+// The effective threshold is the amount of accrued, unfunded usage that causes an early invoice before the normal billing-period close.
+func ExamplePaymentService_GetUserUsageCollectionThreshold() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.GetUserUsageCollectionThreshold()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// SetUserUsageCollectionThreshold: Set your personal aggregate-usage collection threshold.
+// Parameters
+//
+//   - `body`: An explicit collection-threshold value to configure for an account.
+func ExamplePaymentService_SetUserUsageCollectionThreshold() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.SetUserUsageCollectionThreshold(kittycad.AggregateUsageCollectionThresholdSet{Amount: 123.45, ExpectedVersion: 123})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ResetUserUsageCollectionThreshold: Restore the default for your personal aggregate-usage collection threshold.
+// Parameters
+//
+//   - `expectedVersion`
+func ExamplePaymentService_ResetUserUsageCollectionThreshold() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Payment.ResetUserUsageCollectionThreshold(123)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // GetCadInfoForm: Gets authenticated CAD user info form data for the current user.
 func ExampleUserService_GetCadInfoForm() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -3314,18 +3423,33 @@ func ExampleUserService_GetSelfExtended() {
 
 }
 
+// GetUserFinishes: List finishes currently available for customer Factory submissions.
+// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.
+func ExampleFactoryService_GetUserFinishes() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.GetUserFinishes()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateUserJob: Submit a part for manufacturing. Requires a signed-in Zoo account.
-// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   free-form intake data (material, finish, quantity, notes, …). It is stored   verbatim, so fields can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.
+// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   intake data (material, finish, quantity, notes, …). Material and finish   are required customer-visible catalog names; all other fields are stored   verbatim so they can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.
 //
 // The submitter's identity (email, name, user id) comes from the authenticated account, not the form.
 //
-// `fields` is free-form and the server does not validate it, but the Factory operator dashboard renders `material` and `finish` as dropdowns with a known set of values. Send these exact strings so a submission maps onto a first-class option instead of showing up as a one-off custom entry: - `finish`: `"As machined"`, `"Bead blast"`, `"Anodized"`, or   `"Other (see notes)"` — describe the real finish in `notes` when choosing   `"Other (see notes)"`. - `material`: `"Aluminum 6061"`, or `"Other (see notes)"` (real material in   `notes`). - `quantity`: a positive integer.
+// Fetch `GET /user/factory/materials` and `GET /user/factory/finishes`, then send the returned exact `material` and `finish` names. The server rejects missing, non-string, unknown, deleted, and internal-only choices with these stable field-specific `error_code` values: - `factory_material_input_missing` - `factory_material_input_invalid_type` - `factory_material_not_found` - `factory_material_not_customer_visible` - `factory_finish_input_missing` - `factory_finish_input_invalid_type` - `factory_finish_not_found` - `factory_finish_not_customer_visible` - `quantity`: a positive integer.
 //
-// Any other value is still accepted and stored verbatim; it just appears in the dashboard as a custom entry rather than a recognized option.
+// Example `body` part: ```json { "fields": { "material": "6061 Aluminum", "finish": "Anodized", "quantity": 10, "notes": "deburr all edges" } } ```
 //
-// Example `body` part: ```json { "fields": { "material": "Aluminum 6061", "finish": "Anodized", "quantity": 10, "notes": "deburr all edges" } } ```
-//
-// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \   -H "Authorization: Bearer $ZOO_API_TOKEN" \   -F 'body={"fields":{"material":"Aluminum 6061","finish":"Anodized","quantity":10}};type=application/json' \   -F 'file=@bracket.step' ```
+// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \   -H "Authorization: Bearer $ZOO_API_TOKEN" \   -F 'body={"fields":{"material":"6061 Aluminum","finish":"Anodized","quantity":10}};type=application/json' \   -F 'file=@bracket.step' ```
 //
 // Returns `201` with the created job (`FactoryJobResponse`).
 //
@@ -3341,6 +3465,23 @@ func ExampleFactoryService_CreateUserJob() {
 	form := kittycad.NewMultipartForm()
 
 	result, err := client.Factory.CreateUserJob(form)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetUserMaterials: List materials currently available for customer Factory submissions.
+// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.
+func ExampleFactoryService_GetUserMaterials() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.GetUserMaterials()
 	if err != nil {
 		panic(err)
 	}
