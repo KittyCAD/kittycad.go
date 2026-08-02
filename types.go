@@ -1793,6 +1793,10 @@ const (
 	ConversionSortModeStatusAscending ConversionSortMode = "status_ascending"
 	// ConversionSortModeStatusDescending: Sort by status in decreasing order.
 	ConversionSortModeStatusDescending ConversionSortMode = "status_descending"
+	// ConversionSortModePhaseAscending: Sort by phase in increasing order.
+	ConversionSortModePhaseAscending ConversionSortMode = "phase_ascending"
+	// ConversionSortModePhaseDescending: Sort by phase in decreasing order.
+	ConversionSortModePhaseDescending ConversionSortMode = "phase_descending"
 	// ConversionSortModeUpdatedAtAscending: Sort by updated_at in increasing order.
 	ConversionSortModeUpdatedAtAscending ConversionSortMode = "updated_at_ascending"
 	// ConversionSortModeUpdatedAtDescending: Sort by updated_at in decreasing order.
