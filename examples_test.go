@@ -1475,7 +1475,7 @@ func ExampleOrgService_DownloadDatasetSuccessfulKclBulk() {
 }
 
 // ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
-// This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed. Use the optional `filter` query parameter to filter results (example: `?filter=status:success`).
+// This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed. Use the optional `filter` query parameter to filter results (example: `?filter=status:success`). Use `q` to search by conversion id or file path and `phase` to narrow the pipeline stage.
 //
 // Parameters
 //
@@ -1484,13 +1484,15 @@ func ExampleOrgService_DownloadDatasetSuccessfulKclBulk() {
 //   - `pageToken`
 //   - `sortBy`: Supported sort modes for org dataset conversions.
 //   - `filter`
+//   - `q`
+//   - `phase`
 func ExampleOrgService_ListDatasetConversions() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Org.ListDatasetConversions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "", "some-string")
+	result, err := client.Org.ListDatasetConversions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "", "some-string", "some-string", "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -1582,13 +1584,15 @@ func ExampleOrgService_RetriggerDataset() {
 //   - `pageToken`
 //   - `q`
 //   - `sortBy`: Supported sort modes for org dataset conversions.
+//   - `filter`
+//   - `phase`
 func ExampleOrgService_SearchDatasetConversions() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Org.SearchDatasetConversions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "some-string", "")
+	result, err := client.Org.SearchDatasetConversions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "some-string", "", "some-string", "some-string")
 	if err != nil {
 		panic(err)
 	}

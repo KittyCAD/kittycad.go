@@ -3324,7 +3324,7 @@ func (s *OrgService) DownloadDatasetSuccessfulKclBulk(id UUID) error {
 }
 
 // ListDatasetConversions: List the file conversions that have been processed for a given dataset owned by the caller's org.
-// This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed. Use the optional `filter` query parameter to filter results (example: `?filter=status:success`).
+// This endpoint returns lightweight conversion summaries only (including `phase`), and intentionally omits converted KCL output and snapshot image payloads for speed. Use the optional `filter` query parameter to filter results (example: `?filter=status:success`). Use `q` to search by conversion id or file path and `phase` to narrow the pipeline stage.
 //
 // Parameters
 //
@@ -3333,7 +3333,9 @@ func (s *OrgService) DownloadDatasetSuccessfulKclBulk(id UUID) error {
 //   - `pageToken`
 //   - `sortBy`: Supported sort modes for org dataset conversions.
 //   - `filter`
-func (s *OrgService) ListDatasetConversions(id UUID, limit int, pageToken string, sortBy ConversionSortMode, filter string) (*OrgDatasetFileConversionSummaryResultsPage, error) {
+//   - `q`
+//   - `phase`
+func (s *OrgService) ListDatasetConversions(id UUID, limit int, pageToken string, sortBy ConversionSortMode, filter string, q string, phase string) (*OrgDatasetFileConversionSummaryResultsPage, error) {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/conversions"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3351,6 +3353,8 @@ func (s *OrgService) ListDatasetConversions(id UUID, limit int, pageToken string
 		"page_token": pageToken,
 		"sort_by":    string(sortBy),
 		"filter":     filter,
+		"q":          q,
+		"phase":      phase,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -3566,7 +3570,9 @@ func (s *OrgService) RetriggerDataset(id UUID, statuses string) error {
 //   - `pageToken`
 //   - `q`
 //   - `sortBy`: Supported sort modes for org dataset conversions.
-func (s *OrgService) SearchDatasetConversions(id UUID, limit int, pageToken string, q string, sortBy ConversionSortMode) (*OrgDatasetFileConversionSummaryResultsPage, error) {
+//   - `filter`
+//   - `phase`
+func (s *OrgService) SearchDatasetConversions(id UUID, limit int, pageToken string, q string, sortBy ConversionSortMode, filter string, phase string) (*OrgDatasetFileConversionSummaryResultsPage, error) {
 	// Create the url.
 	path := "/org/datasets/{{.id}}/search/conversions"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3584,6 +3590,8 @@ func (s *OrgService) SearchDatasetConversions(id UUID, limit int, pageToken stri
 		"page_token": pageToken,
 		"q":          q,
 		"sort_by":    string(sortBy),
+		"filter":     filter,
+		"phase":      phase,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
