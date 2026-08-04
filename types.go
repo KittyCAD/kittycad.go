@@ -2027,6 +2027,12 @@ type Customer struct {
 type CustomerBalance struct {
 	// CreatedAt: The date and time the balance was created.
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// MonthlyAPICreditsRefreshAt: The date and time the monthly API credits are next scheduled to refresh.
+	//
+	// When a refresh is due but has not been applied yet, this is the due timestamp in the past. Clients can use that to show the refresh as pending rather than incorrectly advancing by a month.
+	//
+	// This is `null` when the customer does not have an active standard billing schedule, such as before their billing account is established or while a contract owns billing.
+	MonthlyAPICreditsRefreshAt Time `json:"monthly_api_credits_refresh_at" yaml:"monthly_api_credits_refresh_at" schema:"monthly_api_credits_refresh_at"`
 	// MonthlyAPICreditsRemaining: The number of monthly API credits remaining in the balance. This is the number of credits remaining in the balance.
 	//
 	// Both the monetary value and the number of credits are returned, but they reflect the same value in the database.
