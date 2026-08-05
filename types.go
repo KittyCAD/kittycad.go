@@ -1252,6 +1252,8 @@ const (
 	BlockReasonPaymentMethodFailed BlockReason = "payment_method_failed"
 	// BlockReasonBillingThresholdReached: The account reached its configured pay-as-you-go collection threshold.
 	BlockReasonBillingThresholdReached BlockReason = "billing_threshold_reached"
+	// BlockReasonPayAsYouGoDisabled: The user exhausted their included credits without opting into pay-as-you-go charges.
+	BlockReasonPayAsYouGoDisabled BlockReason = "pay_as_you_go_disabled"
 	// BlockReasonUpgradeDowngradeAbuse: The user repeatedly upgraded and downgraded to recycle free-plan credits.
 	BlockReasonUpgradeDowngradeAbuse BlockReason = "upgrade_downgrade_abuse"
 	// BlockReasonAdmin: An explicit admin block that can only be removed by admin intervention.
