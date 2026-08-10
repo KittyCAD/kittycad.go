@@ -7216,6 +7216,8 @@ type OrgDatasetStatus string
 const (
 	// OrgDatasetStatusActive: Dataset is active and can be used.
 	OrgDatasetStatusActive OrgDatasetStatus = "active"
+	// OrgDatasetStatusPaused: Dataset conversion processing is paused by an administrator.
+	OrgDatasetStatusPaused OrgDatasetStatus = "paused"
 	// OrgDatasetStatusDeleting: Dataset is being deleted and should not be mutated or used.
 	OrgDatasetStatusDeleting OrgDatasetStatus = "deleting"
 	// OrgDatasetStatusErrored: Dataset encountered sync errors and needs attention.
