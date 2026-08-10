@@ -4037,8 +4037,12 @@ type MlCopilotClientMessageCurrentFiles struct {
 	AdditionalFiles []MlCopilotFile `json:"additional_files" yaml:"additional_files" schema:"additional_files"`
 	// Content: The content of the user's message.
 	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// CorrelationID: Stable identifier used to correlate this user request across services.
+	CorrelationID UUID `json:"correlation_id" yaml:"correlation_id" schema:"correlation_id"`
 	// CurrentFiles: The current files in the project, if any. This can be used to provide context for the AI. This should be sent in binary format, if the files are not text files, like an imported binary file.
 	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files"`
+	// EngineAPICallID: API call ID for the active Engine modeling session, when available.
+	EngineAPICallID UUID `json:"engine_api_call_id" yaml:"engine_api_call_id" schema:"engine_api_call_id"`
 	// ForcedTools: The user can force specific tools to be used for this message.
 	ForcedTools []MlCopilotTool `json:"forced_tools" yaml:"forced_tools" schema:"forced_tools"`
 	// Mode: Pick a mode for the agent to operate in. Defaults to a fast mode.
@@ -4235,7 +4239,7 @@ type MlCopilotServerMessageReasoning struct {
 }
 
 // MlCopilotServerMessageReplay: Replay containing raw bytes for previously-saved messages for a conversation. Includes server messages and client `User` messages.
-// Invariants: - Client replay includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Client replay also includes client `User` messages. - Backend replay includes client `User` messages plus selected reasoning, edit metadata, recovery output, and final responses. - The following are NEVER included: `SessionData`, `ConversationId`, `Delta`, `BackendShutdown`, or `ZookeeperAutoRouterMetadata`. - `ZookeeperRecoveryToolOutput` is included only in replay sent to the text-to-CAD backend and is filtered from client replay. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
+// Invariants: - Client replay includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Client replay also includes client `User` messages. - Backend replay includes client `User` messages plus selected reasoning, edit metadata, recovery output, and final responses. - The following are NEVER included: `SessionData`, `ConversationId`, `Delta`, `BackendShutdown`, `ZookeeperAutoRouterMetadata`, or `ZookeeperTurnUsage`. - `ZookeeperRecoveryToolOutput` is included only in replay sent to the text-to-CAD backend and is filtered from client replay. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
 //
 // Wire format: - Each element is canonical serialized bytes (typically JSON) for either a `MlCopilotServerMessage` or a `MlCopilotClientMessage::User`. - When delivered as an initial replay over the websocket (upon `?replay=true&conversation_id=<uuid>`), the server sends a single WebSocket Binary frame containing a MsgPack-encoded document of this enum: `Replay { messages }`.
 type MlCopilotServerMessageReplay struct {
@@ -4275,6 +4279,15 @@ type MlCopilotServerMessageZookeeperAutoRouterMetadata struct {
 type MlCopilotServerMessageZookeeperRecoveryToolOutput struct {
 	// ZookeeperRecoveryToolOutput:
 	ZookeeperRecoveryToolOutput ZookeeperRecoveryToolOutput `json:"zookeeper_recovery_tool_output" yaml:"zookeeper_recovery_tool_output" schema:"zookeeper_recovery_tool_output,required"`
+}
+
+// MlCopilotServerMessageZookeeperTurnUsage: Backend-only token usage and cost for one completed Zookeeper turn.
+// Sent just before `EndOfStream`. API records it in `meta.usage` on the turn's `EndOfStream` message row, alongside the `meta.billing` revenue figures, and never forwards it to clients or replays it as a chat message. It exists so spend can be compared against what the turn was billed; it is not customer-facing.
+type MlCopilotServerMessageZookeeperTurnUsage struct {
+	// ZookeeperTurnUsage: Token usage and cost for one completed Zookeeper turn.
+	//
+	// A turn is many model calls: the streamed agent loop, helper agents, conversation compaction, Auto-mode routing, and any retried attempts. This is the sum of all of them, with breakdowns by model and by stage.
+	ZookeeperTurnUsage ZookeeperTurnUsage `json:"zookeeper_turn_usage" yaml:"zookeeper_turn_usage" schema:"zookeeper_turn_usage,required"`
 }
 
 // MlCopilotSupportedModel: AI models that we support using with the system. In theory any model with reasoning capabilities can work.
@@ -10628,6 +10641,113 @@ type ZookeeperRecoveryToolOutput struct {
 	ProjectUpdated bool `json:"project_updated" yaml:"project_updated" schema:"project_updated"`
 	// ToolName: Name of the completed tool.
 	ToolName string `json:"tool_name" yaml:"tool_name" schema:"tool_name,required"`
+}
+
+// ZookeeperTurnUsage: Token usage and cost for one completed Zookeeper turn.
+// A turn is many model calls: the streamed agent loop, helper agents, conversation compaction, Auto-mode routing, and any retried attempts. This is the sum of all of them, with breakdowns by model and by stage.
+type ZookeeperTurnUsage struct {
+	// APICallID: API call the turn belongs to, as the backend knows it.
+	APICallID string `json:"api_call_id" yaml:"api_call_id" schema:"api_call_id"`
+	// CacheWriteInputTokens: Prompt tokens written to the provider's prompt cache.
+	CacheWriteInputTokens int `json:"cache_write_input_tokens" yaml:"cache_write_input_tokens" schema:"cache_write_input_tokens"`
+	// CachedInputTokens: Prompt tokens served from the provider's prompt cache.
+	CachedInputTokens int `json:"cached_input_tokens" yaml:"cached_input_tokens" schema:"cached_input_tokens"`
+	// ConversationID: Conversation the turn belongs to, as the backend knows it.
+	ConversationID string `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id"`
+	// CostMicroUsd: Cost in millionths of a US dollar, rounded half-up.
+	CostMicroUsd int `json:"cost_micro_usd" yaml:"cost_micro_usd" schema:"cost_micro_usd"`
+	// CostUsd: Exact cost as a decimal string, e.g. "0.02184000".
+	CostUsd string `json:"cost_usd" yaml:"cost_usd" schema:"cost_usd"`
+	// FullyPriced: Whether every request was priced.
+	FullyPriced bool `json:"fully_priced" yaml:"fully_priced" schema:"fully_priced"`
+	// InputTokens: Prompt tokens, including the cached and cache-write subsets below.
+	InputTokens int `json:"input_tokens" yaml:"input_tokens" schema:"input_tokens"`
+	// Models: Usage split by model.
+	Models []ZookeeperTurnUsageModel `json:"models" yaml:"models" schema:"models"`
+	// OutputTokens: Completion tokens, including the reasoning subset below.
+	OutputTokens int `json:"output_tokens" yaml:"output_tokens" schema:"output_tokens"`
+	// PricedRequests: Requests whose model had a known price.
+	PricedRequests int `json:"priced_requests" yaml:"priced_requests" schema:"priced_requests"`
+	// ReasoningTokens: Completion tokens spent on reasoning.
+	ReasoningTokens int `json:"reasoning_tokens" yaml:"reasoning_tokens" schema:"reasoning_tokens"`
+	// Requests: Number of model requests.
+	Requests int `json:"requests" yaml:"requests" schema:"requests"`
+	// SchemaVersion: Payload shape identifier, e.g. "zookeeper_turn_usage.v1".
+	SchemaVersion string `json:"schema_version" yaml:"schema_version" schema:"schema_version"`
+	// Stages: Usage split by the part of the turn that spent it.
+	Stages []ZookeeperTurnUsageStage `json:"stages" yaml:"stages" schema:"stages"`
+	// TotalTokens: Input plus output tokens.
+	TotalTokens int `json:"total_tokens" yaml:"total_tokens" schema:"total_tokens"`
+	// UncachedInputTokens: Prompt tokens billed at the full input rate.
+	UncachedInputTokens int `json:"uncached_input_tokens" yaml:"uncached_input_tokens" schema:"uncached_input_tokens"`
+	// UnpricedRequests: Requests whose model had no known price; their tokens are counted but contribute no cost, so totals are a floor rather than an estimate.
+	UnpricedRequests int `json:"unpriced_requests" yaml:"unpriced_requests" schema:"unpriced_requests"`
+}
+
+// ZookeeperTurnUsageModel: Per-model usage within a Zookeeper turn.
+type ZookeeperTurnUsageModel struct {
+	// CacheWriteInputTokens: Prompt tokens written to the provider's prompt cache.
+	CacheWriteInputTokens int `json:"cache_write_input_tokens" yaml:"cache_write_input_tokens" schema:"cache_write_input_tokens"`
+	// CachedInputTokens: Prompt tokens served from the provider's prompt cache.
+	CachedInputTokens int `json:"cached_input_tokens" yaml:"cached_input_tokens" schema:"cached_input_tokens"`
+	// CostMicroUsd: Cost in millionths of a US dollar, rounded half-up.
+	CostMicroUsd int `json:"cost_micro_usd" yaml:"cost_micro_usd" schema:"cost_micro_usd"`
+	// CostUsd: Exact cost as a decimal string, e.g. "0.02184000".
+	CostUsd string `json:"cost_usd" yaml:"cost_usd" schema:"cost_usd"`
+	// FullyPriced: Whether every request was priced.
+	FullyPriced bool `json:"fully_priced" yaml:"fully_priced" schema:"fully_priced"`
+	// InputTokens: Prompt tokens, including the cached and cache-write subsets below.
+	InputTokens int `json:"input_tokens" yaml:"input_tokens" schema:"input_tokens"`
+	// Model: Model name as the provider reported it.
+	Model string `json:"model" yaml:"model" schema:"model,required"`
+	// OutputTokens: Completion tokens, including the reasoning subset below.
+	OutputTokens int `json:"output_tokens" yaml:"output_tokens" schema:"output_tokens"`
+	// PricedRequests: Requests whose model had a known price.
+	PricedRequests int `json:"priced_requests" yaml:"priced_requests" schema:"priced_requests"`
+	// PricingSource: Where the price came from, e.g. "litellm", "litellm_alias", "override", or "unknown".
+	PricingSource string `json:"pricing_source" yaml:"pricing_source" schema:"pricing_source"`
+	// ReasoningTokens: Completion tokens spent on reasoning.
+	ReasoningTokens int `json:"reasoning_tokens" yaml:"reasoning_tokens" schema:"reasoning_tokens"`
+	// Requests: Number of model requests.
+	Requests int `json:"requests" yaml:"requests" schema:"requests"`
+	// TotalTokens: Input plus output tokens.
+	TotalTokens int `json:"total_tokens" yaml:"total_tokens" schema:"total_tokens"`
+	// UncachedInputTokens: Prompt tokens billed at the full input rate.
+	UncachedInputTokens int `json:"uncached_input_tokens" yaml:"uncached_input_tokens" schema:"uncached_input_tokens"`
+	// UnpricedRequests: Requests whose model had no known price; their tokens are counted but contribute no cost, so totals are a floor rather than an estimate.
+	UnpricedRequests int `json:"unpriced_requests" yaml:"unpriced_requests" schema:"unpriced_requests"`
+}
+
+// ZookeeperTurnUsageStage: Per-stage usage within a Zookeeper turn.
+type ZookeeperTurnUsageStage struct {
+	// CacheWriteInputTokens: Prompt tokens written to the provider's prompt cache.
+	CacheWriteInputTokens int `json:"cache_write_input_tokens" yaml:"cache_write_input_tokens" schema:"cache_write_input_tokens"`
+	// CachedInputTokens: Prompt tokens served from the provider's prompt cache.
+	CachedInputTokens int `json:"cached_input_tokens" yaml:"cached_input_tokens" schema:"cached_input_tokens"`
+	// CostMicroUsd: Cost in millionths of a US dollar, rounded half-up.
+	CostMicroUsd int `json:"cost_micro_usd" yaml:"cost_micro_usd" schema:"cost_micro_usd"`
+	// CostUsd: Exact cost as a decimal string, e.g. "0.02184000".
+	CostUsd string `json:"cost_usd" yaml:"cost_usd" schema:"cost_usd"`
+	// FullyPriced: Whether every request was priced.
+	FullyPriced bool `json:"fully_priced" yaml:"fully_priced" schema:"fully_priced"`
+	// InputTokens: Prompt tokens, including the cached and cache-write subsets below.
+	InputTokens int `json:"input_tokens" yaml:"input_tokens" schema:"input_tokens"`
+	// OutputTokens: Completion tokens, including the reasoning subset below.
+	OutputTokens int `json:"output_tokens" yaml:"output_tokens" schema:"output_tokens"`
+	// PricedRequests: Requests whose model had a known price.
+	PricedRequests int `json:"priced_requests" yaml:"priced_requests" schema:"priced_requests"`
+	// ReasoningTokens: Completion tokens spent on reasoning.
+	ReasoningTokens int `json:"reasoning_tokens" yaml:"reasoning_tokens" schema:"reasoning_tokens"`
+	// Requests: Number of model requests.
+	Requests int `json:"requests" yaml:"requests" schema:"requests"`
+	// Stage: Which part of the turn spent the tokens, e.g. "agent_stream", "auto_router", "compaction", "sub_agent", or "prompt_validation".
+	Stage string `json:"stage" yaml:"stage" schema:"stage,required"`
+	// TotalTokens: Input plus output tokens.
+	TotalTokens int `json:"total_tokens" yaml:"total_tokens" schema:"total_tokens"`
+	// UncachedInputTokens: Prompt tokens billed at the full input rate.
+	UncachedInputTokens int `json:"uncached_input_tokens" yaml:"uncached_input_tokens" schema:"uncached_input_tokens"`
+	// UnpricedRequests: Requests whose model had no known price; their tokens are counted but contribute no cost, so totals are a floor rather than an estimate.
+	UnpricedRequests int `json:"unpriced_requests" yaml:"unpriced_requests" schema:"unpriced_requests"`
 }
 
 // ZoomToFit: The response from the `ZoomToFit` command.
