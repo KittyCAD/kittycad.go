@@ -1644,7 +1644,7 @@ func ExampleOrgService_GetDatasetConversionStats() {
 }
 
 // UploadDatasetFiles: Upload source files into a Zoo-managed dataset.
-// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Paths are normalized and must be relative.
+// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `<proprietary CAD filename>.json` converter dumps are also accepted and associated with their original CAD file. Paths are normalized and must be relative.
 //
 // Parameters
 //
