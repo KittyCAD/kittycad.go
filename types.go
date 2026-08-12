@@ -4239,7 +4239,7 @@ type MlCopilotServerMessageReasoning struct {
 }
 
 // MlCopilotServerMessageReplay: Replay containing raw bytes for previously-saved messages for a conversation. Includes server messages and client `User` messages.
-// Invariants: - Client replay includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Client replay also includes client `User` messages. - Backend replay includes client `User` messages plus selected reasoning, edit metadata, recovery output, and final responses. - The following are NEVER included: `SessionData`, `ConversationId`, `Delta`, `BackendShutdown`, `ZookeeperAutoRouterMetadata`, or `ZookeeperTurnUsage`. - `ZookeeperRecoveryToolOutput` is included only in replay sent to the text-to-CAD backend and is filtered from client replay. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
+// Invariants: - Client replay includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Client replay also includes client `User` messages. - Backend replay includes client `User` messages plus selected reasoning, edit metadata, recovery output, and final responses. - The following are NEVER included from persisted chat rows: `SessionData`, `ConversationId`, `Delta`, `BackendShutdown`, `ZookeeperAutoRouterMetadata`, `ZookeeperOpenAiResponseCheckpoint`, or `ZookeeperTurnUsage`. - `ZookeeperRecoveryToolOutput` is included only in replay sent to the text-to-CAD backend and is filtered from client replay. - The latest completed `ZookeeperOpenAiResponseCheckpoint` is synthesized from prompt metadata only for replay sent to the text-to-CAD backend. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
 //
 // Wire format: - Each element is canonical serialized bytes (typically JSON) for either a `MlCopilotServerMessage` or a `MlCopilotClientMessage::User`. - When delivered as an initial replay over the websocket (upon `?replay=true&conversation_id=<uuid>`), the server sends a single WebSocket Binary frame containing a MsgPack-encoded document of this enum: `Replay { messages }`.
 type MlCopilotServerMessageReplay struct {
@@ -4272,6 +4272,13 @@ type MlCopilotServerMessageToolOutput struct {
 type MlCopilotServerMessageZookeeperAutoRouterMetadata struct {
 	// ZookeeperAutoRouterMetadata: Zookeeper Auto-router decision metadata persisted on a copilot prompt.
 	ZookeeperAutoRouterMetadata ZookeeperAutoRouterMetadata `json:"zookeeper_auto_router_metadata" yaml:"zookeeper_auto_router_metadata" schema:"zookeeper_auto_router_metadata,required"`
+}
+
+// MlCopilotServerMessageZookeeperOpenAiResponseCheckpoint: Backend-only completed OpenAI response checkpoint.
+// API persists this on the active prompt and includes the latest completed checkpoint only in replay sent to the text-to-CAD backend. It is never forwarded to browser clients.
+type MlCopilotServerMessageZookeeperOpenAiResponseCheckpoint struct {
+	// ZookeeperOpenAiResponseCheckpoint:
+	ZookeeperOpenAiResponseCheckpoint ZookeeperOpenAiResponseCheckpoint `json:"zookeeper_open_ai_response_checkpoint" yaml:"zookeeper_open_ai_response_checkpoint" schema:"zookeeper_open_ai_response_checkpoint,required"`
 }
 
 // MlCopilotServerMessageZookeeperRecoveryToolOutput: Backend-only completed tool result used for portable Zookeeper recovery.
@@ -10631,6 +10638,12 @@ type ZookeeperEditPatchFilePath struct {
 	Path string `json:"path" yaml:"path" schema:"path,required"`
 	// Status:
 	Status string `json:"status" yaml:"status" schema:"status,required"`
+}
+
+// ZookeeperOpenAiResponseCheckpoint is the type definition for a ZookeeperOpenAiResponseCheckpoint.
+type ZookeeperOpenAiResponseCheckpoint struct {
+	// ResponseID: OpenAI Responses API response identifier.
+	ResponseID string `json:"response_id" yaml:"response_id" schema:"response_id,required"`
 }
 
 // ZookeeperRecoveryToolOutput is the type definition for a ZookeeperRecoveryToolOutput.
