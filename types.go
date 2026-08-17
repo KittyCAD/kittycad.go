@@ -2968,6 +2968,8 @@ const (
 	FeatureEnableZ0006Lint Feature = "enable_z0006_lint"
 	// FeatureFactoryPortal: Enables the Factory portal.
 	FeatureFactoryPortal Feature = "factory_portal"
+	// FeatureKclCekExecutor: KCL CEK machine executor.
+	FeatureKclCekExecutor Feature = "kcl_cek_executor"
 	// FeatureKclNewLexerParser: New KCL lexer and parser.
 	FeatureKclNewLexerParser Feature = "kcl_new_lexer_parser"
 	// FeatureRedirectToGovcloud: Immediately redirect to our Govcloud environment (zoogov.dev).
@@ -2988,6 +2990,8 @@ const (
 	FeatureValidateTaxInfo Feature = "validate_tax_info"
 	// FeatureModelingDialogs: Enables modeling dialogs in Zoo Design Studio.
 	FeatureModelingDialogs Feature = "modeling_dialogs"
+	// FeatureNamedViewsUi: Enables the named views user interface in Zoo Design Studio.
+	FeatureNamedViewsUi Feature = "named_views_ui"
 	// FeaturePlugins: Enables plugins in Zoo Design Studio.
 	FeaturePlugins Feature = "plugins"
 	// FeatureProprietaryToKclConversionBeta: Grants access to the beta proprietary-to-KCL conversion endpoint.
