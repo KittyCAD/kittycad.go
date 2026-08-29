@@ -103,7 +103,9 @@ func NewClientFromEnv(userAgent string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	c.WithBaseURL(host)
+	if err := c.WithBaseURL(host); err != nil {
+		return nil, err
+	}
 	return c, nil
 }
 
