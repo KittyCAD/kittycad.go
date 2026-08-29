@@ -20,6 +20,16 @@ func getClient(t *testing.T) *Client {
 	return client
 }
 
+func TestNewClientFromEnvRejectsInvalidHost(t *testing.T) {
+	t.Setenv(TokenEnvVar, "test-token")
+	t.Setenv("ZOO_HOST", "%zz")
+
+	client, err := NewClientFromEnv("kittycad.go/tests")
+	if err == nil || client != nil {
+		t.Fatalf("NewClientFromEnv() = (%v, %v), want (nil, error)", client, err)
+	}
+}
+
 func TestGetSession(t *testing.T) {
 	client := getClient(t)
 	_, err := client.User.GetSelf()
