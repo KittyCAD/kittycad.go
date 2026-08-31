@@ -43,9 +43,9 @@ func TestExpandURL(t *testing.T) {
 		{
 			"file/mass",
 			map[string]string{
-				"unit": "kg:m3",
+				"unit": "kg:m3+test/value",
 			},
-			testServerURL + "/file/mass?unit=kg:m3",
+			testServerURL + "/file/mass?unit=kg:m3%2Btest%2Fvalue",
 		},
 	}
 

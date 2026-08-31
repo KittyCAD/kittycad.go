@@ -53,14 +53,15 @@ func expandURL(u *url.URL, expansions map[string]string) error {
 	values := u.Query()
 	for k, v := range expansions {
 		if !strings.Contains(origPath, fmt.Sprintf("{{.%s}}", k)) {
-			values.Set(k, v)
+			decoded, _ := url.QueryUnescape(v) // v came from QueryEscape above.
+			values.Set(k, decoded)
 		}
 	}
 
 	// Set the path parameters
 	u.RawQuery = values.Encode()
 	// We want colons in the query string to be unescaped.
-	u.RawQuery = strings.Replace(u.RawQuery, "%253A", ":", -1)
+	u.RawQuery = strings.Replace(u.RawQuery, "%3A", ":", -1)
 
 	return nil
 }
