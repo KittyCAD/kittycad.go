@@ -83,74 +83,6 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 
 }
 
-// CreateTextToCad: Generate a CAD model from text.
-// Prefer the ML copilot websocket (`/ws/ml/copilot`) for new integrations. This REST endpoint is kept for existing Text-to-CAD clients, but it is no longer the recommended way to generate CAD models from a prompt.
-//
-// Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated parts. Any other formats you request here will also be returned when you list your generated parts.
-//
-// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
-//
-// One thing to note, if you hit the cache, this endpoint will return right away. So you only have to wait if the status is not `Completed` or `Failed`.
-//
-// Parameters
-//
-//   - `outputFormat`: The valid types of output file formats.
-//   - `kcl`
-//   - `body`: Body for generating parts from text.
-func (s *MlService) CreateTextToCad(outputFormat FileExportFormat, kcl bool, body TextToCadCreateBody) (*TextToCad, error) {
-	// Create the url.
-	path := "/ai/text-to-cad/{{.output_format}}"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(body); err != nil {
-		return nil, fmt.Errorf("encoding json body request failed: %v", err)
-	}
-
-	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add our headers.
-	req.Header.Add("Content-Type", "application/json")
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"output_format": string(outputFormat),
-		"kcl":           strconv.FormatBool(kcl),
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
-	}
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded TextToCad
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
 // GetAnnouncements: List all active announcements.
 // No authentication is required.
 func (s *MetaService) GetAnnouncements() (*AnnouncementList, error) {
@@ -773,7 +705,7 @@ func (s *MetaService) CommunitySso(sso string, sig string) error {
 // CreateCenterOfMass: Get CAD file center of mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
 //
-// This endpoint returns the cartesian coordinate in world space measure units.
+// This endpoint returns the cartesian coordinate in the KittyCAD coordinate system (+Z up, -Y forward) using the requested measure units.
 //
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 //
@@ -1760,130 +1692,6 @@ func (s *MlService) CreateKclCodeCompletions(body KclCodeCompletionRequest) (*Kc
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded KclCodeCompletionResponse
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
-// CreateTextToCadIteration: Iterate on a CAD model with a prompt.
-// Prefer the ML copilot websocket (`/ws/ml/copilot`) for new prompt-to-edit integrations. This REST endpoint is kept for existing clients, but it is no longer the recommended way to edit KCL or CAD models from a prompt.
-//
-// Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
-//
-// You always get the whole code back, even if you only changed a small part of it.
-//
-// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
-//
-// This endpoint is deprecated in favor of `/ws/ml/copilot`.
-//
-// Parameters
-//
-//   - `body`: Body for generating parts from text.
-func (s *MlService) CreateTextToCadIteration(body TextToCadIterationBody) (*TextToCadIteration, error) {
-	// Create the url.
-	path := "/ml/text-to-cad/iteration"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Encode the request body as json.
-	b := new(bytes.Buffer)
-	if err := json.NewEncoder(b).Encode(body); err != nil {
-		return nil, fmt.Errorf("encoding json body request failed: %v", err)
-	}
-
-	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, b)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add our headers.
-	req.Header.Add("Content-Type", "application/json")
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded TextToCadIteration
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return nil, fmt.Errorf("error decoding response body: %v", err)
-	}
-
-	// Return the response.
-	return &decoded, nil
-
-}
-
-// CreateTextToCadMultiFileIteration: Iterate on a multi-file CAD model with a prompt.
-// Prefer the ML copilot websocket (`/ws/ml/copilot`) for new prompt-to-edit integrations. This REST endpoint is kept for existing multi-file iteration clients, but it is no longer the recommended way to edit KCL or CAD models from a prompt.
-//
-// This endpoint can iterate on multi-file projects.
-//
-// Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
-//
-// You always get the whole code back, even if you only changed a small part of it. This endpoint will always return all the code back, including files that were not changed. If your original source code imported a stl/gltf/step/etc file, the output will not include that file since the model will never change non-kcl files. The endpoint will only return the kcl files that were changed.
-//
-// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
-//
-// Input filepaths will be normalized and re-canonicalized to be under the current working directory -- so returned paths may differ from provided paths, and care must be taken when handling user provided paths.
-//
-// Parameters
-//
-//   - `body`: Body for iterating on models from text prompts.
-func (s *MlService) CreateTextToCadMultiFileIteration(body *MultipartForm) (*TextToCadMultiFileIteration, error) {
-	// Create the url.
-	path := "/ml/text-to-cad/multi-file/iteration"
-	targetURL := resolveRelative(s.client.server, path)
-
-	// Finalize the multipart body before sending it.
-	if body == nil {
-		return nil, errors.New("multipart body is nil")
-	}
-	if err := body.Close(); err != nil {
-		return nil, fmt.Errorf("closing multipart body failed: %v", err)
-	}
-
-	// Create the request.
-	req, err := http.NewRequest("POST", targetURL, body.buffer)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add our headers.
-	req.Header.Set("Content-Type", body.ContentType())
-
-	// Send the request.
-	resp, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check the response.
-	if err := checkResponse(resp); err != nil {
-		return nil, err
-	}
-
-	// Decode the body from the response.
-	if resp.Body == nil {
-		return nil, errors.New("request returned an empty body in the response")
-	}
-	var decoded TextToCadMultiFileIteration
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -3032,10 +2840,12 @@ func (s *OrgService) DatasetS3Policies(uri string, roleArn string) (*DatasetS3Po
 //
 //   - `pageToken`
 //
+//   - `lookupEnabled`
+//
 //   - `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
 //     Currently, we only support scanning in ascending order.
-func (s *OrgService) ListDatasets(limit int, pageToken string, sortBy CreatedAtSortMode) (*OrgDatasetResultsPage, error) {
+func (s *OrgService) ListDatasets(limit int, pageToken string, lookupEnabled bool, sortBy CreatedAtSortMode) (*OrgDatasetResultsPage, error) {
 	// Create the url.
 	path := "/org/datasets"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3048,9 +2858,10 @@ func (s *OrgService) ListDatasets(limit int, pageToken string, sortBy CreatedAtS
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-		"sort_by":    string(sortBy),
+		"limit":          strconv.Itoa(limit),
+		"page_token":     pageToken,
+		"lookup_enabled": strconv.FormatBool(lookupEnabled),
+		"sort_by":        string(sortBy),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -3777,6 +3588,64 @@ func (s *OrgService) UploadDatasetFiles(id UUID, body *MultipartForm) (*UploadOr
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded UploadOrgDatasetFilesResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListOrgJobs: List Factory jobs owned by your organization.
+// Any current organization member can list its jobs, including archived jobs. Ownership uses the job's stored organization, so a submitter leaving or deleting their account does not move the job. Former members lose access. Results are paginated, newest first by default, with the job id breaking ties. Internal communication, financial details, and file storage locations are omitted.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *FactoryService) ListOrgJobs(limit int, pageToken string, sortBy CreatedAtSortMode) (*FactoryCustomerJobSummaryResultsPage, error) {
+	// Create the url.
+	path := "/org/factory/jobs"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryCustomerJobSummaryResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -7173,7 +7042,7 @@ func (s *UserService) UpdateSelf(body UpdateUser) (*UserResponse, error) {
 // DeleteSelf: Delete your user.
 // This endpoint requires authentication by any Zoo user. It deletes the authenticated user from Zoo's database.
 //
-// This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.
+// This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance. Personal Factory jobs must be completed or canceled before deleting your account. In-progress jobs owned by an organization do not prevent account deletion.
 func (s *UserService) DeleteSelf() error {
 	// Create the url.
 	path := "/user"
@@ -7940,6 +7809,64 @@ func (s *FactoryService) GetUserFinishes() (*[]FactoryCustomerCatalogOption, err
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded []FactoryCustomerCatalogOption
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListUserJobs: List your personal Factory jobs.
+// Returns jobs owned by your account, including archived jobs. Jobs with an organization owner belong to that organization, even when your account is also associated with them; use `GET /org/factory/jobs` to list those jobs. Results are paginated, newest first by default, with the job id breaking ties. Internal communication, financial details, and file storage locations are omitted.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *FactoryService) ListUserJobs(limit int, pageToken string, sortBy CreatedAtSortMode) (*FactoryCustomerJobSummaryResultsPage, error) {
+	// Create the url.
+	path := "/user/factory/jobs"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryCustomerJobSummaryResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -9460,6 +9387,97 @@ func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat) error {
 
 }
 
+// UpdateOrganization: Move one of the authenticated user's projects into their active organization library.
+// This changes only the project's ownership scope. The project ID, current revision, files, and version history remain unchanged so cloud bindings stay valid across the move.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ProjectService) UpdateOrganization(id UUID) (*ProjectResponse, error) {
+	// Create the url.
+	path := "/user/projects/{{.id}}/organization"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ProjectResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteOrganization: Move an organization project back to its creator's personal library.
+// Organization administrators may perform this move to revoke organization access. The project ID, current revision, files, and version history remain unchanged.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ProjectService) DeleteOrganization(id UUID) error {
+	// Create the url.
+	path := "/user/projects/{{.id}}/organization"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // Publish: Submit one of the authenticated user's projects for public review.
 // Parameters
 //
@@ -10895,16 +10913,29 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 	return conn, nil
 }
 
-// CopilotWs: Open a websocket to prompt the ML copilot.
-// This endpoint accepts typed query parameters via `MlCopilotQuery`. See the field documentation on that struct for details, including replay behavior and wire format.
+// CopilotWs: Open a websocket to a Zookeeper agent instance.
+// Remember to authenticate before sending messages. [For WebSockets it's a little different.](/docs/developer-tools/api/authentication?lang=curl#websockets)
+//
+// As with all Zoo WebSockets, you must implement a ping-pong interval / heartbeat to keep the connection open. This involves a simple `{ type: "ping" }` every ~5s and **check that a `{ pong: {} } ` is received**.
+//
+// For the "standard experience" where the agent continues off conversations, you'll want to set the `replay` query string param to `true` and record "conversation ids", which are then passed as the other query string parameter.
+//
+// A list of past conversations can be fetch from [/ml/conversations](/docs/developer-tools/api/ml/list-conversations?lang=curl).
+//
+// The general use-case is to fire off `{ type: "user", content: "my prompt goes here" }` messages and interpret the various message types that return.
+//
+// Notable behavior: **ONLY KCL IS RETURNED.** It's a common misunderstanding that Zookeeper returns models in formats such as STEP and STL directly. This is incorrect. All outputs are in KCL, which can then be fed into the [Engine API](/docs/developer-tools/engine-api) (specifically the `exec_kcl_project` command) or the [Zoo CLI](/docs/developer-tools/cli/manual) (`zoo kcl snapshot ...`).
+//
+// In the future we may add a more direct method, but you can always rely on those.
 //
 // Parameters
 //
 //   - `replay`
 //   - `conversationId`
+//   - `replayAttachmentMode`: Controls whether replayed attachments are sent inline or fetched on demand.
 //   - `pr`
 //   - `body`: The types of messages that can be sent by the client to the server.
-func (s *MlService) CopilotWs(replay bool, conversationId UUID, pr int, body any) (*websocket.Conn, error) {
+func (s *MlService) CopilotWs(replay bool, conversationId UUID, replayAttachmentMode MlCopilotReplayAttachmentMode, pr int, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/ml/copilot"
 	targetURL := resolveRelative(s.client.server, path)
@@ -10941,8 +10972,18 @@ func (s *MlService) ReasoningWs(id UUID, body any) (*websocket.Conn, error) {
 	return conn, nil
 }
 
-// CommandsWs: Open a websocket which accepts modeling commands.
-// Pass those commands to the engine via websocket, and pass responses back to the client. Basically, this is a websocket proxy between the frontend/client and the engine.
+// CommandsWs: Opens a WebSocket to a Zoo KittyCAD engine instance.
+// **Note**: Currently it's recommended to set `webrtc=true` in the WebSocket query string, otherwise some features, such as opacity setting, will cause the engine to fail.
+//
+// Due to the long-lived nature of the instances, it's possible the resources on have been used and not freed entirely, or the instance is in a bad state. Thus it's good practice to expect to have to potentially reconnect at any moment -even almost immediately after the first connection!
+//
+// Authorization happens via a pseudo HTTP header over the WebSocket: `{ type: "headers", headers: { "Authorization": "Bearer xxxxxxxxx" }}`
+//
+// The very next thing recommended is to setup a ping-pong interval. The current timeout is 10s and has no documented guarantee, so use a conservative number below that. 5s should be sufficient. A ping-pong interval is sending `{ type: 'ping" }` when `{ request_id, success, resp: { type: "pong", data: {} } }` message is received.
+//
+// You're ready to start sending modeling commands!
+//
+// If you want to understand how to connect to the WebRTC video stream, https://github.com/KittyCAD/kittycad.ts/blob/main/src/webrtc.ts is a nice example to learn from.
 //
 // Parameters
 //

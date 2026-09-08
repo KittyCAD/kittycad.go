@@ -139,6 +139,16 @@ type APITokenWithFullToken struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
+// AccessDenied is the type definition for a AccessDenied.
+type AccessDenied struct {
+	// Code: Stable machine-readable denial code.
+	Code MlCopilotAccessDeniedCode `json:"code" yaml:"code" schema:"code,required"`
+	// Detail: Human-readable explanation suitable for display to the user.
+	Detail string `json:"detail" yaml:"detail" schema:"detail,required"`
+	// Retryable: Whether reconnecting without an external account change can help.
+	Retryable bool `json:"retryable" yaml:"retryable" schema:"retryable,required"`
+}
+
 // AccountProvider: An account provider.
 type AccountProvider string
 
@@ -568,7 +578,7 @@ type AsyncAPICallOutputCompletedAt struct {
 
 // AsyncAPICallOutputCreatedAt: File center of mass.
 type AsyncAPICallOutputCreatedAt struct {
-	// CenterOfMass: The resulting center of mass.
+	// CenterOfMass: The resulting center of mass in the KittyCAD coordinate system (+Z up, -Y forward).
 	CenterOfMass Point3D `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
@@ -846,6 +856,30 @@ type AsyncAPICallOutputSrcFormatOptions struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// AttachmentRef: Coordinates for fetching a persisted attachment on demand.
+type AttachmentRef struct {
+	// ContentHash: Stable digest of the attachment bytes, formatted as `sha256:<lowercase hex>`.
+	ContentHash string `json:"content_hash" yaml:"content_hash" schema:"content_hash"`
+	// Index: Position of this attachment in the message's attachment array.
+	Index int `json:"index" yaml:"index" schema:"index,required"`
+	// PromptID: Prompt containing the persisted message row.
+	PromptID UUID `json:"prompt_id" yaml:"prompt_id" schema:"prompt_id,required"`
+	// Seq: Sequence number of the persisted message row.
+	Seq int `json:"seq" yaml:"seq" schema:"seq,required"`
+}
+
+// Attachments is the type definition for a Attachments.
+type Attachments struct {
+	// Files: Fetched files, in the same order as the requested indices.
+	Files []MlCopilotFile `json:"files" yaml:"files" schema:"files,required"`
+	// PromptID: Prompt containing the persisted message row.
+	PromptID UUID `json:"prompt_id" yaml:"prompt_id" schema:"prompt_id,required"`
+	// Role: Authoritative role that owns the file attachment, read from the stored row.
+	Role MlMessageRole `json:"role" yaml:"role" schema:"role,required"`
+	// Seq: Sequence number of the persisted message row.
+	Seq int `json:"seq" yaml:"seq" schema:"seq,required"`
 }
 
 // AttachmentsLoaded is the type definition for a AttachmentsLoaded.
@@ -2920,6 +2954,28 @@ type FactoryCustomerCatalogOption struct {
 	Name string `json:"name" yaml:"name" schema:"name,required"`
 }
 
+// FactoryCustomerJobSummary: Customer-visible summary of a manufacturing job.
+type FactoryCustomerJobSummary struct {
+	// CreatedAt: When the job was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// CurrentVersionID: The job's current version, when one exists.
+	CurrentVersionID UUID `json:"current_version_id" yaml:"current_version_id" schema:"current_version_id"`
+	// ID: Stable customer-facing job identifier.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// Status: Current manufacturing workflow status.
+	Status string `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: When the job was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// FactoryCustomerJobSummaryResultsPage: A single page of results
+type FactoryCustomerJobSummaryResultsPage struct {
+	// Items: list of items on this page of results
+	Items []FactoryCustomerJobSummary `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
 // FactoryJobResponse: Response returned when a Factory job is created. Only customer-facing ids are exposed: the job id (the customer's reference) and its current version id. The internal Help Desk thread id is deliberately NOT returned (internal-only per the ERD).
 type FactoryJobResponse struct {
 	// CurrentVersionID: The current (first) version id of the job.
@@ -2960,10 +3016,14 @@ const (
 	FeatureBigQueryTelemetry Feature = "big_query_telemetry"
 	// FeatureBilling: Internal ledger and contract billing are enabled.
 	FeatureBilling Feature = "billing"
+	// FeatureCpuEnginePool: Route non-WebRTC modeling sessions to the CPU-only engine pool.
+	FeatureCpuEnginePool Feature = "cpu_engine_pool"
 	// FeatureDisallowSelfSignup: Disable signup through email or OAuth.
 	FeatureDisallowSelfSignup Feature = "disallow_self_signup"
 	// FeatureEmailWithSES: Email sending is handled by AWS SES.
 	FeatureEmailWithSES Feature = "email_with_s_e_s"
+	// FeatureEngineManagerQuarantine: Quarantine engine-manager sessions when an engine is observed misbehaving.
+	FeatureEngineManagerQuarantine Feature = "engine_manager_quarantine"
 	// FeatureEnableZ0006Lint: Enables the Z0006 lint, for converting to new face api syntax in Zoo Design Studio.
 	FeatureEnableZ0006Lint Feature = "enable_z0006_lint"
 	// FeatureFactoryPortal: Enables the Factory portal.
@@ -2988,6 +3048,8 @@ const (
 	FeatureSameSiteNoneCookies Feature = "same_site_none_cookies"
 	// FeatureValidateTaxInfo: Notify us via slack if we're missing tax info for a customer.
 	FeatureValidateTaxInfo Feature = "validate_tax_info"
+	// FeatureDrawings: Enables drawing features across Zoo applications.
+	FeatureDrawings Feature = "drawings"
 	// FeatureModelingDialogs: Enables modeling dialogs in Zoo Design Studio.
 	FeatureModelingDialogs Feature = "modeling_dialogs"
 	// FeatureNamedViewsUi: Enables the named views user interface in Zoo Design Studio.
@@ -2998,6 +3060,8 @@ const (
 	FeatureProprietaryToKclConversionBeta Feature = "proprietary_to_kcl_conversion_beta"
 	// FeatureSegmentsBasedRegions: Enables the topological segments-based region API for point-and-click in Zoo Design Studio.
 	FeatureSegmentsBasedRegions Feature = "segments_based_regions"
+	// FeatureLegacySketchMode: Allows legacy sketches to be edited using point-and-click in Zoo Design Studio.
+	FeatureLegacySketchMode Feature = "legacy_sketch_mode"
 	// FeatureSketchExperimentalFeatures: Enables sketch solve experimental features in Zoo Design Studio.
 	FeatureSketchExperimentalFeatures Feature = "sketch_experimental_features"
 	// FeatureWebAppFileBrowser: Enables cloud storage for web and desktop. Yes desktop too, the name is old and will go away soon.
@@ -3016,7 +3080,7 @@ const (
 
 // FileCenterOfMass: A file center of mass result.
 type FileCenterOfMass struct {
-	// CenterOfMass: The resulting center of mass.
+	// CenterOfMass: The resulting center of mass in the KittyCAD coordinate system (+Z up, -Y forward).
 	CenterOfMass Point3D `json:"center_of_mass" yaml:"center_of_mass" schema:"center_of_mass"`
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
@@ -3480,6 +3544,8 @@ type InputFormat3Dcoords struct {
 	//
 	// Defaults to `false` but is implicitly `true` when importing into the engine.
 	SplitClosedFaces bool `json:"split_closed_faces" yaml:"split_closed_faces" schema:"split_closed_faces"`
+	// TargetRepresentation: What representation should be used for this file after it's imported?
+	TargetRepresentation StepImportTargetRepresentation `json:"target_representation" yaml:"target_representation" schema:"target_representation"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -4032,69 +4098,45 @@ type MirrorAcrossPlane struct {
 	Plane Plane `json:"plane" yaml:"plane" schema:"plane,required"`
 }
 
+// MlCopilotAccessDeniedCode: Stable machine-readable reasons that an account cannot open a Copilot websocket until its billing or support state changes.
+type MlCopilotAccessDeniedCode string
+
+const (
+	// MlCopilotAccessDeniedCodeMissingPaymentMethod: The account has no payment method on file.
+	MlCopilotAccessDeniedCodeMissingPaymentMethod MlCopilotAccessDeniedCode = "missing_payment_method"
+	// MlCopilotAccessDeniedCodePaymentMethodFailed: The account's payment method failed.
+	MlCopilotAccessDeniedCodePaymentMethodFailed MlCopilotAccessDeniedCode = "payment_method_failed"
+	// MlCopilotAccessDeniedCodeBillingThresholdReached: The account reached its configured billing threshold.
+	MlCopilotAccessDeniedCodeBillingThresholdReached MlCopilotAccessDeniedCode = "billing_threshold_reached"
+	// MlCopilotAccessDeniedCodePayAsYouGoDisabled: The account exhausted its credits without enabling pay-as-you-go.
+	MlCopilotAccessDeniedCodePayAsYouGoDisabled MlCopilotAccessDeniedCode = "pay_as_you_go_disabled"
+	// MlCopilotAccessDeniedCodeUpgradeDowngradeAbuse: The account was blocked after repeated plan changes recycled credits.
+	MlCopilotAccessDeniedCodeUpgradeDowngradeAbuse MlCopilotAccessDeniedCode = "upgrade_downgrade_abuse"
+	// MlCopilotAccessDeniedCodeAdmin: Zoo support explicitly blocked the account.
+	MlCopilotAccessDeniedCodeAdmin MlCopilotAccessDeniedCode = "admin"
+)
+
 // MlCopilotClientMessage: MlCopilotClientMessage: The types of messages that can be sent by the client to the server.
 type MlCopilotClientMessage any
 
-// MlCopilotClientMessageCurrentFiles: The user message, which contains the content of the user's input.
-type MlCopilotClientMessageCurrentFiles struct {
-	// AdditionalFiles: The user can send additional files like images or PDFs to provide more context.
-	AdditionalFiles []MlCopilotFile `json:"additional_files" yaml:"additional_files" schema:"additional_files"`
-	// Content: The content of the user's message.
-	Content string `json:"content" yaml:"content" schema:"content,required"`
-	// CorrelationID: Stable identifier used to correlate this user request across services.
-	CorrelationID UUID `json:"correlation_id" yaml:"correlation_id" schema:"correlation_id"`
-	// CurrentFiles: The current files in the project, if any. This can be used to provide context for the AI. This should be sent in binary format, if the files are not text files, like an imported binary file.
-	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files"`
-	// EngineAPICallID: API call ID for the active Engine modeling session, when available.
-	EngineAPICallID UUID `json:"engine_api_call_id" yaml:"engine_api_call_id" schema:"engine_api_call_id"`
-	// ForcedTools: The user can force specific tools to be used for this message.
-	ForcedTools []MlCopilotTool `json:"forced_tools" yaml:"forced_tools" schema:"forced_tools"`
-	// Mode: Pick a mode for the agent to operate in. Defaults to a fast mode.
-	Mode MlCopilotMode `json:"mode" yaml:"mode" schema:"mode"`
-	// Model: Override the default or mode model with another.
-	Model MlCopilotSupportedModel `json:"model" yaml:"model" schema:"model"`
-	// ProjectName: The project name, if any. This can be used to associate the message with a specific project.
-	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
-	// ReasoningEffort: Change the default or mode reasoning effort.
-	ReasoningEffort MlReasoningEffort `json:"reasoning_effort" yaml:"reasoning_effort" schema:"reasoning_effort"`
-	// SourceRanges: The source ranges the user suggested to change. If empty, the content (prompt) will be used and is required.
-	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
+// MlCopilotFile: A file that can be transferred between the client and server.
+type MlCopilotFile struct {
+	// AttachmentRef: Reference for fetching this attachment on demand.
+	AttachmentRef AttachmentRef `json:"attachment_ref" yaml:"attachment_ref" schema:"attachment_ref"`
+	// Data: The file contents as binary data.
+	Data []int `json:"data" yaml:"data" schema:"data,required"`
+	// DataRef: Optional blob storage path for the file contents.
+	DataRef string `json:"data_ref" yaml:"data_ref" schema:"data_ref"`
+	// Metadata: Optional metadata associated with the file.
+	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
+	// Mimetype: The MIME type of the file (e.g., "image/png", "application/pdf", "model/stl").
+	Mimetype string `json:"mimetype" yaml:"mimetype" schema:"mimetype,required"`
+	// Name: The name of the file.
+	Name string `json:"name" yaml:"name" schema:"name,required"`
 }
 
-// MlCopilotClientMessageHeaders: Authentication header request.
-type MlCopilotClientMessageHeaders struct {
-	// Headers: The authentication header.
-	Headers map[string]string `json:"headers" yaml:"headers" schema:"headers,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// MlCopilotClientMessageListModes: Request available mode metadata for the copilot session.
-type MlCopilotClientMessageListModes struct {
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// MlCopilotClientMessageMlCopilotClientMessageHeaders: Updates the active project context without creating a new prompt.
-type MlCopilotClientMessageMlCopilotClientMessageHeaders struct {
-	// CurrentFiles: The current files in the project, if any. This can be used to provide context for the AI. This should be sent in binary format if the files are not text files, like an imported binary file.
-	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files"`
-	// ProjectName: The project name, if any.
-	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// MlCopilotClientMessagePing: The client-to-server Ping to ensure the copilot protocol stays alive.
-type MlCopilotClientMessagePing struct {
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// MlCopilotClientMessageProjectContext: Attachments returned by API in response to a backend `RequestAttachments` message.
-type MlCopilotClientMessageProjectContext struct {
+// MlCopilotMessageAttachmentResponse: Attachments returned by API in response to a backend `RequestAttachments` message.
+type MlCopilotMessageAttachmentResponse struct {
 	// Error: Error encountered while loading attachments, if any.
 	Error string `json:"error" yaml:"error" schema:"error"`
 	// Files: Loaded attachment files. Empty when no matching attachments were found.
@@ -4109,43 +4151,95 @@ type MlCopilotClientMessageProjectContext struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// MlCopilotClientMessageProjectName: The system message, which can be used to set the context or instructions for the AI.
-type MlCopilotClientMessageProjectName struct {
+// MlCopilotMessageFetchAttachments: Request persisted attachments from conversation history over the active websocket.
+type MlCopilotMessageFetchAttachments struct {
+	// Indices: In-row attachment indices to retrieve.
+	Indices []int `json:"indices" yaml:"indices" schema:"indices,required"`
+	// PromptID: Prompt containing the persisted message row.
+	PromptID UUID `json:"prompt_id" yaml:"prompt_id" schema:"prompt_id,required"`
+	// Seq: Sequence number of the persisted message row.
+	Seq int `json:"seq" yaml:"seq" schema:"seq,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotMessageHeaders: Authentication header request.
+type MlCopilotMessageHeaders struct {
+	// Headers: The authentication header.
+	Headers map[string]string `json:"headers" yaml:"headers" schema:"headers,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotMessageListModes: Request available mode metadata for the copilot session.
+type MlCopilotMessageListModes struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotMessagePing: The client-to-server Ping to ensure the copilot protocol stays alive.
+type MlCopilotMessagePing struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotMessageProjectContext: Updates the active project context without creating a new prompt.
+type MlCopilotMessageProjectContext struct {
+	// ActiveFile: The project-relative file open in the client's active editor, if any.
+	ActiveFile string `json:"active_file" yaml:"active_file" schema:"active_file"`
+	// CorrelationID: Stable identifier used to correlate this project context update across services.
+	CorrelationID UUID `json:"correlation_id" yaml:"correlation_id" schema:"correlation_id"`
+	// CurrentFiles: The current files in the project, if any. This can be used to provide context for the AI. This should be sent in binary format if the files are not text files, like an imported binary file.
+	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files"`
+	// EngineAPICallID: API call ID for the active Engine modeling session, when available.
+	EngineAPICallID UUID `json:"engine_api_call_id" yaml:"engine_api_call_id" schema:"engine_api_call_id"`
+	// ProjectName: The project name, if any.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
+	// ProjectSnapshot: Revision and idempotency metadata for `current_files`. Its absence identifies a legacy unfenced message, not an initial revision.
+	ProjectSnapshot MlCopilotProjectSnapshotMetadata `json:"project_snapshot" yaml:"project_snapshot" schema:"project_snapshot"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// MlCopilotMessageSystem: The system message, which can be used to set the context or instructions for the AI.
+type MlCopilotMessageSystem struct {
 	// Command: The content of the system message.
 	Command MlCopilotSystemCommand `json:"command" yaml:"command" schema:"command,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// MlCopilotFile: A file that can be transferred between the client and server.
-type MlCopilotFile struct {
-	// Data: The file contents as binary data.
-	Data []int `json:"data" yaml:"data" schema:"data,required"`
-	// DataRef: Optional blob storage path for the file contents.
-	DataRef string `json:"data_ref" yaml:"data_ref" schema:"data_ref"`
-	// Metadata: Optional metadata associated with the file.
-	Metadata map[string]string `json:"metadata" yaml:"metadata" schema:"metadata"`
-	// Mimetype: The MIME type of the file (e.g., "image/png", "application/pdf", "model/stl").
-	Mimetype string `json:"mimetype" yaml:"mimetype" schema:"mimetype,required"`
-	// Name: The name of the file.
-	Name string `json:"name" yaml:"name" schema:"name,required"`
+// MlCopilotMessageUser: The user message, which contains the content of the user's input.
+type MlCopilotMessageUser struct {
+	// ActiveFile: The project-relative file open in the client's active editor, if any.
+	ActiveFile string `json:"active_file" yaml:"active_file" schema:"active_file"`
+	// AdditionalFiles: The user can send additional files like images or PDFs to provide more context.
+	AdditionalFiles []MlCopilotFile `json:"additional_files" yaml:"additional_files" schema:"additional_files"`
+	// Content: The content of the user's message.
+	Content string `json:"content" yaml:"content" schema:"content,required"`
+	// CorrelationID: Stable identifier used to correlate this user request across services.
+	CorrelationID UUID `json:"correlation_id" yaml:"correlation_id" schema:"correlation_id"`
+	// CurrentFiles: The current files in the project, if any. This can be used to provide context for the AI. This should be sent in binary format, if the files are not text files, like an imported binary file.
+	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files"`
+	// EngineAPICallID: API call ID for the active Engine modeling session, when available.
+	EngineAPICallID UUID `json:"engine_api_call_id" yaml:"engine_api_call_id" schema:"engine_api_call_id"`
+	// ForcedTools: The user can force specific tools to be used for this message.
+	ForcedTools []MlCopilotTool `json:"forced_tools" yaml:"forced_tools" schema:"forced_tools"`
+	// Mode: Pick a mode for the agent to operate in. Defaults to the service's configured mode. Mode identifiers are discovered at runtime through `list_modes`, so this stays open to backend-configured values that may not yet exist in the generated client enum.
+	Mode string `json:"mode" yaml:"mode" schema:"mode"`
+	// Model: Override the default or mode model with another.
+	Model MlCopilotSupportedModel `json:"model" yaml:"model" schema:"model"`
+	// ProjectName: The project name, if any. This can be used to associate the message with a specific project.
+	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
+	// ProjectSnapshot: Revision and idempotency metadata for `current_files`. Its absence identifies a legacy unfenced message, not an initial revision.
+	ProjectSnapshot MlCopilotProjectSnapshotMetadata `json:"project_snapshot" yaml:"project_snapshot" schema:"project_snapshot"`
+	// ReasoningEffort: Change the default or mode reasoning effort.
+	ReasoningEffort MlReasoningEffort `json:"reasoning_effort" yaml:"reasoning_effort" schema:"reasoning_effort"`
+	// SourceRanges: The source ranges the user suggested to change. If empty, the content (prompt) will be used and is required.
+	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
-
-// MlCopilotMode: The mode to have the agent work in.
-type MlCopilotMode string
-
-const (
-	// MlCopilotModeFast: Use a combination of models and reasoning effort for fast results.
-	MlCopilotModeFast MlCopilotMode = "fast"
-	// MlCopilotModeThoughtful: Use a model and effort that results in thoughtful responses.
-	MlCopilotModeThoughtful MlCopilotMode = "thoughtful"
-	// MlCopilotModeAuto: Let the system automatically choose the model and reasoning effort.
-	MlCopilotModeAuto MlCopilotMode = "auto"
-	// MlCopilotModeZookeeperPro: Use the private Zoo Pro model for internal Zookeeper workflows.
-	MlCopilotModeZookeeperPro MlCopilotMode = "zookeeper_pro"
-	// MlCopilotModeZookeeperUltra: Use the Zoo Ultra model for internal Zookeeper workflows.
-	MlCopilotModeZookeeperUltra MlCopilotMode = "zookeeper_ultra"
-)
 
 // MlCopilotModeOption: A client-facing ML copilot mode option.
 type MlCopilotModeOption struct {
@@ -4161,8 +4255,64 @@ type MlCopilotModeOption struct {
 	Label string `json:"label" yaml:"label" schema:"label,required"`
 }
 
+// MlCopilotProjectRevision: Canonical project revision accepted by API.
+type MlCopilotProjectRevision struct {
+	// ProjectID: Stable namespaced project identifier shared by every revision of the project.
+	ProjectID string `json:"project_id" yaml:"project_id" schema:"project_id,required"`
+	// Revision: Opaque identifier for the accepted project state. Every accepted write gets a fresh value, even when its contents equal an older revision. Clients must not infer file equality or ancestry from this value.
+	Revision string `json:"revision" yaml:"revision" schema:"revision,required"`
+	// WriterFence: Opaque API-issued token that must accompany subsequent writes to this revision.
+	WriterFence string `json:"writer_fence" yaml:"writer_fence" schema:"writer_fence,required"`
+}
+
+// MlCopilotProjectSnapshotMetadata: Revision metadata for the complete `current_files` map in a client message.
+type MlCopilotProjectSnapshotMetadata struct {
+	// BaseRevision: Canonical revision and writer fence on which `current_files` is based. Its `project_id` must match the outer `project_id`. Omit this only when establishing the first canonical revision; omission must not replace an existing revision.
+	BaseRevision MlCopilotProjectRevision `json:"base_revision" yaml:"base_revision" schema:"base_revision"`
+	// ProjectID: Stable, namespaced project identifier. Cloud projects use `cloud:<project UUID>` and API validates project access. Local projects use `local:<durable app project ID>` and API scopes the value to the authenticated principal.
+	ProjectID string `json:"project_id" yaml:"project_id" schema:"project_id,required"`
+	// SnapshotID: Idempotency key for this complete project snapshot, scoped to `project_id`.
+	SnapshotID string `json:"snapshot_id" yaml:"snapshot_id" schema:"snapshot_id,required"`
+}
+
+// MlCopilotProjectSnapshotStatus: Outcome of comparing a client project snapshot with canonical state.
+type MlCopilotProjectSnapshotStatus string
+
+const (
+	// MlCopilotProjectSnapshotStatusAccepted: The snapshot was based on current state and became canonical.
+	MlCopilotProjectSnapshotStatusAccepted MlCopilotProjectSnapshotStatus = "accepted"
+	// MlCopilotProjectSnapshotStatusMerged: Non-overlapping client changes were merged into canonical state.
+	MlCopilotProjectSnapshotStatusMerged MlCopilotProjectSnapshotStatus = "merged"
+	// MlCopilotProjectSnapshotStatusRejectedStale: A clean snapshot based on an older revision was not accepted.
+	MlCopilotProjectSnapshotStatusRejectedStale MlCopilotProjectSnapshotStatus = "rejected_stale"
+	// MlCopilotProjectSnapshotStatusConflict: Client changes overlap canonical changes and require explicit resolution.
+	MlCopilotProjectSnapshotStatusConflict MlCopilotProjectSnapshotStatus = "conflict"
+)
+
+// MlCopilotReplayAttachmentMode: Controls whether replayed attachments are sent inline or fetched on demand.
+type MlCopilotReplayAttachmentMode string
+
+const (
+	// MlCopilotReplayAttachmentModeFull: Include full attachment bytes in replayed files.
+	MlCopilotReplayAttachmentModeFull MlCopilotReplayAttachmentMode = "full"
+	// MlCopilotReplayAttachmentModeMetadataOnly: Omit attachment bytes and include only socket fetch metadata.
+	MlCopilotReplayAttachmentModeMetadataOnly MlCopilotReplayAttachmentMode = "metadata_only"
+)
+
 // MlCopilotServerMessage: MlCopilotServerMessage: The types of messages that can be sent by the server to the client.
 type MlCopilotServerMessage any
+
+// MlCopilotServerMessageAccessDenied: A permanent account or billing denial that must be resolved outside this websocket before retrying.
+type MlCopilotServerMessageAccessDenied struct {
+	// AccessDenied:
+	AccessDenied AccessDenied `json:"access_denied" yaml:"access_denied" schema:"access_denied,required"`
+}
+
+// MlCopilotServerMessageAttachments: Persisted attachments fetched over the websocket on demand.
+type MlCopilotServerMessageAttachments struct {
+	// Attachments:
+	Attachments Attachments `json:"attachments" yaml:"attachments" schema:"attachments,required"`
+}
 
 // MlCopilotServerMessageAttachmentsLoaded: Notification that API finished loading all attachments for the conversation.
 type MlCopilotServerMessageAttachmentsLoaded struct {
@@ -4230,6 +4380,18 @@ type MlCopilotServerMessagePong struct {
 	Pong Pong `json:"pong" yaml:"pong" schema:"pong,required"`
 }
 
+// MlCopilotServerMessageProjectRevisionUpdated: Revision-aware notification that the canonical project was updated. API emits this only after the new canonical revision is durable.
+type MlCopilotServerMessageProjectRevisionUpdated struct {
+	// ProjectRevisionUpdated:
+	ProjectRevisionUpdated ProjectRevisionUpdated `json:"project_revision_updated" yaml:"project_revision_updated" schema:"project_revision_updated,required"`
+}
+
+// MlCopilotServerMessageProjectSnapshotResult: Result of validating a revision-aware client project snapshot. `Accepted` and `Merged` are emitted only after the new canonical revision is durable.
+type MlCopilotServerMessageProjectSnapshotResult struct {
+	// ProjectSnapshotResult:
+	ProjectSnapshotResult ProjectSnapshotResult `json:"project_snapshot_result" yaml:"project_snapshot_result" schema:"project_snapshot_result,required"`
+}
+
 // MlCopilotServerMessageProjectUpdated: Notification that the KCL project has been updated.
 type MlCopilotServerMessageProjectUpdated struct {
 	// ProjectUpdated:
@@ -4243,9 +4405,9 @@ type MlCopilotServerMessageReasoning struct {
 }
 
 // MlCopilotServerMessageReplay: Replay containing raw bytes for previously-saved messages for a conversation. Includes server messages and client `User` messages.
-// Invariants: - Client replay includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Client replay also includes client `User` messages. - Backend replay includes client `User` messages plus selected reasoning, edit metadata, recovery output, and final responses. - The following are NEVER included from persisted chat rows: `SessionData`, `ConversationId`, `Delta`, `BackendShutdown`, `ZookeeperAutoRouterMetadata`, `ZookeeperOpenAiResponseCheckpoint`, or `ZookeeperTurnUsage`. - `ZookeeperRecoveryToolOutput` is included only in replay sent to the text-to-CAD backend and is filtered from client replay. - The latest completed `ZookeeperOpenAiResponseCheckpoint` is synthesized from prompt metadata only for replay sent to the text-to-CAD backend. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
+// Invariants: - Client replay includes server messages: `Info`, `Error`, `Reasoning(..)`, `ToolOutput { .. }`, `Files { .. }`, `ProjectUpdated { .. }`, and `EndOfStream { .. }`. - Client replay also includes client `User` messages. - Backend replay includes client `User` messages plus selected reasoning, edit metadata, recovery output, and final responses. - The following are NEVER included from persisted chat rows: `SessionData`, `ConversationId`, `Delta`, `BackendShutdown`, `ZookeeperAutoRouterMetadata`, `ZookeeperOpenAiResponseCheckpoint`, `ZookeeperOpenAiIntermediateResponseCheckpoint`, or `ZookeeperTurnUsage`. - `ZookeeperRecoveryToolOutput` is included only in replay sent to the text-to-CAD backend and is filtered from client replay. - The latest completed `ZookeeperOpenAiResponseCheckpoint` is synthesized from prompt metadata only for replay sent to the text-to-CAD backend. - The active unfinished prompt's latest `ZookeeperOpenAiIntermediateResponseCheckpoint` is synthesized only for replay sent to the text-to-CAD backend. - Ordering is stable: messages are ordered by prompt creation time within the conversation, then by the per-prompt `seq` value (monotonically increasing as seen in the original stream).
 //
-// Wire format: - Each element is canonical serialized bytes (typically JSON) for either a `MlCopilotServerMessage` or a `MlCopilotClientMessage::User`. - When delivered as an initial replay over the websocket (upon `?replay=true&conversation_id=<uuid>`), the server sends a single WebSocket Binary frame containing a MsgPack-encoded document of this enum: `Replay { messages }`.
+// Wire format: - Each element is canonical serialized bytes (typically JSON) for either a `MlCopilotServerMessage` or a `MlCopilotClientMessage::User`. - Client-facing replays may omit large attachment bytes and instead place socket fetch metadata in `MlCopilotFile.metadata`. - When delivered as an initial replay over the websocket (upon `?replay=true&conversation_id=<uuid>`), the server sends a single WebSocket Binary frame containing a MsgPack-encoded document of this enum: `Replay { messages }`.
 type MlCopilotServerMessageReplay struct {
 	// Replay:
 	Replay Replay `json:"replay" yaml:"replay" schema:"replay,required"`
@@ -4276,6 +4438,13 @@ type MlCopilotServerMessageToolOutput struct {
 type MlCopilotServerMessageZookeeperAutoRouterMetadata struct {
 	// ZookeeperAutoRouterMetadata: Zookeeper Auto-router decision metadata persisted on a copilot prompt.
 	ZookeeperAutoRouterMetadata ZookeeperAutoRouterMetadata `json:"zookeeper_auto_router_metadata" yaml:"zookeeper_auto_router_metadata" schema:"zookeeper_auto_router_metadata,required"`
+}
+
+// MlCopilotServerMessageZookeeperOpenAiIntermediateResponseCheckpoint: Backend-only OpenAI checkpoint for an unfinished Zookeeper turn.
+// API persists the latest checkpoint on the active prompt and includes it only in replay sent to the text-to-CAD backend. It is never forwarded to browser clients.
+type MlCopilotServerMessageZookeeperOpenAiIntermediateResponseCheckpoint struct {
+	// ZookeeperOpenAiIntermediateResponseCheckpoint: OpenAI response state required to resume an unfinished Zookeeper turn.
+	ZookeeperOpenAiIntermediateResponseCheckpoint ZookeeperOpenAiIntermediateResponseCheckpoint `json:"zookeeper_open_ai_intermediate_response_checkpoint" yaml:"zookeeper_open_ai_intermediate_response_checkpoint" schema:"zookeeper_open_ai_intermediate_response_checkpoint,required"`
 }
 
 // MlCopilotServerMessageZookeeperOpenAiResponseCheckpoint: Backend-only completed OpenAI response checkpoint.
@@ -4369,6 +4538,16 @@ const (
 	MlFeedbackRejected MlFeedback = "rejected"
 )
 
+// MlMessageRole: The role of the author of a chat message.
+type MlMessageRole string
+
+const (
+	// MlMessageRoleClient: Client-authored input.
+	MlMessageRoleClient MlMessageRole = "client"
+	// MlMessageRoleServer: Server-authored message.
+	MlMessageRoleServer MlMessageRole = "server"
+)
+
 // MlReasoningEffort: Specify the amount of effort used in reasoning. Read the following for more info: https://platform.openai.com/docs/guides/reasoning#how-reasoning-works
 type MlReasoningEffort string
 
@@ -4452,9 +4631,9 @@ type ModelingAppSubscriptionTier struct {
 	Features []SubscriptionTierFeature `json:"features" yaml:"features" schema:"features"`
 	// MlCustomModels: Indicates whether the plan enables custom ML models.
 	MlCustomModels bool `json:"ml_custom_models" yaml:"ml_custom_models" schema:"ml_custom_models"`
-	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. Credit replenishment remains calendar-month based while anniversary billing is rolled out. This is equivalent to the monetary value divided by the price of an API credit.
+	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app for each monthly account-anniversary period. The boundary is evaluated in UTC and does not change with monthly versus annual subscription payment cadence. This is equivalent to the monetary value divided by the price of an API credit.
 	MonthlyPayAsYouGoAPICredits int `json:"monthly_pay_as_you_go_api_credits" yaml:"monthly_pay_as_you_go_api_credits" schema:"monthly_pay_as_you_go_api_credits"`
-	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. Credit replenishment remains calendar-month based while anniversary billing is rolled out.
+	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app for each monthly account-anniversary period. The boundary is evaluated in UTC and does not change with monthly versus annual subscription payment cadence.
 	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value"`
 	// Name: The name of the tier.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
@@ -6993,6 +7172,8 @@ type OrgDataset struct {
 	LastSyncError string `json:"last_sync_error" yaml:"last_sync_error" schema:"last_sync_error"`
 	// LastSyncErrorAt: Timestamp for the last sync error.
 	LastSyncErrorAt Time `json:"last_sync_error_at" yaml:"last_sync_error_at" schema:"last_sync_error_at"`
+	// LookupEnabled: Whether this dataset may be used for MCP and semantic-search lookups.
+	LookupEnabled bool `json:"lookup_enabled" yaml:"lookup_enabled" schema:"lookup_enabled,required"`
 	// Name: User-provided display name. This is mutable; lookup by ID instead.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
 	// OrgID: The ID of the org owning the dataset.
@@ -7868,6 +8049,30 @@ type PrivacySettings struct {
 	CanTrainOnData bool `json:"can_train_on_data" yaml:"can_train_on_data" schema:"can_train_on_data,required"`
 }
 
+// ProjectAccessResponse: Effective capabilities for an authenticated project response.
+type ProjectAccessResponse struct {
+	// CanDelete: Whether the caller may delete the project.
+	CanDelete bool `json:"can_delete" yaml:"can_delete" schema:"can_delete,required"`
+	// CanEdit: Whether the caller may replace project content or metadata.
+	CanEdit bool `json:"can_edit" yaml:"can_edit" schema:"can_edit,required"`
+	// CanManageOrganization: Whether the caller may move the project into or out of an organization library.
+	CanManageOrganization bool `json:"can_manage_organization" yaml:"can_manage_organization" schema:"can_manage_organization,required"`
+	// OrganizationID: Owning organization when this is an organization project.
+	OrganizationID UUID `json:"organization_id" yaml:"organization_id" schema:"organization_id"`
+	// Scope: Ownership scope controlling project visibility.
+	Scope ProjectAccessScope `json:"scope" yaml:"scope" schema:"scope,required"`
+}
+
+// ProjectAccessScope: Ownership scope for an authenticated project response.
+type ProjectAccessScope string
+
+const (
+	// ProjectAccessScopePersonal: The project is owned personally by its creator.
+	ProjectAccessScopePersonal ProjectAccessScope = "personal"
+	// ProjectAccessScopeOrganization: The project is owned by an organization.
+	ProjectAccessScopeOrganization ProjectAccessScope = "organization"
+)
+
 // ProjectArchiveFormat: Archive formats supported by project download endpoints.
 type ProjectArchiveFormat string
 
@@ -7942,6 +8147,8 @@ type ProjectPublicationInfoResponse struct {
 
 // ProjectResponse: Owner-visible project detail payload.
 type ProjectResponse struct {
+	// Access: Effective project capabilities for the authenticated caller.
+	Access ProjectAccessResponse `json:"access" yaml:"access" schema:"access,required"`
 	// CategoryIds: Selected category identifiers associated with the project.
 	CategoryIds []UUID `json:"category_ids" yaml:"category_ids" schema:"category_ids,required"`
 	// CreatedAt: When the project row was created.
@@ -7972,6 +8179,14 @@ type ProjectResponse struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
+// ProjectRevisionUpdated is the type definition for a ProjectRevisionUpdated.
+type ProjectRevisionUpdated struct {
+	// Files: Complete canonical project contents.
+	Files map[string][]int `json:"files" yaml:"files" schema:"files,required"`
+	// ProjectRevision: Canonical revision represented by `files`.
+	ProjectRevision MlCopilotProjectRevision `json:"project_revision" yaml:"project_revision" schema:"project_revision,required"`
+}
+
 // ProjectShareLinkResponse: Owner-visible share-link metadata for project downloads.
 type ProjectShareLinkResponse struct {
 	// AccessMode: Access policy for the share link.
@@ -7986,8 +8201,24 @@ type ProjectShareLinkResponse struct {
 	Url URL `json:"url" yaml:"url" schema:"url,required"`
 }
 
+// ProjectSnapshotResult is the type definition for a ProjectSnapshotResult.
+type ProjectSnapshotResult struct {
+	// CanonicalFiles: Complete canonical contents after processing the snapshot. Present when the client must apply or reconcile a different state. `Some({})` explicitly represents an empty canonical project.
+	CanonicalFiles map[string][]int `json:"canonical_files" yaml:"canonical_files" schema:"canonical_files"`
+	// ConflictingPaths: Paths that could not be merged automatically.
+	ConflictingPaths []string `json:"conflicting_paths" yaml:"conflicting_paths" schema:"conflicting_paths"`
+	// ProjectRevision: Canonical revision after processing the snapshot.
+	ProjectRevision MlCopilotProjectRevision `json:"project_revision" yaml:"project_revision" schema:"project_revision,required"`
+	// SnapshotID: Idempotency key from the submitted snapshot.
+	SnapshotID string `json:"snapshot_id" yaml:"snapshot_id" schema:"snapshot_id,required"`
+	// Status: How the submitted snapshot affected canonical state.
+	Status MlCopilotProjectSnapshotStatus `json:"status" yaml:"status" schema:"status,required"`
+}
+
 // ProjectSummaryResponse: Owner-visible project summary payload.
 type ProjectSummaryResponse struct {
+	// Access: Effective project capabilities for the authenticated caller.
+	Access ProjectAccessResponse `json:"access" yaml:"access" schema:"access,required"`
 	// CategoryIds: Selected category identifiers associated with the project.
 	CategoryIds []UUID `json:"category_ids" yaml:"category_ids" schema:"category_ids,required"`
 	// CreatedAt: When the project row was created.
@@ -8811,6 +9042,16 @@ type SourceRangePrompt struct {
 type StartPath struct {
 }
 
+// StepImportTargetRepresentation: After importing, how should this model's data be represented?
+type StepImportTargetRepresentation string
+
+const (
+	// StepImportTargetRepresentationMesh: Mesh of 2D geometry
+	StepImportTargetRepresentationMesh StepImportTargetRepresentation = "mesh"
+	// StepImportTargetRepresentationBrep: Boundary representation
+	StepImportTargetRepresentationBrep StepImportTargetRepresentation = "brep"
+)
+
 // StepPresentation: Describes the presentation style of the EXPRESS exchange format.
 type StepPresentation string
 
@@ -9060,110 +9301,6 @@ type TakeSnapshot struct {
 	Contents Base64 `json:"contents" yaml:"contents" schema:"contents,required"`
 }
 
-// TextToCad: A response from a text to CAD prompt.
-type TextToCad struct {
-	// Code: The code for the model. This is optional but will be required in the future once we are at v1.
-	Code string `json:"code" yaml:"code" schema:"code"`
-	// CompletedAt: The time and date the API call was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
-	// ConversationID: The conversation ID Conversations group different prompts together.
-	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
-	// CreatedAt: The time and date the API call was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error" schema:"error"`
-	// Feedback: Feedback from the user, if any.
-	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
-	// ID: The unique identifier of the API call.
-	//
-	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// KclVersion: The version of kcl requested.
-	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
-	// Model: The model being used.
-	Model TextToCadModel `json:"model" yaml:"model" schema:"model,required"`
-	// ModelVersion: The version of the model.
-	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
-	// OutputFormat: The output format of the model.
-	OutputFormat FileExportFormat `json:"output_format" yaml:"output_format" schema:"output_format,required"`
-	// Outputs: The output of the model in the given file format the user requested, base64 encoded. The key of the map is the path of the output file.
-	Outputs map[string]Base64 `json:"outputs" yaml:"outputs" schema:"outputs"`
-	// Prompt: The prompt.
-	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
-	// StartedAt: The time and date the API call was started.
-	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
-	// Status: The status of the API call.
-	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// UpdatedAt: The time and date the API call was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// UserID: The user ID of the user who created the API call.
-	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
-}
-
-// TextToCadCreateBody: Body for generating parts from text.
-type TextToCadCreateBody struct {
-	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
-	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
-	// ModelVersion: Zoo provided model, or custom model which should be used to process this request.
-	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version"`
-	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
-	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
-	// Prompt: The prompt for the desired part.
-	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt,required"`
-}
-
-// TextToCadIteration: A response from a text to CAD iteration.
-type TextToCadIteration struct {
-	// Code: The code for the new model.
-	Code string `json:"code" yaml:"code" schema:"code,required"`
-	// CompletedAt: The time and date the API call was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
-	// ConversationID: The conversation ID Conversations group different prompts together.
-	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
-	// CreatedAt: The time and date the API call was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error" schema:"error"`
-	// Feedback: Feedback from the user, if any.
-	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
-	// ID: The unique identifier of the API call.
-	//
-	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// Model: The model being used.
-	Model TextToCadModel `json:"model" yaml:"model" schema:"model,required"`
-	// ModelVersion: The version of the model.
-	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
-	// OriginalSourceCode: The original source code for the model, previous to the changes.
-	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code,required"`
-	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges.
-	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
-	// SourceRanges: The source ranges the user suggested to change.
-	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
-	// StartedAt: The time and date the API call was started.
-	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
-	// Status: The status of the API call.
-	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// UpdatedAt: The time and date the API call was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// UserID: The user ID of the user who created the API call.
-	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
-}
-
-// TextToCadIterationBody: Body for generating parts from text.
-type TextToCadIterationBody struct {
-	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
-	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
-	// OriginalSourceCode: The source code for the model (in kcl) that is to be edited.
-	OriginalSourceCode string `json:"original_source_code" yaml:"original_source_code" schema:"original_source_code,required"`
-	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
-	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
-	// Prompt: The prompt for the model, if not using source ranges.
-	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
-	// SourceRanges: The source ranges the user suggested to change. If empty, the prompt will be used and is required.
-	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
-}
-
 // TextToCadModel: A type of Text-to-CAD model.
 type TextToCadModel string
 
@@ -9175,46 +9312,6 @@ const (
 	// TextToCadModelKclIteration: KCL iteration.
 	TextToCadModelKclIteration TextToCadModel = "kcl_iteration"
 )
-
-// TextToCadMultiFileIteration: A response from a text to CAD multi-file iteration.
-type TextToCadMultiFileIteration struct {
-	// CompletedAt: The time and date the API call was completed.
-	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
-	// ConversationID: The conversation ID Conversations group different prompts together.
-	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
-	// CreatedAt: The time and date the API call was created.
-	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
-	// Error: The error the function returned, if any.
-	Error string `json:"error" yaml:"error" schema:"error"`
-	// Feedback: Feedback from the user, if any.
-	Feedback MlFeedback `json:"feedback" yaml:"feedback" schema:"feedback"`
-	// ID: The unique identifier of the API call.
-	//
-	// This is the same as the API call ID.
-	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// KclVersion: The version of kcl to use. If empty, the latest version will be used.
-	KclVersion string `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version"`
-	// Model: The model being used.
-	Model TextToCadModel `json:"model" yaml:"model" schema:"model,required"`
-	// ModelVersion: The version of the model.
-	ModelVersion string `json:"model_version" yaml:"model_version" schema:"model_version,required"`
-	// Outputs: The output files. Returns a map of the file name to the file contents. The file contents are not encoded since kcl files are not binary.
-	Outputs map[string]string `json:"outputs" yaml:"outputs" schema:"outputs"`
-	// ProjectName: The project name. This is used to tie the prompt to a project. Which helps us make our models better over time.
-	ProjectName string `json:"project_name" yaml:"project_name" schema:"project_name"`
-	// Prompt: The prompt for the overall changes. This is optional if you only want changes on specific source ranges. This will apply to all the files.
-	Prompt string `json:"prompt" yaml:"prompt" schema:"prompt"`
-	// SourceRanges: The source ranges the user suggested to change.
-	SourceRanges []SourceRangePrompt `json:"source_ranges" yaml:"source_ranges" schema:"source_ranges,required"`
-	// StartedAt: The time and date the API call was started.
-	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
-	// Status: The status of the API call.
-	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
-	// UpdatedAt: The time and date the API call was last updated.
-	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-	// UserID: The user ID of the user who created the API call.
-	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
-}
 
 // TextToCadMultiFileIterationBody: Body for iterating on models from text prompts.
 type TextToCadMultiFileIterationBody struct {
@@ -10507,9 +10604,9 @@ type ZooProductSubscription struct {
 	Features []SubscriptionTierFeature `json:"features" yaml:"features" schema:"features"`
 	// MlCustomModels: Indicates whether the plan enables custom ML models.
 	MlCustomModels bool `json:"ml_custom_models" yaml:"ml_custom_models" schema:"ml_custom_models"`
-	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app per month. Credit replenishment remains calendar-month based while anniversary billing is rolled out. This is equivalent to the monetary value divided by the price of an API credit.
+	// MonthlyPayAsYouGoAPICredits: The amount of pay-as-you-go API credits the individual or org gets outside the modeling app for each monthly account-anniversary period. The boundary is evaluated in UTC and does not change with monthly versus annual subscription payment cadence. This is equivalent to the monetary value divided by the price of an API credit.
 	MonthlyPayAsYouGoAPICredits int `json:"monthly_pay_as_you_go_api_credits" yaml:"monthly_pay_as_you_go_api_credits" schema:"monthly_pay_as_you_go_api_credits"`
-	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app per month. Credit replenishment remains calendar-month based while anniversary billing is rolled out.
+	// MonthlyPayAsYouGoAPICreditsMonetaryValue: The monetary value of pay-as-you-go API credits the individual or org gets outside the modeling app for each monthly account-anniversary period. The boundary is evaluated in UTC and does not change with monthly versus annual subscription payment cadence.
 	MonthlyPayAsYouGoAPICreditsMonetaryValue float64 `json:"monthly_pay_as_you_go_api_credits_monetary_value" yaml:"monthly_pay_as_you_go_api_credits_monetary_value" schema:"monthly_pay_as_you_go_api_credits_monetary_value"`
 	// Name: The name of the tier.
 	Name string `json:"name" yaml:"name" schema:"name,required"`
@@ -10644,6 +10741,18 @@ type ZookeeperEditPatchFilePath struct {
 	Status string `json:"status" yaml:"status" schema:"status,required"`
 }
 
+// ZookeeperOpenAiIntermediateResponseCheckpoint: OpenAI response state required to resume an unfinished Zookeeper turn.
+type ZookeeperOpenAiIntermediateResponseCheckpoint struct {
+	// ExpectedToolCallIds: Tool calls emitted by this response whose outputs must be supplied on continuation.
+	ExpectedToolCallIds []string `json:"expected_tool_call_ids" yaml:"expected_tool_call_ids" schema:"expected_tool_call_ids"`
+	// ProjectFilesDigest: Digest of the project files against which this response was produced.
+	//
+	// Older checkpoints omit this field and remain useful for portable replay, but cannot authorize exact intermediate continuation.
+	ProjectFilesDigest string `json:"project_files_digest" yaml:"project_files_digest" schema:"project_files_digest"`
+	// ResponseID: OpenAI Responses API response identifier.
+	ResponseID string `json:"response_id" yaml:"response_id" schema:"response_id,required"`
+}
+
 // ZookeeperOpenAiResponseCheckpoint is the type definition for a ZookeeperOpenAiResponseCheckpoint.
 type ZookeeperOpenAiResponseCheckpoint struct {
 	// ResponseID: OpenAI Responses API response identifier.
@@ -10656,8 +10765,12 @@ type ZookeeperRecoveryToolOutput struct {
 	CallID string `json:"call_id" yaml:"call_id" schema:"call_id,required"`
 	// Output: Bounded readable output derived from the completed tool result.
 	Output string `json:"output" yaml:"output" schema:"output,required"`
+	// OutputTruncated: Whether the output above was shortened before it reached API.
+	OutputTruncated bool `json:"output_truncated" yaml:"output_truncated" schema:"output_truncated"`
 	// ProjectUpdated: Whether the tool changed the current project.
 	ProjectUpdated bool `json:"project_updated" yaml:"project_updated" schema:"project_updated"`
+	// ResponseID: OpenAI response that emitted this tool call. Older producers may omit it; such output remains useful for portable replay but not native resume.
+	ResponseID string `json:"response_id" yaml:"response_id" schema:"response_id"`
 	// ToolName: Name of the completed tool.
 	ToolName string `json:"tool_name" yaml:"tool_name" schema:"tool_name,required"`
 }

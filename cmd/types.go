@@ -280,6 +280,11 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 }
 
 func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *openapi3.T) error {
+	// Copilot messages evolve frequently. Name these variants by their wire tag,
+	// never by the position of a payload property in the schema.
+	if name == "MlCopilotClientMessage" {
+		return data.generateTaggedVariants(name, "MlCopilotMessage", s, spec)
+	}
 	// Check if this is an enum with descriptions.
 	isEnumWithDocs := false
 	enumDocs := map[string]string{}
@@ -371,6 +376,33 @@ func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *opena
 		}
 	}
 
+	return nil
+}
+
+func (data *Data) generateTaggedVariants(name, prefix string, s *openapi3.Schema, spec *openapi3.T) error {
+	data.Types[name] = fmt.Sprintf("// %s: %s\ntype %s any\n", name, getTypeDescription(name, s), name)
+	seen := map[string]bool{}
+	for _, variant := range s.OneOf {
+		if variant.Value == nil {
+			return fmt.Errorf("%s has an unresolved variant", name)
+		}
+		tag := variant.Value.Properties["type"]
+		if tag == nil || tag.Value == nil || len(tag.Value.Enum) != 1 {
+			return fmt.Errorf("%s variant must have a singleton type tag", name)
+		}
+		value, ok := tag.Value.Enum[0].(string)
+		if !ok || value == "" {
+			return fmt.Errorf("%s variant must have a nonempty string type tag", name)
+		}
+		variantName := printProperty(prefix + " " + value)
+		if seen[variantName] {
+			return fmt.Errorf("%s has duplicate variant name %s", name, variantName)
+		}
+		seen[variantName] = true
+		if err := data.generateSchemaType(variantName, variant.Value, spec); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
