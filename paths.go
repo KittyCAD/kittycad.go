@@ -10973,7 +10973,7 @@ func (s *MlService) ReasoningWs(id UUID, body any) (*websocket.Conn, error) {
 }
 
 // CommandsWs: Opens a WebSocket to a Zoo KittyCAD engine instance.
-// **Note**: Currently it's recommended to set `webrtc=true` in the WebSocket query string, otherwise some features, such as opacity setting, will cause the engine to fail.
+// Set `geometry_only=true` only when the session will never render images or video. `webrtc=false` disables video transport but leaves image rendering available.
 //
 // Due to the long-lived nature of the instances, it's possible the resources on have been used and not freed entirely, or the instance is in a bad state. Thus it's good practice to expect to have to potentially reconnect at any moment -even almost immediately after the first connection!
 //
@@ -10998,12 +10998,24 @@ func (s *MlService) ReasoningWs(id UUID, body any) (*websocket.Conn, error) {
 //   - `replay`
 //   - `apicallId`
 //   - `orderIndependentTransparency`
+//   - `geometryOnly`
 //   - `pr`
 //   - `body`: The websocket messages the server receives.
-func (s *ModelingService) CommandsWs(videoResWidth int, videoResHeight int, fps int, unlockedFramerate bool, postEffect PostEffectType, webrtc bool, pool string, showGrid bool, replay string, apicallId string, orderIndependentTransparency bool, pr int, body any) (*websocket.Conn, error) {
+func (s *ModelingService) CommandsWs(videoResWidth int, videoResHeight int, fps int, unlockedFramerate bool, postEffect PostEffectType, webrtc bool, pool string, showGrid bool, replay string, apicallId string, orderIndependentTransparency bool, geometryOnly bool, pr int, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/modeling/commands"
 	targetURL := resolveRelative(s.client.server, path)
+
+	// Rendering intent must reach the server even when its value is false.
+	parsedURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+	query := parsedURL.Query()
+	query.Set("geometry_only", strconv.FormatBool(geometryOnly))
+	query.Set("webrtc", strconv.FormatBool(webrtc))
+	parsedURL.RawQuery = query.Encode()
+	targetURL = parsedURL.String()
 
 	headers := http.Header{}
 	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}

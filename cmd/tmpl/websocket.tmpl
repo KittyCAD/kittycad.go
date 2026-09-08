@@ -3,6 +3,18 @@ func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -
 	// Create the url.
     path := "{{.Path}}"
 	targetURL := resolveRelative(s.client.server, path)
+    {{if eq .Path "/ws/modeling/commands"}}
+    // Rendering intent must reach the server even when its value is false.
+    parsedURL, err := url.Parse(targetURL)
+    if err != nil {
+        return nil, err
+    }
+    query := parsedURL.Query()
+    query.Set("geometry_only", strconv.FormatBool(geometryOnly))
+    query.Set("webrtc", strconv.FormatBool(webrtc))
+    parsedURL.RawQuery = query.Encode()
+    targetURL = parsedURL.String()
+    {{end}}
 
     headers := http.Header{}
 	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
