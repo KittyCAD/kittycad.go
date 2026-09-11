@@ -4,13 +4,15 @@ func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -
     path := "{{.Path}}"
 	targetURL := resolveRelative(s.client.server, path)
     {{if eq .Path "/ws/modeling/commands"}}
-    // Rendering intent must reach the server even when its value is false.
+    // Pool selection and explicit false WebRTC must reach the API.
     parsedURL, err := url.Parse(targetURL)
     if err != nil {
         return nil, err
     }
     query := parsedURL.Query()
-    query.Set("geometry_only", strconv.FormatBool(geometryOnly))
+    if pool != "" {
+        query.Set("pool", pool)
+    }
     query.Set("webrtc", strconv.FormatBool(webrtc))
     parsedURL.RawQuery = query.Encode()
     targetURL = parsedURL.String()

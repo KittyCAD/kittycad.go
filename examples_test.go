@@ -4914,7 +4914,7 @@ func ExampleMlService_ReasoningWs() {
 }
 
 // CommandsWs: Opens a WebSocket to a Zoo KittyCAD engine instance.
-// Set `geometry_only=true` only when the session will never render images or video. `webrtc=false` disables video transport but leaves image rendering available.
+// **Note**: Currently it's recommended to set `webrtc=true` in the WebSocket query string, otherwise some features, such as opacity setting, will cause the engine to fail.
 //
 // Due to the long-lived nature of the instances, it's possible the resources on have been used and not freed entirely, or the instance is in a bad state. Thus it's good practice to expect to have to potentially reconnect at any moment -even almost immediately after the first connection!
 //
@@ -4939,7 +4939,6 @@ func ExampleMlService_ReasoningWs() {
 //   - `replay`
 //   - `apicallId`
 //   - `orderIndependentTransparency`
-//   - `geometryOnly`
 //   - `pr`
 //   - `body`: The websocket messages the server receives.
 func ExampleModelingService_CommandsWs() {
@@ -4949,7 +4948,7 @@ func ExampleModelingService_CommandsWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Modeling.CommandsWs(123, 123, 123, true, kittycad.PostEffectTypePhosphor, true, "some-string", true, "some-string", "some-string", true, true, 123, "")
+	ws, err := client.Modeling.CommandsWs(123, 123, 123, true, kittycad.PostEffectTypePhosphor, true, "some-string", true, "some-string", "some-string", true, 123, "")
 	if err != nil {
 		panic(err)
 	}
