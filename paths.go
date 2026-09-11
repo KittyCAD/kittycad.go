@@ -11005,6 +11005,19 @@ func (s *ModelingService) CommandsWs(videoResWidth int, videoResHeight int, fps 
 	path := "/ws/modeling/commands"
 	targetURL := resolveRelative(s.client.server, path)
 
+	// Pool selection and explicit false WebRTC must reach the API.
+	parsedURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+	query := parsedURL.Query()
+	if pool != "" {
+		query.Set("pool", pool)
+	}
+	query.Set("webrtc", strconv.FormatBool(webrtc))
+	parsedURL.RawQuery = query.Encode()
+	targetURL = parsedURL.String()
+
 	headers := http.Header{}
 	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
 
