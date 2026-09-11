@@ -76,14 +76,7 @@ staticcheck: ## Verifies `staticcheck` passes.
 
 .PHONY: cover
 cover: ## Runs go test with coverage.
-	@echo "" > coverage.txt
-	@for d in $(shell $(GO) list ./... | grep -v vendor); do \
-		$(GO) test -race -coverprofile=profile.out -covermode=atomic "$$d"; \
-		if [ -f profile.out ]; then \
-			cat profile.out >> coverage.txt; \
-			rm profile.out; \
-		fi; \
-	done;
+	@$(GO) test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 .PHONY: install
 install: ## Installs the executable or package.

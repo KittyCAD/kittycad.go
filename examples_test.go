@@ -78,35 +78,6 @@ func ExampleMetaService_GetIpinfo() {
 
 }
 
-// CreateTextToCad: Generate a CAD model from text.
-// Prefer the ML copilot websocket (`/ws/ml/copilot`) for new integrations. This REST endpoint is kept for existing Text-to-CAD clients, but it is no longer the recommended way to generate CAD models from a prompt.
-//
-// Because our source of truth for the resulting model is a STEP file, you will always have STEP file contents when you list your generated parts. Any other formats you request here will also be returned when you list your generated parts.
-//
-// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
-//
-// One thing to note, if you hit the cache, this endpoint will return right away. So you only have to wait if the status is not `Completed` or `Failed`.
-//
-// Parameters
-//
-//   - `outputFormat`: The valid types of output file formats.
-//   - `kcl`
-//   - `body`: Body for generating parts from text.
-func ExampleMlService_CreateTextToCad() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Ml.CreateTextToCad("", true, kittycad.TextToCadCreateBody{KclVersion: "some-string", ModelVersion: "some-string", ProjectName: "some-string", Prompt: "some-string"})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // GetAnnouncements: List all active announcements.
 // No authentication is required.
 func ExampleMetaService_GetAnnouncements() {
@@ -378,7 +349,7 @@ func ExampleMetaService_CommunitySso() {
 // CreateCenterOfMass: Get CAD file center of mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
 //
-// This endpoint returns the cartesian coordinate in world space measure units.
+// This endpoint returns the cartesian coordinate in the KittyCAD coordinate system (+Z up, -Y forward) using the requested measure units.
 //
 // In the future, we will use the units inside the file if they are given and do any conversions if necessary for the calculation. But currently, that is not supported.
 //
@@ -814,68 +785,6 @@ func ExampleMlService_CreateKclCodeCompletions() {
 	}
 
 	result, err := client.Ml.CreateKclCodeCompletions(kittycad.KclCodeCompletionRequest{Extra: kittycad.KclCodeCompletionParams{Language: "some-string", NextIndent: 123, PromptTokens: 123, SuffixTokens: 123, TrimByIndentation: true}, MaxTokens: 123, ModelVersion: "some-string", N: 123, Nwo: "some-string", Prompt: "some-string", Stop: []string{}, Stream: true, Suffix: "some-string", Temperature: 123.45, TopP: 123.45})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// CreateTextToCadIteration: Iterate on a CAD model with a prompt.
-// Prefer the ML copilot websocket (`/ws/ml/copilot`) for new prompt-to-edit integrations. This REST endpoint is kept for existing clients, but it is no longer the recommended way to edit KCL or CAD models from a prompt.
-//
-// Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
-//
-// You always get the whole code back, even if you only changed a small part of it.
-//
-// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
-//
-// This endpoint is deprecated in favor of `/ws/ml/copilot`.
-//
-// Parameters
-//
-//   - `body`: Body for generating parts from text.
-func ExampleMlService_CreateTextToCadIteration() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Ml.CreateTextToCadIteration(kittycad.TextToCadIterationBody{KclVersion: "some-string", OriginalSourceCode: "some-string", ProjectName: "some-string", Prompt: "some-string", SourceRanges: []kittycad.SourceRangePrompt{}})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// CreateTextToCadMultiFileIteration: Iterate on a multi-file CAD model with a prompt.
-// Prefer the ML copilot websocket (`/ws/ml/copilot`) for new prompt-to-edit integrations. This REST endpoint is kept for existing multi-file iteration clients, but it is no longer the recommended way to edit KCL or CAD models from a prompt.
-//
-// This endpoint can iterate on multi-file projects.
-//
-// Even if you give specific ranges to edit, the model might change more than just those in order to make the changes you requested without breaking the code.
-//
-// You always get the whole code back, even if you only changed a small part of it. This endpoint will always return all the code back, including files that were not changed. If your original source code imported a stl/gltf/step/etc file, the output will not include that file since the model will never change non-kcl files. The endpoint will only return the kcl files that were changed.
-//
-// This operation is performed asynchronously, the `id` of the operation will be returned. You can use the `id` returned from the request to get status information about the async operation from the `/async/operations/{id}` endpoint.
-//
-// Input filepaths will be normalized and re-canonicalized to be under the current working directory -- so returned paths may differ from provided paths, and care must be taken when handling user provided paths.
-//
-// Parameters
-//
-//   - `body`: Body for iterating on models from text prompts.
-func ExampleMlService_CreateTextToCadMultiFileIteration() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	form := kittycad.NewMultipartForm()
-
-	result, err := client.Ml.CreateTextToCadMultiFileIteration(form)
 	if err != nil {
 		panic(err)
 	}
@@ -1358,6 +1267,8 @@ func ExampleOrgService_DatasetS3Policies() {
 //
 //   - `pageToken`
 //
+//   - `lookupEnabled`
+//
 //   - `sortBy`: Supported set of sort modes for scanning by created_at only.
 //
 //     Currently, we only support scanning in ascending order.
@@ -1367,7 +1278,7 @@ func ExampleOrgService_ListDatasets() {
 		panic(err)
 	}
 
-	result, err := client.Org.ListDatasets(123, "some-string", "")
+	result, err := client.Org.ListDatasets(123, "some-string", true, "")
 	if err != nil {
 		panic(err)
 	}
@@ -1659,6 +1570,33 @@ func ExampleOrgService_UploadDatasetFiles() {
 	form := kittycad.NewMultipartForm()
 
 	result, err := client.Org.UploadDatasetFiles(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), form)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListOrgJobs: List Factory jobs owned by your organization.
+// Any current organization member can list its jobs, including archived jobs. Ownership uses the job's stored organization, so a submitter leaving or deleting their account does not move the job. Former members lose access. Results are paginated, newest first by default, with the job id breaking ties. Internal communication, financial details, and file storage locations are omitted.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleFactoryService_ListOrgJobs() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.ListOrgJobs(123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}
@@ -3105,7 +3043,7 @@ func ExampleUserService_UpdateSelf() {
 // DeleteSelf: Delete your user.
 // This endpoint requires authentication by any Zoo user. It deletes the authenticated user from Zoo's database.
 //
-// This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance.
+// This call will only succeed if all invoices associated with the user have been paid in full and there is no outstanding balance. Personal Factory jobs must be completed or canceled before deleting your account. In-progress jobs owned by an organization do not prevent account deletion.
 func ExampleUserService_DeleteSelf() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
@@ -3436,6 +3374,33 @@ func ExampleFactoryService_GetUserFinishes() {
 	}
 
 	result, err := client.Factory.GetUserFinishes()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListUserJobs: List your personal Factory jobs.
+// Returns jobs owned by your account, including archived jobs. Jobs with an organization owner belong to that organization, even when your account is also associated with them; use `GET /org/factory/jobs` to list those jobs. Results are paginated, newest first by default, with the job id breaking ties. Internal communication, financial details, and file storage locations are omitted.
+//
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleFactoryService_ListUserJobs() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.ListUserJobs(123, "some-string", "")
 	if err != nil {
 		panic(err)
 	}
@@ -4087,6 +4052,45 @@ func ExampleProjectService_Download() {
 	}
 
 	if err := client.Project.Download(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ""); err != nil {
+		panic(err)
+	}
+
+}
+
+// UpdateOrganization: Move one of the authenticated user's projects into their active organization library.
+// This changes only the project's ownership scope. The project ID, current revision, files, and version history remain unchanged so cloud bindings stay valid across the move.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleProjectService_UpdateOrganization() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.UpdateOrganization(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteOrganization: Move an organization project back to its creator's personal library.
+// Organization administrators may perform this move to revoke organization access. The project ID, current revision, files, and version history remain unchanged.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleProjectService_DeleteOrganization() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Project.DeleteOrganization(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
 		panic(err)
 	}
 
@@ -4754,13 +4758,26 @@ func ExampleExecutorService_CreateTerm() {
 
 }
 
-// CopilotWs: Open a websocket to prompt the ML copilot.
-// This endpoint accepts typed query parameters via `MlCopilotQuery`. See the field documentation on that struct for details, including replay behavior and wire format.
+// CopilotWs: Open a websocket to a Zookeeper agent instance.
+// Remember to authenticate before sending messages. [For WebSockets it's a little different.](/docs/developer-tools/api/authentication?lang=curl#websockets)
+//
+// As with all Zoo WebSockets, you must implement a ping-pong interval / heartbeat to keep the connection open. This involves a simple `{ type: "ping" }` every ~5s and **check that a `{ pong: {} } ` is received**.
+//
+// For the "standard experience" where the agent continues off conversations, you'll want to set the `replay` query string param to `true` and record "conversation ids", which are then passed as the other query string parameter.
+//
+// A list of past conversations can be fetch from [/ml/conversations](/docs/developer-tools/api/ml/list-conversations?lang=curl).
+//
+// The general use-case is to fire off `{ type: "user", content: "my prompt goes here" }` messages and interpret the various message types that return.
+//
+// Notable behavior: **ONLY KCL IS RETURNED.** It's a common misunderstanding that Zookeeper returns models in formats such as STEP and STL directly. This is incorrect. All outputs are in KCL, which can then be fed into the [Engine API](/docs/developer-tools/engine-api) (specifically the `exec_kcl_project` command) or the [Zoo CLI](/docs/developer-tools/cli/manual) (`zoo kcl snapshot ...`).
+//
+// In the future we may add a more direct method, but you can always rely on those.
 //
 // Parameters
 //
 //   - `replay`
 //   - `conversationId`
+//   - `replayAttachmentMode`: Controls whether replayed attachments are sent inline or fetched on demand.
 //   - `pr`
 //   - `body`: The types of messages that can be sent by the client to the server.
 func ExampleMlService_CopilotWs() {
@@ -4770,7 +4787,7 @@ func ExampleMlService_CopilotWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Ml.CopilotWs(true, kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "")
+	ws, err := client.Ml.CopilotWs(true, kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", 123, "")
 	if err != nil {
 		panic(err)
 	}
@@ -4896,8 +4913,18 @@ func ExampleMlService_ReasoningWs() {
 
 }
 
-// CommandsWs: Open a websocket which accepts modeling commands.
-// Pass those commands to the engine via websocket, and pass responses back to the client. Basically, this is a websocket proxy between the frontend/client and the engine.
+// CommandsWs: Opens a WebSocket to a Zoo KittyCAD engine instance.
+// **Note**: Currently it's recommended to set `webrtc=true` in the WebSocket query string, otherwise some features, such as opacity setting, will cause the engine to fail.
+//
+// Due to the long-lived nature of the instances, it's possible the resources on have been used and not freed entirely, or the instance is in a bad state. Thus it's good practice to expect to have to potentially reconnect at any moment -even almost immediately after the first connection!
+//
+// Authorization happens via a pseudo HTTP header over the WebSocket: `{ type: "headers", headers: { "Authorization": "Bearer xxxxxxxxx" }}`
+//
+// The very next thing recommended is to setup a ping-pong interval. The current timeout is 10s and has no documented guarantee, so use a conservative number below that. 5s should be sufficient. A ping-pong interval is sending `{ type: 'ping" }` when `{ request_id, success, resp: { type: "pong", data: {} } }` message is received.
+//
+// You're ready to start sending modeling commands!
+//
+// If you want to understand how to connect to the WebRTC video stream, https://github.com/KittyCAD/kittycad.ts/blob/main/src/webrtc.ts is a nice example to learn from.
 //
 // Parameters
 //
