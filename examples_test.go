@@ -120,63 +120,6 @@ func ExampleAPICallService_Get() {
 
 }
 
-// GithubCallback: Listen for callbacks to GitHub app authentication.
-// This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.
-//
-// The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
-//
-// Parameters
-//
-//   - `body`
-func ExampleAppService_GithubCallback() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	if err := client.App.GithubCallback(""); err != nil {
-		panic(err)
-	}
-
-}
-
-// GithubConsent: Get the consent URL for GitHub app authentication.
-// This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.
-//
-// The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.
-func ExampleAppService_GithubConsent() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.App.GithubConsent()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// GithubWebhook: Listen for GitHub webhooks.
-// These come from the GitHub app.
-//
-// Parameters
-//
-//   - `body`
-func ExampleAppService_GithubWebhook() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	if err := client.App.GithubWebhook([]byte("some-binary")); err != nil {
-		panic(err)
-	}
-
-}
-
 // GetAsyncOperation: Get an async operation.
 // Get the status and output of an async operation.
 //
@@ -588,29 +531,6 @@ func ExampleFileService_CreateVolume() {
 
 }
 
-// InternalGetAPITokenForDiscordUser: Get an API token for a user by their discord id.
-// This endpoint allows us to run API calls from our discord bot on behalf of a user. The user must have a discord account linked to their Zoo Account via oauth2 for this to work.
-//
-// You must be a Zoo admin to use this endpoint.
-//
-// Parameters
-//
-//   - `discordId`
-func ExampleMetaService_InternalGetAPITokenForDiscordUser() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Meta.InternalGetAPITokenForDiscordUser("some-string")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // Logout: This endpoint removes the session cookie for a user.
 // This is used in logout scenarios.
 func ExampleHiddenService_Logout() {
@@ -747,25 +667,6 @@ func ExampleMlService_UpdateCustomModel() {
 	}
 
 	result, err := client.Ml.UpdateCustomModel(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateCustomModel{Name: "some-string", SystemPrompt: "some-string"})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// ListOrgDatasetsForModel: List the org datasets that are currently attached to a custom ML model owned by the caller’s organization.
-// Parameters
-//
-//   - `id`: A UUID usually v4 or v7
-func ExampleMlService_ListOrgDatasetsForModel() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Ml.ListOrgDatasetsForModel(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -1605,6 +1506,25 @@ func ExampleFactoryService_ListOrgJobs() {
 
 }
 
+// GetOrgJob: Get an organization-owned Factory job for any current member.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+func ExampleFactoryService_GetOrgJob() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.GetOrgJob(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // ListMembers: List members of your org.
 // This endpoint requires authentication by an org admin. It lists the members of the authenticated user's org.
 //
@@ -1993,14 +1913,19 @@ func ExamplePaymentService_RedirectMethodPortalLinkForOrg() {
 }
 
 // ListMethodsForOrg: List payment methods for your org.
-// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org.
+// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org, with the valid default card first.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExamplePaymentService_ListMethodsForOrg() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Payment.ListMethodsForOrg()
+	result, err := client.Payment.ListMethodsForOrg(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -2331,153 +2256,18 @@ func ExampleOrgService_GetShortlinks() {
 
 }
 
-// ListSkills: List every skill that belongs to the caller's organization.
+// ListSkills: List every skill that belongs to the caller's organization, ordered by name.
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExampleOrgService_ListSkills() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Org.ListSkills()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// GetBillingContractForAny: Get the billing contract for an organization.
-// This endpoint requires Zoo admin authentication. It returns the active contract for the organization, or the latest draft when no active contract exists.
-//
-// Parameters
-//
-//   - `id`: A UUID usually v4 or v7
-func ExampleOrgService_GetBillingContractForAny() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Org.GetBillingContractForAny(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// UpsertBillingContractForAny: Create or replace the billing contract for an organization.
-// This endpoint requires Zoo admin authentication. It upserts the contract definition used for admin-managed enterprise billing.
-//
-// Parameters
-//
-//   - `id`: A UUID usually v4 or v7
-//   - `body`: Complete contract payload used to create or replace an org's contract.
-func ExampleOrgService_UpsertBillingContractForAny() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Org.UpsertBillingContractForAny(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.BillingContractUpsert{BillingCadence: "", CommitmentScope: "", Currency: "some-string", DiscountDescription: "some-string", EffectiveAt: kittycad.TimeNow(), ExternalCustomerID: "some-string", Items: []kittycad.BillingContractItemInput{}, Name: "some-string", Notes: "some-string", Periods: []kittycad.BillingPeriodInput{}, Provider: "", RolloverPolicy: "", Status: "", TermEndAt: kittycad.TimeNow()})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// ListAppsForAnyOrg: List OAuth 2.0 apps owned by an organization.
-// This endpoint requires Zoo admin authentication. It returns the target organization's active OAuth apps for admin dashboard inspection.
-//
-// Parameters
-//
-//   - `id`: A UUID usually v4 or v7
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func ExampleOauth2Service_ListAppsForAnyOrg() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Oauth2.ListAppsForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// GetBalanceForAnyOrg: Get balance for an org.
-// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified org.
-//
-// Parameters
-//
-//   - `includeTotalDue`
-//   - `id`: A UUID usually v4 or v7
-func ExamplePaymentService_GetBalanceForAnyOrg() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Payment.GetBalanceForAnyOrg(true, kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// UpdateBalanceForAnyOrg: Update balance for an org.
-// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified org.
-//
-// Parameters
-//
-//   - `id`: A UUID usually v4 or v7
-//   - `includeTotalDue`
-//   - `body`: Payload for updating a user's balance.
-func ExamplePaymentService_UpdateBalanceForAnyOrg() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Payment.UpdateBalanceForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// UpdateOrgSubscriptionForAnyOrg: Update the subscription for any org (admin override).
-// This endpoint requires authentication by a Zoo admin. It updates the subscription for the specified org.
-//
-// Parameters
-//
-//   - `id`: A UUID usually v4 or v7
-//   - `body`: A struct of Zoo product subscriptions an organization can request.
-func ExamplePaymentService_UpdateOrgSubscriptionForAnyOrg() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Payment.UpdateOrgSubscriptionForAnyOrg(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: "some-string", PayAnnually: true})
+	result, err := client.Org.ListSkills(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -2536,13 +2326,17 @@ func ExampleProjectService_ListCategories() {
 }
 
 // ListPublic: List publicly visible community projects for the website/gallery.
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExampleProjectService_ListPublic() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Project.ListPublic()
+	result, err := client.Project.ListPublic(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -2655,49 +2449,6 @@ func ExampleHiddenService_DownloadSharedProject() {
 	if err := client.Hidden.DownloadSharedProject("some-string", ""); err != nil {
 		panic(err)
 	}
-
-}
-
-// CreateCoupon: Create a new store coupon.
-// This endpoint requires authentication by a Zoo employee. It creates a new store coupon.
-//
-// Parameters
-//
-//   - `body`: The parameters for a new store coupon.
-func ExampleStoreService_CreateCoupon() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Store.CreateCoupon(kittycad.StoreCouponParams{PercentOff: 123})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// UpsertSubscriptionPlanPrice: Create or update a price for a subscription plan.
-// You must be a Zoo admin to perform this request.
-//
-// Parameters
-//
-//   - `slug`
-//   - `body`: Create or update a price row for a subscription plan.
-func ExamplePaymentService_UpsertSubscriptionPlanPrice() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Payment.UpsertSubscriptionPlanPrice("some-string", kittycad.PriceUpsertRequest{Active: true, BillingModel: "", Cadence: "", UnitAmount: 123.45})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
 
 }
 
@@ -3366,14 +3117,19 @@ func ExampleUserService_GetSelfExtended() {
 }
 
 // GetUserFinishes: List finishes currently available for customer Factory submissions.
-// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.
+// Internal-only entries are omitted. Results are ordered alphabetically, ignoring case, with "Other" last. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExampleFactoryService_GetUserFinishes() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Factory.GetUserFinishes()
+	result, err := client.Factory.GetUserFinishes(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -3442,15 +3198,39 @@ func ExampleFactoryService_CreateUserJob() {
 
 }
 
+// GetUserJob: Get a personal Factory job and its current customer-visible specifications.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+func ExampleFactoryService_GetUserJob() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.GetUserJob(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // GetUserMaterials: List materials currently available for customer Factory submissions.
-// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.
+// Internal-only entries are omitted. Results are ordered alphabetically, ignoring case, with "Other" last. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExampleFactoryService_GetUserMaterials() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Factory.GetUserMaterials()
+	result, err := client.Factory.GetUserMaterials(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -3783,14 +3563,19 @@ func ExamplePaymentService_RedirectMethodPortalLinkForUser() {
 }
 
 // ListMethodsForUser: List payment methods for your user.
-// This endpoint requires authentication by any Zoo user. It lists payment methods for the authenticated user.
+// This endpoint requires authentication by any Zoo user. It lists payment methods for the authenticated user, with the valid default card first.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExamplePaymentService_ListMethodsForUser() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Payment.ListMethodsForUser()
+	result, err := client.Payment.ListMethodsForUser(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -4119,13 +3904,15 @@ func ExampleProjectService_Publish() {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
+//   - `limit`
+//   - `pageToken`
 func ExampleProjectService_ListShareLinks() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Project.ListShareLinks(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	result, err := client.Project.ListShareLinks(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -4182,6 +3969,84 @@ func ExampleProjectService_GetThumbnail() {
 	}
 
 	if err := client.Project.GetThumbnail(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
+// ListVersions: List a project's saved versions, newest first.
+// Requires access to the project. Public visibility or link sharing will not grant access to history.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `limit`
+//   - `pageToken`
+func ExampleProjectService_ListVersions() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.ListVersions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetVersion: Get metadata and files for a single saved project version.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `versionId`: A UUID usually v4 or v7
+func ExampleProjectService_GetVersion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.GetVersion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DownloadVersion: Download the files saved in one project version.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `versionId`: A UUID usually v4 or v7
+//   - `format`: Archive formats supported by project download endpoints.
+func ExampleProjectService_DownloadVersion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Project.DownloadVersion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), ""); err != nil {
+		panic(err)
+	}
+
+}
+
+// GetVersionThumbnail: Fetch the thumbnail for a single saved project version.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `versionId`: A UUID usually v4 or v7
+func ExampleProjectService_GetVersionThumbnail() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Project.GetVersionThumbnail(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
 		panic(err)
 	}
 
@@ -4438,27 +4303,6 @@ func ExampleUserService_Get() {
 
 }
 
-// AdminDetailsList: Get admin-only details for a user.
-// Zoo admins can retrieve extended information about any user, while non-admins receive a 404 to avoid leaking the existence of the resource.
-//
-// Parameters
-//
-//   - `id`
-func ExampleUserService_AdminDetailsList() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.User.AdminDetailsList("some-string")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
 // ListForUser: List API calls for a user.
 // This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user if "me" is passed as the user id.
 //
@@ -4486,102 +4330,6 @@ func ExampleAPICallService_ListForUser() {
 	}
 
 	result, err := client.APICall.ListForUser("some-string", 123, "some-string", "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// ListAppsForAnyUser: List OAuth 2.0 apps owned by a user.
-// This endpoint requires Zoo admin authentication. It returns the target user's active OAuth apps so the admin dashboard can inspect them without impersonating the user.
-//
-// Parameters
-//
-//   - `id`
-//
-//   - `limit`
-//
-//   - `pageToken`
-//
-//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
-//
-//     Currently, we only support scanning in ascending order.
-func ExampleOauth2Service_ListAppsForAnyUser() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Oauth2.ListAppsForAnyUser("some-string", 123, "some-string", "")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// GetBalanceForAnyUser: Get balance for an user.
-// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified user.
-//
-// Parameters
-//
-//   - `id`
-//   - `includeTotalDue`
-func ExamplePaymentService_GetBalanceForAnyUser() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Payment.GetBalanceForAnyUser("some-string", true)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// UpdateBalanceForAnyUser: Update balance for an user.
-// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified user.
-//
-// Parameters
-//
-//   - `id`
-//   - `includeTotalDue`
-//   - `body`: Payload for updating a user's balance.
-func ExamplePaymentService_UpdateBalanceForAnyUser() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.Payment.UpdateBalanceForAnyUser("some-string", true, kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%#v", result)
-
-}
-
-// UpdateSubscriptionFor: Update a subscription for a user.
-// You must be a Zoo admin to perform this request.
-//
-// Parameters
-//
-//   - `id`
-//   - `body`: A struct of Zoo product subscriptions a user can request.
-func ExampleUserService_UpdateSubscriptionFor() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	result, err := client.User.UpdateSubscriptionFor("some-string", kittycad.ZooProductSubscriptionsUserRequest{DowngradeReason: "", DowngradeReasonText: "some-string", ModelingApp: "some-string", PayAnnually: true})
 	if err != nil {
 		panic(err)
 	}
@@ -4844,6 +4592,74 @@ func ExampleMlService_CopilotWs() {
 
 }
 
+// KclMigrationWs: Open a sponsored KCL migration connection. It cannot execute ordinary prompts.
+// Parameters
+//
+//   - `body`: The restricted public migration connection never accepts ordinary prompts.
+func ExampleMlService_KclMigrationWs() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	// Create the websocket connection.
+	ws, err := client.Ml.KclMigrationWs("")
+	if err != nil {
+		panic(err)
+	}
+
+	defer ws.Close()
+
+	done := make(chan struct{})
+
+	go func() {
+		defer close(done)
+		for {
+			_, message, err := ws.ReadMessage()
+			if err != nil {
+				log.Println("read:", err)
+				return
+			}
+			log.Printf("recv: %s", message)
+		}
+	}()
+
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+
+	for {
+		select {
+		case <-done:
+			return
+		case t := <-ticker.C:
+			err := ws.WriteMessage(websocket.TextMessage, []byte(t.String()))
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
+		case <-interrupt:
+			log.Println("interrupt")
+
+			// Cleanly close the connection by sending a close message and then
+			// waiting (with timeout) for the server to close the connection.
+			err := ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+			if err != nil {
+				log.Println("write close:", err)
+				return
+			}
+			select {
+			case <-done:
+			case <-time.After(time.Second):
+			}
+			return
+		}
+	}
+
+}
+
 // ReasoningWs: Open a websocket to prompt the ML copilot.
 // Parameters
 //
@@ -4934,11 +4750,13 @@ func ExampleMlService_ReasoningWs() {
 //   - `unlockedFramerate`
 //   - `postEffect`: Post effect type
 //   - `webrtc`
+//   - `geometryOnly`
 //   - `pool`
 //   - `showGrid`
 //   - `replay`
 //   - `apicallId`
 //   - `orderIndependentTransparency`
+//   - `kclVersion`: Which KCL versions does Zoo support?
 //   - `pr`
 //   - `body`: The websocket messages the server receives.
 func ExampleModelingService_CommandsWs() {
@@ -4948,7 +4766,7 @@ func ExampleModelingService_CommandsWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Modeling.CommandsWs(123, 123, 123, true, kittycad.PostEffectTypePhosphor, true, "some-string", true, "some-string", "some-string", true, 123, "")
+	ws, err := client.Modeling.CommandsWs(123, 123, 123, true, kittycad.PostEffectTypePhosphor, true, true, "some-string", true, "some-string", "some-string", true, "", 123, "")
 	if err != nil {
 		panic(err)
 	}

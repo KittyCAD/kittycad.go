@@ -41,30 +41,6 @@
  },
  {
   "value": {
-   "example": "// GithubCallback: Listen for callbacks to GitHub app authentication.\n// \n// This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.\n// \n// The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// GithubCallback: Listen for callbacks to GitHub app authentication.\n// This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.\n//\n// The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.\n//\n// Parameters\n//\n//   - `body`\nfunc ExampleAppService_GithubCallback() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.App.GithubCallback(\"\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AppService.GithubCallback"
-  },
-  "op": "add",
-  "path": "/paths/~1apps~1github~1callback/get/x-go"
- },
- {
-  "value": {
-   "example": "// GithubConsent: Get the consent URL for GitHub app authentication.\n// \n// This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.\n// \n// The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.\n// \n// GithubConsent: Get the consent URL for GitHub app authentication.\n// This is different than OAuth 2.0 authentication for users. This endpoint grants access for Zoo to access user's repos.\n//\n// The user doesn't need Zoo OAuth authorization for this endpoint, this is purely for the GitHub permissions to access repos.\nfunc ExampleAppService_GithubConsent() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.App.GithubConsent()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AppService.GithubConsent"
-  },
-  "op": "add",
-  "path": "/paths/~1apps~1github~1consent/get/x-go"
- },
- {
-  "value": {
-   "example": "// GithubWebhook: Listen for GitHub webhooks.\n// \n// These come from the GitHub app.\n// \n// \n// Parameters\n// \n// \t- `body`\n// \n// GithubWebhook: Listen for GitHub webhooks.\n// These come from the GitHub app.\n//\n// Parameters\n//\n//   - `body`\nfunc ExampleAppService_GithubWebhook() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.App.GithubWebhook([]byte(\"some-binary\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#AppService.GithubWebhook"
-  },
-  "op": "add",
-  "path": "/paths/~1apps~1github~1webhook/post/x-go"
- },
- {
-  "value": {
    "example": "// GetAsyncOperation: Get an async operation.\n// \n// Get the status and output of an async operation.\n// \n// This endpoint requires authentication by any Zoo user. It returns details of the requested async operation for the user.\n// \n// If the user is not authenticated to view the specified async operation, then it is not returned.\n// \n// Only Zoo employees with the proper access can view async operations for other users.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// GetAsyncOperation: Get an async operation.\n// Get the status and output of an async operation.\n//\n// This endpoint requires authentication by any Zoo user. It returns details of the requested async operation for the user.\n//\n// If the user is not authenticated to view the specified async operation, then it is not returned.\n//\n// Only Zoo employees with the proper access can view async operations for other users.\n//\n// Parameters\n//\n//   - `id`\nfunc ExampleAPICallService_GetAsyncOperation() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.GetAsyncOperation(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.GetAsyncOperation"
   },
@@ -201,14 +177,6 @@
  },
  {
   "value": {
-   "example": "// InternalGetAPITokenForDiscordUser: Get an API token for a user by their discord id.\n// \n// This endpoint allows us to run API calls from our discord bot on behalf of a user. The user must have a discord account linked to their Zoo Account via oauth2 for this to work.\n// \n// You must be a Zoo admin to use this endpoint.\n// \n// \n// Parameters\n// \n// \t- `discordId`\n// \n// InternalGetAPITokenForDiscordUser: Get an API token for a user by their discord id.\n// This endpoint allows us to run API calls from our discord bot on behalf of a user. The user must have a discord account linked to their Zoo Account via oauth2 for this to work.\n//\n// You must be a Zoo admin to use this endpoint.\n//\n// Parameters\n//\n//   - `discordId`\nfunc ExampleMetaService_InternalGetAPITokenForDiscordUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Meta.InternalGetAPITokenForDiscordUser(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.InternalGetAPITokenForDiscordUser"
-  },
-  "op": "add",
-  "path": "/paths/~1internal~1discord~1api-token~1{discord_id}/get/x-go"
- },
- {
-  "value": {
    "example": "// Logout: This endpoint removes the session cookie for a user.\n// \n// This is used in logout scenarios.\n// \n// Logout: This endpoint removes the session cookie for a user.\n// This is used in logout scenarios.\nfunc ExampleHiddenService_Logout() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Hidden.Logout(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#HiddenService.Logout"
   },
@@ -254,14 +222,6 @@
   },
   "op": "add",
   "path": "/paths/~1ml~1custom~1models~1{id}/put/x-go"
- },
- {
-  "value": {
-   "example": "// ListOrgDatasetsForModel: List the org datasets that are currently attached to a custom ML model owned by the caller’s organization.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// ListOrgDatasetsForModel: List the org datasets that are currently attached to a custom ML model owned by the caller’s organization.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleMlService_ListOrgDatasetsForModel() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Ml.ListOrgDatasetsForModel(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.ListOrgDatasetsForModel"
-  },
-  "op": "add",
-  "path": "/paths/~1ml~1custom~1models~1{id}~1datasets/get/x-go"
  },
  {
   "value": {
@@ -593,6 +553,14 @@
  },
  {
   "value": {
+   "example": "// GetOrgJob: Get an organization-owned Factory job for any current member.\n// \n// \n// Parameters\n// \n// \t- `jobId`: A UUID usually v4 or v7\n// \n// GetOrgJob: Get an organization-owned Factory job for any current member.\n// Parameters\n//\n//   - `jobId`: A UUID usually v4 or v7\nfunc ExampleFactoryService_GetOrgJob() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.GetOrgJob(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.GetOrgJob"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1factory~1jobs~1{job_id}/get/x-go"
+ },
+ {
+  "value": {
    "example": "// ListMembers: List members of your org.\n// \n// This endpoint requires authentication by an org admin. It lists the members of the authenticated user's org.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \t- `role`: The roles for users in an organization.\n// \n// ListMembers: List members of your org.\n// This endpoint requires authentication by an org admin. It lists the members of the authenticated user's org.\n//\n// Parameters\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\n//\n//   - `role`: The roles for users in an organization.\nfunc ExampleOrgService_ListMembers() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.ListMembers(123, \"some-string\", \"\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.ListMembers"
   },
@@ -737,7 +705,7 @@
  },
  {
   "value": {
-   "example": "// ListMethodsForOrg: List payment methods for your org.\n// \n// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org.\n// \n// ListMethodsForOrg: List payment methods for your org.\n// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org.\nfunc ExamplePaymentService_ListMethodsForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ListMethodsForOrg()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListMethodsForOrg: List payment methods for your org.\n// \n// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org, with the valid default card first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// ListMethodsForOrg: List payment methods for your org.\n// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org, with the valid default card first.\n//\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExamplePaymentService_ListMethodsForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ListMethodsForOrg(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ListMethodsForOrg"
   },
   "op": "add",
@@ -873,59 +841,11 @@
  },
  {
   "value": {
-   "example": "// ListSkills: List every skill that belongs to the caller's organization.\n// \n// ListSkills: List every skill that belongs to the caller's organization.\nfunc ExampleOrgService_ListSkills() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.ListSkills()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListSkills: List every skill that belongs to the caller's organization, ordered by name.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// ListSkills: List every skill that belongs to the caller's organization, ordered by name.\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExampleOrgService_ListSkills() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.ListSkills(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.ListSkills"
   },
   "op": "add",
   "path": "/paths/~1org~1skills/get/x-go"
- },
- {
-  "value": {
-   "example": "// GetBillingContractForAny: Get the billing contract for an organization.\n// \n// This endpoint requires Zoo admin authentication. It returns the active contract for the organization, or the latest draft when no active contract exists.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// GetBillingContractForAny: Get the billing contract for an organization.\n// This endpoint requires Zoo admin authentication. It returns the active contract for the organization, or the latest draft when no active contract exists.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleOrgService_GetBillingContractForAny() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.GetBillingContractForAny(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.GetBillingContractForAny"
-  },
-  "op": "add",
-  "path": "/paths/~1orgs~1{id}~1billing~1contract/get/x-go"
- },
- {
-  "value": {
-   "example": "// UpsertBillingContractForAny: Create or replace the billing contract for an organization.\n// \n// This endpoint requires Zoo admin authentication. It upserts the contract definition used for admin-managed enterprise billing.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`: Complete contract payload used to create or replace an org's contract.\n// \n// UpsertBillingContractForAny: Create or replace the billing contract for an organization.\n// This endpoint requires Zoo admin authentication. It upserts the contract definition used for admin-managed enterprise billing.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`: Complete contract payload used to create or replace an org's contract.\nfunc ExampleOrgService_UpsertBillingContractForAny() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Org.UpsertBillingContractForAny(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.BillingContractUpsert{BillingCadence: \"\", CommitmentScope: \"\", Currency: \"some-string\", DiscountDescription: \"some-string\", EffectiveAt: kittycad.TimeNow(), ExternalCustomerID: \"some-string\", Items: []kittycad.BillingContractItemInput{}, Name: \"some-string\", Notes: \"some-string\", Periods: []kittycad.BillingPeriodInput{}, Provider: \"\", RolloverPolicy: \"\", Status: \"\", TermEndAt: kittycad.TimeNow()})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.UpsertBillingContractForAny"
-  },
-  "op": "add",
-  "path": "/paths/~1orgs~1{id}~1billing~1contract/put/x-go"
- },
- {
-  "value": {
-   "example": "// ListAppsForAnyOrg: List OAuth 2.0 apps owned by an organization.\n// \n// This endpoint requires Zoo admin authentication. It returns the target organization's active OAuth apps for admin dashboard inspection.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListAppsForAnyOrg: List OAuth 2.0 apps owned by an organization.\n// This endpoint requires Zoo admin authentication. It returns the target organization's active OAuth apps for admin dashboard inspection.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleOauth2Service_ListAppsForAnyOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.ListAppsForAnyOrg(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.ListAppsForAnyOrg"
-  },
-  "op": "add",
-  "path": "/paths/~1orgs~1{id}~1oauth2~1apps/get/x-go"
- },
- {
-  "value": {
-   "example": "// GetBalanceForAnyOrg: Get balance for an org.\n// \n// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified org.\n// \n// \n// Parameters\n// \n// \t- `includeTotalDue`\n// \t- `id`: A UUID usually v4 or v7\n// \n// GetBalanceForAnyOrg: Get balance for an org.\n// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified org.\n//\n// Parameters\n//\n//   - `includeTotalDue`\n//   - `id`: A UUID usually v4 or v7\nfunc ExamplePaymentService_GetBalanceForAnyOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetBalanceForAnyOrg(true, kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetBalanceForAnyOrg"
-  },
-  "op": "add",
-  "path": "/paths/~1orgs~1{id}~1payment~1balance/get/x-go"
- },
- {
-  "value": {
-   "example": "// UpdateBalanceForAnyOrg: Update balance for an org.\n// \n// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `includeTotalDue`\n// \t- `body`: Payload for updating a user's balance.\n// \n// UpdateBalanceForAnyOrg: Update balance for an org.\n// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified org.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `includeTotalDue`\n//   - `body`: Payload for updating a user's balance.\nfunc ExamplePaymentService_UpdateBalanceForAnyOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateBalanceForAnyOrg(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), true, kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.UpdateBalanceForAnyOrg"
-  },
-  "op": "add",
-  "path": "/paths/~1orgs~1{id}~1payment~1balance/put/x-go"
- },
- {
-  "value": {
-   "example": "// UpdateOrgSubscriptionForAnyOrg: Update the subscription for any org (admin override).\n// \n// This endpoint requires authentication by a Zoo admin. It updates the subscription for the specified org.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`: A struct of Zoo product subscriptions an organization can request.\n// \n// UpdateOrgSubscriptionForAnyOrg: Update the subscription for any org (admin override).\n// This endpoint requires authentication by a Zoo admin. It updates the subscription for the specified org.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`: A struct of Zoo product subscriptions an organization can request.\nfunc ExamplePaymentService_UpdateOrgSubscriptionForAnyOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateOrgSubscriptionForAnyOrg(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ZooProductSubscriptionsOrgRequest{ModelingApp: \"some-string\", PayAnnually: true})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.UpdateOrgSubscriptionForAnyOrg"
-  },
-  "op": "add",
-  "path": "/paths/~1orgs~1{id}~1payment~1subscriptions/put/x-go"
  },
  {
   "value": {
@@ -953,7 +873,7 @@
  },
  {
   "value": {
-   "example": "// ListPublic: List publicly visible community projects for the website/gallery.\n// \n// ListPublic: List publicly visible community projects for the website/gallery.\nfunc ExampleProjectService_ListPublic() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.ListPublic()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListPublic: List publicly visible community projects for the website/gallery.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// ListPublic: List publicly visible community projects for the website/gallery.\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExampleProjectService_ListPublic() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.ListPublic(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.ListPublic"
   },
   "op": "add",
@@ -1006,22 +926,6 @@
   },
   "op": "add",
   "path": "/paths/~1projects~1shared~1{key}~1download/get/x-go"
- },
- {
-  "value": {
-   "example": "// CreateCoupon: Create a new store coupon.\n// \n// This endpoint requires authentication by a Zoo employee. It creates a new store coupon.\n// \n// \n// Parameters\n// \n// \t- `body`: The parameters for a new store coupon.\n// \n// CreateCoupon: Create a new store coupon.\n// This endpoint requires authentication by a Zoo employee. It creates a new store coupon.\n//\n// Parameters\n//\n//   - `body`: The parameters for a new store coupon.\nfunc ExampleStoreService_CreateCoupon() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Store.CreateCoupon(kittycad.StoreCouponParams{PercentOff: 123})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#StoreService.CreateCoupon"
-  },
-  "op": "add",
-  "path": "/paths/~1store~1coupon/post/x-go"
- },
- {
-  "value": {
-   "example": "// UpsertSubscriptionPlanPrice: Create or update a price for a subscription plan.\n// \n// You must be a Zoo admin to perform this request.\n// \n// \n// Parameters\n// \n// \t- `slug`\n// \t- `body`: Create or update a price row for a subscription plan.\n// \n// UpsertSubscriptionPlanPrice: Create or update a price for a subscription plan.\n// You must be a Zoo admin to perform this request.\n//\n// Parameters\n//\n//   - `slug`\n//   - `body`: Create or update a price row for a subscription plan.\nfunc ExamplePaymentService_UpsertSubscriptionPlanPrice() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpsertSubscriptionPlanPrice(\"some-string\", kittycad.PriceUpsertRequest{Active: true, BillingModel: \"\", Cadence: \"\", UnitAmount: 123.45})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.UpsertSubscriptionPlanPrice"
-  },
-  "op": "add",
-  "path": "/paths/~1subscription-plans~1{slug}~1prices/post/x-go"
  },
  {
   "value": {
@@ -1281,7 +1185,7 @@
  },
  {
   "value": {
-   "example": "// GetUserFinishes: List finishes currently available for customer Factory submissions.\n// \n// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\n// \n// GetUserFinishes: List finishes currently available for customer Factory submissions.\n// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\nfunc ExampleFactoryService_GetUserFinishes() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.GetUserFinishes()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetUserFinishes: List finishes currently available for customer Factory submissions.\n// \n// Internal-only entries are omitted. Results are ordered alphabetically, ignoring case, with \"Other\" last. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// GetUserFinishes: List finishes currently available for customer Factory submissions.\n// Internal-only entries are omitted. Results are ordered alphabetically, ignoring case, with \"Other\" last. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\n//\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExampleFactoryService_GetUserFinishes() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.GetUserFinishes(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.GetUserFinishes"
   },
   "op": "add",
@@ -1305,7 +1209,15 @@
  },
  {
   "value": {
-   "example": "// GetUserMaterials: List materials currently available for customer Factory submissions.\n// \n// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\n// \n// GetUserMaterials: List materials currently available for customer Factory submissions.\n// Internal-only entries are omitted. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\nfunc ExampleFactoryService_GetUserMaterials() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.GetUserMaterials()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetUserJob: Get a personal Factory job and its current customer-visible specifications.\n// \n// \n// Parameters\n// \n// \t- `jobId`: A UUID usually v4 or v7\n// \n// GetUserJob: Get a personal Factory job and its current customer-visible specifications.\n// Parameters\n//\n//   - `jobId`: A UUID usually v4 or v7\nfunc ExampleFactoryService_GetUserJob() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.GetUserJob(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.GetUserJob"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1factory~1jobs~1{job_id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetUserMaterials: List materials currently available for customer Factory submissions.\n// \n// Internal-only entries are omitted. Results are ordered alphabetically, ignoring case, with \"Other\" last. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// GetUserMaterials: List materials currently available for customer Factory submissions.\n// Internal-only entries are omitted. Results are ordered alphabetically, ignoring case, with \"Other\" last. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.\n//\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExampleFactoryService_GetUserMaterials() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.GetUserMaterials(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.GetUserMaterials"
   },
   "op": "add",
@@ -1441,7 +1353,7 @@
  },
  {
   "value": {
-   "example": "// ListMethodsForUser: List payment methods for your user.\n// \n// This endpoint requires authentication by any Zoo user. It lists payment methods for the authenticated user.\n// \n// ListMethodsForUser: List payment methods for your user.\n// This endpoint requires authentication by any Zoo user. It lists payment methods for the authenticated user.\nfunc ExamplePaymentService_ListMethodsForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ListMethodsForUser()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListMethodsForUser: List payment methods for your user.\n// \n// This endpoint requires authentication by any Zoo user. It lists payment methods for the authenticated user, with the valid default card first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// ListMethodsForUser: List payment methods for your user.\n// This endpoint requires authentication by any Zoo user. It lists payment methods for the authenticated user, with the valid default card first.\n//\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExamplePaymentService_ListMethodsForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ListMethodsForUser(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ListMethodsForUser"
   },
   "op": "add",
@@ -1585,7 +1497,7 @@
  },
  {
   "value": {
-   "example": "// ListShareLinks: List share links for one of the authenticated user's projects.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// ListShareLinks: List share links for one of the authenticated user's projects.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleProjectService_ListShareLinks() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.ListShareLinks(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListShareLinks: List share links for one of the authenticated user's projects.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `pageToken`\n// \n// ListShareLinks: List share links for one of the authenticated user's projects.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `limit`\n//   - `pageToken`\nfunc ExampleProjectService_ListShareLinks() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.ListShareLinks(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.ListShareLinks"
   },
   "op": "add",
@@ -1614,6 +1526,38 @@
   },
   "op": "add",
   "path": "/paths/~1user~1projects~1{id}~1thumbnail/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// ListVersions: List a project's saved versions, newest first.\n// \n// Requires access to the project. Public visibility or link sharing will not grant access to history.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `pageToken`\n// \n// ListVersions: List a project's saved versions, newest first.\n// Requires access to the project. Public visibility or link sharing will not grant access to history.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `limit`\n//   - `pageToken`\nfunc ExampleProjectService_ListVersions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.ListVersions(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.ListVersions"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1projects~1{id}~1versions/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetVersion: Get metadata and files for a single saved project version.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `versionId`: A UUID usually v4 or v7\n// \n// GetVersion: Get metadata and files for a single saved project version.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `versionId`: A UUID usually v4 or v7\nfunc ExampleProjectService_GetVersion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.GetVersion(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.GetVersion"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1projects~1{id}~1versions~1{version_id}/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// DownloadVersion: Download the files saved in one project version.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `versionId`: A UUID usually v4 or v7\n// \t- `format`: Archive formats supported by project download endpoints.\n// \n// DownloadVersion: Download the files saved in one project version.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `versionId`: A UUID usually v4 or v7\n//   - `format`: Archive formats supported by project download endpoints.\nfunc ExampleProjectService_DownloadVersion() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Project.DownloadVersion(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.DownloadVersion"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1projects~1{id}~1versions~1{version_id}~1download/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetVersionThumbnail: Fetch the thumbnail for a single saved project version.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `versionId`: A UUID usually v4 or v7\n// \n// GetVersionThumbnail: Fetch the thumbnail for a single saved project version.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `versionId`: A UUID usually v4 or v7\nfunc ExampleProjectService_GetVersionThumbnail() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Project.GetVersionThumbnail(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.GetVersionThumbnail"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1projects~1{id}~1versions~1{version_id}~1thumbnail/get/x-go"
  },
  {
   "value": {
@@ -1705,51 +1649,11 @@
  },
  {
   "value": {
-   "example": "// AdminDetailsList: Get admin-only details for a user.\n// \n// Zoo admins can retrieve extended information about any user, while non-admins receive a 404 to avoid leaking the existence of the resource.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \n// AdminDetailsList: Get admin-only details for a user.\n// Zoo admins can retrieve extended information about any user, while non-admins receive a 404 to avoid leaking the existence of the resource.\n//\n// Parameters\n//\n//   - `id`\nfunc ExampleUserService_AdminDetailsList() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.AdminDetailsList(\"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.AdminDetailsList"
-  },
-  "op": "add",
-  "path": "/paths/~1users~1{id}~1admin~1details/get/x-go"
- },
- {
-  "value": {
    "example": "// ListForUser: List API calls for a user.\n// \n// This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user if \"me\" is passed as the user id.\n// \n// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.\n// \n// If the authenticated user is a Zoo employee, then the API calls are returned for the user specified by the user id.\n// \n// The API calls are returned in order of creation, with the most recently created API calls first.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListForUser: List API calls for a user.\n// This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user if \"me\" is passed as the user id.\n//\n// Alternatively, you can use the `/user/api-calls` endpoint to get the API calls for your user.\n//\n// If the authenticated user is a Zoo employee, then the API calls are returned for the user specified by the user id.\n//\n// The API calls are returned in order of creation, with the most recently created API calls first.\n//\n// Parameters\n//\n//   - `id`\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleAPICallService_ListForUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.APICall.ListForUser(\"some-string\", 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#APICallService.ListForUser"
   },
   "op": "add",
   "path": "/paths/~1users~1{id}~1api-calls/get/x-go"
- },
- {
-  "value": {
-   "example": "// ListAppsForAnyUser: List OAuth 2.0 apps owned by a user.\n// \n// This endpoint requires Zoo admin authentication. It returns the target user's active OAuth apps so the admin dashboard can inspect them without impersonating the user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListAppsForAnyUser: List OAuth 2.0 apps owned by a user.\n// This endpoint requires Zoo admin authentication. It returns the target user's active OAuth apps so the admin dashboard can inspect them without impersonating the user.\n//\n// Parameters\n//\n//   - `id`\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleOauth2Service_ListAppsForAnyUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Oauth2.ListAppsForAnyUser(\"some-string\", 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#Oauth2Service.ListAppsForAnyUser"
-  },
-  "op": "add",
-  "path": "/paths/~1users~1{id}~1oauth2~1apps/get/x-go"
- },
- {
-  "value": {
-   "example": "// GetBalanceForAnyUser: Get balance for an user.\n// \n// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `includeTotalDue`\n// \n// GetBalanceForAnyUser: Get balance for an user.\n// This endpoint requires authentication by a Zoo employee. It gets the balance information for the specified user.\n//\n// Parameters\n//\n//   - `id`\n//   - `includeTotalDue`\nfunc ExamplePaymentService_GetBalanceForAnyUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.GetBalanceForAnyUser(\"some-string\", true)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.GetBalanceForAnyUser"
-  },
-  "op": "add",
-  "path": "/paths/~1users~1{id}~1payment~1balance/get/x-go"
- },
- {
-  "value": {
-   "example": "// UpdateBalanceForAnyUser: Update balance for an user.\n// \n// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified user.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `includeTotalDue`\n// \t- `body`: Payload for updating a user's balance.\n// \n// UpdateBalanceForAnyUser: Update balance for an user.\n// This endpoint requires authentication by a Zoo employee. It updates the balance information for the specified user.\n//\n// Parameters\n//\n//   - `id`\n//   - `includeTotalDue`\n//   - `body`: Payload for updating a user's balance.\nfunc ExamplePaymentService_UpdateBalanceForAnyUser() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.UpdateBalanceForAnyUser(\"some-string\", true, kittycad.UpdatePaymentBalance{MonthlyAPICreditsRemainingMonetaryValue: 123.45, StableAPICreditsRemainingMonetaryValue: 123.45})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.UpdateBalanceForAnyUser"
-  },
-  "op": "add",
-  "path": "/paths/~1users~1{id}~1payment~1balance/put/x-go"
- },
- {
-  "value": {
-   "example": "// UpdateSubscriptionFor: Update a subscription for a user.\n// \n// You must be a Zoo admin to perform this request.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `body`: A struct of Zoo product subscriptions a user can request.\n// \n// UpdateSubscriptionFor: Update a subscription for a user.\n// You must be a Zoo admin to perform this request.\n//\n// Parameters\n//\n//   - `id`\n//   - `body`: A struct of Zoo product subscriptions a user can request.\nfunc ExampleUserService_UpdateSubscriptionFor() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.User.UpdateSubscriptionFor(\"some-string\", kittycad.ZooProductSubscriptionsUserRequest{DowngradeReason: \"\", DowngradeReasonText: \"some-string\", ModelingApp: \"some-string\", PayAnnually: true})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
-   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#UserService.UpdateSubscriptionFor"
-  },
-  "op": "add",
-  "path": "/paths/~1users~1{id}~1payment~1subscriptions/put/x-go"
  },
  {
   "value": {
@@ -1817,6 +1721,14 @@
  },
  {
   "value": {
+   "example": "// KclMigrationWs: Open a sponsored KCL migration connection. It cannot execute ordinary prompts.\n// \n// \n// Parameters\n// \n// \t- `body`: The restricted public migration connection never accepts ordinary prompts.\n// \n// KclMigrationWs: Open a sponsored KCL migration connection. It cannot execute ordinary prompts.\n// Parameters\n//\n//   - `body`: The restricted public migration connection never accepts ordinary prompts.\nfunc ExampleMlService_KclMigrationWs() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\t// Create the websocket connection.\n\tws, err := client.Ml.KclMigrationWs(\"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tdefer ws.Close()\n\n\tdone := make(chan struct{})\n\n\tgo func() {\n\t\tdefer close(done)\n\t\tfor {\n\t\t\t_, message, err := ws.ReadMessage()\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"read:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\t\tlog.Printf(\"recv: %s\", message)\n\t\t}\n\t}()\n\n\tticker := time.NewTicker(time.Second)\n\tdefer ticker.Stop()\n\n\tinterrupt := make(chan os.Signal, 1)\n\tsignal.Notify(interrupt, os.Interrupt)\n\n\tfor {\n\t\tselect {\n\t\tcase \u003c-done:\n\t\t\treturn\n\t\tcase t := \u003c-ticker.C:\n\t\t\terr := ws.WriteMessage(websocket.TextMessage, []byte(t.String()))\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"write:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\tcase \u003c-interrupt:\n\t\t\tlog.Println(\"interrupt\")\n\n\t\t\t// Cleanly close the connection by sending a close message and then\n\t\t\t// waiting (with timeout) for the server to close the connection.\n\t\t\terr := ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, \"\"))\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"write close:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\t\tselect {\n\t\t\tcase \u003c-done:\n\t\t\tcase \u003c-time.After(time.Second):\n\t\t\t}\n\t\t\treturn\n\t\t}\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.KclMigrationWs"
+  },
+  "op": "add",
+  "path": "/paths/~1ws~1ml~1kcl-migration/get/x-go"
+ },
+ {
+  "value": {
    "example": "// ReasoningWs: Open a websocket to prompt the ML copilot.\n// \n// \n// Parameters\n// \n// \t- `id`\n// \t- `body`: The types of messages that can be sent by the client to the server.\n// \n// ReasoningWs: Open a websocket to prompt the ML copilot.\n// Parameters\n//\n//   - `id`\n//   - `body`: The types of messages that can be sent by the client to the server.\nfunc ExampleMlService_ReasoningWs() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\t// Create the websocket connection.\n\tws, err := client.Ml.ReasoningWs(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tdefer ws.Close()\n\n\tdone := make(chan struct{})\n\n\tgo func() {\n\t\tdefer close(done)\n\t\tfor {\n\t\t\t_, message, err := ws.ReadMessage()\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"read:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\t\tlog.Printf(\"recv: %s\", message)\n\t\t}\n\t}()\n\n\tticker := time.NewTicker(time.Second)\n\tdefer ticker.Stop()\n\n\tinterrupt := make(chan os.Signal, 1)\n\tsignal.Notify(interrupt, os.Interrupt)\n\n\tfor {\n\t\tselect {\n\t\tcase \u003c-done:\n\t\t\treturn\n\t\tcase t := \u003c-ticker.C:\n\t\t\terr := ws.WriteMessage(websocket.TextMessage, []byte(t.String()))\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"write:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\tcase \u003c-interrupt:\n\t\t\tlog.Println(\"interrupt\")\n\n\t\t\t// Cleanly close the connection by sending a close message and then\n\t\t\t// waiting (with timeout) for the server to close the connection.\n\t\t\terr := ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, \"\"))\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"write close:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\t\tselect {\n\t\t\tcase \u003c-done:\n\t\t\tcase \u003c-time.After(time.Second):\n\t\t\t}\n\t\t\treturn\n\t\t}\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MlService.ReasoningWs"
   },
@@ -1825,7 +1737,7 @@
  },
  {
   "value": {
-   "example": "// CommandsWs: Opens a WebSocket to a Zoo KittyCAD engine instance.\n// \n// **Note**: Currently it's recommended to set `webrtc=true` in the WebSocket query string, otherwise some features, such as opacity setting, will cause the engine to fail.\n// \n// Due to the long-lived nature of the instances, it's possible the resources on have been used and not freed entirely, or the instance is in a bad state. Thus it's good practice to expect to have to potentially reconnect at any moment -even almost immediately after the first connection!\n// \n// Authorization happens via a pseudo HTTP header over the WebSocket: `{ type: \"headers\", headers: { \"Authorization\": \"Bearer xxxxxxxxx\" }}`\n// \n// The very next thing recommended is to setup a ping-pong interval. The current timeout is 10s and has no documented guarantee, so use a conservative number below that. 5s should be sufficient. A ping-pong interval is sending `{ type: 'ping\" }` when `{ request_id, success, resp: { type: \"pong\", data: {} } }` message is received.\n// \n// You're ready to start sending modeling commands!\n// \n// If you want to understand how to connect to the WebRTC video stream, https://github.com/KittyCAD/kittycad.ts/blob/main/src/webrtc.ts is a nice example to learn from.\n// \n// \n// Parameters\n// \n// \t- `videoResWidth`\n// \t- `videoResHeight`\n// \t- `fps`\n// \t- `unlockedFramerate`\n// \t- `postEffect`: Post effect type\n// \t- `webrtc`\n// \t- `pool`\n// \t- `showGrid`\n// \t- `replay`\n// \t- `apicallId`\n// \t- `orderIndependentTransparency`\n// \t- `pr`\n// \t- `body`: The websocket messages the server receives.\n// \n// CommandsWs: Opens a WebSocket to a Zoo KittyCAD engine instance.\n// **Note**: Currently it's recommended to set `webrtc=true` in the WebSocket query string, otherwise some features, such as opacity setting, will cause the engine to fail.\n//\n// Due to the long-lived nature of the instances, it's possible the resources on have been used and not freed entirely, or the instance is in a bad state. Thus it's good practice to expect to have to potentially reconnect at any moment -even almost immediately after the first connection!\n//\n// Authorization happens via a pseudo HTTP header over the WebSocket: `{ type: \"headers\", headers: { \"Authorization\": \"Bearer xxxxxxxxx\" }}`\n//\n// The very next thing recommended is to setup a ping-pong interval. The current timeout is 10s and has no documented guarantee, so use a conservative number below that. 5s should be sufficient. A ping-pong interval is sending `{ type: 'ping\" }` when `{ request_id, success, resp: { type: \"pong\", data: {} } }` message is received.\n//\n// You're ready to start sending modeling commands!\n//\n// If you want to understand how to connect to the WebRTC video stream, https://github.com/KittyCAD/kittycad.ts/blob/main/src/webrtc.ts is a nice example to learn from.\n//\n// Parameters\n//\n//   - `videoResWidth`\n//   - `videoResHeight`\n//   - `fps`\n//   - `unlockedFramerate`\n//   - `postEffect`: Post effect type\n//   - `webrtc`\n//   - `pool`\n//   - `showGrid`\n//   - `replay`\n//   - `apicallId`\n//   - `orderIndependentTransparency`\n//   - `pr`\n//   - `body`: The websocket messages the server receives.\nfunc ExampleModelingService_CommandsWs() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\t// Create the websocket connection.\n\tws, err := client.Modeling.CommandsWs(123, 123, 123, true, kittycad.PostEffectTypePhosphor, true, \"some-string\", true, \"some-string\", \"some-string\", true, 123, \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tdefer ws.Close()\n\n\tdone := make(chan struct{})\n\n\tgo func() {\n\t\tdefer close(done)\n\t\tfor {\n\t\t\t_, message, err := ws.ReadMessage()\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"read:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\t\tlog.Printf(\"recv: %s\", message)\n\t\t}\n\t}()\n\n\tticker := time.NewTicker(time.Second)\n\tdefer ticker.Stop()\n\n\tinterrupt := make(chan os.Signal, 1)\n\tsignal.Notify(interrupt, os.Interrupt)\n\n\tfor {\n\t\tselect {\n\t\tcase \u003c-done:\n\t\t\treturn\n\t\tcase t := \u003c-ticker.C:\n\t\t\terr := ws.WriteMessage(websocket.TextMessage, []byte(t.String()))\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"write:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\tcase \u003c-interrupt:\n\t\t\tlog.Println(\"interrupt\")\n\n\t\t\t// Cleanly close the connection by sending a close message and then\n\t\t\t// waiting (with timeout) for the server to close the connection.\n\t\t\terr := ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, \"\"))\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"write close:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\t\tselect {\n\t\t\tcase \u003c-done:\n\t\t\tcase \u003c-time.After(time.Second):\n\t\t\t}\n\t\t\treturn\n\t\t}\n\t}\n\n}\n",
+   "example": "// CommandsWs: Opens a WebSocket to a Zoo KittyCAD engine instance.\n// \n// **Note**: Currently it's recommended to set `webrtc=true` in the WebSocket query string, otherwise some features, such as opacity setting, will cause the engine to fail.\n// \n// Due to the long-lived nature of the instances, it's possible the resources on have been used and not freed entirely, or the instance is in a bad state. Thus it's good practice to expect to have to potentially reconnect at any moment -even almost immediately after the first connection!\n// \n// Authorization happens via a pseudo HTTP header over the WebSocket: `{ type: \"headers\", headers: { \"Authorization\": \"Bearer xxxxxxxxx\" }}`\n// \n// The very next thing recommended is to setup a ping-pong interval. The current timeout is 10s and has no documented guarantee, so use a conservative number below that. 5s should be sufficient. A ping-pong interval is sending `{ type: 'ping\" }` when `{ request_id, success, resp: { type: \"pong\", data: {} } }` message is received.\n// \n// You're ready to start sending modeling commands!\n// \n// If you want to understand how to connect to the WebRTC video stream, https://github.com/KittyCAD/kittycad.ts/blob/main/src/webrtc.ts is a nice example to learn from.\n// \n// \n// Parameters\n// \n// \t- `videoResWidth`\n// \t- `videoResHeight`\n// \t- `fps`\n// \t- `unlockedFramerate`\n// \t- `postEffect`: Post effect type\n// \t- `webrtc`\n// \t- `geometryOnly`\n// \t- `pool`\n// \t- `showGrid`\n// \t- `replay`\n// \t- `apicallId`\n// \t- `orderIndependentTransparency`\n// \t- `kclVersion`: Which KCL versions does Zoo support?\n// \t- `pr`\n// \t- `body`: The websocket messages the server receives.\n// \n// CommandsWs: Opens a WebSocket to a Zoo KittyCAD engine instance.\n// **Note**: Currently it's recommended to set `webrtc=true` in the WebSocket query string, otherwise some features, such as opacity setting, will cause the engine to fail.\n//\n// Due to the long-lived nature of the instances, it's possible the resources on have been used and not freed entirely, or the instance is in a bad state. Thus it's good practice to expect to have to potentially reconnect at any moment -even almost immediately after the first connection!\n//\n// Authorization happens via a pseudo HTTP header over the WebSocket: `{ type: \"headers\", headers: { \"Authorization\": \"Bearer xxxxxxxxx\" }}`\n//\n// The very next thing recommended is to setup a ping-pong interval. The current timeout is 10s and has no documented guarantee, so use a conservative number below that. 5s should be sufficient. A ping-pong interval is sending `{ type: 'ping\" }` when `{ request_id, success, resp: { type: \"pong\", data: {} } }` message is received.\n//\n// You're ready to start sending modeling commands!\n//\n// If you want to understand how to connect to the WebRTC video stream, https://github.com/KittyCAD/kittycad.ts/blob/main/src/webrtc.ts is a nice example to learn from.\n//\n// Parameters\n//\n//   - `videoResWidth`\n//   - `videoResHeight`\n//   - `fps`\n//   - `unlockedFramerate`\n//   - `postEffect`: Post effect type\n//   - `webrtc`\n//   - `geometryOnly`\n//   - `pool`\n//   - `showGrid`\n//   - `replay`\n//   - `apicallId`\n//   - `orderIndependentTransparency`\n//   - `kclVersion`: Which KCL versions does Zoo support?\n//   - `pr`\n//   - `body`: The websocket messages the server receives.\nfunc ExampleModelingService_CommandsWs() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\t// Create the websocket connection.\n\tws, err := client.Modeling.CommandsWs(123, 123, 123, true, kittycad.PostEffectTypePhosphor, true, true, \"some-string\", true, \"some-string\", \"some-string\", true, \"\", 123, \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tdefer ws.Close()\n\n\tdone := make(chan struct{})\n\n\tgo func() {\n\t\tdefer close(done)\n\t\tfor {\n\t\t\t_, message, err := ws.ReadMessage()\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"read:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\t\tlog.Printf(\"recv: %s\", message)\n\t\t}\n\t}()\n\n\tticker := time.NewTicker(time.Second)\n\tdefer ticker.Stop()\n\n\tinterrupt := make(chan os.Signal, 1)\n\tsignal.Notify(interrupt, os.Interrupt)\n\n\tfor {\n\t\tselect {\n\t\tcase \u003c-done:\n\t\t\treturn\n\t\tcase t := \u003c-ticker.C:\n\t\t\terr := ws.WriteMessage(websocket.TextMessage, []byte(t.String()))\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"write:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\tcase \u003c-interrupt:\n\t\t\tlog.Println(\"interrupt\")\n\n\t\t\t// Cleanly close the connection by sending a close message and then\n\t\t\t// waiting (with timeout) for the server to close the connection.\n\t\t\terr := ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, \"\"))\n\t\t\tif err != nil {\n\t\t\t\tlog.Println(\"write close:\", err)\n\t\t\t\treturn\n\t\t\t}\n\t\t\tselect {\n\t\t\tcase \u003c-done:\n\t\t\tcase \u003c-time.After(time.Second):\n\t\t\t}\n\t\t\treturn\n\t\t}\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ModelingService.CommandsWs"
   },
   "op": "add",
