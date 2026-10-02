@@ -729,8 +729,38 @@ type AsyncAPICallOutputOutputFormatOptions struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
-// AsyncAPICallOutputOutputs: Text to CAD.
+// AsyncAPICallOutputOutputs: A file bounding box.
 type AsyncAPICallOutputOutputs struct {
+	// BoundingBox: The resulting axis-aligned bounding box in the KittyCAD coordinate system (+Z up, -Y forward).
+	BoundingBox BoundingBox `json:"bounding_box" yaml:"bounding_box" schema:"bounding_box"`
+	// CompletedAt: The time and date the API call was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the API call was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the API call.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// OutputUnit: The output unit for the bounding box.
+	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// SrcFormat: The source format of the file.
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the API call was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the API call.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// UpdatedAt: The time and date the API call was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the API call.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// AsyncAPICallOutputSrcFormat: Text to CAD.
+type AsyncAPICallOutputSrcFormat struct {
 	// Code: The code for the model. This is optional but will be required in the future once we are at v1.
 	Code string `json:"code" yaml:"code" schema:"code"`
 	// CompletedAt: The time and date the API call was completed.
@@ -771,8 +801,8 @@ type AsyncAPICallOutputOutputs struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
-// AsyncAPICallOutputSrcFormat: Text to CAD iteration.
-type AsyncAPICallOutputSrcFormat struct {
+// AsyncAPICallOutputSrcFormatOptions: Text to CAD iteration.
+type AsyncAPICallOutputSrcFormatOptions struct {
 	// Code: The code for the new model.
 	Code string `json:"code" yaml:"code" schema:"code,required"`
 	// CompletedAt: The time and date the API call was completed.
@@ -811,8 +841,8 @@ type AsyncAPICallOutputSrcFormat struct {
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
 }
 
-// AsyncAPICallOutputSrcFormatOptions: Text to CAD multi-file iteration.
-type AsyncAPICallOutputSrcFormatOptions struct {
+// AsyncAPICallOutputStartedAt: Text to CAD multi-file iteration.
+type AsyncAPICallOutputStartedAt struct {
 	// CompletedAt: The time and date the API call was completed.
 	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
 	// ConversationID: The conversation ID Conversations group different prompts together.
@@ -2830,6 +2860,34 @@ const (
 	// FeatureZooCorpAuth: Enable ZooCorp OAuth2. This adds https://auth.corp.zoo.dev as an OAuth2 provider.
 	FeatureZooCorpAuth Feature = "zoo_corp_auth"
 )
+
+// FileBoundingBox: A file bounding box result.
+type FileBoundingBox struct {
+	// BoundingBox: The resulting axis-aligned bounding box in the KittyCAD coordinate system (+Z up, -Y forward).
+	BoundingBox BoundingBox `json:"bounding_box" yaml:"bounding_box" schema:"bounding_box"`
+	// CompletedAt: The time and date the API call was completed.
+	CompletedAt Time `json:"completed_at" yaml:"completed_at" schema:"completed_at"`
+	// CreatedAt: The time and date the API call was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Error: The error the function returned, if any.
+	Error string `json:"error" yaml:"error" schema:"error"`
+	// ID: The unique identifier of the API call.
+	//
+	// This is the same as the API call ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// OutputUnit: The output unit for the bounding box.
+	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit,required"`
+	// SrcFormat: The source format of the file.
+	SrcFormat FileImportFormat `json:"src_format" yaml:"src_format" schema:"src_format,required"`
+	// StartedAt: The time and date the API call was started.
+	StartedAt Time `json:"started_at" yaml:"started_at" schema:"started_at"`
+	// Status: The status of the API call.
+	Status APICallStatus `json:"status" yaml:"status" schema:"status,required"`
+	// UpdatedAt: The time and date the API call was last updated.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+	// UserID: The user ID of the user who created the API call.
+	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
 
 // FileCenterOfMass: A file center of mass result.
 type FileCenterOfMass struct {

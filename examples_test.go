@@ -289,6 +289,33 @@ func ExampleMetaService_CommunitySso() {
 
 }
 
+// CreateBoundingBox: Get CAD file bounding box.
+// Import the CAD file into the modeling engine and calculate its bounding box.
+//
+// This endpoint returns the axis-aligned bounding box as a center and dimensions in the output units, using KittyCAD coordinates (+Z up, -Y forward).
+//
+// This operation is always performed asynchronously, regardless of file size. The request returns the `id` of the operation. Use this `id` to get the status and bounding box from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `srcFormat`: The valid types of source file formats.
+//   - `outputUnit`: The valid types of length units.
+//   - `body`
+func ExampleFileService_CreateBoundingBox() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.File.CreateBoundingBox("", "", []byte("some-binary"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateCenterOfMass: Get CAD file center of mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
 //

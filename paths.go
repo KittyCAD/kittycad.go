@@ -577,6 +577,68 @@ func (s *MetaService) CommunitySso(sso string, sig string) error {
 
 }
 
+// CreateBoundingBox: Get CAD file bounding box.
+// Import the CAD file into the modeling engine and calculate its bounding box.
+//
+// This endpoint returns the axis-aligned bounding box as a center and dimensions in the output units, using KittyCAD coordinates (+Z up, -Y forward).
+//
+// This operation is always performed asynchronously, regardless of file size. The request returns the `id` of the operation. Use this `id` to get the status and bounding box from the `/async/operations/{id}` endpoint.
+//
+// Parameters
+//
+//   - `srcFormat`: The valid types of source file formats.
+//   - `outputUnit`: The valid types of length units.
+//   - `body`
+func (s *FileService) CreateBoundingBox(srcFormat FileImportFormat, outputUnit UnitLength, body []byte) (*FileBoundingBox, error) {
+	// Create the url.
+	path := "/file/bounding-box"
+	targetURL := resolveRelative(s.client.server, path)
+
+	b := bytes.NewReader(body)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/octet-stream")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"src_format":  string(srcFormat),
+		"output_unit": string(outputUnit),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FileBoundingBox
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateCenterOfMass: Get CAD file center of mass.
 // We assume any file given to us has one consistent unit throughout. We also assume the file is at the proper scale.
 //
