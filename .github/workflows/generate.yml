@@ -7,7 +7,7 @@ on:
       - 'Makefile'
       - .github/workflows/generate.yml
       - spec.json
-      - 'generate/**.go'
+      - 'cmd/**'
       - VERSION.txt
   workflow_dispatch:
 jobs:
