@@ -602,6 +602,12 @@ func printType(property string, r *openapi3.SchemaRef, spec *openapi3.T) (string
 			// Now make it a map.
 			return fmt.Sprintf("map[string]%s", innerType), nil
 		}
+		if len(s.Properties) == 0 {
+			if s.AdditionalProperties.Has != nil && !*s.AdditionalProperties.Has {
+				return "struct{}", nil
+			}
+			return "map[string]any", nil
+		}
 		// Most likely this is a local object, we will handle it.
 		return printProperty(property), nil
 	}

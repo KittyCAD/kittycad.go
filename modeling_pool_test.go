@@ -30,7 +30,7 @@ func TestModelingPoolSelection(t *testing.T) {
 			if err := client.WithBaseURL(strings.Replace(server.URL, "http://", "ws://", 1)); err != nil {
 				t.Fatal(err)
 			}
-			connection, err := client.Modeling.CommandsWs(0, 0, 0, false, "", false, pool, false, "", "", false, 0, nil)
+			connection, err := client.Modeling.CommandsWs(0, 0, 0, false, "", false, false, pool, false, "", "", false, "", 0, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

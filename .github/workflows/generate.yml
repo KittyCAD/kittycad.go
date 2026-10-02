@@ -3,35 +3,60 @@ permissions:
   contents: write
 on:
   pull_request:
-    paths:
-      - 'Makefile'
-      - .github/workflows/generate.yml
-      - spec.json
-      - 'generate/**.go'
-      - VERSION.txt
   workflow_dispatch:
 jobs:
   format:
-    # Check if the PR is not from a fork
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 2
+      - name: Check generation inputs
+        id: inputs
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = workflow_dispatch ] || ! git diff --quiet HEAD^1 HEAD -- Makefile .github/workflows/generate.yml spec.json cmd/ VERSION.txt; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v7.0.1
+        if: steps.inputs.outputs.changed == 'true' && github.event_name == 'pull_request'
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/setup-go@v7.0.0
+        if: steps.inputs.outputs.changed == 'true'
         with:
           go-version: '1.26.0'
       - name: Run generate
+        if: steps.inputs.outputs.changed == 'true'
         shell: bash
         run: |
           make all
         env:
-          KITTYCAD_API_TOKEN: ${{secrets.KITTYCAD_API_TOKEN}}
+          KITTYCAD_API_TOKEN: ${{ (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository) && secrets.KITTYCAD_API_TOKEN || '' }}
 
       - name: Commit generated files
+        id: commit
+        if: steps.inputs.outputs.changed == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         uses: KittyCAD/gha-actions-public/pr-commit@main
         with:
           app-id: ${{ secrets.GH_ORG_APP_ID }}
           private-key: ${{ secrets.GH_ORG_APP_PRIVATE_KEY }}
           commit-message: "I have generated the latest API!"
+      - name: Require generated files on this commit
+        if: steps.inputs.outputs.changed == 'true' && github.event_name == 'pull_request'
+        shell: bash
+        env:
+          COMMITTED: ${{ steps.commit.outputs.commited }}
+        run: |
+          if [ "$COMMITTED" = true ]; then
+            echo "Generated files were committed. The new commit must pass generation."
+            exit 1
+          fi
+          if [ -n "$(git status --porcelain --untracked-files=all)" ]; then
+            echo "Generation left uncommitted files."
+            git status --short
+            exit 1
+          fi
