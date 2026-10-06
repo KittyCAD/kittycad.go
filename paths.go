@@ -84,8 +84,13 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 }
 
 // GetAnnouncements: List all active announcements.
-// No authentication is required.
-func (s *MetaService) GetAnnouncements() (*AnnouncementList, error) {
+// No authentication is required. Results are ordered newest first, with the announcement ID breaking ties.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func (s *MetaService) GetAnnouncements(limit int, pageToken string) (*AnnouncementResultsPage, error) {
 	// Create the url.
 	path := "/announcements"
 	targetURL := resolveRelative(s.client.server, path)
@@ -94,6 +99,14 @@ func (s *MetaService) GetAnnouncements() (*AnnouncementList, error) {
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -112,7 +125,7 @@ func (s *MetaService) GetAnnouncements() (*AnnouncementList, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded AnnouncementList
+	var decoded AnnouncementResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -5357,7 +5370,11 @@ func (s *MetaService) GetPricingSubscriptions() (*map[string][]ZooProductSubscri
 }
 
 // ListCategories: List the active categories available for project submissions.
-func (s *ProjectService) ListCategories() (*[]ProjectCategoryResponse, error) {
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func (s *ProjectService) ListCategories(limit int, pageToken string) (*ProjectCategoryResponseResultsPage, error) {
 	// Create the url.
 	path := "/projects/categories"
 	targetURL := resolveRelative(s.client.server, path)
@@ -5366,6 +5383,14 @@ func (s *ProjectService) ListCategories() (*[]ProjectCategoryResponse, error) {
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -5384,7 +5409,7 @@ func (s *ProjectService) ListCategories() (*[]ProjectCategoryResponse, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded []ProjectCategoryResponse
+	var decoded ProjectCategoryResponseResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -8662,7 +8687,11 @@ func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySetti
 }
 
 // List: List the authenticated user's projects.
-func (s *ProjectService) List() (*[]ProjectSummaryResponse, error) {
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func (s *ProjectService) List(limit int, pageToken string) (*ProjectSummaryResponseResultsPage, error) {
 	// Create the url.
 	path := "/user/projects"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8671,6 +8700,14 @@ func (s *ProjectService) List() (*[]ProjectSummaryResponse, error) {
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -8689,7 +8726,7 @@ func (s *ProjectService) List() (*[]ProjectSummaryResponse, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded []ProjectSummaryResponse
+	var decoded ProjectSummaryResponseResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -9313,6 +9350,86 @@ func (s *ProjectService) ListVersions(id UUID, limit int, pageToken string) (*Pr
 		return nil, errors.New("request returned an empty body in the response")
 	}
 	var decoded ProjectVersionSummaryResponseResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateVersion: Save an alternate project version without changing the current version.
+// For a history A -> B -> C with C current, saving D with B as its parent creates a second child of B. C stays current. Publications and share links keep pointing to their existing versions.
+//
+// Send a multipart request with a JSON `body` part and file parts. Upload the complete replacement snapshot, including unchanged files. Each uploaded filename must be its relative project path.
+//
+// Example JSON for the `body` part (replace the parent placeholder with B's UUID):
+//
+// ```json {   "parent_version_id": "<B_VERSION_ID>",   "title": "Alternative design",   "description": "Trying another shape",   "entrypoint_path": "main.kcl",   "deleted_paths": ["obsolete.kcl"] } ```
+//
+// `parent_version_id` and `title` are required. Description defaults to an empty string, and the entrypoint defaults to `main.kcl`. When supplying `deleted_paths`, list all files removed from the chosen parent B, regardless of the files in current C. An empty list declares that no files were removed; omitting the field skips this deletion-intent check.
+//
+// Save the JSON as `save-metadata.json`. With D's files in the working directory, set `API_BASE_URL`, `API_TOKEN`, and `PROJECT_ID`, then generate `SAVE_KEY` once for this save (for example, using `uuidgen`):
+//
+// ```sh curl --fail-with-body \   --request POST "${API_BASE_URL}/user/projects/${PROJECT_ID}/versions" \   --header "Authorization: Bearer ${API_TOKEN}" \   --header "Idempotency-Key: ${SAVE_KEY}" \   --form 'body=<save-metadata.json;type=application/json' \   --form 'file-0=@project.toml;filename=project.toml' \   --form 'file-1=@main.kcl;filename=main.kcl' \   --form 'file-2=@part.kcl;filename=part.kcl' ```
+//
+// The HTTP 200 response contains `version_id` (D) and `current_version_id` (C, or the current version when the response is prepared). Read D through `GET /user/projects/{id}/versions/{version_id}` and download it through `GET /user/projects/{id}/versions/{version_id}/download`. Downloads default to TAR; use `?format=zip` for ZIP.
+//
+// `Idempotency-Key` is optional for all clients. Use a unique key for each save to avoid duplicate versions when retrying. Retain the key, metadata, and submitted file contents across app restarts until the save's outcome is known. Within 24 hours of a successful save, retrying with the same key and contents returns the same version. Changed contents require a new key; reusing an unexpired key with different contents returns HTTP 409 with `IdempotencyConflict`. Without a key, or after its window expires, resending the request can create another version.
+//
+// Write access to the project is required, including for retries. A public listing or share link does not grant access to private version history. There is no endpoint to promote an existing alternate version directly to current.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`
+func (s *ProjectService) CreateVersion(id UUID, body *MultipartForm) (*CreateProjectVersionResponse, error) {
+	// Create the url.
+	path := "/user/projects/{{.id}}/versions"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Set("Content-Type", body.ContentType())
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded CreateProjectVersionResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
