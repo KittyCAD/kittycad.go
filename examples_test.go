@@ -79,14 +79,19 @@ func ExampleMetaService_GetIpinfo() {
 }
 
 // GetAnnouncements: List all active announcements.
-// No authentication is required.
+// No authentication is required. Results are ordered newest first, with the announcement ID breaking ties.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExampleMetaService_GetAnnouncements() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Meta.GetAnnouncements()
+	result, err := client.Meta.GetAnnouncements(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -2337,13 +2342,17 @@ func ExampleMetaService_GetPricingSubscriptions() {
 }
 
 // ListCategories: List the active categories available for project submissions.
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExampleProjectService_ListCategories() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Project.ListCategories()
+	result, err := client.Project.ListCategories(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -3759,13 +3768,17 @@ func ExampleUserService_UpdatePrivacySettings() {
 }
 
 // List: List the authenticated user's projects.
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
 func ExampleProjectService_List() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Project.List()
+	result, err := client.Project.List(123, "some-string")
 	if err != nil {
 		panic(err)
 	}
@@ -4016,6 +4029,48 @@ func ExampleProjectService_ListVersions() {
 	}
 
 	result, err := client.Project.ListVersions(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateVersion: Save an alternate project version without changing the current version.
+// For a history A -> B -> C with C current, saving D with B as its parent creates a second child of B. C stays current. Publications and share links keep pointing to their existing versions.
+//
+// Send a multipart request with a JSON `body` part and file parts. Upload the complete replacement snapshot, including unchanged files. Each uploaded filename must be its relative project path.
+//
+// Example JSON for the `body` part (replace the parent placeholder with B's UUID):
+//
+// ```json {   "parent_version_id": "<B_VERSION_ID>",   "title": "Alternative design",   "description": "Trying another shape",   "entrypoint_path": "main.kcl",   "deleted_paths": ["obsolete.kcl"] } ```
+//
+// `parent_version_id` and `title` are required. Description defaults to an empty string, and the entrypoint defaults to `main.kcl`. When supplying `deleted_paths`, list all files removed from the chosen parent B, regardless of the files in current C. An empty list declares that no files were removed; omitting the field skips this deletion-intent check.
+//
+// Save the JSON as `save-metadata.json`. With D's files in the working directory, set `API_BASE_URL`, `API_TOKEN`, and `PROJECT_ID`, then generate `SAVE_KEY` once for this save (for example, using `uuidgen`):
+//
+// ```sh curl --fail-with-body \   --request POST "${API_BASE_URL}/user/projects/${PROJECT_ID}/versions" \   --header "Authorization: Bearer ${API_TOKEN}" \   --header "Idempotency-Key: ${SAVE_KEY}" \   --form 'body=<save-metadata.json;type=application/json' \   --form 'file-0=@project.toml;filename=project.toml' \   --form 'file-1=@main.kcl;filename=main.kcl' \   --form 'file-2=@part.kcl;filename=part.kcl' ```
+//
+// The HTTP 200 response contains `version_id` (D) and `current_version_id` (C, or the current version when the response is prepared). Read D through `GET /user/projects/{id}/versions/{version_id}` and download it through `GET /user/projects/{id}/versions/{version_id}/download`. Downloads default to TAR; use `?format=zip` for ZIP.
+//
+// `Idempotency-Key` is optional for all clients. Use a unique key for each save to avoid duplicate versions when retrying. Retain the key, metadata, and submitted file contents across app restarts until the save's outcome is known. Within 24 hours of a successful save, retrying with the same key and contents returns the same version. Changed contents require a new key; reusing an unexpired key with different contents returns HTTP 409 with `IdempotencyConflict`. Without a key, or after its window expires, resending the request can create another version.
+//
+// Write access to the project is required, including for retries. A public listing or share link does not grant access to private version history. There is no endpoint to promote an existing alternate version directly to current.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`
+func ExampleProjectService_CreateVersion() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	form := kittycad.NewMultipartForm()
+
+	result, err := client.Project.CreateVersion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), form)
 	if err != nil {
 		panic(err)
 	}

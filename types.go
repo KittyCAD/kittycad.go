@@ -528,10 +528,12 @@ type Announcement struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
-// AnnouncementList: Response containing active announcements.
-type AnnouncementList struct {
-	// Announcements: The list of active announcements.
-	Announcements []Announcement `json:"announcements" yaml:"announcements" schema:"announcements,required"`
+// AnnouncementResultsPage: A single page of results
+type AnnouncementResultsPage struct {
+	// Items: list of items on this page of results
+	Items []Announcement `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
 // AsyncAPICallOutput: AsyncAPICallOutput: The output from the async API call.
@@ -1652,6 +1654,14 @@ type CreatePlanarSurface struct {
 type CreateProjectShareLinkRequest struct {
 	// AccessMode: Access policy for the generated share link.
 	AccessMode KclProjectShareLinkAccessMode `json:"access_mode" yaml:"access_mode" schema:"access_mode"`
+}
+
+// CreateProjectVersionResponse: Result of saving an alternate project version.
+type CreateProjectVersionResponse struct {
+	// CurrentVersionID: Project's current version when this response was prepared.
+	CurrentVersionID UUID `json:"current_version_id" yaml:"current_version_id" schema:"current_version_id,required"`
+	// VersionID: Version created by this save or returned by a retry.
+	VersionID UUID `json:"version_id" yaml:"version_id" schema:"version_id,required"`
 }
 
 // CreateRegion: The response from the 'CreateRegion'. The region should have an ID taken from the ID of the 'CreateRegion' modeling command.
@@ -2793,14 +2803,10 @@ const (
 	FeatureBigQueryTelemetry Feature = "big_query_telemetry"
 	// FeatureBilling: Internal ledger and contract billing are enabled.
 	FeatureBilling Feature = "billing"
-	// FeatureCpuEnginePool: Allows explicitly selecting the CPU-only engine pool for non-WebRTC modeling sessions.
-	FeatureCpuEnginePool Feature = "cpu_engine_pool"
 	// FeatureDisallowSelfSignup: Disable signup through email or OAuth.
 	FeatureDisallowSelfSignup Feature = "disallow_self_signup"
 	// FeatureEmailWithSES: Email sending is handled by AWS SES.
 	FeatureEmailWithSES Feature = "email_with_s_e_s"
-	// FeatureEngineManagerQuarantine: Quarantine engine-manager sessions when an engine is observed misbehaving.
-	FeatureEngineManagerQuarantine Feature = "engine_manager_quarantine"
 	// FeatureExecutionJobs: Grants access to the internal execution jobs API.
 	FeatureExecutionJobs Feature = "execution_jobs"
 	// FeatureEnableZ0006Lint: Enables the Z0006 lint, for converting to new face api syntax in Zoo Design Studio.
@@ -3725,14 +3731,18 @@ type KclMigrationResult struct {
 // KclMigrationServerMessage: KclMigrationServerMessage: Public responses never contain ordinary auto-applying tool results.
 type KclMigrationServerMessage any
 
-// KclMigrationServerMessageDetail: Heartbeat response.
-type KclMigrationServerMessageDetail struct {
+// KclMigrationServerMessageKclMigrationServerMessageOperation: Best-effort, display-only progress on the execution connection. Only text, informational and supported reasoning messages are forwarded; candidate edits are returned solely in a validated terminal operation.
+type KclMigrationServerMessageKclMigrationServerMessageOperation struct {
+	// Message: Existing Copilot display message. Never dispatch it as a project edit.
+	Message any `json:"message" yaml:"message" schema:"message,required"`
+	// OperationID: The initiating request ID, used to keep progress with its migration.
+	OperationID UUID `json:"operation_id" yaml:"operation_id" schema:"operation_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// KclMigrationServerMessageKclMigrationServerMessageOperation: A rejected request, without starting or charging for work.
-type KclMigrationServerMessageKclMigrationServerMessageOperation struct {
+// KclMigrationServerMessageMessage: A rejected request, without starting or charging for work.
+type KclMigrationServerMessageMessage struct {
 	// Detail:
 	Detail string `json:"detail" yaml:"detail" schema:"detail,required"`
 	// Type:
@@ -3743,6 +3753,12 @@ type KclMigrationServerMessageKclMigrationServerMessageOperation struct {
 type KclMigrationServerMessageOperation struct {
 	// Operation: Persisted operation state, safe to retrieve again without starting new work.
 	Operation KclMigrationOperation `json:"operation" yaml:"operation" schema:"operation,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// KclMigrationServerMessageOperationID: Heartbeat response.
+type KclMigrationServerMessageOperationID struct {
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -8296,6 +8312,14 @@ type ProjectCategoryResponse struct {
 	SortOrder int `json:"sort_order" yaml:"sort_order" schema:"sort_order,required"`
 }
 
+// ProjectCategoryResponseResultsPage: A single page of results
+type ProjectCategoryResponseResultsPage struct {
+	// Items: list of items on this page of results
+	Items []ProjectCategoryResponse `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
 // ProjectEntityToPlane: The response from the `ProjectEntityToPlane` command.
 type ProjectEntityToPlane struct {
 	// ProjectedPoints: Projected points.
@@ -8452,6 +8476,14 @@ type ProjectSummaryResponse struct {
 	Title string `json:"title" yaml:"title" schema:"title,required"`
 	// UpdatedAt: When the project row was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// ProjectSummaryResponseResultsPage: A single page of results
+type ProjectSummaryResponseResultsPage struct {
+	// Items: list of items on this page of results
+	Items []ProjectSummaryResponse `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
 // ProjectUpdated is the type definition for a ProjectUpdated.
