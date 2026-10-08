@@ -528,12 +528,18 @@ type Announcement struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
-// AnnouncementResultsPage: A single page of results
-type AnnouncementResultsPage struct {
-	// Items: list of items on this page of results
-	Items []Announcement `json:"items" yaml:"items" schema:"items,required"`
-	// NextPage: token used to fetch the next page of results (if any)
-	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+// AnnouncementList: Response containing active announcements.
+type AnnouncementList struct {
+	// Announcements: The list of active announcements.
+	Announcements []Announcement `json:"announcements" yaml:"announcements" schema:"announcements,required"`
+}
+
+// Application: A revision-fenced acknowledgement from the client that owns the project files.
+type Application struct {
+	// Revision: Starts at zero. Each accepted state change increments it once.
+	Revision int `json:"revision" yaml:"revision" schema:"revision,required"`
+	// Status: Last reported state; not independent verification of local files.
+	Status KclMigrationApplicationStatus `json:"status" yaml:"status" schema:"status,required"`
 }
 
 // AsyncAPICallOutput: AsyncAPICallOutput: The output from the async API call.
@@ -2815,8 +2821,6 @@ const (
 	FeatureFactoryPortal Feature = "factory_portal"
 	// FeatureKclCekExecutor: KCL CEK machine executor.
 	FeatureKclCekExecutor Feature = "kcl_cek_executor"
-	// FeatureKclNewLexerParser: New KCL lexer and parser.
-	FeatureKclNewLexerParser Feature = "kcl_new_lexer_parser"
 	// FeatureRedirectToGovcloud: Immediately redirect to our Govcloud environment (zoogov.dev).
 	FeatureRedirectToGovcloud Feature = "redirect_to_govcloud"
 	// FeatureRequireSamlAuth: Requires SAML auth and orgs for all users.
@@ -3641,6 +3645,26 @@ type KclCodeCompletionResponse struct {
 	Completions []string `json:"completions" yaml:"completions" schema:"completions,required"`
 }
 
+// KclMigrationApplication: A revision-fenced acknowledgement from the client that owns the project files.
+type KclMigrationApplication struct {
+	// Revision: Starts at zero. Each accepted state change increments it once.
+	Revision int `json:"revision" yaml:"revision" schema:"revision,required"`
+	// Status: Last reported state; not independent verification of local files.
+	Status KclMigrationApplicationStatus `json:"status" yaml:"status" schema:"status,required"`
+}
+
+// KclMigrationApplicationStatus: Client-reported application state, separate from conversion success.
+type KclMigrationApplicationStatus string
+
+const (
+	// KclMigrationApplicationStatusNotApplied: The client has not confirmed application. API does not infer project state.
+	KclMigrationApplicationStatusNotApplied KclMigrationApplicationStatus = "not_applied"
+	// KclMigrationApplicationStatusApplied: The client reports completing the guarded project write (or redo).
+	KclMigrationApplicationStatusApplied KclMigrationApplicationStatus = "applied"
+	// KclMigrationApplicationStatusUndone: The client reports undoing the migration.
+	KclMigrationApplicationStatusUndone KclMigrationApplicationStatus = "undone"
+)
+
 // KclMigrationClientMessage: KclMigrationClientMessage: The restricted public migration connection never accepts ordinary prompts.
 type KclMigrationClientMessage any
 
@@ -3660,8 +3684,16 @@ type KclMigrationClientMessageKclMigrationClientMessageHeaders struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// KclMigrationClientMessageOperationID: Application heartbeat.
+// KclMigrationClientMessageKclMigrationClientMessageOperationID: Application heartbeat.
+type KclMigrationClientMessageKclMigrationClientMessageOperationID struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// KclMigrationClientMessageOperationID: Read linked migration summaries, newest first, without loading or applying files.
 type KclMigrationClientMessageOperationID struct {
+	// ConversationID: A UUID usually v4 or v7
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3680,6 +3712,38 @@ type KclMigrationClientMessageStart struct {
 	OperationID UUID `json:"operation_id" yaml:"operation_id" schema:"operation_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// KclMigrationClientMessageStatus: Acknowledge a successful local apply/undo/redo. Does not execute or charge work.
+type KclMigrationClientMessageStatus struct {
+	// ExpectedRevision: The revision read before making the local change. Retrying is idempotent.
+	ExpectedRevision int `json:"expected_revision" yaml:"expected_revision" schema:"expected_revision,required"`
+	// OperationID: A UUID usually v4 or v7
+	OperationID UUID `json:"operation_id" yaml:"operation_id" schema:"operation_id,required"`
+	// Status: Client-reported application state, separate from conversion success.
+	Status KclMigrationApplicationStatus `json:"status" yaml:"status" schema:"status,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// KclMigrationHistoryEntry: Read-only conversation entry. It contains no files, edits or provider checkpoints.
+type KclMigrationHistoryEntry struct {
+	// AfterPromptID: Place this entry after this ordinary prompt when replaying the conversation.
+	AfterPromptID UUID `json:"after_prompt_id" yaml:"after_prompt_id" schema:"after_prompt_id"`
+	// Application: Most recent client acknowledgement.
+	Application KclMigrationApplication `json:"application" yaml:"application" schema:"application,required"`
+	// ConversationID: Conversation that owns this entry.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
+	// CreatedAt: Admission time, used for chronological display.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// Detail: Outcome summary for display and subsequent model context.
+	Detail string `json:"detail" yaml:"detail" schema:"detail,required"`
+	// OperationID: Migration request ID. Use the status command to retrieve a candidate explicitly.
+	OperationID UUID `json:"operation_id" yaml:"operation_id" schema:"operation_id,required"`
+	// PromptID: Persisted Copilot prompt, when this migration has a conversation transcript.
+	PromptID UUID `json:"prompt_id" yaml:"prompt_id" schema:"prompt_id"`
+	// Status: Conversion outcome. Success alone does not mean files were applied.
+	Status KclMigrationStatus `json:"status" yaml:"status" schema:"status,required"`
 }
 
 // KclMigrationOperation: Persisted operation state, safe to retrieve again without starting new work.
@@ -3702,6 +3766,8 @@ type KclMigrationOperation struct {
 type KclMigrationRequest struct {
 	// AllowPreview: Explicit consent to unstable preview semantics.
 	AllowPreview bool `json:"allow_preview" yaml:"allow_preview" schema:"allow_preview"`
+	// ConversationID: Existing customer conversation to link and use as background context. API verifies ownership; migration keeps its own sponsored execution record.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id"`
 	// CurrentFiles: Complete project, including unsaved edits, imports, and settings.
 	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files,required"`
 	// Entrypoint: Project-relative KCL file to execute.
@@ -3731,6 +3797,12 @@ type KclMigrationResult struct {
 // KclMigrationServerMessage: KclMigrationServerMessage: Public responses never contain ordinary auto-applying tool results.
 type KclMigrationServerMessage any
 
+// KclMigrationServerMessageConversationID: Heartbeat response.
+type KclMigrationServerMessageConversationID struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // KclMigrationServerMessageKclMigrationServerMessageOperation: Best-effort, display-only progress on the execution connection. Only text, informational and supported reasoning messages are forwarded; candidate edits are returned solely in a validated terminal operation.
 type KclMigrationServerMessageKclMigrationServerMessageOperation struct {
 	// Message: Existing Copilot display message. Never dispatch it as a project edit.
@@ -3741,10 +3813,12 @@ type KclMigrationServerMessageKclMigrationServerMessageOperation struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// KclMigrationServerMessageMessage: A rejected request, without starting or charging for work.
+// KclMigrationServerMessageMessage: Read-only history; never route these entries through file-edit handlers.
 type KclMigrationServerMessageMessage struct {
-	// Detail:
-	Detail string `json:"detail" yaml:"detail" schema:"detail,required"`
+	// ConversationID: A UUID usually v4 or v7
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
+	// Entries:
+	Entries []KclMigrationHistoryEntry `json:"entries" yaml:"entries" schema:"entries,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3757,8 +3831,20 @@ type KclMigrationServerMessageOperation struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// KclMigrationServerMessageOperationID: Heartbeat response.
+// KclMigrationServerMessageOperationID: Current durable application acknowledgement.
 type KclMigrationServerMessageOperationID struct {
+	// Application: A revision-fenced acknowledgement from the client that owns the project files.
+	Application KclMigrationApplication `json:"application" yaml:"application" schema:"application,required"`
+	// OperationID: A UUID usually v4 or v7
+	OperationID UUID `json:"operation_id" yaml:"operation_id" schema:"operation_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// KclMigrationServerMessageProgress: A rejected request, without starting or charging for work.
+type KclMigrationServerMessageProgress struct {
+	// Detail:
+	Detail string `json:"detail" yaml:"detail" schema:"detail,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -3899,6 +3985,8 @@ const (
 	KclVersion30Preview KclVersion = "3.0-preview"
 	// KclVersion30: KCL v3 releases 2026
 	KclVersion30 KclVersion = "3.0"
+	// KclVersion40Preview: KCL v4 preview -- used while developing and testing version 4.
+	KclVersion40Preview KclVersion = "4.0-preview"
 )
 
 // Loft: The response from the `Loft` command.
@@ -5029,10 +5117,10 @@ type ModelingCmdDraftAngle struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEdgeGetLength: The user clicked on a point in the window, returns the region the user clicked on, if any.
+// ModelingCmdEdgeGetLength: Finds a suitable point inside the region for calling such that CreateRegionFromQueryPoint will generate an identical region.
 type ModelingCmdEdgeGetLength struct {
-	// SelectedAtWindow: Where in the window was selected
-	SelectedAtWindow Point2D `json:"selected_at_window" yaml:"selected_at_window" schema:"selected_at_window,required"`
+	// RegionID: Which region to search within
+	RegionID UUID `json:"region_id" yaml:"region_id" schema:"region_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5077,14 +5165,12 @@ type ModelingCmdEngineUtilEvaluatePath struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityClone: Offset a surface by a given distance.
+// ModelingCmdEntityClone: Get the smallest box that could contain the given parts.
 type ModelingCmdEntityClone struct {
-	// Distance: The distance to offset the surface by.
-	Distance float64 `json:"distance" yaml:"distance" schema:"distance,required"`
-	// Flip: Flip the newly created face.
-	Flip bool `json:"flip" yaml:"flip" schema:"flip,required"`
-	// SurfaceID: The surface to offset.
-	SurfaceID UUID `json:"surface_id" yaml:"surface_id" schema:"surface_id,required"`
+	// EntityIds: IDs of the entities to be included in the box. If this is empty, then all entities are included (the entire scene).
+	EntityIds []UUID `json:"entity_ids" yaml:"entity_ids" schema:"entity_ids,required"`
+	// OutputUnit: The output unit for the box's dimensions. Defaults to millimeters.
+	OutputUnit UnitLength `json:"output_unit" yaml:"output_unit" schema:"output_unit"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5115,16 +5201,12 @@ type ModelingCmdEntityGetChildUuid struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityGetDistance: Create a region with a query point. The region should have an ID taken from the ID of the 'CreateRegionFromQueryPoint' modeling command.
+// ModelingCmdEntityGetDistance: Finds a suitable set of arguments that can be passed to CreateRegion to resolve this very region.
 type ModelingCmdEntityGetDistance struct {
-	// ObjectID: Which sketch object to create the region from.
-	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
-	// QueryPoint: The query point (in the same coordinates as the sketch itself) if a possible sketch region contains this point, then that region will be created
-	QueryPoint Point2D `json:"query_point" yaml:"query_point" schema:"query_point,required"`
+	// RegionID: Which region to resolve
+	RegionID UUID `json:"region_id" yaml:"region_id" schema:"region_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
-	// Version: Which version of the Region endpoint to call.
-	Version RegionVersion `json:"version" yaml:"version" schema:"version"`
 }
 
 // ModelingCmdEntityGetIndex: Given a set of overlapping solids, create a new single solid.
@@ -5207,20 +5289,20 @@ type ModelingCmdEntityID struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityId1: Create a planar surface bounded by the connection of various paths and curves. 'CreatePlanarSurface' modeling command.
+// ModelingCmdEntityId1: Enable or disable graphics. Warning: enabling graphics slows down the engine.
 type ModelingCmdEntityId1 struct {
-	// CurveIds: Which curves to create the planar surface(s) from. Curves must be provided in the order they are connected to each other They must form a closed loop, either by themselves or in a group
-	CurveIds []UUID `json:"curve_ids" yaml:"curve_ids" schema:"curve_ids,required"`
-	// Tolerance: Tolerance for the planar surface creation. Must be positive (i.e. greater than zero).
-	Tolerance float64 `json:"tolerance" yaml:"tolerance" schema:"tolerance,required"`
+	// GraphicsEnabled: Should graphics be enabled?
+	GraphicsEnabled bool `json:"graphics_enabled" yaml:"graphics_enabled" schema:"graphics_enabled,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityId2: Finds a suitable set of arguments that can be passed to CreateRegion to resolve this very region.
+// ModelingCmdEntityId2: Create a planar surface bounded by the connection of various paths and curves. 'CreatePlanarSurface' modeling command.
 type ModelingCmdEntityId2 struct {
-	// RegionID: Which region to resolve
-	RegionID UUID `json:"region_id" yaml:"region_id" schema:"region_id,required"`
+	// CurveIds: Which curves to create the planar surface(s) from. Curves must be provided in the order they are connected to each other They must form a closed loop, either by themselves or in a group
+	CurveIds []UUID `json:"curve_ids" yaml:"curve_ids" schema:"curve_ids,required"`
+	// Tolerance: Tolerance for the planar surface creation. Must be positive (i.e. greater than zero).
+	Tolerance float64 `json:"tolerance" yaml:"tolerance" schema:"tolerance,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5233,10 +5315,12 @@ type ModelingCmdEntityIds struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdEntityLinearPatternTransform: Gets debug information about a sketch
+// ModelingCmdEntityLinearPatternTransform: Returns the closest edge to this point.
 type ModelingCmdEntityLinearPatternTransform struct {
-	// PathID: Which path to query
-	PathID UUID `json:"path_id" yaml:"path_id" schema:"path_id,required"`
+	// ClosestTo: Find the edge closest to this point. Assumed to be in absolute coordinates, relative to global (scene) origin.
+	ClosestTo Point3D `json:"closest_to" yaml:"closest_to" schema:"closest_to,required"`
+	// ObjectID: The body whose edges are being queried. If not given, will search all bodies in the scene.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5473,10 +5557,10 @@ type ModelingCmdModelingCmdAngle struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdAxis: Sets the KCL Version used by the engine.
+// ModelingCmdModelingCmdAxis: Gets debug information about a sketch
 type ModelingCmdModelingCmdAxis struct {
-	// KclVersion: Which KCL version the following commands should be executed with.
-	KclVersion KclVersion `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version,required"`
+	// PathID: Which path to query
+	PathID UUID `json:"path_id" yaml:"path_id" schema:"path_id,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -5515,18 +5599,22 @@ type ModelingCmdModelingCmdDistance struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdModelingCmdEdgeID: Finds a suitable point inside the region for calling such that CreateRegionFromQueryPoint will generate an identical region.
+// ModelingCmdModelingCmdEdgeID: Create a region with a query point. The region should have an ID taken from the ID of the 'CreateRegionFromQueryPoint' modeling command.
 type ModelingCmdModelingCmdEdgeID struct {
-	// RegionID: Which region to search within
-	RegionID UUID `json:"region_id" yaml:"region_id" schema:"region_id,required"`
+	// ObjectID: Which sketch object to create the region from.
+	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id,required"`
+	// QueryPoint: The query point (in the same coordinates as the sketch itself) if a possible sketch region contains this point, then that region will be created
+	QueryPoint Point2D `json:"query_point" yaml:"query_point" schema:"query_point,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Version: Which version of the Region endpoint to call.
+	Version RegionVersion `json:"version" yaml:"version" schema:"version"`
 }
 
-// ModelingCmdModelingCmdEntityID: Tell the engine you're beginning execution, and will be sending many API calls shortly. The engine will render your geometry in reduced detail, to make execution faster. Call EndExecution to restore high quality once you're done sending commands.
+// ModelingCmdModelingCmdEntityID: Sets the KCL Version used by the engine.
 type ModelingCmdModelingCmdEntityID struct {
-	// EnableRender: Should rendering occur, or not? If enabled, rendering will be low resolution until you call EndExecution.
-	EnableRender bool `json:"enable_render" yaml:"enable_render" schema:"enable_render,required"`
+	// KclVersion: Which KCL version the following commands should be executed with.
+	KclVersion KclVersion `json:"kcl_version" yaml:"kcl_version" schema:"kcl_version,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6187,18 +6275,16 @@ type ModelingCmdTrajectory struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdTransform: Tell the engine you're finished execution, and it should resume rendering at high resolution.
+// ModelingCmdTransform: Tell the engine you're beginning execution, and will be sending many API calls shortly. The engine will render your geometry in reduced detail, to make execution faster. Call EndExecution to restore high quality once you're done sending commands.
 type ModelingCmdTransform struct {
+	// EnableRender: Should rendering occur, or not? If enabled, rendering will be low resolution until you call EndExecution.
+	EnableRender bool `json:"enable_render" yaml:"enable_render" schema:"enable_render,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// ModelingCmdTransforms: Returns the closest edge to this point.
+// ModelingCmdTransforms: Tell the engine you're finished execution, and it should resume rendering at high resolution.
 type ModelingCmdTransforms struct {
-	// ClosestTo: Find the edge closest to this point. Assumed to be in absolute coordinates, relative to global (scene) origin.
-	ClosestTo Point3D `json:"closest_to" yaml:"closest_to" schema:"closest_to,required"`
-	// ObjectID: The body whose edges are being queried. If not given, will search all bodies in the scene.
-	ObjectID UUID `json:"object_id" yaml:"object_id" schema:"object_id"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6538,16 +6624,16 @@ type OkModelingCmdResponse any
 
 // OkModelingCmdResponseCameraDragEnd is the type definition for a OkModelingCmdResponseCameraDragEnd.
 type OkModelingCmdResponseCameraDragEnd struct {
-	// Data: The response from the 'SelectRegionFromPoint'. If there are multiple ways to construct this region, this chooses arbitrarily.
-	Data SelectRegionFromPoint `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from 'RegionGetQueryPoint' modeling command.
+	Data RegionGetQueryPoint `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // OkModelingCmdResponseCameraDragMove is the type definition for a OkModelingCmdResponseCameraDragMove.
 type OkModelingCmdResponseCameraDragMove struct {
-	// Data: The response from the 'CreateRegionFromQueryPoint'. The region should have an ID taken from the ID of the 'CreateRegionFromQueryPoint' modeling command.
-	Data CreateRegionFromQueryPoint `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'RegionGetResolvableIntersectionInfo'.
+	Data RegionGetResolvableIntersectionInfo `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6562,8 +6648,8 @@ type OkModelingCmdResponseCameraDragStart struct {
 
 // OkModelingCmdResponseClosePath is the type definition for a OkModelingCmdResponseClosePath.
 type OkModelingCmdResponseClosePath struct {
-	// Data: The response from the 'CreatePlanarSurface'.
-	Data CreatePlanarSurface `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'ToggleGraphics'.
+	Data ToggleGraphics `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6602,16 +6688,16 @@ type OkModelingCmdResponseDefaultCameraCenterToSelection struct {
 
 // OkModelingCmdResponseDefaultCameraGetSettings is the type definition for a OkModelingCmdResponseDefaultCameraGetSettings.
 type OkModelingCmdResponseDefaultCameraGetSettings struct {
-	// Data: The response from the 'OffsetSurface'.
-	Data OffsetSurface `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'BoundingBox'.
+	Data BoundingBox `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // OkModelingCmdResponseDefaultCameraGetView is the type definition for a OkModelingCmdResponseDefaultCameraGetView.
 type OkModelingCmdResponseDefaultCameraGetView struct {
-	// Data: The response from the 'EndExecution'.
-	Data EndExecution `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'BeginExecution'.
+	Data BeginExecution `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6650,8 +6736,16 @@ type OkModelingCmdResponseDefaultCameraSetPerspective struct {
 
 // OkModelingCmdResponseDefaultCameraSetView is the type definition for a OkModelingCmdResponseDefaultCameraSetView.
 type OkModelingCmdResponseDefaultCameraSetView struct {
-	// Data: The response from the 'SketchGetInfo'.
-	Data SketchGetInfo `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'ClosestEdge'.
+	Data ClosestEdge `json:"data" yaml:"data" schema:"data,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// OkModelingCmdResponseDefaultCameraZoom is the type definition for a OkModelingCmdResponseDefaultCameraZoom.
+type OkModelingCmdResponseDefaultCameraZoom struct {
+	// Data: The response from the 'SetKclVersion'.
+	Data SetKclVersion `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -6936,8 +7030,8 @@ type OkModelingCmdResponseObjectVisible struct {
 
 // OkModelingCmdResponseOkModelingCmdResponseData is the type definition for a OkModelingCmdResponseOkModelingCmdResponseData.
 type OkModelingCmdResponseOkModelingCmdResponseData struct {
-	// Data: The response from the 'SetKclVersion'.
-	Data SetKclVersion `json:"data" yaml:"data" schema:"data,required"`
+	// Data: The response from the 'SketchGetInfo'.
+	Data SketchGetInfo `json:"data" yaml:"data" schema:"data,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
@@ -8312,14 +8406,6 @@ type ProjectCategoryResponse struct {
 	SortOrder int `json:"sort_order" yaml:"sort_order" schema:"sort_order,required"`
 }
 
-// ProjectCategoryResponseResultsPage: A single page of results
-type ProjectCategoryResponseResultsPage struct {
-	// Items: list of items on this page of results
-	Items []ProjectCategoryResponse `json:"items" yaml:"items" schema:"items,required"`
-	// NextPage: token used to fetch the next page of results (if any)
-	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
-}
-
 // ProjectEntityToPlane: The response from the `ProjectEntityToPlane` command.
 type ProjectEntityToPlane struct {
 	// ProjectedPoints: Projected points.
@@ -8476,14 +8562,6 @@ type ProjectSummaryResponse struct {
 	Title string `json:"title" yaml:"title" schema:"title,required"`
 	// UpdatedAt: When the project row was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
-}
-
-// ProjectSummaryResponseResultsPage: A single page of results
-type ProjectSummaryResponseResultsPage struct {
-	// Items: list of items on this page of results
-	Items []ProjectSummaryResponse `json:"items" yaml:"items" schema:"items,required"`
-	// NextPage: token used to fetch the next page of results (if any)
-	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
 // ProjectUpdated is the type definition for a ProjectUpdated.
@@ -8780,6 +8858,8 @@ type Replay struct {
 type Request struct {
 	// AllowPreview: Explicit consent to unstable preview semantics.
 	AllowPreview bool `json:"allow_preview" yaml:"allow_preview" schema:"allow_preview"`
+	// ConversationID: Existing customer conversation to link and use as background context. API verifies ownership; migration keeps its own sponsored execution record.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id"`
 	// CurrentFiles: Complete project, including unsaved edits, imports, and settings.
 	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files,required"`
 	// Entrypoint: Project-relative KCL file to execute.
@@ -9744,6 +9824,10 @@ type TextToCadResponseResultsPage struct {
 	Items []TextToCadResponse `json:"items" yaml:"items" schema:"items,required"`
 	// NextPage: token used to fetch the next page of results (if any)
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// ToggleGraphics: The response from the 'ToggleGraphics'.
+type ToggleGraphics struct {
 }
 
 // TokenRevokeRequestForm: The request parameters for the OAuth 2.0 token revocation flow.
