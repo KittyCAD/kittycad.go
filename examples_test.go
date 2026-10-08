@@ -79,19 +79,14 @@ func ExampleMetaService_GetIpinfo() {
 }
 
 // GetAnnouncements: List all active announcements.
-// No authentication is required. Results are ordered newest first, with the announcement ID breaking ties.
-//
-// Parameters
-//
-//   - `limit`
-//   - `pageToken`
+// No authentication is required.
 func ExampleMetaService_GetAnnouncements() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Meta.GetAnnouncements(123, "some-string")
+	result, err := client.Meta.GetAnnouncements()
 	if err != nil {
 		panic(err)
 	}
@@ -2342,17 +2337,13 @@ func ExampleMetaService_GetPricingSubscriptions() {
 }
 
 // ListCategories: List the active categories available for project submissions.
-// Parameters
-//
-//   - `limit`
-//   - `pageToken`
 func ExampleProjectService_ListCategories() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Project.ListCategories(123, "some-string")
+	result, err := client.Project.ListCategories()
 	if err != nil {
 		panic(err)
 	}
@@ -3768,17 +3759,13 @@ func ExampleUserService_UpdatePrivacySettings() {
 }
 
 // List: List the authenticated user's projects.
-// Parameters
-//
-//   - `limit`
-//   - `pageToken`
 func ExampleProjectService_List() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Project.List(123, "some-string")
+	result, err := client.Project.List()
 	if err != nil {
 		panic(err)
 	}

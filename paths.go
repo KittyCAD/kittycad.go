@@ -84,13 +84,8 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 }
 
 // GetAnnouncements: List all active announcements.
-// No authentication is required. Results are ordered newest first, with the announcement ID breaking ties.
-//
-// Parameters
-//
-//   - `limit`
-//   - `pageToken`
-func (s *MetaService) GetAnnouncements(limit int, pageToken string) (*AnnouncementResultsPage, error) {
+// No authentication is required.
+func (s *MetaService) GetAnnouncements() (*AnnouncementList, error) {
 	// Create the url.
 	path := "/announcements"
 	targetURL := resolveRelative(s.client.server, path)
@@ -99,14 +94,6 @@ func (s *MetaService) GetAnnouncements(limit int, pageToken string) (*Announceme
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -125,7 +112,7 @@ func (s *MetaService) GetAnnouncements(limit int, pageToken string) (*Announceme
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded AnnouncementResultsPage
+	var decoded AnnouncementList
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -5370,11 +5357,7 @@ func (s *MetaService) GetPricingSubscriptions() (*map[string][]ZooProductSubscri
 }
 
 // ListCategories: List the active categories available for project submissions.
-// Parameters
-//
-//   - `limit`
-//   - `pageToken`
-func (s *ProjectService) ListCategories(limit int, pageToken string) (*ProjectCategoryResponseResultsPage, error) {
+func (s *ProjectService) ListCategories() (*[]ProjectCategoryResponse, error) {
 	// Create the url.
 	path := "/projects/categories"
 	targetURL := resolveRelative(s.client.server, path)
@@ -5383,14 +5366,6 @@ func (s *ProjectService) ListCategories(limit int, pageToken string) (*ProjectCa
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -5409,7 +5384,7 @@ func (s *ProjectService) ListCategories(limit int, pageToken string) (*ProjectCa
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded ProjectCategoryResponseResultsPage
+	var decoded []ProjectCategoryResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -8687,11 +8662,7 @@ func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySetti
 }
 
 // List: List the authenticated user's projects.
-// Parameters
-//
-//   - `limit`
-//   - `pageToken`
-func (s *ProjectService) List(limit int, pageToken string) (*ProjectSummaryResponseResultsPage, error) {
+func (s *ProjectService) List() (*[]ProjectSummaryResponse, error) {
 	// Create the url.
 	path := "/user/projects"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8700,14 +8671,6 @@ func (s *ProjectService) List(limit int, pageToken string) (*ProjectSummaryRespo
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -8726,7 +8689,7 @@ func (s *ProjectService) List(limit int, pageToken string) (*ProjectSummaryRespo
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded ProjectSummaryResponseResultsPage
+	var decoded []ProjectSummaryResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
