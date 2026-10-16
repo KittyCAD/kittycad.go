@@ -25,7 +25,7 @@
  },
  {
   "value": {
-   "example": "// GetAnnouncements: List all active announcements.\n// \n// No authentication is required. Results are ordered newest first, with the announcement ID breaking ties.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// GetAnnouncements: List all active announcements.\n// No authentication is required. Results are ordered newest first, with the announcement ID breaking ties.\n//\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExampleMetaService_GetAnnouncements() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Meta.GetAnnouncements(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// GetAnnouncements: List all active announcements.\n// \n// No authentication is required.\n// \n// GetAnnouncements: List all active announcements.\n// No authentication is required.\nfunc ExampleMetaService_GetAnnouncements() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Meta.GetAnnouncements()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#MetaService.GetAnnouncements"
   },
   "op": "add",
@@ -873,7 +873,7 @@
  },
  {
   "value": {
-   "example": "// ListCategories: List the active categories available for project submissions.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// ListCategories: List the active categories available for project submissions.\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExampleProjectService_ListCategories() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.ListCategories(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListCategories: List the active categories available for project submissions.\n// \n// ListCategories: List the active categories available for project submissions.\nfunc ExampleProjectService_ListCategories() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.ListCategories()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.ListCategories"
   },
   "op": "add",
@@ -881,7 +881,7 @@
  },
  {
   "value": {
-   "example": "// ListPublic: List publicly visible community projects for the website/gallery.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// ListPublic: List publicly visible community projects for the website/gallery.\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExampleProjectService_ListPublic() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.ListPublic(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListPublic: List publicly visible community projects for the website/gallery.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \t- `categoryId`: A UUID usually v4 or v7\n// \n// ListPublic: List publicly visible community projects for the website/gallery.\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\n//   - `categoryId`: A UUID usually v4 or v7\nfunc ExampleProjectService_ListPublic() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.ListPublic(123, \"some-string\", kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"))\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.ListPublic"
   },
   "op": "add",
@@ -1433,7 +1433,39 @@
  },
  {
   "value": {
-   "example": "// List: List the authenticated user's projects.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// List: List the authenticated user's projects.\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExampleProjectService_List() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.List(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListLibraries: List personal libraries and libraries belonging to the active organization.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// ListLibraries: List personal libraries and libraries belonging to the active organization.\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExampleProjectService_ListLibraries() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.ListLibraries(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.ListLibraries"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1project-libraries/get/x-go"
+ },
+ {
+  "value": {
+   "example": "// CreateLibrary: Create a personal library or a library owned by the active organization.\n// \n// \n// Parameters\n// \n// \t- `body`: Request to create a cloud project library.\n// \n// CreateLibrary: Create a personal library or a library owned by the active organization.\n// Parameters\n//\n//   - `body`: Request to create a cloud project library.\nfunc ExampleProjectService_CreateLibrary() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.CreateLibrary(kittycad.CreateProjectLibraryRequest{Name: \"some-string\", Scope: \"\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.CreateLibrary"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1project-libraries/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// DeleteLibrary: Delete an empty cloud project library.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `expectedRevision`\n// \n// DeleteLibrary: Delete an empty cloud project library.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `expectedRevision`\nfunc ExampleProjectService_DeleteLibrary() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Project.DeleteLibrary(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), \"some-string\"); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.DeleteLibrary"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1project-libraries~1{id}/delete/x-go"
+ },
+ {
+  "value": {
+   "example": "// RenameLibrary: Rename a library owned by the user or their active organization.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`: Request to rename a cloud project library.\n// \n// RenameLibrary: Rename a library owned by the user or their active organization.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`: Request to rename a cloud project library.\nfunc ExampleProjectService_RenameLibrary() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.RenameLibrary(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.RenameProjectLibraryRequest{ExpectedRevision: \"some-string\", Name: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.RenameLibrary"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1project-libraries~1{id}/patch/x-go"
+ },
+ {
+  "value": {
+   "example": "// List: List the authenticated user's projects.\n// \n// List: List the authenticated user's projects.\nfunc ExampleProjectService_List() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.List()\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.List"
   },
   "op": "add",
