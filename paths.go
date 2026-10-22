@@ -84,13 +84,8 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 }
 
 // GetAnnouncements: List all active announcements.
-// No authentication is required. Results are ordered newest first, with the announcement ID breaking ties.
-//
-// Parameters
-//
-//   - `limit`
-//   - `pageToken`
-func (s *MetaService) GetAnnouncements(limit int, pageToken string) (*AnnouncementResultsPage, error) {
+// No authentication is required.
+func (s *MetaService) GetAnnouncements() (*AnnouncementList, error) {
 	// Create the url.
 	path := "/announcements"
 	targetURL := resolveRelative(s.client.server, path)
@@ -99,14 +94,6 @@ func (s *MetaService) GetAnnouncements(limit int, pageToken string) (*Announceme
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -125,7 +112,7 @@ func (s *MetaService) GetAnnouncements(limit int, pageToken string) (*Announceme
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded AnnouncementResultsPage
+	var decoded AnnouncementList
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -5370,11 +5357,7 @@ func (s *MetaService) GetPricingSubscriptions() (*map[string][]ZooProductSubscri
 }
 
 // ListCategories: List the active categories available for project submissions.
-// Parameters
-//
-//   - `limit`
-//   - `pageToken`
-func (s *ProjectService) ListCategories(limit int, pageToken string) (*ProjectCategoryResponseResultsPage, error) {
+func (s *ProjectService) ListCategories() (*[]ProjectCategoryResponse, error) {
 	// Create the url.
 	path := "/projects/categories"
 	targetURL := resolveRelative(s.client.server, path)
@@ -5383,14 +5366,6 @@ func (s *ProjectService) ListCategories(limit int, pageToken string) (*ProjectCa
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	// Add the parameters to the url.
-	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
-	}); err != nil {
-		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -5409,7 +5384,7 @@ func (s *ProjectService) ListCategories(limit int, pageToken string) (*ProjectCa
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded ProjectCategoryResponseResultsPage
+	var decoded []ProjectCategoryResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -5424,7 +5399,8 @@ func (s *ProjectService) ListCategories(limit int, pageToken string) (*ProjectCa
 //
 //   - `limit`
 //   - `pageToken`
-func (s *ProjectService) ListPublic(limit int, pageToken string) (*PublicProjectResponseResultsPage, error) {
+//   - `categoryId`: A UUID usually v4 or v7
+func (s *ProjectService) ListPublic(limit int, pageToken string, categoryId UUID) (*PublicProjectResponseResultsPage, error) {
 	// Create the url.
 	path := "/projects/public"
 	targetURL := resolveRelative(s.client.server, path)
@@ -5437,8 +5413,9 @@ func (s *ProjectService) ListPublic(limit int, pageToken string) (*PublicProject
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"limit":      strconv.Itoa(limit),
-		"page_token": pageToken,
+		"limit":       strconv.Itoa(limit),
+		"page_token":  pageToken,
+		"category_id": categoryId.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -8686,14 +8663,14 @@ func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySetti
 
 }
 
-// List: List the authenticated user's projects.
+// ListLibraries: List personal libraries and libraries belonging to the active organization.
 // Parameters
 //
 //   - `limit`
 //   - `pageToken`
-func (s *ProjectService) List(limit int, pageToken string) (*ProjectSummaryResponseResultsPage, error) {
+func (s *ProjectService) ListLibraries(limit int, pageToken string) (*ProjectLibraryResponseResultsPage, error) {
 	// Create the url.
-	path := "/user/projects"
+	path := "/user/project-libraries"
 	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
@@ -8726,7 +8703,194 @@ func (s *ProjectService) List(limit int, pageToken string) (*ProjectSummaryRespo
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded ProjectSummaryResponseResultsPage
+	var decoded ProjectLibraryResponseResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateLibrary: Create a personal library or a library owned by the active organization.
+// Parameters
+//
+//   - `body`: Request to create a cloud project library.
+func (s *ProjectService) CreateLibrary(body CreateProjectLibraryRequest) (*ProjectLibraryResponse, error) {
+	// Create the url.
+	path := "/user/project-libraries"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ProjectLibraryResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteLibrary: Delete an empty cloud project library.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `expectedRevision`
+func (s *ProjectService) DeleteLibrary(id UUID, expectedRevision string) error {
+	// Create the url.
+	path := "/user/project-libraries/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":                id.String(),
+		"expected_revision": expectedRevision,
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// RenameLibrary: Rename a library owned by the user or their active organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Request to rename a cloud project library.
+func (s *ProjectService) RenameLibrary(id UUID, body RenameProjectLibraryRequest) (*ProjectLibraryResponse, error) {
+	// Create the url.
+	path := "/user/project-libraries/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PATCH", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ProjectLibraryResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// List: List the authenticated user's projects.
+func (s *ProjectService) List() (*[]ProjectSummaryResponse, error) {
+	// Create the url.
+	path := "/user/projects"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []ProjectSummaryResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}

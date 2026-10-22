@@ -79,19 +79,14 @@ func ExampleMetaService_GetIpinfo() {
 }
 
 // GetAnnouncements: List all active announcements.
-// No authentication is required. Results are ordered newest first, with the announcement ID breaking ties.
-//
-// Parameters
-//
-//   - `limit`
-//   - `pageToken`
+// No authentication is required.
 func ExampleMetaService_GetAnnouncements() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Meta.GetAnnouncements(123, "some-string")
+	result, err := client.Meta.GetAnnouncements()
 	if err != nil {
 		panic(err)
 	}
@@ -2342,17 +2337,13 @@ func ExampleMetaService_GetPricingSubscriptions() {
 }
 
 // ListCategories: List the active categories available for project submissions.
-// Parameters
-//
-//   - `limit`
-//   - `pageToken`
 func ExampleProjectService_ListCategories() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Project.ListCategories(123, "some-string")
+	result, err := client.Project.ListCategories()
 	if err != nil {
 		panic(err)
 	}
@@ -2366,13 +2357,14 @@ func ExampleProjectService_ListCategories() {
 //
 //   - `limit`
 //   - `pageToken`
+//   - `categoryId`: A UUID usually v4 or v7
 func ExampleProjectService_ListPublic() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Project.ListPublic(123, "some-string")
+	result, err := client.Project.ListPublic(123, "some-string", kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -3767,18 +3759,90 @@ func ExampleUserService_UpdatePrivacySettings() {
 
 }
 
-// List: List the authenticated user's projects.
+// ListLibraries: List personal libraries and libraries belonging to the active organization.
 // Parameters
 //
 //   - `limit`
 //   - `pageToken`
+func ExampleProjectService_ListLibraries() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.ListLibraries(123, "some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateLibrary: Create a personal library or a library owned by the active organization.
+// Parameters
+//
+//   - `body`: Request to create a cloud project library.
+func ExampleProjectService_CreateLibrary() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.CreateLibrary(kittycad.CreateProjectLibraryRequest{Name: "some-string", Scope: ""})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteLibrary: Delete an empty cloud project library.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `expectedRevision`
+func ExampleProjectService_DeleteLibrary() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Project.DeleteLibrary(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// RenameLibrary: Rename a library owned by the user or their active organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Request to rename a cloud project library.
+func ExampleProjectService_RenameLibrary() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.RenameLibrary(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.RenameProjectLibraryRequest{ExpectedRevision: "some-string", Name: "some-string"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// List: List the authenticated user's projects.
 func ExampleProjectService_List() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Project.List(123, "some-string")
+	result, err := client.Project.List()
 	if err != nil {
 		panic(err)
 	}
