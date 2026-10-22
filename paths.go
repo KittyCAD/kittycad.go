@@ -8862,8 +8862,64 @@ func (s *ProjectService) RenameLibrary(id UUID, body RenameProjectLibraryRequest
 
 }
 
+// ListLibrary: List projects in a cloud library, newest first.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `limit`
+//   - `pageToken`
+func (s *ProjectService) ListLibrary(id UUID, limit int, pageToken string) (*ProjectSummaryResponseResultsPage, error) {
+	// Create the url.
+	path := "/user/project-libraries/{{.id}}/projects"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":         id.String(),
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ProjectSummaryResponseResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // List: List the authenticated user's projects.
-func (s *ProjectService) List() (*[]ProjectSummaryResponse, error) {
+// Parameters
+//
+//   - `scope`: Ownership scope for an authenticated project response.
+//   - `unassigned`
+func (s *ProjectService) List(scope ProjectAccessScope, unassigned bool) (*[]ProjectSummaryResponse, error) {
 	// Create the url.
 	path := "/user/projects"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8872,6 +8928,14 @@ func (s *ProjectService) List() (*[]ProjectSummaryResponse, error) {
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"scope":      string(scope),
+		"unassigned": strconv.FormatBool(unassigned),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.

@@ -8514,6 +8514,8 @@ type ProjectResponse struct {
 	Files []ProjectFileResponse `json:"files" yaml:"files" schema:"files,required"`
 	// ID: Unique project identifier.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// LibraryID: Named library containing the project; null means unassigned.
+	LibraryID UUID `json:"library_id" yaml:"library_id" schema:"library_id"`
 	// PreviewStatus: Current preview generation state.
 	PreviewStatus KclProjectPreviewStatus `json:"preview_status" yaml:"preview_status" schema:"preview_status,required"`
 	// PreviewUrl: Stable authenticated thumbnail URL, when one exists.
@@ -8590,6 +8592,8 @@ type ProjectSummaryResponse struct {
 	EntrypointPath string `json:"entrypoint_path" yaml:"entrypoint_path" schema:"entrypoint_path,required"`
 	// ID: Unique project identifier.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// LibraryID: Named library containing the project; null means unassigned.
+	LibraryID UUID `json:"library_id" yaml:"library_id" schema:"library_id"`
 	// PreviewStatus: Current preview generation state.
 	PreviewStatus KclProjectPreviewStatus `json:"preview_status" yaml:"preview_status" schema:"preview_status,required"`
 	// PreviewUrl: Stable authenticated thumbnail URL, when one exists.
@@ -8606,6 +8610,14 @@ type ProjectSummaryResponse struct {
 	Title string `json:"title" yaml:"title" schema:"title,required"`
 	// UpdatedAt: When the project row was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// ProjectSummaryResponseResultsPage: A single page of results
+type ProjectSummaryResponseResultsPage struct {
+	// Items: list of items on this page of results
+	Items []ProjectSummaryResponse `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
 // ProjectUpdated is the type definition for a ProjectUpdated.

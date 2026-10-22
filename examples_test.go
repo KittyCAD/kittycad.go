@@ -3835,14 +3835,39 @@ func ExampleProjectService_RenameLibrary() {
 
 }
 
+// ListLibrary: List projects in a cloud library, newest first.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `limit`
+//   - `pageToken`
+func ExampleProjectService_ListLibrary() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.ListLibrary(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // List: List the authenticated user's projects.
+// Parameters
+//
+//   - `scope`: Ownership scope for an authenticated project response.
+//   - `unassigned`
 func ExampleProjectService_List() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Project.List()
+	result, err := client.Project.List("", true)
 	if err != nil {
 		panic(err)
 	}
