@@ -7908,6 +7908,8 @@ type OutputFormat3Dpresentation struct {
 	Created Time `json:"created" yaml:"created" schema:"created"`
 	// Presentation: Presentation style.
 	Presentation StepPresentation `json:"presentation" yaml:"presentation" schema:"presentation"`
+	// Schema: STEP application protocol schema. Defaults to AP242.
+	Schema StepSchema `json:"schema" yaml:"schema" schema:"schema"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 	// Units: Export length unit.
@@ -8341,6 +8343,8 @@ const (
 	PostEffectTypePhosphor PostEffectType = "phosphor"
 	// PostEffectTypeSsao represents the PostEffectType `"ssao"`.
 	PostEffectTypeSsao PostEffectType = "ssao"
+	// PostEffectTypeRetrocad represents the PostEffectType `"retrocad"`.
+	PostEffectTypeRetrocad PostEffectType = "retrocad"
 	// PostEffectTypeNoeffect represents the PostEffectType `"noeffect"`.
 	PostEffectTypeNoeffect PostEffectType = "noeffect"
 )
@@ -9528,6 +9532,20 @@ const (
 	//
 	// This is the default setting.
 	StepPresentationPretty StepPresentation = "pretty"
+)
+
+// StepSchema: Specifies the STEP application protocol schema for export.
+type StepSchema string
+
+const (
+	// StepSchemaAp203: AP203 edition 2.
+	StepSchemaAp203 StepSchema = "ap203"
+	// StepSchemaAp214: AP214.
+	StepSchemaAp214 StepSchema = "ap214"
+	// StepSchemaAp242: AP242.
+	//
+	// This is the default setting.
+	StepSchemaAp242 StepSchema = "ap242"
 )
 
 // StlStorage: Export storage.
