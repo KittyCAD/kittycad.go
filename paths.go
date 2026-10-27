@@ -9204,6 +9204,64 @@ func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat) error {
 
 }
 
+// UpdateLibrary: Move a project to a named library or leave it unassigned.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Request payload for moving a project to a library or leaving it unassigned.
+func (s *ProjectService) UpdateLibrary(id UUID, body UpdateProjectLibraryRequest) (*ProjectResponse, error) {
+	// Create the url.
+	path := "/user/projects/{{.id}}/library"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ProjectResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // UpdateOrganization: Move one of the authenticated user's projects into their active organization library.
 // This changes only the project's ownership scope. The project ID, current revision, files, and version history remain unchanged so cloud bindings stay valid across the move.
 //
