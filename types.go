@@ -2823,6 +2823,8 @@ const (
 	FeatureEmailWithSES Feature = "email_with_s_e_s"
 	// FeatureExecutionJobs: Grants access to the internal execution jobs API.
 	FeatureExecutionJobs Feature = "execution_jobs"
+	// FeatureProjectFileStorageReuse: Reuses unchanged cloud project file contents across versions.
+	FeatureProjectFileStorageReuse Feature = "project_file_storage_reuse"
 	// FeatureEnableZ0006Lint: Enables the Z0006 lint, for converting to new face api syntax in Zoo Design Studio.
 	FeatureEnableZ0006Lint Feature = "enable_z0006_lint"
 	// FeatureFactoryPortal: Enables the Factory portal.
