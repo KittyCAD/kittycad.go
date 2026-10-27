@@ -1521,6 +1521,14 @@
  },
  {
   "value": {
+   "example": "// UpdateLibrary: Move a project to a named library or leave it unassigned.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`: Request payload for moving a project to a library or leaving it unassigned.\n// \n// UpdateLibrary: Move a project to a named library or leave it unassigned.\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`: Request payload for moving a project to a library or leaving it unassigned.\nfunc ExampleProjectService_UpdateLibrary() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.UpdateLibrary(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.UpdateProjectLibraryRequest{ExpectedRevision: \"some-string\", LibraryID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.UpdateLibrary"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1projects~1{id}~1library/put/x-go"
+ },
+ {
+  "value": {
    "example": "// DeleteOrganization: Move an organization project back to its creator's personal library.\n// \n// Organization administrators may perform this move to revoke organization access. The project ID, current revision, files, and version history remain unchanged.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \n// DeleteOrganization: Move an organization project back to its creator's personal library.\n// Organization administrators may perform this move to revoke organization access. The project ID, current revision, files, and version history remain unchanged.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\nfunc ExampleProjectService_DeleteOrganization() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Project.DeleteOrganization(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.DeleteOrganization"
   },

@@ -8522,6 +8522,8 @@ type ProjectResponse struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// LibraryID: Named library containing the project; null means unassigned.
 	LibraryID UUID `json:"library_id" yaml:"library_id" schema:"library_id"`
+	// MetadataRevision: Opaque token used to detect conflicting library moves.
+	MetadataRevision string `json:"metadata_revision" yaml:"metadata_revision" schema:"metadata_revision,required"`
 	// PreviewStatus: Current preview generation state.
 	PreviewStatus KclProjectPreviewStatus `json:"preview_status" yaml:"preview_status" schema:"preview_status,required"`
 	// PreviewUrl: Stable authenticated thumbnail URL, when one exists.
@@ -8536,7 +8538,7 @@ type ProjectResponse struct {
 	Revision string `json:"revision" yaml:"revision" schema:"revision,required"`
 	// Title: User-facing project title.
 	Title string `json:"title" yaml:"title" schema:"title,required"`
-	// UpdatedAt: When the project row was last updated.
+	// UpdatedAt: When the current version was last updated, including preview updates. This is separate from the project row's update timestamp.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
@@ -8600,6 +8602,8 @@ type ProjectSummaryResponse struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// LibraryID: Named library containing the project; null means unassigned.
 	LibraryID UUID `json:"library_id" yaml:"library_id" schema:"library_id"`
+	// MetadataRevision: Opaque token used to detect conflicting library moves.
+	MetadataRevision string `json:"metadata_revision" yaml:"metadata_revision" schema:"metadata_revision,required"`
 	// PreviewStatus: Current preview generation state.
 	PreviewStatus KclProjectPreviewStatus `json:"preview_status" yaml:"preview_status" schema:"preview_status,required"`
 	// PreviewUrl: Stable authenticated thumbnail URL, when one exists.
@@ -8614,7 +8618,7 @@ type ProjectSummaryResponse struct {
 	Revision string `json:"revision" yaml:"revision" schema:"revision,required"`
 	// Title: User-facing project title.
 	Title string `json:"title" yaml:"title" schema:"title,required"`
-	// UpdatedAt: When the project row was last updated.
+	// UpdatedAt: When the current version was last updated, including preview updates. This is separate from the project row's update timestamp.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 }
 
@@ -10652,6 +10656,14 @@ type UpdateOrgDatasetSource struct {
 	Provider StorageProvider `json:"provider" yaml:"provider" schema:"provider"`
 	// Uri: Updated fully-qualified URI for the dataset contents.
 	Uri string `json:"uri" yaml:"uri" schema:"uri"`
+}
+
+// UpdateProjectLibraryRequest: Request payload for moving a project to a library or leaving it unassigned.
+type UpdateProjectLibraryRequest struct {
+	// ExpectedRevision: Metadata revision returned by the last project read.
+	ExpectedRevision string `json:"expected_revision" yaml:"expected_revision" schema:"expected_revision,required"`
+	// LibraryID: Destination library; null leaves the project unassigned.
+	LibraryID UUID `json:"library_id" yaml:"library_id" schema:"library_id"`
 }
 
 // UpdateShortlinkRequest: Request to update a shortlink.

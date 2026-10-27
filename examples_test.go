@@ -3971,6 +3971,26 @@ func ExampleProjectService_Download() {
 
 }
 
+// UpdateLibrary: Move a project to a named library or leave it unassigned.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Request payload for moving a project to a library or leaving it unassigned.
+func ExampleProjectService_UpdateLibrary() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.UpdateLibrary(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateProjectLibraryRequest{ExpectedRevision: "some-string", LibraryID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // UpdateOrganization: Move one of the authenticated user's projects into their active organization library.
 // This changes only the project's ownership scope. The project ID, current revision, files, and version history remain unchanged so cloud bindings stay valid across the move.
 //
