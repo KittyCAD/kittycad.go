@@ -416,6 +416,9 @@ func getReferenceSchema(v *openapi3.SchemaRef, spec *openapi3.T) string {
 
 		value, ok := spec.Components.Schemas[ref]
 		if ok {
+			if schemaTypeIncludes(value.Value, "string") && len(value.Value.Enum) == 0 {
+				return formatStringType(value.Value)
+			}
 			// Check if this is a oneOf or an allOf.
 			if value.Value.OneOf != nil {
 				// Only do this if we have a oneOf with a single item.
@@ -777,9 +780,7 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 		if reference != "" {
 			// Check if we need to add the package prefix
 			prefixedReference := reference
-			if !isTypeToString(reference) {
-				prefixedReference = fmt.Sprintf("kittycad.%s", reference)
-			} else {
+			if reference != "string" && !strings.HasPrefix(reference, "[]") {
 				prefixedReference = fmt.Sprintf("%s.%s", data.PackageName, reference)
 			}
 			return fmt.Sprintf("[]%s{}", prefixedReference), nil

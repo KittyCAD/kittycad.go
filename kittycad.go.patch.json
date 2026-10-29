@@ -777,6 +777,14 @@
  },
  {
   "value": {
+   "example": "// SearchOrgSemantic: Search current projects shared with the authenticated user's organization.\n// \n// Results are ranked by similarity to bounded project metadata: title, description, and a capped list of source filenames. Project source contents are not indexed. Projects become searchable asynchronously after saving or changing organization ownership. Personal projects and obsolete versions are excluded. Pass `library_id` to search one named organization library.\n// \n// \n// Parameters\n// \n// \t- `body`: Natural-language search within the caller's current organization library.\n// \n// SearchOrgSemantic: Search current projects shared with the authenticated user's organization.\n// Results are ranked by similarity to bounded project metadata: title, description, and a capped list of source filenames. Project source contents are not indexed. Projects become searchable asynchronously after saving or changing organization ownership. Personal projects and obsolete versions are excluded. Pass `library_id` to search one named organization library.\n//\n// Parameters\n//\n//   - `body`: Natural-language search within the caller's current organization library.\nfunc ExampleProjectService_SearchOrgSemantic() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Project.SearchOrgSemantic(kittycad.ProjectSemanticSearchRequest{LibraryID: kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), Limit: 123, Q: \"some-string\"})\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#ProjectService.SearchOrgSemantic"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1projects~1search~1semantic/post/x-go"
+ },
+ {
+  "value": {
    "example": "// DeleteSamlIdp: Delete an SAML identity provider.\n// \n// This endpoint requires authentication by an org admin.\n// \n// DeleteSamlIdp: Delete an SAML identity provider.\n// This endpoint requires authentication by an org admin.\nfunc ExampleOrgService_DeleteSamlIdp() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Org.DeleteSamlIdp(); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.DeleteSamlIdp"
   },
