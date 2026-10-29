@@ -1662,6 +1662,8 @@ type CreateProjectLibraryRequest struct {
 	Name string `json:"name" yaml:"name" schema:"name,required"`
 	// Scope: Whether the library belongs to the user or their active organization.
 	Scope ProjectLibraryScope `json:"scope" yaml:"scope" schema:"scope,required"`
+	// Source: Application creating the library. Defaults to zds when omitted.
+	Source KclProjectLibrarySource `json:"source" yaml:"source" schema:"source"`
 }
 
 // CreateProjectShareLinkRequest: Request payload for creating a new project share link.
@@ -3921,6 +3923,16 @@ const (
 	KclProjectFileRoleProjectFile KclProjectFileRole = "project_file"
 	// KclProjectFileRolePreviewImage: A preview image generated or uploaded for the gallery.
 	KclProjectFileRolePreviewImage KclProjectFileRole = "preview_image"
+)
+
+// KclProjectLibrarySource: Application that created a cloud project library.
+type KclProjectLibrarySource string
+
+const (
+	// KclProjectLibrarySourceZds: Created through Zoo Design Studio. Also the default.
+	KclProjectLibrarySourceZds KclProjectLibrarySource = "zds"
+	// KclProjectLibrarySourceFactoryPortal: Created through Factory Portal.
+	KclProjectLibrarySourceFactoryPortal KclProjectLibrarySource = "factory_portal"
 )
 
 // KclProjectPreviewStatus: Preview generation status for a KCL project.
@@ -8476,6 +8488,8 @@ type ProjectLibraryResponse struct {
 	OrgID UUID `json:"org_id" yaml:"org_id" schema:"org_id"`
 	// Revision: Opaque revision token required when renaming or deleting the library.
 	Revision string `json:"revision" yaml:"revision" schema:"revision,required"`
+	// Source: Application that created the library. Cannot be changed after creation.
+	Source KclProjectLibrarySource `json:"source" yaml:"source" schema:"source,required"`
 	// UpdatedAt: When the library was last updated.
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: Personal owner; null for an organization library.
@@ -8538,7 +8552,7 @@ type ProjectResponse struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// LibraryID: Named library containing the project; null means unassigned.
 	LibraryID UUID `json:"library_id" yaml:"library_id" schema:"library_id"`
-	// MetadataRevision: Opaque token used to detect conflicting library moves.
+	// MetadataRevision: Opaque token for library moves. Send as expected_revision to the library endpoint. Read a fresh value after a save, move, or ownership change; do not parse it.
 	MetadataRevision string `json:"metadata_revision" yaml:"metadata_revision" schema:"metadata_revision,required"`
 	// PreviewStatus: Current preview generation state.
 	PreviewStatus KclProjectPreviewStatus `json:"preview_status" yaml:"preview_status" schema:"preview_status,required"`
@@ -8550,7 +8564,7 @@ type ProjectResponse struct {
 	Publication ProjectPublicationInfoResponse `json:"publication" yaml:"publication" schema:"publication,required"`
 	// PublicationStatus: Current publication workflow state.
 	PublicationStatus KclProjectPublicationStatus `json:"publication_status" yaml:"publication_status" schema:"publication_status,required"`
-	// Revision: Opaque revision token for optimistic project mutations.
+	// Revision: Current content version's revision. Use as expected_revision for content saves. Library moves do not change this value.
 	Revision string `json:"revision" yaml:"revision" schema:"revision,required"`
 	// Title: User-facing project title.
 	Title string `json:"title" yaml:"title" schema:"title,required"`
@@ -8642,7 +8656,7 @@ type ProjectSummaryResponse struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// LibraryID: Named library containing the project; null means unassigned.
 	LibraryID UUID `json:"library_id" yaml:"library_id" schema:"library_id"`
-	// MetadataRevision: Opaque token used to detect conflicting library moves.
+	// MetadataRevision: Opaque token for library moves. Send as expected_revision to the library endpoint. Read a fresh value after a save, move, or ownership change; do not parse it.
 	MetadataRevision string `json:"metadata_revision" yaml:"metadata_revision" schema:"metadata_revision,required"`
 	// PreviewStatus: Current preview generation state.
 	PreviewStatus KclProjectPreviewStatus `json:"preview_status" yaml:"preview_status" schema:"preview_status,required"`
@@ -8654,7 +8668,7 @@ type ProjectSummaryResponse struct {
 	Publication ProjectPublicationInfoResponse `json:"publication" yaml:"publication" schema:"publication,required"`
 	// PublicationStatus: Current publication workflow state.
 	PublicationStatus KclProjectPublicationStatus `json:"publication_status" yaml:"publication_status" schema:"publication_status,required"`
-	// Revision: Opaque revision token for optimistic project mutations.
+	// Revision: Current content version's revision. Use as expected_revision for content saves. Library moves do not change this value.
 	Revision string `json:"revision" yaml:"revision" schema:"revision,required"`
 	// Title: User-facing project title.
 	Title string `json:"title" yaml:"title" schema:"title,required"`
