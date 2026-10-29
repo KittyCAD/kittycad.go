@@ -8716,6 +8716,14 @@ func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySetti
 }
 
 // ListLibraries: List personal libraries and libraries belonging to the active organization.
+// Returns an object with `items` and `next_page`, ordered by library ID. Request the next page with `?page_token=<next_page>` until `next_page` is null. Keep the same authenticated user and active organization for every page; changing that context requires starting a new list request.
+//
+// Each library has a stable `id`, a display `name`, either `user_id` or `org_id`, an opaque `revision`, and `can_manage`. Use the ID to track a library across renames. `can_manage` allows renaming/deleting the library, not editing all of its projects. Organization members can discover libraries; only organization admins can manage them. Project permissions remain unchanged.
+//
+// Projects with `library_id: null` have no named library. They do not appear as a library record here. Use `GET /user/projects?scope=personal&unassigned=true` for the default personal group, or `scope=organization&unassigned=true` for the active organization's unassigned projects.
+//
+// Each library includes its creation source: `zds` or `factory_portal`. Libraries created before source tracking are returned as `zds`. Clients can filter the results by source; API permissions remain unchanged.
+//
 // Parameters
 //
 //   - `limit`
@@ -8766,6 +8774,22 @@ func (s *ProjectService) ListLibraries(limit int, pageToken string) (*ProjectLib
 }
 
 // CreateLibrary: Create a personal library or a library owned by the active organization.
+// Send JSON with a name and explicit ownership scope:
+//
+// ```json { "name": "Designs", "scope": "personal" } ```
+//
+// Use `scope: "organization"` to create a library for the request's active organization; this requires organization-admin access. There is no organization ID in this body. Personal scope always uses the authenticated user.
+//
+// Names are trimmed, must contain 1–255 characters, and are unique ignoring case within each user or organization. Display capitalization is preserved. Duplicate names return HTTP 409. The HTTP 201 response contains the library ID, ownership, revision, and `can_manage`. Creating a library does not move existing projects; select its ID when creating a project, or move an existing project with `PUT /user/projects/{id}/library`.
+//
+// Include `source` to identify the application that created the library:
+//
+// ```json { "name": "Factory designs", "scope": "personal", "source": "factory_portal" } ```
+//
+// Accepted sources are `zds` and `factory_portal`. Omitting source defaults to `zds`. Null and unsupported values return HTTP 400.
+//
+// Source is returned in library responses and cannot be changed after creation. Clients use it to decide how to display libraries; it does not change API permissions. No API source filter is provided at the moment.
+//
 // Parameters
 //
 //   - `body`: Request to create a cloud project library.
@@ -8816,6 +8840,10 @@ func (s *ProjectService) CreateLibrary(body CreateProjectLibraryRequest) (*Proje
 }
 
 // DeleteLibrary: Delete an empty cloud project library.
+// Supply the library's last-read `revision` as the required `expected_revision` query parameter. URL-encode this value. Only the personal owner or an admin of the active organization can delete the library.
+//
+// Move or unassign all projects first. A nonempty library or stale revision returns HTTP 409. Success returns HTTP 204 without deleting projects or history. Library revisions are separate from project `revision` and `metadata_revision`.
+//
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
@@ -8857,6 +8885,12 @@ func (s *ProjectService) DeleteLibrary(id UUID, expectedRevision string) error {
 }
 
 // RenameLibrary: Rename a library owned by the user or their active organization.
+// Send JSON containing `name` and `expected_revision`, using the library's `revision` from the last library list response. The personal owner or an admin of the active organization can rename the library. Names follow the same validation and uniqueness rules as library creation.
+//
+// HTTP 200 returns the updated library and revision. A stale revision or duplicate name returns HTTP 409; refresh the library list before deciding whether to retry. Renaming keeps the library ID, ownership, and project assignments unchanged.
+//
+// Renaming doesn't change the library's source.
+//
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
@@ -8915,6 +8949,14 @@ func (s *ProjectService) RenameLibrary(id UUID, body RenameProjectLibraryRequest
 }
 
 // ListLibrary: List projects in a cloud library, newest first.
+// Returns project summaries in `items`, with `next_page` for continuation. Pass `?page_token=<next_page>` on the same library endpoint until `next_page` is null. Keep the same authenticated user and active organization for every page. Results are ordered by creation time descending, then project ID ascending.
+//
+// Each summary includes `library_id`, content `revision`, `metadata_revision`, and the caller's project `access` capabilities. Access to a library does not grant additional project permissions.
+//
+// Projects can move or disappear while pages load. Even an empty page can have a continuation token; stop only when `next_page` is null.
+//
+// When loading several libraries, a project may appear in library A's results, then move to library B before B is loaded. Combining those results can show the same project twice. Use the project ID to show it once, and fetch its latest details to confirm which library it belongs to. A missing list entry may also mean the project moved; fetch its details before treating it as deleted, and preserve unsynced local edits.
+//
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
@@ -8967,6 +9009,10 @@ func (s *ProjectService) ListLibrary(id UUID, limit int, pageToken string) (*Pro
 }
 
 // List: List the authenticated user's projects.
+// Returns an array, including personal projects and projects accessible through the request's active organization. Optional `scope=personal` or `scope=organization` narrows ownership; `unassigned=true` includes only projects whose `library_id` is null. Combine them, for example: `GET /user/projects?scope=personal&unassigned=true`. Omitting both filters keeps returning all accessible projects, including projects in named libraries.
+//
+// Unassigned is a grouping within the existing ownership scope, not a stored default library. Use `GET /user/project-libraries/{id}/projects` for a named library's paginated project list. Filters do not grant additional access.
+//
 // Parameters
 //
 //   - `scope`: Ownership scope for an authenticated project response.
@@ -9016,7 +9062,15 @@ func (s *ProjectService) List(scope ProjectAccessScope, unassigned bool) (*[]Pro
 
 }
 
-// Create: Create a draft project for the authenticated user.
+// Create: Create a project for the authenticated user.
+// Send multipart data with a JSON `body` part and file parts whose filenames are relative project paths. Include an optional `library_id` in the JSON to create the project in a named library:
+//
+// ```json { "title": "Bracket", "entrypoint_path": "main.kcl", "library_id": "<LIBRARY_ID>" } ```
+//
+// A personal library creates a personal project. An accessible library belonging to the active organization creates an organization project with the caller as its creator; creating the project does not require library-management rights. Omitting `library_id` or passing null creates an unassigned personal project, even when the request has an active organization.
+//
+// The HTTP 201 response includes `id`, `library_id`, content `revision`, and `metadata_revision`. Later saves preserve membership, even if they include a library field. Use `PUT /user/projects/{id}/library` to move or unassign an existing project instead of uploading its files again.
+//
 // Parameters
 //
 //   - `body`
@@ -9117,6 +9171,8 @@ func (s *ProjectService) Get(id UUID) (*ProjectResponse, error) {
 }
 
 // Update: Replace one of the authenticated user's projects.
+// Content saves use the project's content `revision` as `expected_revision` and preserve its current library assignment. Omitting `library_id`, setting it to null, or supplying another library ID here does not move the project. Use `PUT /user/projects/{id}/library` with `metadata_revision` for library changes.
+//
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
@@ -9257,6 +9313,22 @@ func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat) error {
 }
 
 // UpdateLibrary: Move a project to a named library or leave it unassigned.
+// Read the project first, then send JSON using its `metadata_revision` as the required `expected_revision`. Do not use its content `revision` or a library's revision for this operation.
+//
+// ```json { "library_id": "<DESTINATION_LIBRARY_ID>", "expected_revision": "<METADATA_REVISION>" } ```
+//
+// Save the JSON as `move-project.json`, with values from actual responses:
+//
+// ```sh curl --fail-with-body \   --request PUT "${API_BASE_URL}/user/projects/${PROJECT_ID}/library" \   --header "Authorization: Bearer ${API_TOKEN}" \   --header 'Content-Type: application/json' \   --data-binary @move-project.json ```
+//
+// Use `library_id: null` to unassign the project. The destination must match the project's current ownership: the same user for a personal project, or the same organization for an organization project. Existing project write permission is required; managing the destination library does not grant it. To change ownership first, use `/user/projects/{id}/organization`.
+//
+// HTTP 200 returns the project with its library assignment and a new `metadata_revision`. A move preserves its ID, files, current content `revision`, version history, publication, and share links; it creates no content version. Ordinary saves preserve membership and cannot be used to move a project.
+//
+// A stale revision or a destination with different ownership returns HTTP 409. If another save, move, or ownership change conflicts with the move, fetch the latest project before deciding whether to retry. Missing or inaccessible projects/libraries fail their normal existence and permission checks.
+//
+// If the connection drops or the request times out, the API may have completed the move even though the client did not receive a response. Fetch the project to check its current library. If library_id matches the requested destination, no further move is needed. Otherwise review its latest state before retrying with its new `metadata_revision`. No idempotency key is used for this operation.
+//
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
@@ -9314,8 +9386,10 @@ func (s *ProjectService) UpdateLibrary(id UUID, body UpdateProjectLibraryRequest
 
 }
 
-// UpdateOrganization: Move one of the authenticated user's projects into their active organization library.
+// UpdateOrganization: Transfer one of the authenticated user's projects to their active organization.
 // This changes only the project's ownership scope. The project ID, current revision, files, and version history remain unchanged so cloud bindings stay valid across the move.
+//
+// An actual ownership change clears `library_id` and changes `metadata_revision`. The project becomes unassigned in the organization. To place it in a named organization library, use `PUT /user/projects/{id}/library` afterwards with the returned metadata revision. An already organization-owned project in the same organization is unchanged by this request.
 //
 // Parameters
 //
@@ -9364,8 +9438,10 @@ func (s *ProjectService) UpdateOrganization(id UUID) (*ProjectResponse, error) {
 
 }
 
-// DeleteOrganization: Move an organization project back to its creator's personal library.
+// DeleteOrganization: Transfer an organization project back to its creator's personal ownership.
 // Organization administrators may perform this move to revoke organization access. The project ID, current revision, files, and version history remain unchanged.
+//
+// The ownership change clears `library_id` and changes `metadata_revision`, leaving the project unassigned under its creator. Success returns HTTP 204. Fetch the project again before assigning it to a personal named library.
 //
 // Parameters
 //
