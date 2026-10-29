@@ -4793,6 +4793,58 @@ func (s *OrgService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySettin
 
 }
 
+// SearchOrgSemantic: Search current projects shared with the authenticated user's organization.
+// Results are ranked by similarity to bounded project metadata: title, description, and a capped list of source filenames. Project source contents are not indexed. Projects become searchable asynchronously after saving or changing organization ownership. Personal projects and obsolete versions are excluded. Pass `library_id` to search one named organization library.
+//
+// Parameters
+//
+//   - `body`: Natural-language search within the caller's current organization library.
+func (s *ProjectService) SearchOrgSemantic(body ProjectSemanticSearchRequest) (*[]ProjectSemanticSearchMatch, error) {
+	// Create the url.
+	path := "/org/projects/search/semantic"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []ProjectSemanticSearchMatch
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // GetSamlIdp: Get the SAML identity provider.
 // This endpoint requires authentication by an org admin.
 func (s *OrgService) GetSamlIdp() (*SamlIdentityProvider, error) {

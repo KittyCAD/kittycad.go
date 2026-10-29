@@ -2823,8 +2823,6 @@ const (
 	FeatureEmailWithSES Feature = "email_with_s_e_s"
 	// FeatureExecutionJobs: Grants access to the internal execution jobs API.
 	FeatureExecutionJobs Feature = "execution_jobs"
-	// FeatureProjectFileStorageReuse: Reuses unchanged cloud project file contents across versions.
-	FeatureProjectFileStorageReuse Feature = "project_file_storage_reuse"
 	// FeatureEnableZ0006Lint: Enables the Z0006 lint, for converting to new face api syntax in Zoo Design Studio.
 	FeatureEnableZ0006Lint Feature = "enable_z0006_lint"
 	// FeatureFactoryPortal: Enables the Factory portal.
@@ -2853,8 +2851,6 @@ const (
 	FeatureDrawings Feature = "drawings"
 	// FeatureModelingDialogs: Enables modeling dialogs in Zoo Design Studio.
 	FeatureModelingDialogs Feature = "modeling_dialogs"
-	// FeatureNamedViewsUi: Enables the named views user interface in Zoo Design Studio.
-	FeatureNamedViewsUi Feature = "named_views_ui"
 	// FeatureSceneBrowser: Enables the Scene browser and model tree UI in Zoo Design Studio.
 	FeatureSceneBrowser Feature = "scene_browser"
 	// FeaturePlugins: Enables plugins in Zoo Design Studio.
@@ -6433,6 +6429,24 @@ type MouseMove struct {
 type MovePathPen struct {
 }
 
+// NamedView: Options for exporting glTF 2.0.
+type NamedView struct {
+	// Baseline: Baseline visibility.
+	//
+	// Determines whether entities are visible or by default.
+	Baseline Visibility `json:"baseline" yaml:"baseline" schema:"baseline,required"`
+	// ExceptIds: Exceptions to the baseline visibility.
+	ExceptIds []UUID `json:"except_ids" yaml:"except_ids" schema:"except_ids,required"`
+	// Projection: Projection kind.
+	Projection any `json:"projection" yaml:"projection" schema:"projection,required"`
+	// Target: Target point.
+	Target Point3D `json:"target" yaml:"target" schema:"target,required"`
+	// Up: Up direction.
+	Up Point3D `json:"up" yaml:"up" schema:"up,required"`
+	// Vantage: Vantage point.
+	Vantage Point3D `json:"vantage" yaml:"vantage" schema:"vantage,required"`
+}
+
 // NewAnnotation: The response from the `NewAnnotation` endpoint.
 type NewAnnotation struct {
 }
@@ -7918,6 +7932,8 @@ type OutputFormat3Dpresentation struct {
 	//
 	// Defaults to meters.
 	Units UnitLength `json:"units" yaml:"units" schema:"units"`
+	// Views: Named views in the scene.
+	Views map[string]NamedView `json:"views" yaml:"views" schema:"views"`
 }
 
 // OutputFormat3Dstorage: *ST**ereo**L**ithography format.
@@ -8550,6 +8566,30 @@ type ProjectRevisionUpdated struct {
 	ProjectRevision MlCopilotProjectRevision `json:"project_revision" yaml:"project_revision" schema:"project_revision,required"`
 }
 
+// ProjectSemanticSearchMatch: One matching current project, rather than one match for every source file.
+type ProjectSemanticSearchMatch struct {
+	// Description: Bounded project description.
+	Description string `json:"description" yaml:"description" schema:"description,required"`
+	// ProjectID: Project in the caller's current organization library.
+	ProjectID UUID `json:"project_id" yaml:"project_id" schema:"project_id,required"`
+	// Similarity: Cosine similarity to the embedded query.
+	Similarity float64 `json:"similarity" yaml:"similarity" schema:"similarity,required"`
+	// Title: Bounded project title.
+	Title string `json:"title" yaml:"title" schema:"title,required"`
+	// VersionID: Current version represented by this match.
+	VersionID UUID `json:"version_id" yaml:"version_id" schema:"version_id,required"`
+}
+
+// ProjectSemanticSearchRequest: Natural-language search within the caller's current organization library.
+type ProjectSemanticSearchRequest struct {
+	// LibraryID: Restrict results to this library in the authenticated organization.
+	LibraryID UUID `json:"library_id" yaml:"library_id" schema:"library_id"`
+	// Limit: Maximum matching projects; defaults to 10 and must be between 1 and 100.
+	Limit int `json:"limit" yaml:"limit" schema:"limit"`
+	// Q: Search text, limited to 2,048 characters after trimming whitespace.
+	Q string `json:"q" yaml:"q" schema:"q,required"`
+}
+
 // ProjectShareLinkResponse: Owner-visible share-link metadata for project downloads.
 type ProjectShareLinkResponse struct {
 	// AccessMode: Access policy for the share link.
@@ -8688,6 +8728,21 @@ type ProjectVersionSummaryResponseResultsPage struct {
 	Items []ProjectVersionSummaryResponse `json:"items" yaml:"items" schema:"items,required"`
 	// NextPage: token used to fetch the next page of results (if any)
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// Projection: Projection: Data item selection.
+type Projection any
+
+// ProjectionOrthographic: Orthographic (parallel) projection.
+type ProjectionOrthographic struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// ProjectionPerspective: Perspective projection.
+type ProjectionPerspective struct {
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
 // PublicEmailMarketingConsentRequest: The data for subscribing a user to the newsletter.
@@ -10825,6 +10880,16 @@ type ViewIsometric struct {
 	// Settings: Camera settings
 	Settings CameraSettings `json:"settings" yaml:"settings" schema:"settings,required"`
 }
+
+// Visibility: Identifies the visibility of entities.
+type Visibility string
+
+const (
+	// VisibilityShow: The entity is visible.
+	VisibilityShow Visibility = "show"
+	// VisibilityHide: The entity is hidden.
+	VisibilityHide Visibility = "hide"
+)
 
 // Volume: The volume response.
 type Volume struct {

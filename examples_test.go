@@ -2090,6 +2090,27 @@ func ExampleOrgService_UpdatePrivacySettings() {
 
 }
 
+// SearchOrgSemantic: Search current projects shared with the authenticated user's organization.
+// Results are ranked by similarity to bounded project metadata: title, description, and a capped list of source filenames. Project source contents are not indexed. Projects become searchable asynchronously after saving or changing organization ownership. Personal projects and obsolete versions are excluded. Pass `library_id` to search one named organization library.
+//
+// Parameters
+//
+//   - `body`: Natural-language search within the caller's current organization library.
+func ExampleProjectService_SearchOrgSemantic() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Project.SearchOrgSemantic(kittycad.ProjectSemanticSearchRequest{LibraryID: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), Limit: 123, Q: "some-string"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // GetSamlIdp: Get the SAML identity provider.
 // This endpoint requires authentication by an org admin.
 func ExampleOrgService_GetSamlIdp() {
