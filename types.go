@@ -2829,6 +2829,8 @@ const (
 	FeatureEnableZ0006Lint Feature = "enable_z0006_lint"
 	// FeatureFactoryPortal: Enables the Factory portal.
 	FeatureFactoryPortal Feature = "factory_portal"
+	// FeatureOrgDatasetCloudProjects: Store org dataset conversions in organization-shared cloud project libraries.
+	FeatureOrgDatasetCloudProjects Feature = "org_dataset_cloud_projects"
 	// FeatureKclCekExecutor: KCL CEK machine executor.
 	FeatureKclCekExecutor Feature = "kcl_cek_executor"
 	// FeatureRedirectToGovcloud: Immediately redirect to our Govcloud environment (zoogov.dev).
@@ -3933,6 +3935,8 @@ const (
 	KclProjectLibrarySourceZds KclProjectLibrarySource = "zds"
 	// KclProjectLibrarySourceFactoryPortal: Created through Factory Portal.
 	KclProjectLibrarySourceFactoryPortal KclProjectLibrarySource = "factory_portal"
+	// KclProjectLibrarySourceOrgDataset: Created by organization dataset conversion automation.
+	KclProjectLibrarySourceOrgDataset KclProjectLibrarySource = "org_dataset"
 )
 
 // KclProjectPreviewStatus: Preview generation status for a KCL project.
