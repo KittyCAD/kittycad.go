@@ -8722,7 +8722,7 @@ func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySetti
 //
 // Projects with `library_id: null` have no named library. They do not appear as a library record here. Use `GET /user/projects?scope=personal&unassigned=true` for the default personal group, or `scope=organization&unassigned=true` for the active organization's unassigned projects.
 //
-// Each library includes its creation source: `zds` or `factory_portal`. Libraries created before source tracking are returned as `zds`. Clients can filter the results by source; API permissions remain unchanged.
+// Each library includes its creation source: `zds`, `factory_portal`, or `org_dataset`. Libraries created before source tracking are returned as `zds`. Clients can filter the results by source; API permissions remain unchanged.
 //
 // Parameters
 //
@@ -8786,7 +8786,7 @@ func (s *ProjectService) ListLibraries(limit int, pageToken string) (*ProjectLib
 //
 // ```json { "name": "Factory designs", "scope": "personal", "source": "factory_portal" } ```
 //
-// Accepted sources are `zds` and `factory_portal`. Omitting source defaults to `zds`. Null and unsupported values return HTTP 400.
+// Accepted sources are `zds`, `factory_portal`, and `org_dataset`. Omitting source defaults to `zds`. Null and unsupported values return HTTP 400.
 //
 // Source is returned in library responses and cannot be changed after creation. Clients use it to decide how to display libraries; it does not change API permissions. No API source filter is provided at the moment.
 //
@@ -8840,7 +8840,7 @@ func (s *ProjectService) CreateLibrary(body CreateProjectLibraryRequest) (*Proje
 }
 
 // DeleteLibrary: Delete an empty cloud project library.
-// Supply the library's last-read `revision` as the required `expected_revision` query parameter. URL-encode this value. Only the personal owner or an admin of the active organization can delete the library.
+// Supply the library's last-read `revision` as the required `expected_revision` query parameter. URL-encode this value. Only the personal owner or an admin of the active organization can delete the library. Libraries managed by an organization dataset cannot be deleted independently; those requests return HTTP 409.
 //
 // Move or unassign all projects first. A nonempty library or stale revision returns HTTP 409. Success returns HTTP 204 without deleting projects or history. Library revisions are separate from project `revision` and `metadata_revision`.
 //
