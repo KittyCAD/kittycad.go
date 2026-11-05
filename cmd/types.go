@@ -225,6 +225,9 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 		if err != nil {
 			return err
 		}
+		if v.Ref == "" && schemaRefTypeIncludes(v, "object") && len(v.Value.Properties) > 0 {
+			typeName = inlineObjectName(name, k, spec)
+		}
 
 		objectValue := ObjectValue{
 			Name:     printProperty(k),
@@ -253,13 +256,10 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 		object.Values[k] = objectValue
 
 		// If this property is an object, we need to generate it as well.
-		if schemaRefTypeIncludes(v, "object") && v.Value.Properties != nil && len(v.Value.Properties) > 0 {
+		if v.Ref == "" && schemaRefTypeIncludes(v, "object") && v.Value.Properties != nil && len(v.Value.Properties) > 0 {
 			// Check if we already have a schema for this one of.
 			if _, ok := spec.Components.Schemas[k]; !ok {
-				n := printProperty(k)
-				if n == "Error" {
-					n = name + "Error"
-				}
+				n := inlineObjectName(name, k, spec)
 				if err := data.generateObjectType(n, v.Value, spec); err != nil {
 					return err
 				}
@@ -279,11 +279,23 @@ func (data *Data) generateObjectType(name string, s *openapi3.Schema, spec *open
 	return nil
 }
 
+// Scope inline payload names so they cannot replace a referenced component model.
+func inlineObjectName(parent, property string, spec *openapi3.T) string {
+	name := printProperty(property)
+	if name == "Error" || spec.Components.Schemas[name] != nil {
+		return parent + name
+	}
+	return name
+}
+
 func (data *Data) generateOneOfType(name string, s *openapi3.Schema, spec *openapi3.T) error {
 	// Copilot messages evolve frequently. Name these variants by their wire tag,
 	// never by the position of a payload property in the schema.
 	if name == "MlCopilotClientMessage" {
 		return data.generateTaggedVariants(name, "MlCopilotMessage", s, spec)
+	}
+	if name == "KclMigrationClientMessage" || name == "KclMigrationServerMessage" {
+		return data.generateTaggedVariants(name, name, s, spec)
 	}
 	// Check if this is an enum with descriptions.
 	isEnumWithDocs := false
@@ -862,7 +874,11 @@ func (data Data) generateExampleValue(name string, s *openapi3.SchemaRef, spec *
 		for _, k := range keys {
 			p := schema.Properties[k]
 			// Get an example for the property.
-			example, err := data.generateExampleValue(printProperty(k), p, spec, required)
+			propertyName := printProperty(k)
+			if p.Ref == "" && schemaRefTypeIncludes(p, "object") && len(p.Value.Properties) > 0 {
+				propertyName = inlineObjectName(typeName, k, spec)
+			}
+			example, err := data.generateExampleValue(propertyName, p, spec, required)
 			if err != nil {
 				return "", err
 			}
