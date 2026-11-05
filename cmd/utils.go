@@ -8,15 +8,6 @@ import (
 	"text/template"
 )
 
-// queryArrayValues encodes non-exploded form arrays such as selected file UUIDs.
-func queryArrayValues[T any](values []T) string {
-	items := make([]string, len(values))
-	for i, value := range values {
-		items[i] = fmt.Sprint(value)
-	}
-	return strings.Join(items, ",")
-}
-
 // resolveRelative combines a url base with a relative path.
 func resolveRelative(basestr, relstr string) string {
 	u, _ := url.Parse(basestr)

@@ -25,6 +25,15 @@ type service struct {
 	client *Client
 }
 
+// queryArrayValues encodes non-exploded form arrays such as selected file UUIDs.
+func queryArrayValues[T any](values []T) string {
+	items := make([]string, len(values))
+	for i, value := range values {
+		items[i] = fmt.Sprint(value)
+	}
+	return strings.Join(items, ",")
+}
+
 // NewClient creates a new client for the KittyCad API.
 // You need to pass in your API token to create the client.
 func NewClient(token, userAgent string) (*Client, error) {
