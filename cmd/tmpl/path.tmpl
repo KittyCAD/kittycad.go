@@ -42,10 +42,19 @@ func (s *{{.Tag}}Service) {{.Name}}({{range .Args -}}{{.Name}} {{.Type}},{{end -
     {{end}}
 
     {{if .Args}}
+    {{range .Args -}}
+        {{if and .IsArray (not .Required)}}
+        if {{.Name}} != nil {
+            query := req.URL.Query()
+            query.Set("{{.Property}}", {{.ToString}})
+            req.URL.RawQuery = query.Encode()
+        }
+        {{end}}
+    {{end -}}
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
     {{range .Args -}}
-        "{{.Property}}": {{.ToString}},
+        {{if or (not .IsArray) .Required}}"{{.Property}}": {{.ToString}},{{end}}
     {{end -}}
 	}); err != nil {
 		return {{if .Response}}nil,{{end}} fmt.Errorf("expanding URL with parameters failed: %v", err)

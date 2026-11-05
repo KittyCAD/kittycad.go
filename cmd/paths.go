@@ -138,6 +138,7 @@ type Arg struct {
 	Type        string
 	ToString    string
 	Required    bool
+	IsArray     bool
 	Example     string
 }
 
@@ -209,10 +210,16 @@ func (data *Data) generateMethod(_ *openapi3.T, method string, pathName string, 
 			Description: description,
 			Type:        typeName,
 			Required:    p.Value.Required,
+			IsArray:     schemaRefTypeIncludes(p.Value.Schema, "array"),
 			Example:     example,
 		}
 
-		if typeName == "string" {
+		if arg.IsArray {
+			if p.Value.In != "query" || (p.Value.Style != "" && p.Value.Style != "form") || p.Value.Explode == nil || *p.Value.Explode {
+				return fmt.Errorf("array parameter %q requires non-exploded form query serialization", p.Value.Name)
+			}
+			arg.ToString = fmt.Sprintf("queryArrayValues(%s)", arg.Name)
+		} else if typeName == "string" {
 			arg.ToString = arg.Name
 		} else if typeName == "bool" {
 			arg.ToString = fmt.Sprintf("strconv.FormatBool(%s)", arg.Name)

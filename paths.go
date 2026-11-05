@@ -84,8 +84,13 @@ func (s *MetaService) GetIpinfo() (*IpAddrInfo, error) {
 }
 
 // GetAnnouncements: List all active announcements.
-// No authentication is required.
-func (s *MetaService) GetAnnouncements() (*AnnouncementList, error) {
+// No authentication is required. Results are ordered newest first, with the announcement ID breaking ties.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func (s *MetaService) GetAnnouncements(limit int, pageToken string) (*AnnouncementResultsPage, error) {
 	// Create the url.
 	path := "/announcements"
 	targetURL := resolveRelative(s.client.server, path)
@@ -94,6 +99,14 @@ func (s *MetaService) GetAnnouncements() (*AnnouncementList, error) {
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -112,7 +125,7 @@ func (s *MetaService) GetAnnouncements() (*AnnouncementList, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded AnnouncementList
+	var decoded AnnouncementResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -3540,6 +3553,166 @@ func (s *FactoryService) GetOrgJob(jobId UUID) (*FactoryCustomerJobDetail, error
 
 }
 
+// GetOrgJobFile: Download an exact submitted manufacturing input for a current organization member.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `fileId`: A UUID usually v4 or v7
+func (s *FactoryService) GetOrgJobFile(jobId UUID, fileId UUID) error {
+	// Create the url.
+	path := "/org/factory/jobs/{{.job_id}}/files/{{.file_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":  jobId.String(),
+		"file_id": fileId.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// ListOrgJobVersions: List an organization's submitted revision history for a current member.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *FactoryService) ListOrgJobVersions(jobId UUID, limit int, pageToken string, sortBy CreatedAtSortMode) (*FactoryCustomerJobVersionResultsPage, error) {
+	// Create the url.
+	path := "/org/factory/jobs/{{.job_id}}/versions"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":     jobId.String(),
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryCustomerJobVersionResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateOrgJobVersion: Submit a complete new revision as a current human member of the owning organization.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `body`
+func (s *FactoryService) CreateOrgJobVersion(jobId UUID, body *MultipartForm) (*FactoryJobResponse, error) {
+	// Create the url.
+	path := "/org/factory/jobs/{{.job_id}}/versions"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Set("Content-Type", body.ContentType())
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id": jobId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryJobResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // ListMembers: List members of your org.
 // This endpoint requires authentication by an org admin. It lists the members of the authenticated user's org.
 //
@@ -5409,7 +5582,11 @@ func (s *MetaService) GetPricingSubscriptions() (*map[string][]ZooProductSubscri
 }
 
 // ListCategories: List the active categories available for project submissions.
-func (s *ProjectService) ListCategories() (*[]ProjectCategoryResponse, error) {
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func (s *ProjectService) ListCategories(limit int, pageToken string) (*ProjectCategoryResponseResultsPage, error) {
 	// Create the url.
 	path := "/projects/categories"
 	targetURL := resolveRelative(s.client.server, path)
@@ -5418,6 +5595,14 @@ func (s *ProjectService) ListCategories() (*[]ProjectCategoryResponse, error) {
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
@@ -5436,7 +5621,7 @@ func (s *ProjectService) ListCategories() (*[]ProjectCategoryResponse, error) {
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded []ProjectCategoryResponse
+	var decoded ProjectCategoryResponseResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -5546,12 +5731,13 @@ func (s *ProjectService) GetPublic(id UUID) (*PublicProjectResponse, error) {
 
 }
 
-// DownloadPublic: Download a published public project as a tar archive.
+// DownloadPublic: Download all or selected files from a published public project.
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `format`: Archive formats supported by project download endpoints.
-func (s *ProjectService) DownloadPublic(id UUID, format ProjectArchiveFormat) error {
+//   - `fileIds`
+func (s *ProjectService) DownloadPublic(id UUID, format ProjectArchiveFormat, fileIds []UUID) error {
 	// Create the url.
 	path := "/projects/public/{{.id}}/download"
 	targetURL := resolveRelative(s.client.server, path)
@@ -5560,6 +5746,12 @@ func (s *ProjectService) DownloadPublic(id UUID, format ProjectArchiveFormat) er
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	if fileIds != nil {
+		query := req.URL.Query()
+		query.Set("file_ids", queryArrayValues(fileIds))
+		req.URL.RawQuery = query.Encode()
 	}
 
 	// Add the parameters to the url.
@@ -5722,12 +5914,15 @@ func (s *ProjectService) DeletePublicVote(id UUID) (*PublicProjectVoteResponse, 
 
 }
 
-// DownloadSharedProject: Download a project using a share link.
+// DownloadSharedProject: Download all or selected files using a share link.
+// File IDs must belong to the version pinned by this link. Manifest downloads retain the same public-data sanitization when selected individually.
+//
 // Parameters
 //
 //   - `key`
 //   - `format`: Archive formats supported by project download endpoints.
-func (s *HiddenService) DownloadSharedProject(key string, format ProjectArchiveFormat) error {
+//   - `fileIds`
+func (s *HiddenService) DownloadSharedProject(key string, format ProjectArchiveFormat, fileIds []UUID) error {
 	// Create the url.
 	path := "/projects/shared/{{.key}}/download"
 	targetURL := resolveRelative(s.client.server, path)
@@ -5736,6 +5931,12 @@ func (s *HiddenService) DownloadSharedProject(key string, format ProjectArchiveF
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	if fileIds != nil {
+		query := req.URL.Query()
+		query.Set("file_ids", queryArrayValues(fileIds))
+		req.URL.RawQuery = query.Encode()
 	}
 
 	// Add the parameters to the url.
@@ -7520,6 +7721,166 @@ func (s *FactoryService) GetUserJob(jobId UUID) (*FactoryCustomerJobDetail, erro
 
 }
 
+// GetUserJobFile: Download an exact submitted manufacturing input of a personal Factory job.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `fileId`: A UUID usually v4 or v7
+func (s *FactoryService) GetUserJobFile(jobId UUID, fileId UUID) error {
+	// Create the url.
+	path := "/user/factory/jobs/{{.job_id}}/files/{{.file_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":  jobId.String(),
+		"file_id": fileId.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
+// ListUserJobVersions: List a personal Factory job's submitted revision history, newest first by default.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *FactoryService) ListUserJobVersions(jobId UUID, limit int, pageToken string, sortBy CreatedAtSortMode) (*FactoryCustomerJobVersionResultsPage, error) {
+	// Create the url.
+	path := "/user/factory/jobs/{{.job_id}}/versions"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":     jobId.String(),
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryCustomerJobVersionResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateUserJobVersion: Submit a complete new revision of a personal Factory job.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `body`
+func (s *FactoryService) CreateUserJobVersion(jobId UUID, body *MultipartForm) (*FactoryJobResponse, error) {
+	// Create the url.
+	path := "/user/factory/jobs/{{.job_id}}/versions"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Set("Content-Type", body.ContentType())
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id": jobId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryJobResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // GetUserMaterials: List materials currently available for customer Factory submissions.
 // Internal-only entries are omitted. Results are ordered alphabetically, ignoring case, with "Other" last. Clients should refetch this endpoint after a catalog validation error before asking the customer to choose again.
 //
@@ -8722,7 +9083,7 @@ func (s *UserService) UpdatePrivacySettings(body PrivacySettings) (*PrivacySetti
 //
 // Projects with `library_id: null` have no named library. They do not appear as a library record here. Use `GET /user/projects?scope=personal&unassigned=true` for the default personal group, or `scope=organization&unassigned=true` for the active organization's unassigned projects.
 //
-// Each library includes its creation source: `zds` or `factory_portal`. Libraries created before source tracking are returned as `zds`. Clients can filter the results by source; API permissions remain unchanged.
+// Each library includes its creation source: `zds`, `factory_portal`, or `org_dataset`. Libraries created before source tracking are returned as `zds`. Clients can filter the results by source; API permissions remain unchanged.
 //
 // Parameters
 //
@@ -8786,7 +9147,7 @@ func (s *ProjectService) ListLibraries(limit int, pageToken string) (*ProjectLib
 //
 // ```json { "name": "Factory designs", "scope": "personal", "source": "factory_portal" } ```
 //
-// Accepted sources are `zds` and `factory_portal`. Omitting source defaults to `zds`. Null and unsupported values return HTTP 400.
+// Accepted sources are `zds`, `factory_portal`, and `org_dataset`. Omitting source defaults to `zds`. Null and unsupported values return HTTP 400.
 //
 // Source is returned in library responses and cannot be changed after creation. Clients use it to decide how to display libraries; it does not change API permissions. No API source filter is provided at the moment.
 //
@@ -8840,7 +9201,7 @@ func (s *ProjectService) CreateLibrary(body CreateProjectLibraryRequest) (*Proje
 }
 
 // DeleteLibrary: Delete an empty cloud project library.
-// Supply the library's last-read `revision` as the required `expected_revision` query parameter. URL-encode this value. Only the personal owner or an admin of the active organization can delete the library.
+// Supply the library's last-read `revision` as the required `expected_revision` query parameter. URL-encode this value. Only the personal owner or an admin of the active organization can delete the library. Libraries managed by an organization dataset cannot be deleted independently; those requests return HTTP 409.
 //
 // Move or unassign all projects first. A nonempty library or stale revision returns HTTP 409. Success returns HTTP 204 without deleting projects or history. Library revisions are separate from project `revision` and `metadata_revision`.
 //
@@ -9009,15 +9370,17 @@ func (s *ProjectService) ListLibrary(id UUID, limit int, pageToken string) (*Pro
 }
 
 // List: List the authenticated user's projects.
-// Returns an array, including personal projects and projects accessible through the request's active organization. Optional `scope=personal` or `scope=organization` narrows ownership; `unassigned=true` includes only projects whose `library_id` is null. Combine them, for example: `GET /user/projects?scope=personal&unassigned=true`. Omitting both filters keeps returning all accessible projects, including projects in named libraries.
+// Returns a page, including personal projects and projects accessible through the request's active organization. Optional `scope=personal` or `scope=organization` narrows ownership; `unassigned=true` includes only projects whose `library_id` is null. Combine them, for example: `GET /user/projects?scope=personal&unassigned=true`. Omitting both filters keeps returning all accessible projects, including projects in named libraries.
 //
 // Unassigned is a grouping within the existing ownership scope, not a stored default library. Use `GET /user/project-libraries/{id}/projects` for a named library's paginated project list. Filters do not grant additional access.
 //
 // Parameters
 //
+//   - `limit`
+//   - `pageToken`
 //   - `scope`: Ownership scope for an authenticated project response.
 //   - `unassigned`
-func (s *ProjectService) List(scope ProjectAccessScope, unassigned bool) (*[]ProjectSummaryResponse, error) {
+func (s *ProjectService) List(limit int, pageToken string, scope ProjectAccessScope, unassigned bool) (*ProjectSummaryResponseResultsPage, error) {
 	// Create the url.
 	path := "/user/projects"
 	targetURL := resolveRelative(s.client.server, path)
@@ -9030,6 +9393,8 @@ func (s *ProjectService) List(scope ProjectAccessScope, unassigned bool) (*[]Pro
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
 		"scope":      string(scope),
 		"unassigned": strconv.FormatBool(unassigned),
 	}); err != nil {
@@ -9052,7 +9417,7 @@ func (s *ProjectService) List(scope ProjectAccessScope, unassigned bool) (*[]Pro
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded []ProjectSummaryResponse
+	var decoded ProjectSummaryResponseResultsPage
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -9271,12 +9636,15 @@ func (s *ProjectService) Delete(id UUID) error {
 
 }
 
-// Download: Download one of the authenticated user's projects as a tar archive.
+// Download: Download all or selected files from the current version of a project.
+// Use `file_ids=<UUID>,<UUID>` to select files from the current version. This endpoint resolves the project's current version at request time, so file IDs from before a save may no longer belong to it. To download those files, use `/user/projects/{id}/versions/{version_id}/download` with `version_id` set to the `summary.revision` returned alongside that file list. A single selected file still uses the requested tar or zip archive format.
+//
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `format`: Archive formats supported by project download endpoints.
-func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat) error {
+//   - `fileIds`
+func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat, fileIds []UUID) error {
 	// Create the url.
 	path := "/user/projects/{{.id}}/download"
 	targetURL := resolveRelative(s.client.server, path)
@@ -9285,6 +9653,12 @@ func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat) error {
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	if fileIds != nil {
+		query := req.URL.Query()
+		query.Set("file_ids", queryArrayValues(fileIds))
+		req.URL.RawQuery = query.Encode()
 	}
 
 	// Add the parameters to the url.
@@ -9903,13 +10277,16 @@ func (s *ProjectService) GetVersion(id UUID, versionId UUID) (*ProjectVersionDet
 
 }
 
-// DownloadVersion: Download the files saved in one project version.
+// DownloadVersion: Download all or selected files saved in one project version.
+// Select files with `file_ids=<UUID>,<UUID>`. IDs must belong to this version; omitted files are excluded, including the manifest unless explicitly selected. The response is a tar or zip archive even when selecting one file.
+//
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
 //   - `versionId`: A UUID usually v4 or v7
 //   - `format`: Archive formats supported by project download endpoints.
-func (s *ProjectService) DownloadVersion(id UUID, versionId UUID, format ProjectArchiveFormat) error {
+//   - `fileIds`
+func (s *ProjectService) DownloadVersion(id UUID, versionId UUID, format ProjectArchiveFormat, fileIds []UUID) error {
 	// Create the url.
 	path := "/user/projects/{{.id}}/versions/{{.version_id}}/download"
 	targetURL := resolveRelative(s.client.server, path)
@@ -9918,6 +10295,12 @@ func (s *ProjectService) DownloadVersion(id UUID, versionId UUID, format Project
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	if fileIds != nil {
+		query := req.URL.Query()
+		query.Set("file_ids", queryArrayValues(fileIds))
+		req.URL.RawQuery = query.Encode()
 	}
 
 	// Add the parameters to the url.
