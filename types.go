@@ -185,6 +185,16 @@ type AddOrgMember struct {
 	Role UserOrgRole `json:"role" yaml:"role" schema:"role,required"`
 }
 
+// AddressContact: Delivery contact fields shared by saved addresses and one-off destinations.
+type AddressContact struct {
+	// Company: Company name, or an empty string when absent.
+	Company string `json:"company" yaml:"company" schema:"company"`
+	// Phone: Delivery contact phone, or an empty string when absent.
+	Phone string `json:"phone" yaml:"phone" schema:"phone"`
+	// Recipient: Individual or department receiving the delivery.
+	Recipient string `json:"recipient" yaml:"recipient" schema:"recipient"`
+}
+
 // AddressDetails: Address details.
 type AddressDetails struct {
 	// City: The city component.
@@ -199,6 +209,56 @@ type AddressDetails struct {
 	Street2 string `json:"street2" yaml:"street2" schema:"street2"`
 	// Zip: The zip component.
 	Zip string `json:"zip" yaml:"zip" schema:"zip"`
+}
+
+// AddressPostalResponse: Postal fields as stored, including incomplete historical billing addresses.
+type AddressPostalResponse struct {
+	// City: City or locality.
+	City string `json:"city" yaml:"city" schema:"city,required"`
+	// Country: Two-letter country code, or an uncorrected historical value.
+	Country string `json:"country" yaml:"country" schema:"country,required"`
+	// State: State, province, or region when applicable.
+	State string `json:"state" yaml:"state" schema:"state,required"`
+	// Street1: First street line.
+	Street1 string `json:"street1" yaml:"street1" schema:"street1,required"`
+	// Street2: Optional second street line, represented by an empty string when absent.
+	Street2 string `json:"street2" yaml:"street2" schema:"street2,required"`
+	// Zip: Postal code when applicable.
+	Zip string `json:"zip" yaml:"zip" schema:"zip,required"`
+}
+
+// AddressResponse: One address-book card and its current immutable contents.
+type AddressResponse struct {
+	// CanManage: Whether this caller can edit/archive the card through these endpoints.
+	CanManage bool `json:"can_manage" yaml:"can_manage" schema:"can_manage,required"`
+	// Contact: Recipient, company, and phone attached to this revision.
+	Contact AddressContact `json:"contact" yaml:"contact" schema:"contact,required"`
+	// CreatedAt: When the card was created.
+	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
+	// ID: Stable address-book identifier. Edits preserve this ID.
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// IsBilling: Billing edits use the existing payment endpoints to update the provider.
+	IsBilling bool `json:"is_billing" yaml:"is_billing" schema:"is_billing,required"`
+	// IsDefaultShipping: Whether this card is the owner's selected shipping default.
+	IsDefaultShipping bool `json:"is_default_shipping" yaml:"is_default_shipping" schema:"is_default_shipping,required"`
+	// IsSaved: False for a one-off destination omitted from address-book listings.
+	IsSaved bool `json:"is_saved" yaml:"is_saved" schema:"is_saved,required"`
+	// Label: Customer-visible label for this address-book card.
+	Label string `json:"label" yaml:"label" schema:"label,required"`
+	// Postal: Current postal destination.
+	Postal AddressPostalResponse `json:"postal" yaml:"postal" schema:"postal,required"`
+	// RevisionID: Immutable postal/contact revision. Orders must pin this ID.
+	RevisionID UUID `json:"revision_id" yaml:"revision_id" schema:"revision_id,required"`
+	// UpdatedAt: When the card was most recently edited.
+	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
+}
+
+// AddressResponseResultsPage: A single page of results
+type AddressResponseResultsPage struct {
+	// Items: list of items on this page of results
+	Items []AddressResponse `json:"items" yaml:"items" schema:"items,required"`
+	// NextPage: token used to fetch the next page of results (if any)
+	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
 // AdjacencyInfo: Edge info struct (useful for maintaining mappings between edges and faces and adjacent/opposite edges).
@@ -420,6 +480,12 @@ type AnnotationMbdControlFrame struct {
 // AnnotationMbdLeaderPosition: AnnotationMbdLeaderPosition: Parameters for defining a specific MBD Leader Position within an Entity
 type AnnotationMbdLeaderPosition any
 
+// AnnotationMbdLeaderPositionAuto: Used in dimension measurements for the to_entity_leader_pos field. Automatically determines which type of leader position to use. If the entity is planar and this is a to_entity_leader_pos dimension field, then StepFrom is used. If the entity is circular or cylindrical, Centroid is used. If the entity is a linear edge NormalizedPos { 0.5, N/A } is used If no other cases apply, then NormalizedPos { 0.5, 0.5 } is used
+type AnnotationMbdLeaderPositionAuto struct {
+	// Auto:
+	Auto map[string]any `json:"auto" yaml:"auto" schema:"auto,required"`
+}
+
 // AnnotationMbdLeaderPositionCentroid: Geometric Center of the entity (such as on the center axis for a cylinder)
 type AnnotationMbdLeaderPositionCentroid struct {
 	// Centroid:
@@ -430,6 +496,12 @@ type AnnotationMbdLeaderPositionCentroid struct {
 type AnnotationMbdLeaderPositionNormalizedPos struct {
 	// NormalizedPos:
 	NormalizedPos NormalizedPos `json:"normalized_pos" yaml:"normalized_pos" schema:"normalized_pos,required"`
+}
+
+// AnnotationMbdLeaderPositionStepFrom: Used in dimension measurements for the to_entity_leader_pos field. Determines the position using the previous "from" position stepped back (projected) onto the planar entity (via planar projection or vector dot product)
+type AnnotationMbdLeaderPositionStepFrom struct {
+	// StepFrom:
+	StepFrom map[string]any `json:"step_from" yaml:"step_from" schema:"step_from,required"`
 }
 
 // AnnotationOptions: Options for annotations
@@ -1594,6 +1666,20 @@ type Coupon struct {
 	PercentOff float64 `json:"percent_off" yaml:"percent_off" schema:"percent_off"`
 }
 
+// CreateAddressRequest: Create a saved card or an owned one-off destination. Billing is unchanged.
+type CreateAddressRequest struct {
+	// Contact: Delivery contact. Recipient is required; company and phone may be empty.
+	Contact AddressContact `json:"contact" yaml:"contact" schema:"contact,required"`
+	// IsDefaultShipping: Select this saved card as the shipping default without changing billing.
+	IsDefaultShipping bool `json:"is_default_shipping" yaml:"is_default_shipping" schema:"is_default_shipping"`
+	// IsSaved: Defaults to true. Set false for an order-only destination.
+	IsSaved bool `json:"is_saved" yaml:"is_saved" schema:"is_saved"`
+	// Label: Customer-visible label, such as Home or Workshop.
+	Label string `json:"label" yaml:"label" schema:"label"`
+	// Postal: Postal destination. Accepts zip or postal_code.
+	Postal AddressDetails `json:"postal" yaml:"postal" schema:"postal,required"`
+}
+
 // CreateCustomModel: Body for creating a custom ML model.
 type CreateCustomModel struct {
 	// DatasetIds: Org dataset IDs that should be linked to the model. Must contain at least one dataset owned by the org.
@@ -2319,75 +2405,11 @@ type EntityMirrorAcrossEdge struct {
 	EntityFaceEdgeIds []FaceEdgeInfo `json:"entity_face_edge_ids" yaml:"entity_face_edge_ids" schema:"entity_face_edge_ids"`
 }
 
-// EntityReference: EntityReference: An edge/vertex can be defined by the faces that it is connected to.
+// EntityReference: EntityReference: A reference identifying a selectable scene entity.
 type EntityReference any
 
-// EntityReferenceEndFaces: A uuid referencing a helix.
-type EntityReferenceEndFaces struct {
-	// HelixID: Id of the helix object.
-	HelixID UUID `json:"helix_id" yaml:"helix_id" schema:"helix_id,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// EntityReferenceEntityReferenceTopologyFallback: A closed sketch region/profile area.
-type EntityReferenceEntityReferenceTopologyFallback struct {
-	// RegionID: Id of the region being referenced.
-	RegionID UUID `json:"region_id" yaml:"region_id" schema:"region_id,required"`
-	// TopologyFallback: Fallback: path UUID + region index on that path.
-	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// EntityReferenceFace: A uuid referencing a solid3d (body).
-type EntityReferenceFace struct {
-	// Solid3DID: Id of the solid3d being referenced.
-	Solid3DID UUID `json:"solid3d_id" yaml:"solid3d_id" schema:"solid3d_id,required"`
-	// TopologyFallback: Typically omitted: `solid3d_id` is already the owning body. Present for schema parity with other variants.
-	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// EntityReferenceFaceID: A collection of ids that uniquely identify an vertex.
-type EntityReferenceFaceID struct {
-	// Index: Optional index among the filtered candidates.
-	Index int `json:"index" yaml:"index" schema:"index"`
-	// SideFaces: Side face ids that identify the vertex.
-	SideFaces []UUID `json:"side_faces" yaml:"side_faces" schema:"side_faces,required"`
-	// TopologyFallback: Fallback: solid3d UUID + vertex index on that body.
-	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// EntityReferenceIndex: A uuid referencing an edge on a solid2d (profile) - used for raw sketch/profile edges. This is distinct from the face-based Edge reference which is used for BRep/swept body edges.
-type EntityReferenceIndex struct {
-	// EdgeID: Id of the edge being referenced.
-	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
-	// TopologyFallback: Fallback: solid2d UUID + curve index in that profile.
-	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// EntityReferencePlane: A collection of ids that uniquely identify an edge.
-type EntityReferencePlane struct {
-	// EndFaces: Optional end face ids for ambiguous edge matches.
-	EndFaces []UUID `json:"end_faces" yaml:"end_faces" schema:"end_faces"`
-	// Index: Optional index for disambiguation when multiple edges share the same faces. If not provided (None), all matching edges will be used. If provided (Some(n)), only the edge at index n will be used.
-	Index int `json:"index" yaml:"index" schema:"index"`
-	// SideFaces: Side face ids that uniquely identify the edge.
-	SideFaces []UUID `json:"side_faces" yaml:"side_faces" schema:"side_faces,required"`
-	// TopologyFallback: Fallback: solid3d UUID + edge index on that body for 3D BREP edges (distinct from `inner.index`).
-	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-}
-
-// EntityReferencePlaneID: A uuid referencing a plane.
-type EntityReferencePlaneID struct {
+// EntityReferenceAnnotation: A uuid referencing a plane.
+type EntityReferenceAnnotation struct {
 	// PlaneID: Id of the plane being referenced.
 	PlaneID UUID `json:"plane_id" yaml:"plane_id" schema:"plane_id,required"`
 	// TopologyFallback: Optional primitive topology on a parent (not used for planes today).
@@ -2396,8 +2418,54 @@ type EntityReferencePlaneID struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// EntityReferenceSideFaces: A single segment (curve) within a path.
-type EntityReferenceSideFaces struct {
+// EntityReferenceAnnotationID: A uuid referencing an annotation.
+type EntityReferenceAnnotationID struct {
+	// AnnotationID: Id of the annotation object being referenced.
+	AnnotationID UUID `json:"annotation_id" yaml:"annotation_id" schema:"annotation_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// EntityReferenceEndFaces: A uuid referencing an edge on a solid2d (profile) - used for raw sketch/profile edges. This is distinct from the face-based Edge reference which is used for BRep/swept body edges.
+type EntityReferenceEndFaces struct {
+	// EdgeID: Id of the edge being referenced.
+	EdgeID UUID `json:"edge_id" yaml:"edge_id" schema:"edge_id,required"`
+	// TopologyFallback: Fallback: solid2d UUID + curve index in that profile.
+	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// EntityReferenceEntityReferenceTopologyFallback: A uuid referencing a solid3d (body).
+type EntityReferenceEntityReferenceTopologyFallback struct {
+	// Solid3DID: Id of the solid3d being referenced.
+	Solid3DID UUID `json:"solid3d_id" yaml:"solid3d_id" schema:"solid3d_id,required"`
+	// TopologyFallback: Typically omitted: `solid3d_id` is already the owning body. Present for schema parity with other variants.
+	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// EntityReferenceFace: A uuid referencing a helix.
+type EntityReferenceFace struct {
+	// HelixID: Id of the helix object.
+	HelixID UUID `json:"helix_id" yaml:"helix_id" schema:"helix_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// EntityReferenceFaceID: A uuid referencing a solid2d (profile).
+type EntityReferenceFaceID struct {
+	// Solid2DID: Id of the solid2d being referenced.
+	Solid2DID UUID `json:"solid2d_id" yaml:"solid2d_id" schema:"solid2d_id,required"`
+	// TopologyFallback: Typically omitted: `solid2d_id` is already the owning profile. Present for schema parity with other variants.
+	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// EntityReferenceIndex: A single segment (curve) within a path.
+type EntityReferenceIndex struct {
 	// PathID: Id of the path containing the segment.
 	PathID UUID `json:"path_id" yaml:"path_id" schema:"path_id,required"`
 	// SegmentID: Id of the segment (curve) being referenced.
@@ -2408,11 +2476,47 @@ type EntityReferenceSideFaces struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// EntityReferenceTopologyFallback: A uuid referencing a face.
-type EntityReferenceTopologyFallback struct {
+// EntityReferencePlane: A collection of ids that uniquely identify an vertex.
+type EntityReferencePlane struct {
+	// Index: Optional index among the filtered candidates.
+	Index int `json:"index" yaml:"index" schema:"index"`
+	// SideFaces: Side face ids that identify the vertex.
+	SideFaces []UUID `json:"side_faces" yaml:"side_faces" schema:"side_faces,required"`
+	// TopologyFallback: Fallback: solid3d UUID + vertex index on that body.
+	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// EntityReferencePlaneID: A uuid referencing a face.
+type EntityReferencePlaneID struct {
 	// FaceID: Id of the face being referenced.
 	FaceID UUID `json:"face_id" yaml:"face_id" schema:"face_id,required"`
 	// TopologyFallback: Fallback: solid3d UUID + face index on that body when `face_id` cannot be resolved client-side.
+	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// EntityReferenceSideFaces: A closed sketch region/profile area.
+type EntityReferenceSideFaces struct {
+	// RegionID: Id of the region being referenced.
+	RegionID UUID `json:"region_id" yaml:"region_id" schema:"region_id,required"`
+	// TopologyFallback: Fallback: path UUID + region index on that path.
+	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
+// EntityReferenceTopologyFallback: A collection of ids that uniquely identify an edge.
+type EntityReferenceTopologyFallback struct {
+	// EndFaces: Optional end face ids for ambiguous edge matches.
+	EndFaces []UUID `json:"end_faces" yaml:"end_faces" schema:"end_faces"`
+	// Index: Optional index for disambiguation when multiple edges share the same faces. If not provided (None), all matching edges will be used. If provided (Some(n)), only the edge at index n will be used.
+	Index int `json:"index" yaml:"index" schema:"index"`
+	// SideFaces: Side face ids that uniquely identify the edge.
+	SideFaces []UUID `json:"side_faces" yaml:"side_faces" schema:"side_faces,required"`
+	// TopologyFallback: Fallback: solid3d UUID + edge index on that body for 3D BREP edges (distinct from `inner.index`).
 	TopologyFallback PrimitiveTopologyFallback `json:"topology_fallback" yaml:"topology_fallback" schema:"topology_fallback"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
@@ -2452,6 +2556,8 @@ const (
 	EntityTypeRegion EntityType = "region"
 	// EntityTypePatterngroup represents the EntityType `"patterngroup"`.
 	EntityTypePatterngroup EntityType = "patterngroup"
+	// EntityTypeAnnotation represents the EntityType `"annotation"`.
+	EntityTypeAnnotation EntityType = "annotation"
 )
 
 // Error: Error information from a response.
@@ -2862,6 +2968,8 @@ const (
 	FeatureDrawings Feature = "drawings"
 	// FeatureSceneBrowser: Enables the Scene browser and model tree UI in Zoo Design Studio.
 	FeatureSceneBrowser Feature = "scene_browser"
+	// FeatureZdsProjectShellRefactor: Enables the refactored project shell in Zoo Design Studio.
+	FeatureZdsProjectShellRefactor Feature = "zds_project_shell_refactor"
 	// FeaturePlugins: Enables plugins in Zoo Design Studio.
 	FeaturePlugins Feature = "plugins"
 	// FeatureProprietaryToKclConversionBeta: Grants access to the beta proprietary-to-KCL conversion endpoint.
@@ -10712,6 +10820,20 @@ type UnitVolumeConversion struct {
 	UpdatedAt Time `json:"updated_at" yaml:"updated_at" schema:"updated_at,required"`
 	// UserID: The user ID of the user who created the API call.
 	UserID UUID `json:"user_id" yaml:"user_id" schema:"user_id,required"`
+}
+
+// UpdateAddressRequest: Replace a delivery card without changing revisions already used by orders.
+type UpdateAddressRequest struct {
+	// Contact: Replacement recipient, company, and phone.
+	Contact AddressContact `json:"contact" yaml:"contact" schema:"contact,required"`
+	// ExpectedRevision: revision_id returned when the card was loaded. Stale edits return 409.
+	ExpectedRevision UUID `json:"expected_revision" yaml:"expected_revision" schema:"expected_revision,required"`
+	// IsDefaultShipping: Select or clear this card as the default shipping destination.
+	IsDefaultShipping bool `json:"is_default_shipping" yaml:"is_default_shipping" schema:"is_default_shipping,required"`
+	// Label: Replacement card label.
+	Label string `json:"label" yaml:"label" schema:"label,required"`
+	// Postal: Replacement postal destination.
+	Postal AddressDetails `json:"postal" yaml:"postal" schema:"postal,required"`
 }
 
 // UpdateAnnotation: The response from the `UpdateAnnotation` endpoint.

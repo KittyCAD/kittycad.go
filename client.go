@@ -16,6 +16,8 @@ type Client struct {
 	// token is the API token used for authentication.
 	token string
 
+	// Addresse: Saved delivery addresses and immutable address revisions.
+	Addresse *AddresseService
 	// APICall: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
 	APICall *APICallService
 	// APIToken: API tokens allow users to call the API outside of their session token that is used as a cookie in the user interface. Users can create, delete, and list their API tokens. But, of course, you need an API token to do this, so first be sure to generate one in the account UI.
@@ -59,6 +61,9 @@ type Client struct {
 	// User: A user is someone who uses the Zoo API. Here, we can create, delete, and list users. We can also get information about a user. Operations will only be authorized if the user is requesting information about themselves.
 	User *UserService
 }
+
+// AddresseService: Saved delivery addresses and immutable address revisions.
+type AddresseService service
 
 // APICallService: API calls that have been performed by users can be queried by the API. This is helpful for debugging as well as billing.
 type APICallService service
