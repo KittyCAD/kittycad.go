@@ -2836,6 +2836,8 @@ type FactoryCustomerJobDetail struct {
 	CurrentVersion FactoryCustomerJobVersion `json:"current_version" yaml:"current_version" schema:"current_version"`
 	// Job: The same summary returned by the customer job list.
 	Job FactoryCustomerJobSummary `json:"job" yaml:"job" schema:"job,required"`
+	// Quote: The active published quote, excluding all internal costing and worksheet notes.
+	Quote FactoryCustomerQuote `json:"quote" yaml:"quote" schema:"quote"`
 }
 
 // FactoryCustomerJobFile: Minimized submitted-file metadata, without Project identifiers or storage locations.
@@ -2888,6 +2890,34 @@ type FactoryCustomerJobVersionResultsPage struct {
 	Items []FactoryCustomerJobVersion `json:"items" yaml:"items" schema:"items,required"`
 	// NextPage: token used to fetch the next page of results (if any)
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
+}
+
+// FactoryCustomerQuote: Customer prices only. Internal costs and worksheet notes never enter this type.
+type FactoryCustomerQuote struct {
+	// DeliveryEstimate: Broad production and shipping guidance, not a promised arrival date.
+	DeliveryEstimate string `json:"delivery_estimate" yaml:"delivery_estimate" schema:"delivery_estimate,required"`
+	// EstimatedDeliveryBusinessDays: Production plus shipping business days from invoicing; null if either is unknown.
+	EstimatedDeliveryBusinessDays int `json:"estimated_delivery_business_days" yaml:"estimated_delivery_business_days" schema:"estimated_delivery_business_days"`
+	// ExpiresAt: Seven calendar days after the latest send. Expired offers remain readable.
+	ExpiresAt Time `json:"expires_at" yaml:"expires_at" schema:"expires_at,required"`
+	// ID: A UUID usually v4 or v7
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// IsExpedited:
+	IsExpedited bool `json:"is_expedited" yaml:"is_expedited" schema:"is_expedited,required"`
+	// JobVersionID: A UUID usually v4 or v7
+	JobVersionID UUID `json:"job_version_id" yaml:"job_version_id" schema:"job_version_id,required"`
+	// PartQuantity: Positive quantity from the quoted revision; null when historical input is unusable.
+	PartQuantity int `json:"part_quantity" yaml:"part_quantity" schema:"part_quantity"`
+	// PricePerPartCents: Approximate USD cents per part, rounded half-up for display only. Subtotal is authoritative.
+	PricePerPartCents int `json:"price_per_part_cents" yaml:"price_per_part_cents" schema:"price_per_part_cents"`
+	// PublishedAt: Most recent explicit send, including resends of this same offer.
+	PublishedAt Time `json:"published_at" yaml:"published_at" schema:"published_at,required"`
+	// ShippingCents: Customer shipping charge in USD cents: zero for standard shipping, or the expedited upgrade.
+	ShippingCents int `json:"shipping_cents" yaml:"shipping_cents" schema:"shipping_cents,required"`
+	// SubtotalCents: Part selling subtotal in USD cents, excluding shipping upgrades and tax.
+	SubtotalCents int `json:"subtotal_cents" yaml:"subtotal_cents" schema:"subtotal_cents,required"`
+	// TotalBeforeTaxCents:
+	TotalBeforeTaxCents int `json:"total_before_tax_cents" yaml:"total_before_tax_cents" schema:"total_before_tax_cents,required"`
 }
 
 // FactoryJobResponse: Response returned when a Factory job is created. Only customer-facing ids are exposed: the job id (the customer's reference) and its current version id. The internal Help Desk thread id is deliberately NOT returned (internal-only per the ERD).
