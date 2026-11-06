@@ -2385,6 +2385,263 @@ func (s *OrgService) Delete() error {
 
 }
 
+// ListOrg: List saved addresses belonging to your active organization.
+// Current members can read delivery destinations; only admins see billing cards or manage the book. One-off and archived destinations are omitted.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func (s *AddresseService) ListOrg(limit int, pageToken string) (*AddressResponseResultsPage, error) {
+	// Create the url.
+	path := "/org/addresses"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AddressResponseResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateOrgAddress: Create a saved or one-off destination belonging to your organization.
+// Admins can save cards or select shipping defaults. Other current members can create one-off destinations with is_saved=false without modifying the book.
+//
+// Parameters
+//
+//   - `body`: Create a saved card or an owned one-off destination. Billing is unchanged.
+func (s *AddresseService) CreateOrgAddress(body CreateAddressRequest) (*AddressResponse, error) {
+	// Create the url.
+	path := "/org/addresses"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AddressResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetOrgAddress: Get an address from your active organization's address book.
+// Requires current membership. Billing cards require organization-admin access.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *AddresseService) GetOrgAddress(id UUID) (*AddressResponse, error) {
+	// Create the url.
+	path := "/org/addresses/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AddressResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateOrgAddress: Replace an organization delivery address and its shipping-default selection.
+// Requires organization-admin access and the current revision_id as expected_revision. Previously pinned order contents remain unchanged.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Replace a delivery card without changing revisions already used by orders.
+func (s *AddresseService) UpdateOrgAddress(id UUID, body UpdateAddressRequest) (*AddressResponse, error) {
+	// Create the url.
+	path := "/org/addresses/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AddressResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteOrgAddress: Remove an organization delivery address from future selection.
+// Requires organization-admin access and the current expected_revision. Previously pinned revisions remain available until organization erasure.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `expectedRevision`: A UUID usually v4 or v7
+func (s *AddresseService) DeleteOrgAddress(id UUID, expectedRevision UUID) error {
+	// Create the url.
+	path := "/org/addresses/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":                id.String(),
+		"expected_revision": expectedRevision.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // OrgList: List API calls for your org.
 // This includes all API calls that were made by users in the org.
 //
@@ -6791,6 +7048,261 @@ func (s *UserService) DeleteSelf() error {
 
 }
 
+// ListUser: List your saved addresses, including the current billing address.
+// One-off and archived cards are omitted. Billing cards may contain incomplete historical details and use the payment endpoints for edits. Follow next_page with page_token to read the next page. Results are ordered by stable card ID.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func (s *AddresseService) ListUser(limit int, pageToken string) (*AddressResponseResultsPage, error) {
+	// Create the url.
+	path := "/user/addresses"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AddressResponseResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateUserAddress: Create a personal delivery address.
+// Set is_saved=false for a one-off destination. It remains owned and erasable while staying out of the picker. Creating a delivery address never changes billing.
+//
+// Parameters
+//
+//   - `body`: Create a saved card or an owned one-off destination. Billing is unchanged.
+func (s *AddresseService) CreateUserAddress(body CreateAddressRequest) (*AddressResponse, error) {
+	// Create the url.
+	path := "/user/addresses"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AddressResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetUserAddress: Get a personal address and its current immutable revision.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *AddresseService) GetUserAddress(id UUID) (*AddressResponse, error) {
+	// Create the url.
+	path := "/user/addresses/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AddressResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// UpdateUserAddress: Replace a personal delivery address and its shipping-default selection.
+// expected_revision must match the current revision_id. Edits create immutable revisions, preserving any revision already selected by an order. Billing cards must be updated through the payment endpoints.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Replace a delivery card without changing revisions already used by orders.
+func (s *AddresseService) UpdateUserAddress(id UUID, body UpdateAddressRequest) (*AddressResponse, error) {
+	// Create the url.
+	path := "/user/addresses/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("PUT", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded AddressResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DeleteUserAddress: Remove a personal address from future selection.
+// Requires its current expected_revision. Revisions pinned by orders remain available until account erasure. An active billing address cannot be removed.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `expectedRevision`: A UUID usually v4 or v7
+func (s *AddresseService) DeleteUserAddress(id UUID, expectedRevision UUID) error {
+	// Create the url.
+	path := "/user/addresses/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":                id.String(),
+		"expected_revision": expectedRevision.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // UserList: List API calls for your user.
 // This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user.
 //
@@ -7610,15 +8122,15 @@ func (s *FactoryService) ListUserJobs(limit int, pageToken string, sortBy Create
 }
 
 // CreateUserJob: Submit a part for manufacturing. Requires a signed-in Zoo account.
-// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   intake data (material, finish, quantity, notes, …). Material and finish   are required customer-visible catalog names; all other fields are stored   verbatim so they can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.
+// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   intake data (material, finish, quantity, notes, …). Material and finish   are required customer-visible catalog names; all other fields are stored   verbatim so they can be added or renamed without an API change.   The same JSON part requires `shipping_address_revision_id` and `is_expedited`.   First create a delivery address through `/user/addresses` or `/org/addresses`   for the job's owner, then submit its `revision_id`, not its stable card `id`.   All delivery fields except company and street2 are required for Factory.   `is_expedited` is required and accepts booleans or the exact strings "true"/"false".   The job pins that revision without changing billing or following later address-book edits. - one or more file parts (any part name). At least one file is required.
 //
 // The submitter's identity (email, name, user id) comes from the authenticated account, not the form.
 //
 // Fetch `GET /user/factory/materials` and `GET /user/factory/finishes`, then send the returned exact `material` and `finish` names. The server rejects missing, non-string, unknown, deleted, and internal-only choices with these stable field-specific `error_code` values: - `factory_material_input_missing` - `factory_material_input_invalid_type` - `factory_material_not_found` - `factory_material_not_customer_visible` - `factory_finish_input_missing` - `factory_finish_input_invalid_type` - `factory_finish_not_found` - `factory_finish_not_customer_visible` - `quantity`: a positive integer.
 //
-// Example `body` part: ```json { "fields": { "material": "6061 Aluminum", "finish": "Anodized", "quantity": 10, "notes": "deburr all edges" } } ```
+// Example `body` part: ```json { "fields": { "material": "6061 Aluminum", "finish": "Anodized", "quantity": 10 }, "shipping_address_revision_id": "00000000-0000-4000-8000-000000000001", "is_expedited": false } ```
 //
-// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \   -H "Authorization: Bearer $ZOO_API_TOKEN" \   -F 'body={"fields":{"material":"6061 Aluminum","finish":"Anodized","quantity":10}};type=application/json' \   -F 'file=@bracket.step' ```
+// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \   -H "Authorization: Bearer $ZOO_API_TOKEN" \   -F 'body={"fields":{"material":"6061 Aluminum","finish":"Anodized","quantity":10},"shipping_address_revision_id":"00000000-0000-4000-8000-000000000001","is_expedited":false};type=application/json' \   -F 'file=@bracket.step' ```
 //
 // Returns `201` with the created job (`FactoryJobResponse`).
 //

@@ -64,6 +64,7 @@ func NewClient(token, userAgent string) (*Client, error) {
 	}
 
 	// Add the services to our client.
+	client.Addresse = &AddresseService{client: client}
 	client.APICall = &APICallService{client: client}
 	client.APIToken = &APITokenService{client: client}
 	client.App = &AppService{client: client}

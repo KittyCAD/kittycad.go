@@ -1067,6 +1067,111 @@ func ExampleOrgService_Delete() {
 
 }
 
+// ListOrg: List saved addresses belonging to your active organization.
+// Current members can read delivery destinations; only admins see billing cards or manage the book. One-off and archived destinations are omitted.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func ExampleAddresseService_ListOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Addresse.ListOrg(123, "some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateOrgAddress: Create a saved or one-off destination belonging to your organization.
+// Admins can save cards or select shipping defaults. Other current members can create one-off destinations with is_saved=false without modifying the book.
+//
+// Parameters
+//
+//   - `body`: Create a saved card or an owned one-off destination. Billing is unchanged.
+func ExampleAddresseService_CreateOrgAddress() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Addresse.CreateOrgAddress(kittycad.CreateAddressRequest{Contact: kittycad.AddressContact{Company: "some-string", Phone: "some-string", Recipient: "some-string"}, IsDefaultShipping: true, IsSaved: true, Label: "some-string", Postal: kittycad.AddressDetails{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", Zip: "some-string"}})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetOrgAddress: Get an address from your active organization's address book.
+// Requires current membership. Billing cards require organization-admin access.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleAddresseService_GetOrgAddress() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Addresse.GetOrgAddress(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateOrgAddress: Replace an organization delivery address and its shipping-default selection.
+// Requires organization-admin access and the current revision_id as expected_revision. Previously pinned order contents remain unchanged.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Replace a delivery card without changing revisions already used by orders.
+func ExampleAddresseService_UpdateOrgAddress() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Addresse.UpdateOrgAddress(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateAddressRequest{Contact: kittycad.AddressContact{Company: "some-string", Phone: "some-string", Recipient: "some-string"}, ExpectedRevision: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), IsDefaultShipping: true, Label: "some-string", Postal: kittycad.AddressDetails{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", Zip: "some-string"}})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteOrgAddress: Remove an organization delivery address from future selection.
+// Requires organization-admin access and the current expected_revision. Previously pinned revisions remain available until organization erasure.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `expectedRevision`: A UUID usually v4 or v7
+func ExampleAddresseService_DeleteOrgAddress() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Addresse.DeleteOrgAddress(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
 // OrgList: List API calls for your org.
 // This includes all API calls that were made by users in the org.
 //
@@ -2935,6 +3040,109 @@ func ExampleUserService_DeleteSelf() {
 
 }
 
+// ListUser: List your saved addresses, including the current billing address.
+// One-off and archived cards are omitted. Billing cards may contain incomplete historical details and use the payment endpoints for edits. Follow next_page with page_token to read the next page. Results are ordered by stable card ID.
+//
+// Parameters
+//
+//   - `limit`
+//   - `pageToken`
+func ExampleAddresseService_ListUser() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Addresse.ListUser(123, "some-string")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateUserAddress: Create a personal delivery address.
+// Set is_saved=false for a one-off destination. It remains owned and erasable while staying out of the picker. Creating a delivery address never changes billing.
+//
+// Parameters
+//
+//   - `body`: Create a saved card or an owned one-off destination. Billing is unchanged.
+func ExampleAddresseService_CreateUserAddress() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Addresse.CreateUserAddress(kittycad.CreateAddressRequest{Contact: kittycad.AddressContact{Company: "some-string", Phone: "some-string", Recipient: "some-string"}, IsDefaultShipping: true, IsSaved: true, Label: "some-string", Postal: kittycad.AddressDetails{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", Zip: "some-string"}})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetUserAddress: Get a personal address and its current immutable revision.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleAddresseService_GetUserAddress() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Addresse.GetUserAddress(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// UpdateUserAddress: Replace a personal delivery address and its shipping-default selection.
+// expected_revision must match the current revision_id. Edits create immutable revisions, preserving any revision already selected by an order. Billing cards must be updated through the payment endpoints.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `body`: Replace a delivery card without changing revisions already used by orders.
+func ExampleAddresseService_UpdateUserAddress() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Addresse.UpdateUserAddress(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.UpdateAddressRequest{Contact: kittycad.AddressContact{Company: "some-string", Phone: "some-string", Recipient: "some-string"}, ExpectedRevision: kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), IsDefaultShipping: true, Label: "some-string", Postal: kittycad.AddressDetails{City: "some-string", Country: "some-string", State: "some-string", Street1: "some-string", Street2: "some-string", Zip: "some-string"}})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeleteUserAddress: Remove a personal address from future selection.
+// Requires its current expected_revision. Revisions pinned by orders remain available until account erasure. An active billing address cannot be removed.
+//
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `expectedRevision`: A UUID usually v4 or v7
+func ExampleAddresseService_DeleteUserAddress() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Addresse.DeleteUserAddress(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
+
+}
+
 // UserList: List API calls for your user.
 // This endpoint requires authentication by any Zoo user. It returns the API calls for the authenticated user.
 //
@@ -3294,15 +3502,15 @@ func ExampleFactoryService_ListUserJobs() {
 }
 
 // CreateUserJob: Submit a part for manufacturing. Requires a signed-in Zoo account.
-// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   intake data (material, finish, quantity, notes, …). Material and finish   are required customer-visible catalog names; all other fields are stored   verbatim so they can be added or renamed without an API change. - one or more file parts (any part name). At least one file is required.
+// The request is `multipart/form-data`: - one JSON part named `body` (`FactoryIntakeForm`) whose `fields` object holds   intake data (material, finish, quantity, notes, …). Material and finish   are required customer-visible catalog names; all other fields are stored   verbatim so they can be added or renamed without an API change.   The same JSON part requires `shipping_address_revision_id` and `is_expedited`.   First create a delivery address through `/user/addresses` or `/org/addresses`   for the job's owner, then submit its `revision_id`, not its stable card `id`.   All delivery fields except company and street2 are required for Factory.   `is_expedited` is required and accepts booleans or the exact strings "true"/"false".   The job pins that revision without changing billing or following later address-book edits. - one or more file parts (any part name). At least one file is required.
 //
 // The submitter's identity (email, name, user id) comes from the authenticated account, not the form.
 //
 // Fetch `GET /user/factory/materials` and `GET /user/factory/finishes`, then send the returned exact `material` and `finish` names. The server rejects missing, non-string, unknown, deleted, and internal-only choices with these stable field-specific `error_code` values: - `factory_material_input_missing` - `factory_material_input_invalid_type` - `factory_material_not_found` - `factory_material_not_customer_visible` - `factory_finish_input_missing` - `factory_finish_input_invalid_type` - `factory_finish_not_found` - `factory_finish_not_customer_visible` - `quantity`: a positive integer.
 //
-// Example `body` part: ```json { "fields": { "material": "6061 Aluminum", "finish": "Anodized", "quantity": 10, "notes": "deburr all edges" } } ```
+// Example `body` part: ```json { "fields": { "material": "6061 Aluminum", "finish": "Anodized", "quantity": 10 }, "shipping_address_revision_id": "00000000-0000-4000-8000-000000000001", "is_expedited": false } ```
 //
-// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \   -H "Authorization: Bearer $ZOO_API_TOKEN" \   -F 'body={"fields":{"material":"6061 Aluminum","finish":"Anodized","quantity":10}};type=application/json' \   -F 'file=@bracket.step' ```
+// Example request (curl): ``` curl -X POST https://api.zoo.dev/user/factory/jobs \   -H "Authorization: Bearer $ZOO_API_TOKEN" \   -F 'body={"fields":{"material":"6061 Aluminum","finish":"Anodized","quantity":10},"shipping_address_revision_id":"00000000-0000-4000-8000-000000000001","is_expedited":false};type=application/json' \   -F 'file=@bracket.step' ```
 //
 // Returns `201` with the created job (`FactoryJobResponse`).
 //
