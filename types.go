@@ -2836,6 +2836,8 @@ type FactoryCustomerJobDetail struct {
 	CurrentVersion FactoryCustomerJobVersion `json:"current_version" yaml:"current_version" schema:"current_version"`
 	// Job: The same summary returned by the customer job list.
 	Job FactoryCustomerJobSummary `json:"job" yaml:"job" schema:"job,required"`
+	// Quote: The active published quote, excluding all internal costing and worksheet notes.
+	Quote FactoryCustomerQuote `json:"quote" yaml:"quote" schema:"quote"`
 }
 
 // FactoryCustomerJobFile: Minimized submitted-file metadata, without Project identifiers or storage locations.
@@ -2878,6 +2880,10 @@ type FactoryCustomerJobVersion struct {
 	Files []FactoryCustomerJobFile `json:"files" yaml:"files" schema:"files,required"`
 	// ID: Identifier of this Factory revision.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// PreviewStatus: Preview state of the pinned Project snapshot, if it still exists.
+	PreviewStatus KclProjectPreviewStatus `json:"preview_status" yaml:"preview_status" schema:"preview_status"`
+	// PreviewUrl: Authenticated Factory thumbnail URL when the pinned preview is ready.
+	PreviewUrl string `json:"preview_url" yaml:"preview_url" schema:"preview_url"`
 	// Specs: Customer-visible fields from the version's intake payload.
 	Specs any `json:"specs" yaml:"specs" schema:"specs,required"`
 }
@@ -2890,6 +2896,34 @@ type FactoryCustomerJobVersionResultsPage struct {
 	NextPage string `json:"next_page" yaml:"next_page" schema:"next_page"`
 }
 
+// FactoryCustomerQuote: Customer prices only. Internal costs and worksheet notes never enter this type.
+type FactoryCustomerQuote struct {
+	// DeliveryEstimate: Broad production and shipping guidance, not a promised arrival date.
+	DeliveryEstimate string `json:"delivery_estimate" yaml:"delivery_estimate" schema:"delivery_estimate,required"`
+	// EstimatedDeliveryBusinessDays: Production plus shipping business days from invoicing; null if either is unknown.
+	EstimatedDeliveryBusinessDays int `json:"estimated_delivery_business_days" yaml:"estimated_delivery_business_days" schema:"estimated_delivery_business_days"`
+	// ExpiresAt: Seven calendar days after the latest send. Expired offers remain readable.
+	ExpiresAt Time `json:"expires_at" yaml:"expires_at" schema:"expires_at,required"`
+	// ID: A UUID usually v4 or v7
+	ID UUID `json:"id" yaml:"id" schema:"id,required"`
+	// IsExpedited:
+	IsExpedited bool `json:"is_expedited" yaml:"is_expedited" schema:"is_expedited,required"`
+	// JobVersionID: A UUID usually v4 or v7
+	JobVersionID UUID `json:"job_version_id" yaml:"job_version_id" schema:"job_version_id,required"`
+	// PartQuantity: Positive quantity from the quoted revision; null when historical input is unusable.
+	PartQuantity int `json:"part_quantity" yaml:"part_quantity" schema:"part_quantity"`
+	// PricePerPartCents: Approximate USD cents per part, rounded half-up for display only. Subtotal is authoritative.
+	PricePerPartCents int `json:"price_per_part_cents" yaml:"price_per_part_cents" schema:"price_per_part_cents"`
+	// PublishedAt: Most recent explicit send, including resends of this same offer.
+	PublishedAt Time `json:"published_at" yaml:"published_at" schema:"published_at,required"`
+	// ShippingCents: Customer shipping charge in USD cents: zero for standard shipping, or the expedited upgrade.
+	ShippingCents int `json:"shipping_cents" yaml:"shipping_cents" schema:"shipping_cents,required"`
+	// SubtotalCents: Part selling subtotal in USD cents, excluding shipping upgrades and tax.
+	SubtotalCents int `json:"subtotal_cents" yaml:"subtotal_cents" schema:"subtotal_cents,required"`
+	// TotalBeforeTaxCents:
+	TotalBeforeTaxCents int `json:"total_before_tax_cents" yaml:"total_before_tax_cents" schema:"total_before_tax_cents,required"`
+}
+
 // FactoryJobResponse: Response returned when a Factory job is created. Only customer-facing ids are exposed: the job id (the customer's reference) and its current version id. The internal Help Desk thread id is deliberately NOT returned (internal-only per the ERD).
 type FactoryJobResponse struct {
 	// CurrentVersionID: The newly submitted Factory version id of the job.
@@ -2898,6 +2932,38 @@ type FactoryJobResponse struct {
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
 	// Status: The workflow status after submission (`new` for creation, `quoting` for a revision).
 	Status string `json:"status" yaml:"status" schema:"status,required"`
+}
+
+// FactoryQuoteAcceptance: A paid invoice and the manufacturing job it releases for production.
+type FactoryQuoteAcceptance struct {
+	// Invoice: The ordinary paid billing invoice, including its hosted page and PDF links.
+	Invoice Invoice `json:"invoice" yaml:"invoice" schema:"invoice,required"`
+	// Job: The job after confirmed payment, preserving later manufacturing states on replay.
+	Job FactoryCustomerJobSummary `json:"job" yaml:"job" schema:"job,required"`
+}
+
+// FactoryQuotePreview: Current checkout amounts in USD cents, before accepting or collecting payment.
+type FactoryQuotePreview struct {
+	// AccountBalanceAdjustmentCents: Signed Stripe invoice balance applied separately from Zoo usage credits.
+	AccountBalanceAdjustmentCents int `json:"account_balance_adjustment_cents" yaml:"account_balance_adjustment_cents" schema:"account_balance_adjustment_cents,required"`
+	// AmountDueCents: Cash remaining after balance adjustments.
+	AmountDueCents int `json:"amount_due_cents" yaml:"amount_due_cents" schema:"amount_due_cents,required"`
+	// AvailableCreditsCents: Zoo usage credits currently available to the customer.
+	AvailableCreditsCents int `json:"available_credits_cents" yaml:"available_credits_cents" schema:"available_credits_cents,required"`
+	// CreditsAppliedCents: Zoo usage credits applied to this purchase.
+	CreditsAppliedCents int `json:"credits_applied_cents" yaml:"credits_applied_cents" schema:"credits_applied_cents,required"`
+	// Currency: Currency of all checkout amounts.
+	Currency string `json:"currency" yaml:"currency" schema:"currency,required"`
+	// QuoteID: The published offer these amounts describe.
+	QuoteID UUID `json:"quote_id" yaml:"quote_id" schema:"quote_id,required"`
+	// ShippingCents: Delivery charge before tax.
+	ShippingCents int `json:"shipping_cents" yaml:"shipping_cents" schema:"shipping_cents,required"`
+	// SubtotalCents: Manufacturing price before shipping and tax.
+	SubtotalCents int `json:"subtotal_cents" yaml:"subtotal_cents" schema:"subtotal_cents,required"`
+	// TaxCents: Tax calculated by Stripe.
+	TaxCents int `json:"tax_cents" yaml:"tax_cents" schema:"tax_cents,required"`
+	// TotalCents: Manufacturing, shipping, and tax combined.
+	TotalCents int `json:"total_cents" yaml:"total_cents" schema:"total_cents,required"`
 }
 
 // FailureWebSocketResponse: Unsuccessful Websocket response.
@@ -2944,6 +3010,8 @@ const (
 	FeatureHostedMcp Feature = "hosted_mcp"
 	// FeatureOrgDatasetCloudProjects: Store org dataset conversions in organization-shared cloud project libraries.
 	FeatureOrgDatasetCloudProjects Feature = "org_dataset_cloud_projects"
+	// FeatureOrgDatasetReferenceFiles: Ingest documents and images in org datasets using cloud projects.
+	FeatureOrgDatasetReferenceFiles Feature = "org_dataset_reference_files"
 	// FeatureKclCekExecutor: KCL CEK machine executor.
 	FeatureKclCekExecutor Feature = "kcl_cek_executor"
 	// FeatureRedirectToGovcloud: Immediately redirect to our Govcloud environment (zoogov.dev).
@@ -3322,6 +3390,22 @@ const (
 	GlobalAxiY GlobalAxi = "y"
 	// GlobalAxiZ: The Z axis
 	GlobalAxiZ GlobalAxi = "z"
+)
+
+// GltfExportExtra: Additional data that can be included in a glTF 2.0 export.
+type GltfExportExtra string
+
+const (
+	// GltfExportExtraSketches: Sketch geometry and metadata.
+	GltfExportExtraSketches GltfExportExtra = "sketches"
+	// GltfExportExtraRegions: Sketch regions and their resolver metadata.
+	GltfExportExtraRegions GltfExportExtra = "regions"
+	// GltfExportExtraImportedFiles: Original imported files.
+	GltfExportExtraImportedFiles GltfExportExtra = "imported_files"
+	// GltfExportExtraMbd: Model-based definition (MBD) annotations.
+	GltfExportExtraMbd GltfExportExtra = "mbd"
+	// GltfExportExtraGeometryUuids: UUIDs and source UUIDs on boundary-representation solids, edges, faces, and surfaces.
+	GltfExportExtraGeometryUuids GltfExportExtra = "geometry_uuids"
 )
 
 // GltfPresentation: Describes the presentation style of the glTF JSON.
@@ -4050,7 +4134,7 @@ type KclProjectFileRole string
 const (
 	// KclProjectFileRoleProjectToml: The root `project.toml` manifest.
 	KclProjectFileRoleProjectToml KclProjectFileRole = "project_toml"
-	// KclProjectFileRoleProjectFile: A project source file such as `.kcl`.
+	// KclProjectFileRoleProjectFile: A project source or reference file, such as KCL, a PDF, or a spreadsheet.
 	KclProjectFileRoleProjectFile KclProjectFileRole = "project_file"
 	// KclProjectFileRolePreviewImage: A preview image generated or uploaded for the gallery.
 	KclProjectFileRolePreviewImage KclProjectFileRole = "preview_image"
@@ -4078,6 +4162,8 @@ const (
 	KclProjectPreviewStatusReady KclProjectPreviewStatus = "ready"
 	// KclProjectPreviewStatusFailed: Preview generation failed and needs attention.
 	KclProjectPreviewStatusFailed KclProjectPreviewStatus = "failed"
+	// KclProjectPreviewStatusNotApplicable: This project contains a reference file and needs no geometry preview.
+	KclProjectPreviewStatusNotApplicable KclProjectPreviewStatus = "not_applicable"
 )
 
 // KclProjectPublicationStatus: Publication workflow state for a KCL project.
@@ -7726,6 +7812,12 @@ type OrgDatasetFileConversionDetails struct {
 	Output string `json:"output" yaml:"output" schema:"output"`
 	// Phase: Current step in the conversion pipeline.
 	Phase OrgDatasetFileConversionPhase `json:"phase" yaml:"phase" schema:"phase,required"`
+	// ProjectID: The single cloud project containing this conversion's generated versions.
+	ProjectID UUID `json:"project_id" yaml:"project_id" schema:"project_id"`
+	// ProjectRawVersionID: The immutable project version containing the raw KCL output.
+	ProjectRawVersionID UUID `json:"project_raw_version_id" yaml:"project_raw_version_id" schema:"project_raw_version_id"`
+	// ProjectSalonVersionID: The immutable project version containing the salon or manual-override KCL output.
+	ProjectSalonVersionID UUID `json:"project_salon_version_id" yaml:"project_salon_version_id" schema:"project_salon_version_id"`
 	// RawKclOutput: Plain-text contents of the raw KCL artifact, when available.
 	RawKclOutput string `json:"raw_kcl_output" yaml:"raw_kcl_output" schema:"raw_kcl_output"`
 	// RawKclSimilarityScore: Score from `0.0` to `1.0` that quantifies how closely the raw KCL model matches the original model.
@@ -7830,6 +7922,12 @@ type OrgDatasetFileConversionSummary struct {
 	Metadata any `json:"metadata" yaml:"metadata" schema:"metadata"`
 	// Phase: Current step in the conversion pipeline.
 	Phase OrgDatasetFileConversionPhase `json:"phase" yaml:"phase" schema:"phase,required"`
+	// ProjectID: The single cloud project containing this conversion's generated versions.
+	ProjectID UUID `json:"project_id" yaml:"project_id" schema:"project_id"`
+	// ProjectRawVersionID: The immutable project version containing the raw KCL output.
+	ProjectRawVersionID UUID `json:"project_raw_version_id" yaml:"project_raw_version_id" schema:"project_raw_version_id"`
+	// ProjectSalonVersionID: The immutable project version containing the salon or manual-override KCL output.
+	ProjectSalonVersionID UUID `json:"project_salon_version_id" yaml:"project_salon_version_id" schema:"project_salon_version_id"`
 	// RawKclSimilarityScore: Score from `0.0` to `1.0` that quantifies how closely the raw KCL model matches the original model.
 	RawKclSimilarityScore float64 `json:"raw_kcl_similarity_score" yaml:"raw_kcl_similarity_score" schema:"raw_kcl_similarity_score"`
 	// SalonKclSimilarityScore: Score from `0.0` to `1.0` that quantifies how closely the salon KCL model matches the raw KCL model.
@@ -8055,24 +8153,8 @@ type OutputFormat3Dcreated struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// OutputFormat3Dfbx: Wavefront OBJ format.
-type OutputFormat3Dfbx struct {
-	// Coords: Co-ordinate system of output data.
-	//
-	// Defaults to the [KittyCAD co-ordinate system].
-	//
-	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
-	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
-	// Type:
-	Type string `json:"type" yaml:"type" schema:"type,required"`
-	// Units: Export length unit.
-	//
-	// Defaults to millimeters.
-	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
-}
-
-// OutputFormat3DincludeUuids: The PLY Polygon File Format.
-type OutputFormat3DincludeUuids struct {
+// OutputFormat3Dextras: The PLY Polygon File Format.
+type OutputFormat3Dextras struct {
 	// Coords: Co-ordinate system of output data.
 	//
 	// Defaults to the [KittyCAD co-ordinate system].
@@ -8091,8 +8173,24 @@ type OutputFormat3DincludeUuids struct {
 	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
 }
 
-// OutputFormat3Dpresentation: ISO 10303-21 (STEP) format.
-type OutputFormat3Dpresentation struct {
+// OutputFormat3Dfbx: Wavefront OBJ format.
+type OutputFormat3Dfbx struct {
+	// Coords: Co-ordinate system of output data.
+	//
+	// Defaults to the [KittyCAD co-ordinate system].
+	//
+	// [KittyCAD co-ordinate system]: ../coord/constant.KITTYCAD.html
+	Coords System `json:"coords" yaml:"coords" schema:"coords,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Units: Export length unit.
+	//
+	// Defaults to millimeters.
+	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
+}
+
+// OutputFormat3DincludeUuids: ISO 10303-21 (STEP) format.
+type OutputFormat3DincludeUuids struct {
 	// Coords: Co-ordinate system of output data.
 	//
 	// Defaults to the [KittyCAD co-ordinate system].
@@ -8115,8 +8213,8 @@ type OutputFormat3Dpresentation struct {
 	Views map[string]NamedView `json:"views" yaml:"views" schema:"views"`
 }
 
-// OutputFormat3Dstorage: *ST**ereo**L**ithography format.
-type OutputFormat3Dstorage struct {
+// OutputFormat3Dpresentation: *ST**ereo**L**ithography format.
+type OutputFormat3Dpresentation struct {
 	// Coords: Co-ordinate system of output data.
 	//
 	// Defaults to the [KittyCAD co-ordinate system].
@@ -8133,6 +8231,24 @@ type OutputFormat3Dstorage struct {
 	//
 	// Defaults to millimeters.
 	Units UnitLength `json:"units" yaml:"units" schema:"units,required"`
+}
+
+// OutputFormat3Dstorage: glTF 2.0. We refer to this as glTF since that is how our customers refer to it, although by default it will be in binary format and thus technically (glb). If you prefer ASCII output, you can set that option for the export.
+type OutputFormat3Dstorage struct {
+	// Extras: Additional data to include in the exported glTF. Defaults to an empty set.
+	Extras []GltfExportExtra `json:"extras" yaml:"extras" schema:"extras"`
+	// IncludeUuids: Include geometry UUIDs. Setting this to true is equivalent to adding `geometry_uuids` to `extras`.
+	//
+	// Deprecated: IncludeUuids is deprecated.
+	IncludeUuids bool `json:"include_uuids" yaml:"include_uuids" schema:"include_uuids"`
+	// Presentation: Specifies how the JSON will be presented.
+	Presentation GltfPresentation `json:"presentation" yaml:"presentation" schema:"presentation"`
+	// Storage: Specifies which kind of glTF 2.0 will be exported.
+	Storage GltfStorage `json:"storage" yaml:"storage" schema:"storage"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+	// Views: Named views in the scene.
+	Views map[string]NamedView `json:"views" yaml:"views" schema:"views"`
 }
 
 // PathCommand: The path component command type (within a Path)
@@ -8863,7 +8979,7 @@ type ProjectVersionDetailResponse struct {
 	CreatedAt Time `json:"created_at" yaml:"created_at" schema:"created_at,required"`
 	// Description: Description saved with this version.
 	Description string `json:"description" yaml:"description" schema:"description,required"`
-	// EntrypointPath: Relative path to this version's KCL entrypoint.
+	// EntrypointPath: Relative path to this version's entrypoint file.
 	EntrypointPath string `json:"entrypoint_path" yaml:"entrypoint_path" schema:"entrypoint_path,required"`
 	// Files: Files stored for this version.
 	Files []ProjectFileResponse `json:"files" yaml:"files" schema:"files,required"`

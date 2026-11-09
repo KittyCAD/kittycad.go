@@ -3643,7 +3643,7 @@ func (s *OrgService) GetDatasetConversionStats(id UUID) (*OrgDatasetConversionSt
 }
 
 // UploadDatasetFiles: Upload source files into a Zoo-managed dataset.
-// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `<proprietary CAD filename>.json` converter dumps are also accepted and associated with their original CAD file. Paths are normalized and must be relative.
+// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `<proprietary CAD filename>.json` converter dumps are also accepted and associated with their original CAD file. When both `org_dataset_cloud_projects` and `org_dataset_reference_files` are enabled for the organization, PDFs, Word/Excel documents and images are accepted as reference files. Paths are normalized and must be relative.
 //
 // Parameters
 //
@@ -3851,6 +3851,112 @@ func (s *FactoryService) GetOrgJobFile(jobId UUID, fileId UUID) error {
 
 }
 
+// AcceptOrgQuote: Accept your organization's current Factory quote and charge its default card. Requires organization membership.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+//   - `useCredits`
+//   - `maxAmountDueCents`
+func (s *FactoryService) AcceptOrgQuote(jobId UUID, quoteId UUID, useCredits bool, maxAmountDueCents int) (*FactoryQuoteAcceptance, error) {
+	// Create the url.
+	path := "/org/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}/accept"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":               jobId.String(),
+		"quote_id":             quoteId.String(),
+		"use_credits":          strconv.FormatBool(useCredits),
+		"max_amount_due_cents": strconv.Itoa(maxAmountDueCents),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryQuoteAcceptance
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// PreviewOrgQuote: Preview your organization's Factory quote without accepting it or charging a card. Requires organization membership.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+//   - `useCredits`
+func (s *FactoryService) PreviewOrgQuote(jobId UUID, quoteId UUID, useCredits bool) (*FactoryQuotePreview, error) {
+	// Create the url.
+	path := "/org/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}/preview"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":      jobId.String(),
+		"quote_id":    quoteId.String(),
+		"use_credits": strconv.FormatBool(useCredits),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryQuotePreview
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // ListOrgJobVersions: List an organization's submitted revision history for a current member.
 // Parameters
 //
@@ -3967,6 +4073,47 @@ func (s *FactoryService) CreateOrgJobVersion(jobId UUID, body *MultipartForm) (*
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// GetOrgJobThumbnail: Fetch the private thumbnail pinned by an organization Factory revision.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `versionId`: A UUID usually v4 or v7
+func (s *FactoryService) GetOrgJobThumbnail(jobId UUID, versionId UUID) error {
+	// Create the url.
+	path := "/org/factory/jobs/{{.job_id}}/versions/{{.version_id}}/thumbnail"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":     jobId.String(),
+		"version_id": versionId.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }
 
@@ -4867,7 +5014,7 @@ func (s *PaymentService) RedirectMethodPortalLinkForOrg(returnUrl URL) error {
 }
 
 // ListMethodsForOrg: List payment methods for your org.
-// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org, with the valid default card first.
+// This endpoint requires authentication by an org member. It lists payment methods for the authenticated user's org, with the valid default card first.
 //
 // Parameters
 //
@@ -8274,6 +8421,112 @@ func (s *FactoryService) GetUserJobFile(jobId UUID, fileId UUID) error {
 
 }
 
+// AcceptUserQuote: Accept your current Factory quote and immediately charge your default card. Production starts only after successful payment.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+//   - `useCredits`
+//   - `maxAmountDueCents`
+func (s *FactoryService) AcceptUserQuote(jobId UUID, quoteId UUID, useCredits bool, maxAmountDueCents int) (*FactoryQuoteAcceptance, error) {
+	// Create the url.
+	path := "/user/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}/accept"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":               jobId.String(),
+		"quote_id":             quoteId.String(),
+		"use_credits":          strconv.FormatBool(useCredits),
+		"max_amount_due_cents": strconv.Itoa(maxAmountDueCents),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryQuoteAcceptance
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// PreviewUserQuote: Preview your Factory quote's shipping, tax, credits, and total without accepting it or charging a card.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+//   - `useCredits`
+func (s *FactoryService) PreviewUserQuote(jobId UUID, quoteId UUID, useCredits bool) (*FactoryQuotePreview, error) {
+	// Create the url.
+	path := "/user/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}/preview"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":      jobId.String(),
+		"quote_id":    quoteId.String(),
+		"use_credits": strconv.FormatBool(useCredits),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryQuotePreview
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // ListUserJobVersions: List a personal Factory job's submitted revision history, newest first by default.
 // Parameters
 //
@@ -8390,6 +8643,47 @@ func (s *FactoryService) CreateUserJobVersion(jobId UUID, body *MultipartForm) (
 
 	// Return the response.
 	return &decoded, nil
+
+}
+
+// GetUserJobThumbnail: Fetch the private thumbnail pinned by a personal Factory revision.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `versionId`: A UUID usually v4 or v7
+func (s *FactoryService) GetUserJobThumbnail(jobId UUID, versionId UUID) error {
+	// Create the url.
+	path := "/user/factory/jobs/{{.job_id}}/versions/{{.version_id}}/thumbnail"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":     jobId.String(),
+		"version_id": versionId.String(),
+	}); err != nil {
+		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
 
 }
 

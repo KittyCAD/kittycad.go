@@ -585,7 +585,7 @@
  },
  {
   "value": {
-   "example": "// UploadDatasetFiles: Upload source files into a Zoo-managed dataset.\n// \n// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `\u003cproprietary CAD filename\u003e.json` converter dumps are also accepted and associated with their original CAD file. Paths are normalized and must be relative.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`\n// \n// UploadDatasetFiles: Upload source files into a Zoo-managed dataset.\n// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `\u003cproprietary CAD filename\u003e.json` converter dumps are also accepted and associated with their original CAD file. Paths are normalized and must be relative.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`\nfunc ExampleOrgService_UploadDatasetFiles() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tform := kittycad.NewMultipartForm()\n\n\tresult, err := client.Org.UploadDatasetFiles(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), form)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// UploadDatasetFiles: Upload source files into a Zoo-managed dataset.\n// \n// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `\u003cproprietary CAD filename\u003e.json` converter dumps are also accepted and associated with their original CAD file. When both `org_dataset_cloud_projects` and `org_dataset_reference_files` are enabled for the organization, PDFs, Word/Excel documents and images are accepted as reference files. Paths are normalized and must be relative.\n// \n// \n// Parameters\n// \n// \t- `id`: A UUID usually v4 or v7\n// \t- `body`\n// \n// UploadDatasetFiles: Upload source files into a Zoo-managed dataset.\n// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `\u003cproprietary CAD filename\u003e.json` converter dumps are also accepted and associated with their original CAD file. When both `org_dataset_cloud_projects` and `org_dataset_reference_files` are enabled for the organization, PDFs, Word/Excel documents and images are accepted as reference files. Paths are normalized and must be relative.\n//\n// Parameters\n//\n//   - `id`: A UUID usually v4 or v7\n//   - `body`\nfunc ExampleOrgService_UploadDatasetFiles() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tform := kittycad.NewMultipartForm()\n\n\tresult, err := client.Org.UploadDatasetFiles(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), form)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#OrgService.UploadDatasetFiles"
   },
   "op": "add",
@@ -617,6 +617,22 @@
  },
  {
   "value": {
+   "example": "// AcceptOrgQuote: Accept your organization's current Factory quote and charge its default card. Requires organization membership.\n// \n// \n// Parameters\n// \n// \t- `jobId`: A UUID usually v4 or v7\n// \t- `quoteId`: A UUID usually v4 or v7\n// \t- `useCredits`\n// \t- `maxAmountDueCents`\n// \n// AcceptOrgQuote: Accept your organization's current Factory quote and charge its default card. Requires organization membership.\n// Parameters\n//\n//   - `jobId`: A UUID usually v4 or v7\n//   - `quoteId`: A UUID usually v4 or v7\n//   - `useCredits`\n//   - `maxAmountDueCents`\nfunc ExampleFactoryService_AcceptOrgQuote() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.AcceptOrgQuote(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), true, 123)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.AcceptOrgQuote"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1factory~1jobs~1{job_id}~1quotes~1{quote_id}~1accept/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// PreviewOrgQuote: Preview your organization's Factory quote without accepting it or charging a card. Requires organization membership.\n// \n// \n// Parameters\n// \n// \t- `jobId`: A UUID usually v4 or v7\n// \t- `quoteId`: A UUID usually v4 or v7\n// \t- `useCredits`\n// \n// PreviewOrgQuote: Preview your organization's Factory quote without accepting it or charging a card. Requires organization membership.\n// Parameters\n//\n//   - `jobId`: A UUID usually v4 or v7\n//   - `quoteId`: A UUID usually v4 or v7\n//   - `useCredits`\nfunc ExampleFactoryService_PreviewOrgQuote() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.PreviewOrgQuote(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), true)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.PreviewOrgQuote"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1factory~1jobs~1{job_id}~1quotes~1{quote_id}~1preview/get/x-go"
+ },
+ {
+  "value": {
    "example": "// ListOrgJobVersions: List an organization's submitted revision history for a current member.\n// \n// \n// Parameters\n// \n// \t- `jobId`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListOrgJobVersions: List an organization's submitted revision history for a current member.\n// Parameters\n//\n//   - `jobId`: A UUID usually v4 or v7\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleFactoryService_ListOrgJobVersions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.ListOrgJobVersions(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.ListOrgJobVersions"
   },
@@ -630,6 +646,14 @@
   },
   "op": "add",
   "path": "/paths/~1org~1factory~1jobs~1{job_id}~1versions/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetOrgJobThumbnail: Fetch the private thumbnail pinned by an organization Factory revision.\n// \n// \n// Parameters\n// \n// \t- `jobId`: A UUID usually v4 or v7\n// \t- `versionId`: A UUID usually v4 or v7\n// \n// GetOrgJobThumbnail: Fetch the private thumbnail pinned by an organization Factory revision.\n// Parameters\n//\n//   - `jobId`: A UUID usually v4 or v7\n//   - `versionId`: A UUID usually v4 or v7\nfunc ExampleFactoryService_GetOrgJobThumbnail() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Factory.GetOrgJobThumbnail(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.GetOrgJobThumbnail"
+  },
+  "op": "add",
+  "path": "/paths/~1org~1factory~1jobs~1{job_id}~1versions~1{version_id}~1thumbnail/get/x-go"
  },
  {
   "value": {
@@ -777,7 +801,7 @@
  },
  {
   "value": {
-   "example": "// ListMethodsForOrg: List payment methods for your org.\n// \n// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org, with the valid default card first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// ListMethodsForOrg: List payment methods for your org.\n// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org, with the valid default card first.\n//\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExamplePaymentService_ListMethodsForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ListMethodsForOrg(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "example": "// ListMethodsForOrg: List payment methods for your org.\n// \n// This endpoint requires authentication by an org member. It lists payment methods for the authenticated user's org, with the valid default card first.\n// \n// \n// Parameters\n// \n// \t- `limit`\n// \t- `pageToken`\n// \n// ListMethodsForOrg: List payment methods for your org.\n// This endpoint requires authentication by an org member. It lists payment methods for the authenticated user's org, with the valid default card first.\n//\n// Parameters\n//\n//   - `limit`\n//   - `pageToken`\nfunc ExamplePaymentService_ListMethodsForOrg() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Payment.ListMethodsForOrg(123, \"some-string\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#PaymentService.ListMethodsForOrg"
   },
   "op": "add",
@@ -1345,6 +1369,22 @@
  },
  {
   "value": {
+   "example": "// AcceptUserQuote: Accept your current Factory quote and immediately charge your default card. Production starts only after successful payment.\n// \n// \n// Parameters\n// \n// \t- `jobId`: A UUID usually v4 or v7\n// \t- `quoteId`: A UUID usually v4 or v7\n// \t- `useCredits`\n// \t- `maxAmountDueCents`\n// \n// AcceptUserQuote: Accept your current Factory quote and immediately charge your default card. Production starts only after successful payment.\n// Parameters\n//\n//   - `jobId`: A UUID usually v4 or v7\n//   - `quoteId`: A UUID usually v4 or v7\n//   - `useCredits`\n//   - `maxAmountDueCents`\nfunc ExampleFactoryService_AcceptUserQuote() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.AcceptUserQuote(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), true, 123)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.AcceptUserQuote"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1factory~1jobs~1{job_id}~1quotes~1{quote_id}~1accept/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// PreviewUserQuote: Preview your Factory quote's shipping, tax, credits, and total without accepting it or charging a card.\n// \n// \n// Parameters\n// \n// \t- `jobId`: A UUID usually v4 or v7\n// \t- `quoteId`: A UUID usually v4 or v7\n// \t- `useCredits`\n// \n// PreviewUserQuote: Preview your Factory quote's shipping, tax, credits, and total without accepting it or charging a card.\n// Parameters\n//\n//   - `jobId`: A UUID usually v4 or v7\n//   - `quoteId`: A UUID usually v4 or v7\n//   - `useCredits`\nfunc ExampleFactoryService_PreviewUserQuote() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.PreviewUserQuote(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), true)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.PreviewUserQuote"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1factory~1jobs~1{job_id}~1quotes~1{quote_id}~1preview/get/x-go"
+ },
+ {
+  "value": {
    "example": "// ListUserJobVersions: List a personal Factory job's submitted revision history, newest first by default.\n// \n// \n// Parameters\n// \n// \t- `jobId`: A UUID usually v4 or v7\n// \t- `limit`\n// \t- `pageToken`\n// \t- `sortBy`: Supported set of sort modes for scanning by created_at only.\n// \t\t\n// \t\tCurrently, we only support scanning in ascending order.\n// \n// ListUserJobVersions: List a personal Factory job's submitted revision history, newest first by default.\n// Parameters\n//\n//   - `jobId`: A UUID usually v4 or v7\n//\n//   - `limit`\n//\n//   - `pageToken`\n//\n//   - `sortBy`: Supported set of sort modes for scanning by created_at only.\n//\n//     Currently, we only support scanning in ascending order.\nfunc ExampleFactoryService_ListUserJobVersions() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tresult, err := client.Factory.ListUserJobVersions(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), 123, \"some-string\", \"\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tfmt.Printf(\"%#v\", result)\n\n}\n",
    "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.ListUserJobVersions"
   },
@@ -1358,6 +1398,14 @@
   },
   "op": "add",
   "path": "/paths/~1user~1factory~1jobs~1{job_id}~1versions/post/x-go"
+ },
+ {
+  "value": {
+   "example": "// GetUserJobThumbnail: Fetch the private thumbnail pinned by a personal Factory revision.\n// \n// \n// Parameters\n// \n// \t- `jobId`: A UUID usually v4 or v7\n// \t- `versionId`: A UUID usually v4 or v7\n// \n// GetUserJobThumbnail: Fetch the private thumbnail pinned by a personal Factory revision.\n// Parameters\n//\n//   - `jobId`: A UUID usually v4 or v7\n//   - `versionId`: A UUID usually v4 or v7\nfunc ExampleFactoryService_GetUserJobThumbnail() {\n\tclient, err := kittycad.NewClientFromEnv(\"your apps user agent\")\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\n\tif err := client.Factory.GetUserJobThumbnail(kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"), kittycad.ParseUUID(\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\")); err != nil {\n\t\tpanic(err)\n\t}\n\n}\n",
+   "libDocsLink": "https://pkg.go.dev/github.com/kittycad/kittycad.go/#FactoryService.GetUserJobThumbnail"
+  },
+  "op": "add",
+  "path": "/paths/~1user~1factory~1jobs~1{job_id}~1versions~1{version_id}~1thumbnail/get/x-go"
  },
  {
   "value": {

@@ -1593,7 +1593,7 @@ func ExampleOrgService_GetDatasetConversionStats() {
 }
 
 // UploadDatasetFiles: Upload source files into a Zoo-managed dataset.
-// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `<proprietary CAD filename>.json` converter dumps are also accepted and associated with their original CAD file. Paths are normalized and must be relative.
+// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `<proprietary CAD filename>.json` converter dumps are also accepted and associated with their original CAD file. When both `org_dataset_cloud_projects` and `org_dataset_reference_files` are enabled for the organization, PDFs, Word/Excel documents and images are accepted as reference files. Paths are normalized and must be relative.
 //
 // Parameters
 //
@@ -1679,6 +1679,49 @@ func ExampleFactoryService_GetOrgJobFile() {
 
 }
 
+// AcceptOrgQuote: Accept your organization's current Factory quote and charge its default card. Requires organization membership.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+//   - `useCredits`
+//   - `maxAmountDueCents`
+func ExampleFactoryService_AcceptOrgQuote() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.AcceptOrgQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, 123)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// PreviewOrgQuote: Preview your organization's Factory quote without accepting it or charging a card. Requires organization membership.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+//   - `useCredits`
+func ExampleFactoryService_PreviewOrgQuote() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.PreviewOrgQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // ListOrgJobVersions: List an organization's submitted revision history for a current member.
 // Parameters
 //
@@ -1725,6 +1768,23 @@ func ExampleFactoryService_CreateOrgJobVersion() {
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// GetOrgJobThumbnail: Fetch the private thumbnail pinned by an organization Factory revision.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `versionId`: A UUID usually v4 or v7
+func ExampleFactoryService_GetOrgJobThumbnail() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Factory.GetOrgJobThumbnail(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -2116,7 +2176,7 @@ func ExamplePaymentService_RedirectMethodPortalLinkForOrg() {
 }
 
 // ListMethodsForOrg: List payment methods for your org.
-// This endpoint requires authentication by an org admin. It lists payment methods for the authenticated user's org, with the valid default card first.
+// This endpoint requires authentication by an org member. It lists payment methods for the authenticated user's org, with the valid default card first.
 //
 // Parameters
 //
@@ -3570,6 +3630,49 @@ func ExampleFactoryService_GetUserJobFile() {
 
 }
 
+// AcceptUserQuote: Accept your current Factory quote and immediately charge your default card. Production starts only after successful payment.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+//   - `useCredits`
+//   - `maxAmountDueCents`
+func ExampleFactoryService_AcceptUserQuote() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.AcceptUserQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, 123)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// PreviewUserQuote: Preview your Factory quote's shipping, tax, credits, and total without accepting it or charging a card.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+//   - `useCredits`
+func ExampleFactoryService_PreviewUserQuote() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.PreviewUserQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // ListUserJobVersions: List a personal Factory job's submitted revision history, newest first by default.
 // Parameters
 //
@@ -3616,6 +3719,23 @@ func ExampleFactoryService_CreateUserJobVersion() {
 	}
 
 	fmt.Printf("%#v", result)
+
+}
+
+// GetUserJobThumbnail: Fetch the private thumbnail pinned by a personal Factory revision.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `versionId`: A UUID usually v4 or v7
+func ExampleFactoryService_GetUserJobThumbnail() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Factory.GetUserJobThumbnail(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")); err != nil {
+		panic(err)
+	}
 
 }
 
