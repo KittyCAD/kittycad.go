@@ -195,6 +195,14 @@ type AddressContact struct {
 	Recipient string `json:"recipient" yaml:"recipient" schema:"recipient"`
 }
 
+// AddressContent: Address contents. Ownership, saved-address labels, and shipping speed are separate.
+type AddressContent struct {
+	// Contact:
+	Contact AddressContact `json:"contact" yaml:"contact" schema:"contact"`
+	// Postal: Address details.
+	Postal AddressDetails `json:"postal" yaml:"postal" schema:"postal,required"`
+}
+
 // AddressDetails: Address details.
 type AddressDetails struct {
 	// City: The city component.
@@ -2834,10 +2842,14 @@ type FactoryCustomerCatalogOptionResultsPage struct {
 type FactoryCustomerJobDetail struct {
 	// CurrentVersion: The current version, if the job has one.
 	CurrentVersion FactoryCustomerJobVersion `json:"current_version" yaml:"current_version" schema:"current_version"`
+	// IsExpedited: Whether the job requests expedited shipping.
+	IsExpedited bool `json:"is_expedited" yaml:"is_expedited" schema:"is_expedited,required"`
 	// Job: The same summary returned by the customer job list.
 	Job FactoryCustomerJobSummary `json:"job" yaml:"job" schema:"job,required"`
 	// Quote: The active published quote, excluding all internal costing and worksheet notes.
 	Quote FactoryCustomerQuote `json:"quote" yaml:"quote" schema:"quote"`
+	// ShippingInfo: Pinned delivery address, if it remains available to the job's owner.
+	ShippingInfo AddressContent `json:"shipping_info" yaml:"shipping_info" schema:"shipping_info"`
 }
 
 // FactoryCustomerJobFile: Minimized submitted-file metadata, without Project identifiers or storage locations.
@@ -2940,6 +2952,14 @@ type FactoryQuoteAcceptance struct {
 	Invoice Invoice `json:"invoice" yaml:"invoice" schema:"invoice,required"`
 	// Job: The job after confirmed payment, preserving later manufacturing states on replay.
 	Job FactoryCustomerJobSummary `json:"job" yaml:"job" schema:"job,required"`
+}
+
+// FactoryQuoteDetail: A published customer offer and its current checkout amounts.
+type FactoryQuoteDetail struct {
+	// Pricing: Shipping, tax, credits, and cash due for the selected payment attempt.
+	Pricing FactoryQuotePreview `json:"pricing" yaml:"pricing" schema:"pricing,required"`
+	// Quote: The customer-visible offer, excluding internal costs and worksheet notes.
+	Quote FactoryCustomerQuote `json:"quote" yaml:"quote" schema:"quote,required"`
 }
 
 // FactoryQuotePreview: Current checkout amounts in USD cents, before accepting or collecting payment.
@@ -3050,6 +3070,8 @@ const (
 	FeatureZookeeperUltraMode Feature = "zookeeper_ultra_mode"
 	// FeatureZookeeperClientCommands: Enables experimental execution of client-advertised commands from Zookeeper.
 	FeatureZookeeperClientCommands Feature = "zookeeper_client_commands"
+	// FeatureZookeeperPydanticAi: Enables the Pydantic AI runtime for supported Zookeeper turns.
+	FeatureZookeeperPydanticAi Feature = "zookeeper_pydantic_ai"
 	// FeatureZookeeperKclMigration: Enables sponsored, time-limited KCL project migration.
 	FeatureZookeeperKclMigration Feature = "zookeeper_kcl_migration"
 	// FeatureUnsafeAllowAPIKeyAuth: Allow creating a session via an existing API key
@@ -4560,6 +4582,16 @@ type MlCopilotMessageFetchAttachments struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
+// MlCopilotMessageFetchReplayPage: Request an older history page on an opted-in paginated connection. Page delivery is not enabled yet; API returns `ReplayPageError`.
+type MlCopilotMessageFetchReplayPage struct {
+	// Cursor: Opaque, connection-scoped token returned by the previous page. It is not an attachment reference or a persisted message coordinate.
+	Cursor UUID `json:"cursor" yaml:"cursor" schema:"cursor,required"`
+	// RequestID: Client identifier echoed in the page response or error.
+	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id,required"`
+	// Type:
+	Type string `json:"type" yaml:"type" schema:"type,required"`
+}
+
 // MlCopilotMessageHeaders: Authentication header request.
 type MlCopilotMessageHeaders struct {
 	// Headers: The authentication header.
@@ -4729,6 +4761,20 @@ const (
 	MlCopilotReplayAttachmentModeMetadataOnly MlCopilotReplayAttachmentMode = "metadata_only"
 )
 
+// MlCopilotReplayPageErrorCode: Machine-readable failures for paginated client history, independent of generation.
+type MlCopilotReplayPageErrorCode string
+
+const (
+	// MlCopilotReplayPageErrorCodeUnavailable: Pagination replay is not enabled yet.
+	MlCopilotReplayPageErrorCodeUnavailable MlCopilotReplayPageErrorCode = "unavailable"
+	// MlCopilotReplayPageErrorCodeInvalidRequest: The connection query does not satisfy pagination requirements.
+	MlCopilotReplayPageErrorCodeInvalidRequest MlCopilotReplayPageErrorCode = "invalid_request"
+	// MlCopilotReplayPageErrorCodeInvalidCursor: The continuation expired, belongs to another connection, or its boundary no longer exists. The client must start a new replay instead of retrying it.
+	MlCopilotReplayPageErrorCodeInvalidCursor MlCopilotReplayPageErrorCode = "invalid_cursor"
+	// MlCopilotReplayPageErrorCodeLoadFailed: A transient page load failure; the same request may be retried.
+	MlCopilotReplayPageErrorCodeLoadFailed MlCopilotReplayPageErrorCode = "load_failed"
+)
+
 // MlCopilotServerMessage: MlCopilotServerMessage: The types of messages that can be sent by the server to the client.
 type MlCopilotServerMessage any
 
@@ -4880,6 +4926,18 @@ type MlCopilotServerMessageReasoning struct {
 type MlCopilotServerMessageReplay struct {
 	// Replay:
 	Replay Replay `json:"replay" yaml:"replay" schema:"replay,required"`
+}
+
+// MlCopilotServerMessageReplayPage: A metadata-only history page. Not persisted or forwarded to the backend. Page delivery is not enabled yet. Existing clients keep receiving `Replay`.
+type MlCopilotServerMessageReplayPage struct {
+	// ReplayPage:
+	ReplayPage ReplayPage `json:"replay_page" yaml:"replay_page" schema:"replay_page,required"`
+}
+
+// MlCopilotServerMessageReplayPageError: Page-specific failure. Does not indicate a generation failure.
+type MlCopilotServerMessageReplayPageError struct {
+	// ReplayPageError:
+	ReplayPageError ReplayPageError `json:"replay_page_error" yaml:"replay_page_error" schema:"replay_page_error,required"`
 }
 
 // MlCopilotServerMessageRequestAttachments: Backend-only request for API to reload client attachments from storage.
@@ -9278,6 +9336,28 @@ type Replay struct {
 	Messages [][]int `json:"messages" yaml:"messages" schema:"messages,required"`
 }
 
+// ReplayPage is the type definition for a ReplayPage.
+type ReplayPage struct {
+	// ConversationID: Conversation whose history this page belongs to.
+	ConversationID UUID `json:"conversation_id" yaml:"conversation_id" schema:"conversation_id,required"`
+	// Messages: Canonical message bytes in chronological order, as in `Replay`.
+	Messages [][]int `json:"messages" yaml:"messages" schema:"messages,required"`
+	// NextCursor: Connection-scoped token for older history; absent when history is exhausted.
+	NextCursor UUID `json:"next_cursor" yaml:"next_cursor" schema:"next_cursor"`
+	// RequestID: Absent for the initial page; otherwise echoes `FetchReplayPage.request_id`.
+	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id"`
+}
+
+// ReplayPageError is the type definition for a ReplayPageError.
+type ReplayPageError struct {
+	// Code: Machine-readable reason and retry behavior.
+	Code MlCopilotReplayPageErrorCode `json:"code" yaml:"code" schema:"code,required"`
+	// Detail: Client readable error detail, without persisted message contents.
+	Detail string `json:"detail" yaml:"detail" schema:"detail,required"`
+	// RequestID: Absent for connection-query errors; otherwise echoes the failed request.
+	RequestID string `json:"request_id" yaml:"request_id" schema:"request_id"`
+}
+
 // RequestAttachments is the type definition for a RequestAttachments.
 type RequestAttachments struct {
 	// ConversationID: Conversation to search for attachments. Used when prompt_id is not known.
@@ -11032,7 +11112,7 @@ type UpdateUser struct {
 	FirstName string `json:"first_name" yaml:"first_name" schema:"first_name"`
 	// Github: The user's GitHub handle.
 	Github string `json:"github" yaml:"github" schema:"github"`
-	// Image: The image URL for the user. NOTE: If the user uses an OAuth2 provider, this will be overwritten by the provider's image URL when the user logs in next.
+	// Image: The image URL for the user. A non-empty URL replaces the photo. An empty URL leaves it unchanged. Use DELETE /user/avatar to remove the photo and prevent provider imports.
 	Image URL `json:"image" yaml:"image" schema:"image,required"`
 	// IsOnboarded: If the user is now onboarded.
 	IsOnboarded bool `json:"is_onboarded" yaml:"is_onboarded" schema:"is_onboarded"`
@@ -11440,9 +11520,9 @@ type ZooProductSubscriptionsUserRequest struct {
 type ZooTool string
 
 const (
-	// ZooToolModelingApp: The modeling app.
+	// ZooToolModelingApp: Design Studio and verified Zookeeper callbacks.
 	ZooToolModelingApp ZooTool = "modeling_app"
-	// ZooToolTextToCad: Zookeeper callbacks to the API.
+	// ZooToolTextToCad: Legacy Text-to-CAD entitlement, retained for existing plan records.
 	ZooToolTextToCad ZooTool = "text_to_cad"
 )
 
