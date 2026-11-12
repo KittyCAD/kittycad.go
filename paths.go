@@ -3643,7 +3643,7 @@ func (s *OrgService) GetDatasetConversionStats(id UUID) (*OrgDatasetConversionSt
 }
 
 // UploadDatasetFiles: Upload source files into a Zoo-managed dataset.
-// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `<proprietary CAD filename>.json` converter dumps are also accepted and associated with their original CAD file. When both `org_dataset_cloud_projects` and `org_dataset_reference_files` are enabled for the organization, PDFs, Word/Excel documents and images are accepted as reference files. Paths are normalized and must be relative.
+// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `<proprietary CAD filename>.json` converter dumps are also accepted and associated with their original CAD file. When both `org_dataset_cloud_projects` and `org_dataset_reference_files` are enabled for the organization, PDFs, Word/Excel documents, Markdown and images are accepted as reference files. Paths are normalized and must be relative.
 //
 // Parameters
 //
@@ -3810,6 +3810,54 @@ func (s *FactoryService) GetOrgJob(jobId UUID) (*FactoryCustomerJobDetail, error
 
 }
 
+// CancelOrgJob: Cancel your organization's Factory job before payment starts. Requires organization membership.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+func (s *FactoryService) CancelOrgJob(jobId UUID) (*FactoryCustomerJobSummary, error) {
+	// Create the url.
+	path := "/org/factory/jobs/{{.job_id}}/cancel"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id": jobId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryCustomerJobSummary
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // GetOrgJobFile: Download an exact submitted manufacturing input for a current organization member.
 // Parameters
 //
@@ -3851,14 +3899,69 @@ func (s *FactoryService) GetOrgJobFile(jobId UUID, fileId UUID) error {
 
 }
 
+// GetOrgQuote: Get your organization's published Factory quote and current checkout amounts. Requires organization membership.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+//   - `paymentAttemptId`: A UUID usually v4 or v7
+//   - `useCredits`
+func (s *FactoryService) GetOrgQuote(jobId UUID, quoteId UUID, paymentAttemptId UUID, useCredits bool) (*FactoryQuoteDetail, error) {
+	// Create the url.
+	path := "/org/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":             jobId.String(),
+		"quote_id":           quoteId.String(),
+		"payment_attempt_id": paymentAttemptId.String(),
+		"use_credits":        strconv.FormatBool(useCredits),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryQuoteDetail
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // AcceptOrgQuote: Accept your organization's current Factory quote and charge its default card. Requires organization membership.
 // Parameters
 //
 //   - `jobId`: A UUID usually v4 or v7
 //   - `quoteId`: A UUID usually v4 or v7
+//   - `paymentAttemptId`: A UUID usually v4 or v7
 //   - `useCredits`
 //   - `maxAmountDueCents`
-func (s *FactoryService) AcceptOrgQuote(jobId UUID, quoteId UUID, useCredits bool, maxAmountDueCents int) (*FactoryQuoteAcceptance, error) {
+func (s *FactoryService) AcceptOrgQuote(jobId UUID, quoteId UUID, paymentAttemptId UUID, useCredits bool, maxAmountDueCents int) (*FactoryQuoteAcceptance, error) {
 	// Create the url.
 	path := "/org/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}/accept"
 	targetURL := resolveRelative(s.client.server, path)
@@ -3873,6 +3976,7 @@ func (s *FactoryService) AcceptOrgQuote(jobId UUID, quoteId UUID, useCredits boo
 	if err := expandURL(req.URL, map[string]string{
 		"job_id":               jobId.String(),
 		"quote_id":             quoteId.String(),
+		"payment_attempt_id":   paymentAttemptId.String(),
 		"use_credits":          strconv.FormatBool(useCredits),
 		"max_amount_due_cents": strconv.Itoa(maxAmountDueCents),
 	}); err != nil {
@@ -3905,28 +4009,26 @@ func (s *FactoryService) AcceptOrgQuote(jobId UUID, quoteId UUID, useCredits boo
 
 }
 
-// PreviewOrgQuote: Preview your organization's Factory quote without accepting it or charging a card. Requires organization membership.
+// DeclineOrgQuote: Decline your organization's current Factory quote and close the job. Requires organization membership.
 // Parameters
 //
 //   - `jobId`: A UUID usually v4 or v7
 //   - `quoteId`: A UUID usually v4 or v7
-//   - `useCredits`
-func (s *FactoryService) PreviewOrgQuote(jobId UUID, quoteId UUID, useCredits bool) (*FactoryQuotePreview, error) {
+func (s *FactoryService) DeclineOrgQuote(jobId UUID, quoteId UUID) (*FactoryCustomerJobSummary, error) {
 	// Create the url.
-	path := "/org/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}/preview"
+	path := "/org/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}/decline"
 	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"job_id":      jobId.String(),
-		"quote_id":    quoteId.String(),
-		"use_credits": strconv.FormatBool(useCredits),
+		"job_id":   jobId.String(),
+		"quote_id": quoteId.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -3947,7 +4049,7 @@ func (s *FactoryService) PreviewOrgQuote(jobId UUID, quoteId UUID, useCredits bo
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded FactoryQuotePreview
+	var decoded FactoryCustomerJobSummary
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -7765,6 +7867,36 @@ func (s *APITokenService) DeleteForUser(token string) error {
 
 }
 
+// RemoveAvatar: Remove the profile photo and prevent future sign-ins from importing it again.
+// Community profile synchronization is best effort.
+func (s *UserService) RemoveAvatar() error {
+	// Create the url.
+	path := "/user/avatar"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("DELETE", targetURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return err
+	}
+
+	// Return.
+	return nil
+
+}
+
 // GetUserUsageCollectionThreshold: Get your personal aggregate-usage collection threshold.
 // The effective threshold is the amount of accrued, unfunded usage that causes an early invoice before the normal billing-period close.
 func (s *PaymentService) GetUserUsageCollectionThreshold() (*AggregateUsageCollectionThresholdView, error) {
@@ -8380,6 +8512,54 @@ func (s *FactoryService) GetUserJob(jobId UUID) (*FactoryCustomerJobDetail, erro
 
 }
 
+// CancelUserJob: Cancel your Factory job before payment starts, even if no quote exists.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+func (s *FactoryService) CancelUserJob(jobId UUID) (*FactoryCustomerJobSummary, error) {
+	// Create the url.
+	path := "/user/factory/jobs/{{.job_id}}/cancel"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id": jobId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryCustomerJobSummary
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // GetUserJobFile: Download an exact submitted manufacturing input of a personal Factory job.
 // Parameters
 //
@@ -8421,14 +8601,69 @@ func (s *FactoryService) GetUserJobFile(jobId UUID, fileId UUID) error {
 
 }
 
+// GetUserQuote: Get your published Factory quote with its current shipping, tax, credits, and checkout total.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+//   - `paymentAttemptId`: A UUID usually v4 or v7
+//   - `useCredits`
+func (s *FactoryService) GetUserQuote(jobId UUID, quoteId UUID, paymentAttemptId UUID, useCredits bool) (*FactoryQuoteDetail, error) {
+	// Create the url.
+	path := "/user/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"job_id":             jobId.String(),
+		"quote_id":           quoteId.String(),
+		"payment_attempt_id": paymentAttemptId.String(),
+		"use_credits":        strconv.FormatBool(useCredits),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded FactoryQuoteDetail
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // AcceptUserQuote: Accept your current Factory quote and immediately charge your default card. Production starts only after successful payment.
 // Parameters
 //
 //   - `jobId`: A UUID usually v4 or v7
 //   - `quoteId`: A UUID usually v4 or v7
+//   - `paymentAttemptId`: A UUID usually v4 or v7
 //   - `useCredits`
 //   - `maxAmountDueCents`
-func (s *FactoryService) AcceptUserQuote(jobId UUID, quoteId UUID, useCredits bool, maxAmountDueCents int) (*FactoryQuoteAcceptance, error) {
+func (s *FactoryService) AcceptUserQuote(jobId UUID, quoteId UUID, paymentAttemptId UUID, useCredits bool, maxAmountDueCents int) (*FactoryQuoteAcceptance, error) {
 	// Create the url.
 	path := "/user/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}/accept"
 	targetURL := resolveRelative(s.client.server, path)
@@ -8443,6 +8678,7 @@ func (s *FactoryService) AcceptUserQuote(jobId UUID, quoteId UUID, useCredits bo
 	if err := expandURL(req.URL, map[string]string{
 		"job_id":               jobId.String(),
 		"quote_id":             quoteId.String(),
+		"payment_attempt_id":   paymentAttemptId.String(),
 		"use_credits":          strconv.FormatBool(useCredits),
 		"max_amount_due_cents": strconv.Itoa(maxAmountDueCents),
 	}); err != nil {
@@ -8475,28 +8711,26 @@ func (s *FactoryService) AcceptUserQuote(jobId UUID, quoteId UUID, useCredits bo
 
 }
 
-// PreviewUserQuote: Preview your Factory quote's shipping, tax, credits, and total without accepting it or charging a card.
+// DeclineUserQuote: Decline your current Factory quote and close the job. No payment is created.
 // Parameters
 //
 //   - `jobId`: A UUID usually v4 or v7
 //   - `quoteId`: A UUID usually v4 or v7
-//   - `useCredits`
-func (s *FactoryService) PreviewUserQuote(jobId UUID, quoteId UUID, useCredits bool) (*FactoryQuotePreview, error) {
+func (s *FactoryService) DeclineUserQuote(jobId UUID, quoteId UUID) (*FactoryCustomerJobSummary, error) {
 	// Create the url.
-	path := "/user/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}/preview"
+	path := "/user/factory/jobs/{{.job_id}}/quotes/{{.quote_id}}/decline"
 	targetURL := resolveRelative(s.client.server, path)
 
 	// Create the request.
-	req, err := http.NewRequest("GET", targetURL, nil)
+	req, err := http.NewRequest("POST", targetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"job_id":      jobId.String(),
-		"quote_id":    quoteId.String(),
-		"use_credits": strconv.FormatBool(useCredits),
+		"job_id":   jobId.String(),
+		"quote_id": quoteId.String(),
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -8517,7 +8751,7 @@ func (s *FactoryService) PreviewUserQuote(jobId UUID, quoteId UUID, useCredits b
 	if resp.Body == nil {
 		return nil, errors.New("request returned an empty body in the response")
 	}
-	var decoded FactoryQuotePreview
+	var decoded FactoryCustomerJobSummary
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("error decoding response body: %v", err)
 	}
@@ -12112,9 +12346,10 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 //   - `replay`
 //   - `conversationId`
 //   - `replayAttachmentMode`: Controls whether replayed attachments are sent inline or fetched on demand.
+//   - `replayPagination`
 //   - `pr`
 //   - `body`: The types of messages that can be sent by the client to the server.
-func (s *MlService) CopilotWs(replay bool, conversationId UUID, replayAttachmentMode MlCopilotReplayAttachmentMode, pr int, body any) (*websocket.Conn, error) {
+func (s *MlService) CopilotWs(replay bool, conversationId UUID, replayAttachmentMode MlCopilotReplayAttachmentMode, replayPagination bool, pr int, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/ml/copilot"
 	targetURL := resolveRelative(s.client.server, path)

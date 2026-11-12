@@ -1593,7 +1593,7 @@ func ExampleOrgService_GetDatasetConversionStats() {
 }
 
 // UploadDatasetFiles: Upload source files into a Zoo-managed dataset.
-// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `<proprietary CAD filename>.json` converter dumps are also accepted and associated with their original CAD file. When both `org_dataset_cloud_projects` and `org_dataset_reference_files` are enabled for the organization, PDFs, Word/Excel documents and images are accepted as reference files. Paths are normalized and must be relative.
+// This endpoint accepts `multipart/form-data` where each file part becomes a source object in the dataset. Exact `<proprietary CAD filename>.json` converter dumps are also accepted and associated with their original CAD file. When both `org_dataset_cloud_projects` and `org_dataset_reference_files` are enabled for the organization, PDFs, Word/Excel documents, Markdown and images are accepted as reference files. Paths are normalized and must be relative.
 //
 // Parameters
 //
@@ -1662,6 +1662,25 @@ func ExampleFactoryService_GetOrgJob() {
 
 }
 
+// CancelOrgJob: Cancel your organization's Factory job before payment starts. Requires organization membership.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+func ExampleFactoryService_CancelOrgJob() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.CancelOrgJob(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // GetOrgJobFile: Download an exact submitted manufacturing input for a current organization member.
 // Parameters
 //
@@ -1679,20 +1698,20 @@ func ExampleFactoryService_GetOrgJobFile() {
 
 }
 
-// AcceptOrgQuote: Accept your organization's current Factory quote and charge its default card. Requires organization membership.
+// GetOrgQuote: Get your organization's published Factory quote and current checkout amounts. Requires organization membership.
 // Parameters
 //
 //   - `jobId`: A UUID usually v4 or v7
 //   - `quoteId`: A UUID usually v4 or v7
+//   - `paymentAttemptId`: A UUID usually v4 or v7
 //   - `useCredits`
-//   - `maxAmountDueCents`
-func ExampleFactoryService_AcceptOrgQuote() {
+func ExampleFactoryService_GetOrgQuote() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Factory.AcceptOrgQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, 123)
+	result, err := client.Factory.GetOrgQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true)
 	if err != nil {
 		panic(err)
 	}
@@ -1701,19 +1720,41 @@ func ExampleFactoryService_AcceptOrgQuote() {
 
 }
 
-// PreviewOrgQuote: Preview your organization's Factory quote without accepting it or charging a card. Requires organization membership.
+// AcceptOrgQuote: Accept your organization's current Factory quote and charge its default card. Requires organization membership.
 // Parameters
 //
 //   - `jobId`: A UUID usually v4 or v7
 //   - `quoteId`: A UUID usually v4 or v7
+//   - `paymentAttemptId`: A UUID usually v4 or v7
 //   - `useCredits`
-func ExampleFactoryService_PreviewOrgQuote() {
+//   - `maxAmountDueCents`
+func ExampleFactoryService_AcceptOrgQuote() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Factory.PreviewOrgQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true)
+	result, err := client.Factory.AcceptOrgQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, 123)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeclineOrgQuote: Decline your organization's current Factory quote and close the job. Requires organization membership.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+func ExampleFactoryService_DeclineOrgQuote() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.DeclineOrgQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -3346,6 +3387,20 @@ func ExampleAPITokenService_DeleteForUser() {
 
 }
 
+// RemoveAvatar: Remove the profile photo and prevent future sign-ins from importing it again.
+// Community profile synchronization is best effort.
+func ExampleUserService_RemoveAvatar() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.User.RemoveAvatar(); err != nil {
+		panic(err)
+	}
+
+}
+
 // GetUserUsageCollectionThreshold: Get your personal aggregate-usage collection threshold.
 // The effective threshold is the amount of accrued, unfunded usage that causes an early invoice before the normal billing-period close.
 func ExamplePaymentService_GetUserUsageCollectionThreshold() {
@@ -3613,6 +3668,25 @@ func ExampleFactoryService_GetUserJob() {
 
 }
 
+// CancelUserJob: Cancel your Factory job before payment starts, even if no quote exists.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+func ExampleFactoryService_CancelUserJob() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.CancelUserJob(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // GetUserJobFile: Download an exact submitted manufacturing input of a personal Factory job.
 // Parameters
 //
@@ -3630,20 +3704,20 @@ func ExampleFactoryService_GetUserJobFile() {
 
 }
 
-// AcceptUserQuote: Accept your current Factory quote and immediately charge your default card. Production starts only after successful payment.
+// GetUserQuote: Get your published Factory quote with its current shipping, tax, credits, and checkout total.
 // Parameters
 //
 //   - `jobId`: A UUID usually v4 or v7
 //   - `quoteId`: A UUID usually v4 or v7
+//   - `paymentAttemptId`: A UUID usually v4 or v7
 //   - `useCredits`
-//   - `maxAmountDueCents`
-func ExampleFactoryService_AcceptUserQuote() {
+func ExampleFactoryService_GetUserQuote() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Factory.AcceptUserQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, 123)
+	result, err := client.Factory.GetUserQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true)
 	if err != nil {
 		panic(err)
 	}
@@ -3652,19 +3726,41 @@ func ExampleFactoryService_AcceptUserQuote() {
 
 }
 
-// PreviewUserQuote: Preview your Factory quote's shipping, tax, credits, and total without accepting it or charging a card.
+// AcceptUserQuote: Accept your current Factory quote and immediately charge your default card. Production starts only after successful payment.
 // Parameters
 //
 //   - `jobId`: A UUID usually v4 or v7
 //   - `quoteId`: A UUID usually v4 or v7
+//   - `paymentAttemptId`: A UUID usually v4 or v7
 //   - `useCredits`
-func ExampleFactoryService_PreviewUserQuote() {
+//   - `maxAmountDueCents`
+func ExampleFactoryService_AcceptUserQuote() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := client.Factory.PreviewUserQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true)
+	result, err := client.Factory.AcceptUserQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), true, 123)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DeclineUserQuote: Decline your current Factory quote and close the job. No payment is created.
+// Parameters
+//
+//   - `jobId`: A UUID usually v4 or v7
+//   - `quoteId`: A UUID usually v4 or v7
+func ExampleFactoryService_DeclineUserQuote() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Factory.DeclineUserQuote(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
 	if err != nil {
 		panic(err)
 	}
@@ -5295,6 +5391,7 @@ func ExampleExecutorService_CreateTerm() {
 //   - `replay`
 //   - `conversationId`
 //   - `replayAttachmentMode`: Controls whether replayed attachments are sent inline or fetched on demand.
+//   - `replayPagination`
 //   - `pr`
 //   - `body`: The types of messages that can be sent by the client to the server.
 func ExampleMlService_CopilotWs() {
@@ -5304,7 +5401,7 @@ func ExampleMlService_CopilotWs() {
 	}
 
 	// Create the websocket connection.
-	ws, err := client.Ml.CopilotWs(true, kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", 123, "")
+	ws, err := client.Ml.CopilotWs(true, kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", true, 123, "")
 	if err != nil {
 		panic(err)
 	}
