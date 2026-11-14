@@ -4582,7 +4582,7 @@ type MlCopilotMessageFetchAttachments struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// MlCopilotMessageFetchReplayPage: Request an older history page on an opted-in paginated connection. Page delivery is not enabled yet; API returns `ReplayPageError`.
+// MlCopilotMessageFetchReplayPage: Request an older history page on an opted-in paginated connection. Cursors are single-use after a successful page; retry failed loads with the same cursor.
 type MlCopilotMessageFetchReplayPage struct {
 	// Cursor: Opaque, connection-scoped token returned by the previous page. It is not an attachment reference or a persisted message coordinate.
 	Cursor UUID `json:"cursor" yaml:"cursor" schema:"cursor,required"`
@@ -4765,7 +4765,7 @@ const (
 type MlCopilotReplayPageErrorCode string
 
 const (
-	// MlCopilotReplayPageErrorCodeUnavailable: Pagination replay is not enabled yet.
+	// MlCopilotReplayPageErrorCodeUnavailable: Pagination is not available on this connection.
 	MlCopilotReplayPageErrorCodeUnavailable MlCopilotReplayPageErrorCode = "unavailable"
 	// MlCopilotReplayPageErrorCodeInvalidRequest: The connection query does not satisfy pagination requirements.
 	MlCopilotReplayPageErrorCodeInvalidRequest MlCopilotReplayPageErrorCode = "invalid_request"
@@ -4928,7 +4928,7 @@ type MlCopilotServerMessageReplay struct {
 	Replay Replay `json:"replay" yaml:"replay" schema:"replay,required"`
 }
 
-// MlCopilotServerMessageReplayPage: A metadata-only history page. Not persisted or forwarded to the backend. Page delivery is not enabled yet. Existing clients keep receiving `Replay`.
+// MlCopilotServerMessageReplayPage: A metadata-only history page. Not persisted or forwarded to the backend. Pages use MessagePack, as does legacy `Replay`. Only opted-in connections receive pages.
 type MlCopilotServerMessageReplayPage struct {
 	// ReplayPage:
 	ReplayPage ReplayPage `json:"replay_page" yaml:"replay_page" schema:"replay_page,required"`
