@@ -3987,9 +3987,9 @@ type KclMigrationOperation struct {
 	Deadline Time `json:"deadline" yaml:"deadline" schema:"deadline,required"`
 	// ID: Same idempotency key supplied by the initiating client.
 	ID UUID `json:"id" yaml:"id" schema:"id,required"`
-	// ProjectSnapshot: Source revision, retained for conflict detection when applying the result.
+	// ProjectSnapshot: Original project revision captured for this attempt.
 	ProjectSnapshot MlCopilotProjectSnapshotMetadata `json:"project_snapshot" yaml:"project_snapshot" schema:"project_snapshot,required"`
-	// Result: Terminal result, if available. The review itself has no execution deadline.
+	// Result: Terminal result, if available.
 	Result KclMigrationResult `json:"result" yaml:"result" schema:"result"`
 	// Status: Current state.
 	Status KclMigrationStatus `json:"status" yaml:"status" schema:"status,required"`
@@ -4007,7 +4007,7 @@ type KclMigrationRequest struct {
 	CurrentFiles map[string][]int `json:"current_files" yaml:"current_files" schema:"current_files,required"`
 	// Entrypoint: Project-relative KCL file to execute.
 	Entrypoint string `json:"entrypoint" yaml:"entrypoint" schema:"entrypoint,required"`
-	// ProjectSnapshot: Revision against which the user will review and apply the candidate.
+	// ProjectSnapshot: Original project revision captured when the migration starts.
 	ProjectSnapshot MlCopilotProjectSnapshotMetadata `json:"project_snapshot" yaml:"project_snapshot" schema:"project_snapshot,required"`
 	// RequestID: Client-generated idempotency key. Reuse it when retrying delivery.
 	RequestID UUID `json:"request_id" yaml:"request_id" schema:"request_id,required"`
@@ -4015,13 +4015,13 @@ type KclMigrationRequest struct {
 	Target KclMigrationTarget `json:"target" yaml:"target" schema:"target,required"`
 }
 
-// KclMigrationResult: A worker's terminal candidate, held separately from ordinary project edits.
+// KclMigrationResult: A migration's terminal outcome and validation evidence.
 type KclMigrationResult struct {
 	// ConversionNotStarted: Confirmed rejection or failure before conversion started. Only unsuccessful attempts may set this; API excludes them from the daily attempt allowance. Missing evidence defaults to counting the attempt.
 	ConversionNotStarted bool `json:"conversion_not_started" yaml:"conversion_not_started" schema:"conversion_not_started"`
 	// Detail: User-facing outcome or failure explanation.
 	Detail string `json:"detail" yaml:"detail" schema:"detail,required"`
-	// Files: Candidate project, returned only after successful validation.
+	// Files: Final project supplied by the worker on success. Copilot's persisted outcome omits these bytes because edits were already delivered live.
 	Files map[string][]int `json:"files" yaml:"files" schema:"files"`
 	// Status: Terminal state. `running` is not a valid result.
 	Status KclMigrationStatus `json:"status" yaml:"status" schema:"status,required"`
@@ -4090,13 +4090,13 @@ type KclMigrationStatus string
 const (
 	// KclMigrationStatusRunning: Preparation, conversion, or validation is still running.
 	KclMigrationStatusRunning KclMigrationStatus = "running"
-	// KclMigrationStatusSucceeded: A validated candidate is ready for review. No project has been applied.
+	// KclMigrationStatusSucceeded: Conversion and final validation succeeded. Copilot delivers edits live; the legacy endpoint returns a candidate for separate application.
 	KclMigrationStatusSucceeded KclMigrationStatus = "succeeded"
 	// KclMigrationStatusFailed: The attempt failed.
 	KclMigrationStatusFailed KclMigrationStatus = "failed"
 	// KclMigrationStatusTimedOut: The original execution deadline expired.
 	KclMigrationStatusTimedOut KclMigrationStatus = "timed_out"
-	// KclMigrationStatusCancelled: The attempt was cancelled, including loss of its execution connection.
+	// KclMigrationStatusCancelled: The attempt was cancelled.
 	KclMigrationStatusCancelled KclMigrationStatus = "cancelled"
 	// KclMigrationStatusUnsupported: The source, target, or project is not supported.
 	KclMigrationStatusUnsupported KclMigrationStatus = "unsupported"
@@ -4600,7 +4600,7 @@ type MlCopilotMessageHeaders struct {
 	Type string `json:"type" yaml:"type" schema:"type,required"`
 }
 
-// MlCopilotMessageKclMigrationApplication: Report Apply/Undo/Redo without creating or charging for a chat turn.
+// MlCopilotMessageKclMigrationApplication: Retained for wire compatibility; Copilot rejects separate application reports because migration edits use ordinary project Undo.
 type MlCopilotMessageKclMigrationApplication struct {
 	// ExpectedRevision: Last acknowledged revision. Retrying the same change is idempotent.
 	ExpectedRevision int `json:"expected_revision" yaml:"expected_revision" schema:"expected_revision,required"`
@@ -4620,7 +4620,7 @@ type MlCopilotMessageListModes struct {
 
 // MlCopilotMessageMigrateKcl: Explicitly request a sponsored migration in this conversation. This action does not grant execution or bypass API eligibility checks. Progress and the final answer use the ordinary Copilot messages.
 type MlCopilotMessageMigrateKcl struct {
-	// Request: Complete isolated input. API binds it to the active conversation; a supplied conversation ID must match that conversation.
+	// Request: Complete original project. API binds it to the active conversation; a supplied conversation ID must match that conversation.
 	Request KclMigrationRequest `json:"request" yaml:"request" schema:"request,required"`
 	// Type:
 	Type string `json:"type" yaml:"type" schema:"type,required"`
@@ -4857,7 +4857,7 @@ type MlCopilotServerMessageInfo struct {
 	Info Info `json:"info" yaml:"info" schema:"info,required"`
 }
 
-// MlCopilotServerMessageKclMigrationApplication: Acknowledge the client's reported Apply/Undo/Redo state.
+// MlCopilotServerMessageKclMigrationApplication: Retained for wire compatibility; live Copilot migrations do not emit it.
 type MlCopilotServerMessageKclMigrationApplication struct {
 	// KclMigrationApplication:
 	KclMigrationApplication MlCopilotServerMessageKclMigrationApplicationKclMigrationApplication `json:"kcl_migration_application" yaml:"kcl_migration_application" schema:"kcl_migration_application,required"`
