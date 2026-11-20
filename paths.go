@@ -590,6 +590,490 @@ func (s *MetaService) CommunitySso(sso string, sig string) error {
 
 }
 
+// UploadExecutionInput: Upload one input as binary data or multiple named files as multipart form data.
+// Parameters
+//
+//   - `body`
+func (s *ExecutorService) UploadExecutionInput(body *MultipartForm) (*any, error) {
+	// Create the url.
+	path := "/execution/inputs"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Finalize the multipart body before sending it.
+	if body == nil {
+		return nil, errors.New("multipart body is nil")
+	}
+	if err := body.Close(); err != nil {
+		return nil, fmt.Errorf("closing multipart body failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, body.buffer)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Set("Content-Type", body.ContentType())
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded any
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListExecutionJobs: List execution jobs owned by the active user or organization.
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `status`: Customer-visible execution lifecycle state.
+//
+//   - `runtimeId`
+//
+//   - `createdAfter`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *ExecutorService) ListExecutionJobs(limit int, pageToken string, status ExecutionJobStatus, runtimeId string, createdAfter Time, sortBy CreatedAtSortMode) (*ExecutionJobResponseResultsPage, error) {
+	// Create the url.
+	path := "/execution/jobs"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"limit":         strconv.Itoa(limit),
+		"page_token":    pageToken,
+		"status":        string(status),
+		"runtime_id":    runtimeId,
+		"created_after": createdAfter.String(),
+		"sort_by":       string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ExecutionJobResponseResultsPage
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CreateExecutionJob: Submit an execution job.
+// Requires the execution_jobs feature for the active user or organization. Retry a submission with the same Idempotency-Key and request body to recover the original job.
+//
+// Parameters
+//
+//   - `idempotencyKey`
+//   - `body`: Request to create an asynchronous execution job.
+func (s *ExecutorService) CreateExecutionJob(idempotencyKey string, body ExecutionJobCreateRequest) (*ExecutionJobResponse, error) {
+	// Create the url.
+	path := "/execution/jobs"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Encode the request body as json.
+	b := new(bytes.Buffer)
+	if err := json.NewEncoder(b).Encode(body); err != nil {
+		return nil, fmt.Errorf("encoding json body request failed: %v", err)
+	}
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, b)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add our headers.
+	req.Header.Add("Content-Type", "application/json")
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"Idempotency-Key": idempotencyKey,
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ExecutionJobResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetExecutionJob: Get one execution job owned by the active user or organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ExecutorService) GetExecutionJob(id UUID) (*ExecutionJobResponse, error) {
+	// Create the url.
+	path := "/execution/jobs/{{.id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ExecutionJobResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// ListExecutionJobArtifacts: List verified durable outputs owned by the active user or organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by id only.
+//
+//     Currently, we only support scanning in ascending order.
+func (s *ExecutorService) ListExecutionJobArtifacts(id UUID, limit int, pageToken string, sortBy IdSortMode) (*ExecutionArtifactsResponse, error) {
+	// Create the url.
+	path := "/execution/jobs/{{.id}}/artifacts"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":         id.String(),
+		"limit":      strconv.Itoa(limit),
+		"page_token": pageToken,
+		"sort_by":    string(sortBy),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ExecutionArtifactsResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// DownloadExecutionJobArtifact: Download a verified private execution artifact with bounded streaming.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `artifactId`: A UUID usually v4 or v7
+func (s *ExecutorService) DownloadExecutionJobArtifact(id UUID, artifactId UUID) (*[]byte, error) {
+	// Create the url.
+	path := "/execution/jobs/{{.id}}/artifacts/{{.artifact_id}}"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":          id.String(),
+		"artifact_id": artifactId.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []byte
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// CancelExecutionJob: Idempotently request cancellation of an execution job.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ExecutorService) CancelExecutionJob(id UUID) (*ExecutionJobResponse, error) {
+	// Create the url.
+	path := "/execution/jobs/{{.id}}/cancel"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("POST", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ExecutionJobResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetExecutionJobLogs: Read a bounded binary-safe page from a verified execution log archive.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `stream`: A retained binary stream; live tailing is not part of this protocol.
+//   - `offset`
+//   - `limit`
+func (s *ExecutorService) GetExecutionJobLogs(id UUID, stream ExecutionLogStream, offset int, limit int) (*ExecutionLogResponse, error) {
+	// Create the url.
+	path := "/execution/jobs/{{.id}}/logs"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id":     id.String(),
+		"stream": string(stream),
+		"offset": strconv.Itoa(offset),
+		"limit":  strconv.Itoa(limit),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ExecutionLogResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
+// GetExecutionJobSpecification: Get immutable execution inputs. Lifecycle polling does not require this object.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func (s *ExecutorService) GetExecutionJobSpecification(id UUID) (*ExecutionJobSpecificationResponse, error) {
+	// Create the url.
+	path := "/execution/jobs/{{.id}}/specification"
+	targetURL := resolveRelative(s.client.server, path)
+
+	// Create the request.
+	req, err := http.NewRequest("GET", targetURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Add the parameters to the url.
+	if err := expandURL(req.URL, map[string]string{
+		"id": id.String(),
+	}); err != nil {
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
+	}
+
+	// Send the request.
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response.
+	if err := checkResponse(resp); err != nil {
+		return nil, err
+	}
+
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded ExecutionJobSpecificationResponse
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
+
+}
+
 // CreateBoundingBox: Get CAD file bounding box.
 // Import the CAD file into the modeling engine and calculate its bounding box.
 //
@@ -6243,7 +6727,7 @@ func (s *ProjectService) GetPublic(id UUID) (*PublicProjectResponse, error) {
 //   - `id`: A UUID usually v4 or v7
 //   - `format`: Archive formats supported by project download endpoints.
 //   - `fileIds`
-func (s *ProjectService) DownloadPublic(id UUID, format ProjectArchiveFormat, fileIds []UUID) error {
+func (s *ProjectService) DownloadPublic(id UUID, format ProjectArchiveFormat, fileIds []UUID) (*[]byte, error) {
 	// Create the url.
 	path := "/projects/public/{{.id}}/download"
 	targetURL := resolveRelative(s.client.server, path)
@@ -6251,7 +6735,7 @@ func (s *ProjectService) DownloadPublic(id UUID, format ProjectArchiveFormat, fi
 	// Create the request.
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
+		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	if fileIds != nil {
@@ -6265,23 +6749,32 @@ func (s *ProjectService) DownloadPublic(id UUID, format ProjectArchiveFormat, fi
 		"id":     id.String(),
 		"format": string(format),
 	}); err != nil {
-		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
+		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return err
+		return nil, err
 	}
 
-	// Return.
-	return nil
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []byte
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
 
 }
 
@@ -6428,7 +6921,7 @@ func (s *ProjectService) DeletePublicVote(id UUID) (*PublicProjectVoteResponse, 
 //   - `key`
 //   - `format`: Archive formats supported by project download endpoints.
 //   - `fileIds`
-func (s *HiddenService) DownloadSharedProject(key string, format ProjectArchiveFormat, fileIds []UUID) error {
+func (s *HiddenService) DownloadSharedProject(key string, format ProjectArchiveFormat, fileIds []UUID) (*[]byte, error) {
 	// Create the url.
 	path := "/projects/shared/{{.key}}/download"
 	targetURL := resolveRelative(s.client.server, path)
@@ -6436,7 +6929,7 @@ func (s *HiddenService) DownloadSharedProject(key string, format ProjectArchiveF
 	// Create the request.
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
+		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	if fileIds != nil {
@@ -6450,23 +6943,32 @@ func (s *HiddenService) DownloadSharedProject(key string, format ProjectArchiveF
 		"key":    key,
 		"format": string(format),
 	}); err != nil {
-		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
+		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return err
+		return nil, err
 	}
 
-	// Return.
-	return nil
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []byte
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
 
 }
 
@@ -10684,7 +11186,7 @@ func (s *ProjectService) Delete(id UUID) error {
 //   - `id`: A UUID usually v4 or v7
 //   - `format`: Archive formats supported by project download endpoints.
 //   - `fileIds`
-func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat, fileIds []UUID) error {
+func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat, fileIds []UUID) (*[]byte, error) {
 	// Create the url.
 	path := "/user/projects/{{.id}}/download"
 	targetURL := resolveRelative(s.client.server, path)
@@ -10692,7 +11194,7 @@ func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat, fileIds 
 	// Create the request.
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
+		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	if fileIds != nil {
@@ -10706,23 +11208,32 @@ func (s *ProjectService) Download(id UUID, format ProjectArchiveFormat, fileIds 
 		"id":     id.String(),
 		"format": string(format),
 	}); err != nil {
-		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
+		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return err
+		return nil, err
 	}
 
-	// Return.
-	return nil
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []byte
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
 
 }
 
@@ -11211,8 +11722,9 @@ func (s *ProjectService) ListVersions(id UUID, limit int, pageToken string) (*Pr
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
+//   - `idempotencyKey`
 //   - `body`
-func (s *ProjectService) CreateVersion(id UUID, body *MultipartForm) (*CreateProjectVersionResponse, error) {
+func (s *ProjectService) CreateVersion(id UUID, idempotencyKey string, body *MultipartForm) (*CreateProjectVersionResponse, error) {
 	// Create the url.
 	path := "/user/projects/{{.id}}/versions"
 	targetURL := resolveRelative(s.client.server, path)
@@ -11236,7 +11748,8 @@ func (s *ProjectService) CreateVersion(id UUID, body *MultipartForm) (*CreatePro
 
 	// Add the parameters to the url.
 	if err := expandURL(req.URL, map[string]string{
-		"id": id.String(),
+		"id":              id.String(),
+		"Idempotency-Key": idempotencyKey,
 	}); err != nil {
 		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
@@ -11326,7 +11839,7 @@ func (s *ProjectService) GetVersion(id UUID, versionId UUID) (*ProjectVersionDet
 //   - `versionId`: A UUID usually v4 or v7
 //   - `format`: Archive formats supported by project download endpoints.
 //   - `fileIds`
-func (s *ProjectService) DownloadVersion(id UUID, versionId UUID, format ProjectArchiveFormat, fileIds []UUID) error {
+func (s *ProjectService) DownloadVersion(id UUID, versionId UUID, format ProjectArchiveFormat, fileIds []UUID) (*[]byte, error) {
 	// Create the url.
 	path := "/user/projects/{{.id}}/versions/{{.version_id}}/download"
 	targetURL := resolveRelative(s.client.server, path)
@@ -11334,7 +11847,7 @@ func (s *ProjectService) DownloadVersion(id UUID, versionId UUID, format Project
 	// Create the request.
 	req, err := http.NewRequest("GET", targetURL, nil)
 	if err != nil {
-		return fmt.Errorf("error creating request: %v", err)
+		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	if fileIds != nil {
@@ -11349,23 +11862,32 @@ func (s *ProjectService) DownloadVersion(id UUID, versionId UUID, format Project
 		"version_id": versionId.String(),
 		"format":     string(format),
 	}); err != nil {
-		return fmt.Errorf("expanding URL with parameters failed: %v", err)
+		return nil, fmt.Errorf("expanding URL with parameters failed: %v", err)
 	}
 
 	// Send the request.
 	resp, err := s.client.client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error sending request: %v", err)
+		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Check the response.
 	if err := checkResponse(resp); err != nil {
-		return err
+		return nil, err
 	}
 
-	// Return.
-	return nil
+	// Decode the body from the response.
+	if resp.Body == nil {
+		return nil, errors.New("request returned an empty body in the response")
+	}
+	var decoded []byte
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		return nil, fmt.Errorf("error decoding response body: %v", err)
+	}
+
+	// Return the response.
+	return &decoded, nil
 
 }
 
@@ -12352,26 +12874,6 @@ func (s *ExecutorService) CreateTerm() (*websocket.Conn, error) {
 func (s *MlService) CopilotWs(replay bool, conversationId UUID, replayAttachmentMode MlCopilotReplayAttachmentMode, replayPagination bool, pr int, body any) (*websocket.Conn, error) {
 	// Create the url.
 	path := "/ws/ml/copilot"
-	targetURL := resolveRelative(s.client.server, path)
-
-	headers := http.Header{}
-	headers["Authorization"] = []string{fmt.Sprintf("Bearer %s", s.client.token)}
-
-	conn, _, err := websocket.DefaultDialer.Dial(strings.ReplaceAll(targetURL, "https://", "wss://"), headers)
-	if err != nil {
-		return nil, err
-	}
-
-	return conn, nil
-}
-
-// KclMigrationWs: Open a sponsored KCL migration connection. It cannot execute ordinary prompts.
-// Parameters
-//
-//   - `body`: The restricted public migration connection never accepts ordinary prompts.
-func (s *MlService) KclMigrationWs(body any) (*websocket.Conn, error) {
-	// Create the url.
-	path := "/ws/ml/kcl-migration"
 	targetURL := resolveRelative(s.client.server, path)
 
 	headers := http.Header{}
