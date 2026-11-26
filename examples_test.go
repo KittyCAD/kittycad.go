@@ -294,6 +294,206 @@ func ExampleMetaService_CommunitySso() {
 
 }
 
+// UploadExecutionInput: Upload one input as binary data or multiple named files as multipart form data.
+// Parameters
+//
+//   - `body`
+func ExampleExecutorService_UploadExecutionInput() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	form := kittycad.NewMultipartForm()
+
+	result, err := client.Executor.UploadExecutionInput(form)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListExecutionJobs: List execution jobs owned by the active user or organization.
+// Parameters
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `status`: Customer-visible execution lifecycle state.
+//
+//   - `runtimeId`
+//
+//   - `createdAfter`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by created_at only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleExecutorService_ListExecutionJobs() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Executor.ListExecutionJobs(123, "some-string", "", "some-string", kittycad.TimeNow(), "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CreateExecutionJob: Submit an execution job.
+// Requires the execution_jobs feature for the active user or organization. Retry a submission with the same Idempotency-Key and request body to recover the original job.
+//
+// Parameters
+//
+//   - `idempotencyKey`
+//   - `body`: Request to create an asynchronous execution job.
+func ExampleExecutorService_CreateExecutionJob() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Executor.CreateExecutionJob("some-string", kittycad.ExecutionJobCreateRequest{Command: []string{}, ComputeProfileID: "some-string", Environment: map[string]string{"example": "some-string"}, Inputs: []kittycad.ExecutionJobInput{}, Outputs: []kittycad.ExecutionJobOutput{}, RuntimeID: "some-string", TimeoutSeconds: 123})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetExecutionJob: Get one execution job owned by the active user or organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleExecutorService_GetExecutionJob() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Executor.GetExecutionJob(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// ListExecutionJobArtifacts: List verified durable outputs owned by the active user or organization.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//
+//   - `limit`
+//
+//   - `pageToken`
+//
+//   - `sortBy`: Supported set of sort modes for scanning by id only.
+//
+//     Currently, we only support scanning in ascending order.
+func ExampleExecutorService_ListExecutionJobArtifacts() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Executor.ListExecutionJobArtifacts(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), 123, "some-string", "")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// DownloadExecutionJobArtifact: Download a verified private execution artifact with bounded streaming.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `artifactId`: A UUID usually v4 or v7
+func ExampleExecutorService_DownloadExecutionJobArtifact() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Executor.DownloadExecutionJobArtifact(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// CancelExecutionJob: Idempotently request cancellation of an execution job.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleExecutorService_CancelExecutionJob() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Executor.CancelExecutionJob(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetExecutionJobLogs: Read a bounded binary-safe page from a verified execution log archive.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+//   - `stream`: A retained binary stream; live tailing is not part of this protocol.
+//   - `offset`
+//   - `limit`
+func ExampleExecutorService_GetExecutionJobLogs() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Executor.GetExecutionJobLogs(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", 123, 123)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
+// GetExecutionJobSpecification: Get immutable execution inputs. Lifecycle polling does not require this object.
+// Parameters
+//
+//   - `id`: A UUID usually v4 or v7
+func ExampleExecutorService_GetExecutionJobSpecification() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := client.Executor.GetExecutionJobSpecification(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%#v", result)
+
+}
+
 // CreateBoundingBox: Get CAD file bounding box.
 // Import the CAD file into the modeling engine and calculate its bounding box.
 //
@@ -2217,7 +2417,7 @@ func ExamplePaymentService_RedirectMethodPortalLinkForOrg() {
 }
 
 // ListMethodsForOrg: List payment methods for your org.
-// This endpoint requires authentication by an org member. It lists payment methods for the authenticated user's org, with the valid default card first.
+// This endpoint requires authentication by an org member. It lists payment methods for the authenticated user's org, with the valid default card first. The response identifies the default card, or null when none is valid.
 //
 // Parameters
 //
@@ -2251,6 +2451,24 @@ func ExamplePaymentService_DeleteMethodForOrg() {
 	}
 
 	if err := client.Payment.DeleteMethodForOrg("some-string"); err != nil {
+		panic(err)
+	}
+
+}
+
+// SetDefaultMethodForOrg: Set the default payment method for your org.
+// This endpoint requires authentication by an org admin. It sets the default payment method for the authenticated user's org.
+//
+// Parameters
+//
+//   - `id`
+func ExamplePaymentService_SetDefaultMethodForOrg() {
+	client, err := kittycad.NewClientFromEnv("your apps user agent")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := client.Payment.SetDefaultMethodForOrg("some-string"); err != nil {
 		panic(err)
 	}
 
@@ -2706,9 +2924,12 @@ func ExampleProjectService_DownloadPublic() {
 		panic(err)
 	}
 
-	if err := client.Project.DownloadPublic(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", []kittycad.UUID{}); err != nil {
+	result, err := client.Project.DownloadPublic(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", []kittycad.UUID{})
+	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("%#v", result)
 
 }
 
@@ -2780,9 +3001,12 @@ func ExampleHiddenService_DownloadSharedProject() {
 		panic(err)
 	}
 
-	if err := client.Hidden.DownloadSharedProject("some-string", "", []kittycad.UUID{}); err != nil {
+	result, err := client.Hidden.DownloadSharedProject("some-string", "", []kittycad.UUID{})
+	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("%#v", result)
 
 }
 
@@ -4181,7 +4405,7 @@ func ExamplePaymentService_RedirectMethodPortalLinkForUser() {
 }
 
 // ListMethodsForUser: List payment methods for your user.
-// This endpoint requires authentication by any Zoo user. It lists payment methods for the authenticated user, with the valid default card first.
+// This endpoint requires authentication by any Zoo user. It lists payment methods for the authenticated user, with the valid default card first. The response identifies the default card, or null when none is valid.
 //
 // Parameters
 //
@@ -4515,11 +4739,11 @@ func ExampleProjectService_List() {
 }
 
 // Create: Create a project for the authenticated user.
-// Send multipart data with a JSON `body` part and file parts whose filenames are relative project paths. Include an optional `library_id` in the JSON to create the project in a named library:
+// Send multipart data with a JSON `body` part and file parts whose filenames are relative project paths. The `filename` parameter carries the path even when the file data comes from bytes or a stream.
 //
-// ```json { "title": "Bracket", "entrypoint_path": "main.kcl", "library_id": "<LIBRARY_ID>" } ```
+// `curl --fail-with-body "$API_BASE_URL/user/projects" -H "Authorization: Bearer $API_TOKEN" -F 'body={"title":"Bracket","entrypoint_path":"main.kcl"};type=application/json' -F 'root=@main.kcl;filename=main.kcl' -F 'part=@parts/bracket.kcl;filename=parts/bracket.kcl'`
 //
-// A personal library creates a personal project. An accessible library belonging to the active organization creates an organization project with the caller as its creator; creating the project does not require library-management rights. Omitting `library_id` or passing null creates an unassigned personal project, even when the request has an active organization.
+// Include `library_id` in the JSON to create the project in a named library. A personal library creates a personal project. An accessible library belonging to the active organization creates an organization project with the caller as its creator; creating the project does not require library-management rights. Omitting `library_id` or passing null creates an unassigned personal project, even when the request has an active organization.
 //
 // The HTTP 201 response includes `id`, `library_id`, content `revision`, and `metadata_revision`. Later saves preserve membership, even if they include a library field. Use `PUT /user/projects/{id}/library` to move or unassign an existing project instead of uploading its files again.
 //
@@ -4563,7 +4787,7 @@ func ExampleProjectService_Get() {
 }
 
 // Update: Replace one of the authenticated user's projects.
-// Content saves use the project's content `revision` as `expected_revision` and preserve its current library assignment. Omitting `library_id`, setting it to null, or supplying another library ID here does not move the project. Use `PUT /user/projects/{id}/library` with `metadata_revision` for library changes.
+// Content saves use the project's content `revision` as `expected_revision` and preserve its current library assignment and publication state. Omitting `library_id`, setting it to null, or supplying another library ID here does not move the project. Use `PUT /user/projects/{id}/library` with `metadata_revision` for library changes.
 //
 // Parameters
 //
@@ -4616,9 +4840,12 @@ func ExampleProjectService_Download() {
 		panic(err)
 	}
 
-	if err := client.Project.Download(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", []kittycad.UUID{}); err != nil {
+	result, err := client.Project.Download(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", []kittycad.UUID{})
+	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("%#v", result)
 
 }
 
@@ -4841,6 +5068,7 @@ func ExampleProjectService_ListVersions() {
 // Parameters
 //
 //   - `id`: A UUID usually v4 or v7
+//   - `idempotencyKey`
 //   - `body`
 func ExampleProjectService_CreateVersion() {
 	client, err := kittycad.NewClientFromEnv("your apps user agent")
@@ -4850,7 +5078,7 @@ func ExampleProjectService_CreateVersion() {
 
 	form := kittycad.NewMultipartForm()
 
-	result, err := client.Project.CreateVersion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), form)
+	result, err := client.Project.CreateVersion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "some-string", form)
 	if err != nil {
 		panic(err)
 	}
@@ -4894,9 +5122,12 @@ func ExampleProjectService_DownloadVersion() {
 		panic(err)
 	}
 
-	if err := client.Project.DownloadVersion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", []kittycad.UUID{}); err != nil {
+	result, err := client.Project.DownloadVersion(kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", []kittycad.UUID{})
+	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("%#v", result)
 
 }
 
@@ -5402,74 +5633,6 @@ func ExampleMlService_CopilotWs() {
 
 	// Create the websocket connection.
 	ws, err := client.Ml.CopilotWs(true, kittycad.ParseUUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8"), "", true, 123, "")
-	if err != nil {
-		panic(err)
-	}
-
-	defer ws.Close()
-
-	done := make(chan struct{})
-
-	go func() {
-		defer close(done)
-		for {
-			_, message, err := ws.ReadMessage()
-			if err != nil {
-				log.Println("read:", err)
-				return
-			}
-			log.Printf("recv: %s", message)
-		}
-	}()
-
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
-
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
-
-	for {
-		select {
-		case <-done:
-			return
-		case t := <-ticker.C:
-			err := ws.WriteMessage(websocket.TextMessage, []byte(t.String()))
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
-		case <-interrupt:
-			log.Println("interrupt")
-
-			// Cleanly close the connection by sending a close message and then
-			// waiting (with timeout) for the server to close the connection.
-			err := ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
-			if err != nil {
-				log.Println("write close:", err)
-				return
-			}
-			select {
-			case <-done:
-			case <-time.After(time.Second):
-			}
-			return
-		}
-	}
-
-}
-
-// KclMigrationWs: Open a sponsored KCL migration connection. It cannot execute ordinary prompts.
-// Parameters
-//
-//   - `body`: The restricted public migration connection never accepts ordinary prompts.
-func ExampleMlService_KclMigrationWs() {
-	client, err := kittycad.NewClientFromEnv("your apps user agent")
-	if err != nil {
-		panic(err)
-	}
-
-	// Create the websocket connection.
-	ws, err := client.Ml.KclMigrationWs("")
 	if err != nil {
 		panic(err)
 	}
